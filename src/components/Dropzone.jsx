@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 
 const Dropzone = () => {
   // Gère l'upload via le champ d'entrée
