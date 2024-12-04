@@ -1,5 +1,5 @@
-
 import { getDB } from "../getDB";
+import { tableFromJSON } from "apache-arrow";
 
 export type Results = {
   master_metadata_track_name: string;
@@ -53,17 +53,10 @@ export async function queryFilesInDatabase(
 
   await conn.query(DROP_TABLE_QUERY);
 
-  const reader = new FileReader();
-  const fileText = await new Promise<string>((resolve, reject) => {
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsText(file);
-  });
-
-  await db.registerFileText("spotify.json", fileText);
-  await conn.insertJSONFromPath("spotify.json", { name: TABLE });
-  // TODO prefer to use arrow than js object
-  // const table = arrow.tableFromJSON(data);
+  const rawContent = await file.text();
+  const jsonContent = JSON.parse(rawContent);
+  const arrowTableContent = tableFromJSON(jsonContent);
+  await conn.insertArrowTable(arrowTableContent, { name: TABLE });
 
   const results = await conn.query(TRACK_METRICS_QUERY);
   await conn.close();
