@@ -1,0 +1,48 @@
+name: Deploy App
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    app:
+        name: Audit, build and preview
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  run_install: false
+
+            - name: Use Node 20
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Check format
+              run: pnpm run format:check
+
+            - name: Check Lint
+              run: pnpm run lint
+
+            - name: Build project
+              run: pnpm run build
+
+            - name: Deploy app
+              uses: FirebaseExtended/action-hosting-deploy@v0
+              with:
+                  repoToken: ${{ secrets.GITHUB_TOKEN }}
+                  firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
+                  channelId: live
+                  projectId: tracksy-app
+              env:
+                  FIREBASE_CLI_EXPERIMENTS: webframeworks
