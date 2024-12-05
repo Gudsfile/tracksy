@@ -7,6 +7,7 @@ export type Results = {
     count_play: number
 }[]
 
+const { conn } = await getDB();
 const TABLE = 'spotitable'
 
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
@@ -36,6 +37,7 @@ ORDER BY
 export async function queryFilesInDatabase(
     files: FileList
 ): Promise<Results | undefined> {
+<<<<<<< HEAD
     const { db, conn } = await getDB()
 
     if (!db || !conn) {
@@ -46,6 +48,12 @@ export async function queryFilesInDatabase(
         console.error('No data')
         throw new Error('No data to process')
     }
+=======
+  if (files.length < 1) {
+    console.error("No data");
+    throw new Error("No data to process");
+  }
+>>>>>>> 6e22573 (♻️ move creation of the db)
 
     const file = files[0]
     console.warn('Multiple file processing is not yet implemented.')
