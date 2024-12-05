@@ -57,7 +57,6 @@ const Dropzone = () => {
                     sélectionner
                 </label>
             </div>
-            <pre>{dropResult && JSON.stringify(dropResult, null, 2)}</pre>
         </div>
     )
 }

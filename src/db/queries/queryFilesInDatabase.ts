@@ -1,5 +1,5 @@
 import { getDB } from '../getDB'
-import { tableFromJSON } from 'apache-arrow'
+import { tableFromJSON, Table } from 'apache-arrow'
 
 export type Results = {
     master_metadata_track_name: string
@@ -7,7 +7,7 @@ export type Results = {
     count_play: number
 }[]
 
-const { conn } = await getDB();
+const { conn } = await getDB()
 const TABLE = 'spotitable'
 
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
@@ -37,23 +37,10 @@ ORDER BY
 export async function queryFilesInDatabase(
     files: FileList
 ): Promise<Results | undefined> {
-<<<<<<< HEAD
-    const { db, conn } = await getDB()
-
-    if (!db || !conn) {
-        throw new Error('No database found')
-    }
-
     if (files.length < 1) {
         console.error('No data')
         throw new Error('No data to process')
     }
-=======
-  if (files.length < 1) {
-    console.error("No data");
-    throw new Error("No data to process");
-  }
->>>>>>> 6e22573 (♻️ move creation of the db)
 
     const file = files[0]
     console.warn('Multiple file processing is not yet implemented.')
@@ -68,4 +55,18 @@ export async function queryFilesInDatabase(
 
     const results = await conn.query(TRACK_METRICS_QUERY)
     return results.toArray().map((row) => row.toJSON())
+}
+
+const TRACK_METRICS_BY_DATE = `
+SELECT
+  ms_played,
+  ts::date as ts,
+  username
+FROM ${TABLE}
+order by ts
+`
+
+export async function queryDb(): Promise<Table<any> | undefined> {
+    const results = await conn.query(TRACK_METRICS_BY_DATE)
+    return results
 }
