@@ -1,13 +1,13 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Dropzone from "../components/Dropzone.tsx";
+import Layout from '../layouts/Layout.astro'
+import Dropzone from '../components/Dropzone.tsx'
 ---
 
 <Layout title="Welcome to Astro.">
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-lg mx-auto">
-      <h1 class="text-xl font-bold text-center mb-4">Dropzone React</h1>
-      <Dropzone client:load />
+    <div class="min-h-screen flex items-center justify-center bg-gray-50">
+        <div class="max-w-lg mx-auto">
+            <h1 class="text-xl font-bold text-center mb-4">Dropzone React</h1>
+            <Dropzone client:load />
+        </div>
     </div>
-  </div>
 </Layout>

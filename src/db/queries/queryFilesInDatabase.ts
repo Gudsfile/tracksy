@@ -1,15 +1,15 @@
-import { getDB } from "../getDB";
-import { tableFromJSON } from "apache-arrow";
+import { getDB } from '../getDB'
+import { tableFromJSON } from 'apache-arrow'
 
 export type Results = {
-  master_metadata_track_name: string;
-  total_ms_played: number;
-  count_play: number;
-}[];
+    master_metadata_track_name: string
+    total_ms_played: number
+    count_play: number
+}[]
 
-const TABLE = "spotitable";
+const TABLE = 'spotitable'
 
-const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`;
+const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
 const TRACK_METRICS_QUERY = `
 WITH
 metrics_by_track AS (
@@ -31,33 +31,33 @@ ORDER BY
     count_play DESC,
     total_ms_played DESC,
     master_metadata_track_name ASC
-`;
+`
 
 export async function queryFilesInDatabase(
-  files: FileList
+    files: FileList
 ): Promise<Results | undefined> {
-  const { db, conn } = await getDB();
+    const { db, conn } = await getDB()
 
-  if (!db || !conn) {
-    throw new Error("No database found");
-  }
+    if (!db || !conn) {
+        throw new Error('No database found')
+    }
 
-  if (files.length < 1) {
-    console.error("No data");
-    throw new Error("No data to process");
-  }
+    if (files.length < 1) {
+        console.error('No data')
+        throw new Error('No data to process')
+    }
 
-  const file = files[0];
-  console.warn("Multiple file processing is not yet implemented.");
-  console.warn(`Only ${file.name} is taken into account.`);
+    const file = files[0]
+    console.warn('Multiple file processing is not yet implemented.')
+    console.warn(`Only ${file.name} is taken into account.`)
 
-  await conn.query(DROP_TABLE_QUERY);
+    await conn.query(DROP_TABLE_QUERY)
 
-  const rawContent = await file.text();
-  const jsonContent = JSON.parse(rawContent);
-  const arrowTableContent = tableFromJSON(jsonContent);
-  await conn.insertArrowTable(arrowTableContent, { name: TABLE });
+    const rawContent = await file.text()
+    const jsonContent = JSON.parse(rawContent)
+    const arrowTableContent = tableFromJSON(jsonContent)
+    await conn.insertArrowTable(arrowTableContent, { name: TABLE })
 
-  const results = await conn.query(TRACK_METRICS_QUERY);
-  return results.toArray().map((row) => row.toJSON());
+    const results = await conn.query(TRACK_METRICS_QUERY)
+    return results.toArray().map((row) => row.toJSON())
 }
