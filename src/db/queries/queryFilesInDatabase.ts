@@ -59,6 +59,5 @@ export async function queryFilesInDatabase(
   await conn.insertArrowTable(arrowTableContent, { name: TABLE });
 
   const results = await conn.query(TRACK_METRICS_QUERY);
-  await conn.close();
   return results.toArray().map((row) => row.toJSON());
 }
