@@ -30,8 +30,6 @@ const Dropzone = () => {
     await manageUploadedFiles(files);
   };
 
-  // Empêche le comportement par défaut pour le drag-and-drop
-  // const handleDrop = async ({ dataTransfer: { files }, ...event }: React.DragEvent<HTMLDivElement>) => {
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
