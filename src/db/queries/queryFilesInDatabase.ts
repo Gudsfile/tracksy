@@ -66,7 +66,7 @@ FROM ${TABLE}
 order by ts
 `
 
-export async function queryDb(): Promise<Table<any> | undefined> {
+export async function queryDb(): Promise<Table | undefined> {
     const results = await conn.query(TRACK_METRICS_BY_DATE)
     return results
 }

@@ -5,7 +5,7 @@ import {
 } from '../db/queries/queryFilesInDatabase.ts'
 
 const Dropzone = () => {
-    const [dropResult, setDropResult] = useState<Results | undefined>()
+    const [, setDropResult] = useState<Results | undefined>()
 
     const manageUploadedFiles = async (files: FileList) => {
         const results = await queryFilesInDatabase(files)

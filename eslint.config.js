@@ -1,21 +1,12 @@
-import astroEslintParser from 'eslint-plugin-astro'
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin'
 import typescriptParser from '@typescript-eslint/parser'
+import astroEslintParser from 'eslint-plugin-astro'
 
 export default [
     {
         ignores: ['node_modules', 'dist'],
     },
-    {
-        files: ['**/*.astro'],
-        languageOptions: {
-            parser: astroEslintParser.parser,
-        },
-        rules: {
-            ...astroEslintParser.configs.recommended.rules,
-            // Add or override Astro-specific rules
-        },
-    },
+    ...astroEslintParser.configs.recommended,
     {
         files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
