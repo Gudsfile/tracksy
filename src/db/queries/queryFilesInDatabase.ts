@@ -1,14 +1,12 @@
 import { getDB } from '../getDB'
-import { tableFromJSON, Table } from 'apache-arrow'
+import { TABLE } from './constants'
+import { tableFromJSON } from 'apache-arrow'
 
 export type Results = {
     master_metadata_track_name: string
     total_ms_played: number
     count_play: number
 }[]
-
-const { conn } = await getDB()
-const TABLE = 'spotitable'
 
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
 const TRACK_METRICS_QUERY = `
@@ -46,6 +44,8 @@ export async function queryFilesInDatabase(
     console.warn('Multiple file processing is not yet implemented.')
     console.warn(`Only ${file.name} is taken into account.`)
 
+    const { conn } = await getDB()
+
     await conn.query(DROP_TABLE_QUERY)
 
     const rawContent = await file.text()
@@ -55,18 +55,4 @@ export async function queryFilesInDatabase(
 
     const results = await conn.query(TRACK_METRICS_QUERY)
     return results.toArray().map((row) => row.toJSON())
-}
-
-const TRACK_METRICS_BY_DATE = `
-SELECT
-  ms_played,
-  ts::date as ts,
-  username
-FROM ${TABLE}
-order by ts
-`
-
-export async function queryDb(): Promise<Table | undefined> {
-    const results = await conn.query(TRACK_METRICS_BY_DATE)
-    return results
 }
