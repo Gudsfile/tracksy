@@ -1,13 +1,21 @@
 name: Deploy App
 
 on:
+    pull_request:
+        branches:
+            - main
     push:
         branches:
             - main
 
+permissions:
+    checks: write
+    contents: read
+    pull-requests: write
+
 jobs:
-    app:
-        name: Audit, build and preview
+    build:
+        name: Audit and build
         runs-on: ubuntu-latest
 
         steps:
@@ -36,6 +44,45 @@ jobs:
 
             - name: Build project
               run: pnpm run build
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build
+                  path: dist/
+
+    deploy-preview:
+        name: Deploy Preview
+        if: ${{ github.event_name == 'pull_request' }}
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: build
+                  if-no-files-found:: error
+
+            - name: Deploy app
+              uses: FirebaseExtended/action-hosting-deploy@v0
+              with:
+                  repoToken: ${{ secrets.GITHUB_TOKEN }}
+                  firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
+                  projectId: tracksy-app
+              env:
+                  FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+    deploy-live:
+        name: Deploy Live
+        if: ${{ github.event_name == 'push' }}
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: build
+                  if-no-files-found:: error
 
             - name: Deploy app
               uses: FirebaseExtended/action-hosting-deploy@v0
