@@ -1,41 +1,14 @@
-import { useState } from 'react'
-import {
-    queryFilesInDatabase,
-    Results,
-} from '../../db/queries/queryFilesInDatabase.ts'
+type Props = {
+    handleDrop: (event: React.DragEvent<HTMLDivElement>) => void
+    handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void
+    handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
 
-const Dropzone = () => {
-    const [, setDropResult] = useState<Results | undefined>()
-
-    const manageUploadedFiles = async (files: FileList) => {
-        const results = await queryFilesInDatabase(files)
-        setDropResult(results)
-    }
-
-    const handleFileUpload = async (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const files = event.target.files
-
-        if (files === null) return undefined
-
-        console.log('Fichiers uploadés :', Array.from(files))
-        await manageUploadedFiles(files)
-    }
-
-    const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-        event.preventDefault()
-
-        const files = event.dataTransfer.files
-
-        console.log('Fichiers glissés :', Array.from(files))
-        await manageUploadedFiles(files)
-    }
-
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-        event.preventDefault()
-    }
-
+export const Dropzone = ({
+    handleDrop,
+    handleDragOver,
+    handleFileUpload,
+}: Props) => {
     return (
         <div>
             <div
@@ -60,5 +33,3 @@ const Dropzone = () => {
         </div>
     )
 }
-
-export default Dropzone
