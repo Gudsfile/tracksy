@@ -3,9 +3,6 @@ description: Audit and build the app
 runs:
     using: 'composite'
     steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-
         - name: Install pnpm
           uses: pnpm/action-setup@v4
           with:

@@ -19,6 +19,9 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
             - uses: ./.github/actions/build
 
             - name: Deploy app
@@ -35,6 +38,9 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
             - uses: ./.github/actions/build
 
             - name: Deploy app
