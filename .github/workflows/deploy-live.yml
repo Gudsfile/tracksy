@@ -17,7 +17,6 @@ jobs:
     deploy-preview:
         name: Deploy Preview
         if: ${{ github.event_name == 'pull_request' }}
-        needs: build
         runs-on: ubuntu-latest
         steps:
             - uses: ./.github/actions/build
@@ -34,7 +33,6 @@ jobs:
     deploy-live:
         name: Deploy Live
         if: ${{ github.event_name == 'push' }}
-        needs: build
         runs-on: ubuntu-latest
         steps:
             - uses: ./.github/actions/build
