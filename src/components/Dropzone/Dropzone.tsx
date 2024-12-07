@@ -2,7 +2,7 @@ import { useState } from 'react'
 import {
     queryFilesInDatabase,
     Results,
-} from '../db/queries/queryFilesInDatabase.ts'
+} from '../../db/queries/queryFilesInDatabase.ts'
 
 const Dropzone = () => {
     const [, setDropResult] = useState<Results | undefined>()
