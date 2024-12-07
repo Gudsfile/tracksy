@@ -1,15 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import * as Plot from '@observablehq/plot'
-import { queryDb } from '../db/queries/queryFilesInDatabase'
+import { queryDB } from '../../db/queries/queryDB'
+
 
 const PlotFigure = () => {
-    const containerRef = useRef()
     const [data, setData] = useState()
-
-    useEffect(() => {
-        console.log('coucou')
-        queryDb().then(setData)
-    }, [])
+    const containerRef = useRef()
 
     useEffect(() => {
         if (data === undefined) return
@@ -33,7 +29,7 @@ const PlotFigure = () => {
     }, [data])
 
     const updateData = () => {
-        queryDb().then(setData)
+        queryDB().then(table => setData(table))
     }
 
     return (
