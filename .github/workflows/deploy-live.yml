@@ -50,9 +50,9 @@ jobs:
               with:
                   name: build
                   path: |
-                        dist/
-                        .firebaserc
-                        firebase.json
+                      dist/
+                      .firebaserc
+                      firebase.json
 
     deploy-preview:
         name: Deploy Preview
