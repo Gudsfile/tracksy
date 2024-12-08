@@ -9,32 +9,8 @@ export type Results = {
 }[]
 
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
-const TRACK_METRICS_QUERY = `
-WITH
-metrics_by_track AS (
-    SELECT
-        spotify_track_uri,
-        sum(ms_played)::int AS total_ms_played,
-        count(*)::int as count_play
-    FROM ${TABLE}
-    GROUP BY spotify_track_uri
-)
-SELECT
-    master_metadata_track_name,
-    total_ms_played,
-    count_play
-FROM ${TABLE}
-INNER JOIN metrics_by_track USING (spotify_track_uri)
-GROUP BY ALL
-ORDER BY
-    count_play DESC,
-    total_ms_played DESC,
-    master_metadata_track_name ASC
-`
 
-export async function queryFilesInDatabase(
-    files: FileList
-): Promise<Results | undefined> {
+export async function insertFilesInDatabase(files: FileList) {
     if (files.length < 1) {
         console.error('No data')
         throw new Error('No data to process')
@@ -52,7 +28,4 @@ export async function queryFilesInDatabase(
     const jsonContent = JSON.parse(rawContent)
     const arrowTableContent = tableFromJSON(jsonContent)
     await conn.insertArrowTable(arrowTableContent, { name: TABLE })
-
-    const results = await conn.query(TRACK_METRICS_QUERY)
-    return results.toArray().map((row) => row.toJSON())
 }
