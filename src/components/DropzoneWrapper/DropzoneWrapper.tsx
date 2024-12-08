@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { queryFilesInDatabase } from '../../db/queries/queryFilesInDatabase.ts'
+import { insertFilesInDatabase } from '../../db/queries/insertFilesInDatabase.ts'
 import { ChartWrapper } from '../ChartWrapper/ChartWrapper'
 
 import { Dropzone } from '../Dropzone/Dropzone.tsx'
@@ -9,9 +9,13 @@ export const DropzoneWrapper = () => {
         useState<boolean>(false)
 
     const manageUploadedFiles = async (files: FileList) => {
-        const result = await queryFilesInDatabase(files)
-        if (result !== undefined) {
+        setFilesReadyToBeRequested(false)
+        try {
+            await insertFilesInDatabase(files)
             setFilesReadyToBeRequested(true)
+        } catch (error) {
+            console.error('Error while processing files:', error)
+            setFilesReadyToBeRequested(false)
         }
     }
 
