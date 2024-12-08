@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import { DropzoneWrapper } from '../components/DropzoneWrapper/DropzoneWrapper'
-import PlotFigure from '../components/PlotFigure/Plotfigure'
 ---
 
 <Layout title="Welcome to Astro.">
@@ -9,7 +8,6 @@ import PlotFigure from '../components/PlotFigure/Plotfigure'
         <div class="max-w-lg mx-auto">
             <h1 class="text-xl font-bold text-center mb-4">Dropzone React</h1>
             <DropzoneWrapper client:only="react" />
-            <PlotFigure client:only="react" />
         </div>
     </div>
 </Layout>
