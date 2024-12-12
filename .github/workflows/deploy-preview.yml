@@ -38,6 +38,9 @@ jobs:
             - name: Check Lint
               run: pnpm run lint
 
+            - name: Check test
+              run: pnpm run test:coverage
+
             - name: Build project
               run: pnpm run build
 
