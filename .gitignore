@@ -28,3 +28,5 @@ pnpm-debug.log*
 
 # others
 datasets/
+
+coverage/
