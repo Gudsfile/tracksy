@@ -3,6 +3,7 @@ import { insertFilesInDatabase } from '../../db/queries/insertFilesInDatabase.ts
 import { ChartWrapper } from '../ChartWrapper/ChartWrapper'
 
 import { Dropzone } from '../Dropzone/Dropzone.tsx'
+import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType.ts'
 
 export const DropzoneWrapper = () => {
     const [filesReadyToBeRequested, setFilesReadyToBeRequested] =
@@ -11,6 +12,15 @@ export const DropzoneWrapper = () => {
     const manageUploadedFiles = async (files: FileList) => {
         setFilesReadyToBeRequested(false)
         try {
+            const allowedFiles = Array.from(files).filter(
+                isAllowedFileContentType
+            )
+
+            if (allowedFiles.length !== files.length) {
+                throw new Error(
+                    'One or more files have an unsupported content type'
+                )
+            }
             await insertFilesInDatabase(files)
             setFilesReadyToBeRequested(true)
         } catch (error) {
