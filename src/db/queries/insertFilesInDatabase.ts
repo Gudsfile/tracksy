@@ -2,12 +2,6 @@ import { getDB } from '../getDB'
 import { TABLE } from './constants'
 import { tableFromJSON } from 'apache-arrow'
 
-export type Results = {
-    master_metadata_track_name: string
-    total_ms_played: number
-    count_play: number
-}[]
-
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
 
 export async function insertFilesInDatabase(files: FileList) {
