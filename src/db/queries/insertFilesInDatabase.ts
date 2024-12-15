@@ -16,16 +16,22 @@ export async function insertFilesInDatabase(files: FileList) {
         throw new Error('No data to process')
     }
 
-    const file = files[0]
-    console.warn('Multiple file processing is not yet implemented.')
-    console.warn(`Only ${file.name} is taken into account.`)
-
     const { conn } = await getDB()
 
     await conn.query(DROP_TABLE_QUERY)
+    console.debug(`Table ${TABLE} dropped.`)
 
-    const rawContent = await file.text()
-    const jsonContent = JSON.parse(rawContent)
-    const arrowTableContent = tableFromJSON(jsonContent)
-    await conn.insertArrowTable(arrowTableContent, { name: TABLE })
+    const arrayOfFilesContents: Record<string, unknown>[] = await Promise.all(
+        Array.from(files).map(async (file) => {
+            console.debug(`File ${file.name} is being processed.`)
+            const rawContent = await file.text()
+            return JSON.parse(rawContent)
+        })
+    )
+
+    const arrowTableContent = tableFromJSON(arrayOfFilesContents.flat())
+    await conn.insertArrowTable(arrowTableContent, {
+        name: TABLE,
+        create: true,
+    })
 }

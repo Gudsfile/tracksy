@@ -36,10 +36,36 @@ export const DropzoneWrapper = () => {
                     workerUrl: LibArchiveWorker,
                 })
                 const archive = await Archive.open(files[0])
-                let result = await archive.extractFiles()
-                const filteredFiles: File[] = Object.keys(result)
-                    .filter((key) => !['__MACOSX'].includes(key))
-                    .map((key) => result[key])
+                let filteredFiles: File[] = []
+                const extractedFiles: Record<
+                    string,
+                    File | Record<string, File>
+                > = await archive.extractFiles()
+
+                const filteredFilesKeys = Object.keys(extractedFiles).filter(
+                    (key) => !['__MACOSX'].includes(key)
+                )
+
+                if (filteredFilesKeys.length === 0)
+                    throw new Error('No files found in the archive')
+
+                if (
+                    Object.values(extractedFiles).some(
+                        (file: File | Record<string, File>) =>
+                            typeof file === 'object' && 'type' in file
+                    )
+                ) {
+                    filteredFiles = Object.values(extractedFiles).filter(
+                        (file): file is File =>
+                            file instanceof File
+                                ? isAllowedFileContentType(file as File)
+                                : false
+                    )
+                } else {
+                    filteredFiles = Object.values(
+                        extractedFiles[filteredFilesKeys[0]]
+                    )
+                }
 
                 await insertFilesInDatabase(
                     convertArrayToFileList(filteredFiles)
