@@ -32,6 +32,9 @@ jobs:
             - name: Install dependencies
               run: pnpm install
 
+            - name: Audit dependencies
+              run: pnpm audit --prod
+
             - name: Check format
               run: pnpm run format:check
 
