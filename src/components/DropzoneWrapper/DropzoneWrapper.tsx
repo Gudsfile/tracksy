@@ -1,27 +1,53 @@
 import { useState } from 'react'
-import { insertFilesInDatabase } from '../../db/queries/insertFilesInDatabase.ts'
-import { ChartWrapper } from '../ChartWrapper/ChartWrapper'
+import { Archive } from 'libarchive.js'
+import LibArchiveWorker from 'libarchive.js/dist/worker-bundle.js?url'
+import 'libarchive.js/dist/libarchive.wasm?url'
 
-import { Dropzone } from '../Dropzone/Dropzone.tsx'
-import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType.ts'
+import { insertFilesInDatabase } from '../../db/queries/insertFilesInDatabase'
+
+import { ChartWrapper } from '../ChartWrapper/ChartWrapper'
+import { Dropzone } from '../Dropzone/Dropzone'
+import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
+import { isZipArchive } from '../../utils/isZipArchive'
+import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 
 export const DropzoneWrapper = () => {
     const [filesReadyToBeRequested, setFilesReadyToBeRequested] =
         useState<boolean>(false)
 
+    const controlUploadedFiles = (files: FileList) => {
+        const allowedFiles = Array.from(files).filter(isAllowedFileContentType)
+
+        if (allowedFiles.length !== files.length) {
+            throw new Error(
+                'One or more files have an unsupported content type'
+            )
+        }
+    }
+
     const manageUploadedFiles = async (files: FileList) => {
         setFilesReadyToBeRequested(false)
         try {
-            const allowedFiles = Array.from(files).filter(
-                isAllowedFileContentType
-            )
+            controlUploadedFiles(files)
 
-            if (allowedFiles.length !== files.length) {
-                throw new Error(
-                    'One or more files have an unsupported content type'
+            if (files.length === 1 && isZipArchive(files[0])) {
+                // TODO: Move this in a separate component, maybe in Layout
+                Archive.init({
+                    workerUrl: LibArchiveWorker,
+                })
+                const archive = await Archive.open(files[0])
+                let result = await archive.extractFiles()
+                const filteredFiles: File[] = Object.keys(result)
+                    .filter((key) => !['__MACOSX'].includes(key))
+                    .map((key) => result[key])
+
+                await insertFilesInDatabase(
+                    convertArrayToFileList(filteredFiles)
                 )
+            } else {
+                await insertFilesInDatabase(files)
             }
-            await insertFilesInDatabase(files)
+
             setFilesReadyToBeRequested(true)
         } catch (error) {
             console.error('Error while processing files:', error)
