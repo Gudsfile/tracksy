@@ -1,7 +1,4 @@
 import { useState } from 'react'
-import { Archive } from 'libarchive.js'
-import LibArchiveWorker from 'libarchive.js/dist/worker-bundle.js?url'
-import 'libarchive.js/dist/libarchive.wasm?url'
 
 import { insertFilesInDatabase } from '../../db/queries/insertFilesInDatabase'
 
@@ -10,6 +7,7 @@ import { Dropzone } from '../Dropzone/Dropzone'
 import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
+import { openArchive } from '../../utils/openArchive'
 
 export const DropzoneWrapper = () => {
     const [filesReadyToBeRequested, setFilesReadyToBeRequested] =
@@ -32,10 +30,7 @@ export const DropzoneWrapper = () => {
 
             if (files.length === 1 && isZipArchive(files[0])) {
                 // TODO: Move this in a separate component, maybe in Layout
-                Archive.init({
-                    workerUrl: LibArchiveWorker,
-                })
-                const archive = await Archive.open(files[0])
+                const archive = await openArchive(files[0])
                 let filteredFiles: File[] = []
                 const extractedFiles: Record<
                     string,
