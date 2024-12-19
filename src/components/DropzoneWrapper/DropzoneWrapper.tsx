@@ -8,6 +8,7 @@ import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 import { openArchive } from '../../utils/openArchive'
+import { isSpotifyFilename } from '../../utils/isSpotifyFilename'
 
 export const DropzoneWrapper = () => {
     const [filesReadyToBeRequested, setFilesReadyToBeRequested] =
@@ -53,12 +54,17 @@ export const DropzoneWrapper = () => {
                     filteredFiles = Object.values(extractedFiles).filter(
                         (file): file is File =>
                             file instanceof File
-                                ? isAllowedFileContentType(file as File)
+                                ? isAllowedFileContentType(file) &&
+                                  isSpotifyFilename(file)
                                 : false
                     )
                 } else {
                     filteredFiles = Object.values(
                         extractedFiles[filteredFilesKeys[0]]
+                    ).filter(
+                        (file: File) =>
+                            isAllowedFileContentType(file) &&
+                            isSpotifyFilename(file)
                     )
                 }
 
