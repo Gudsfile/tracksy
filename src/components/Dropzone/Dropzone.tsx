@@ -2,12 +2,14 @@ type Props = {
     handleDrop: (event: React.DragEvent<HTMLDivElement>) => void
     handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+    contentTypeAccepted?: string
 }
 
 export const Dropzone = ({
     handleDrop,
     handleDragOver,
     handleFileUpload,
+    contentTypeAccepted = '.zip,application/json',
 }: Props) => {
     return (
         <div>
@@ -23,7 +25,7 @@ export const Dropzone = ({
                     id="fileInput"
                     aria-label="upload file"
                     onChange={handleFileUpload}
-                    accept=".zip,application/json"
+                    accept={contentTypeAccepted}
                 />
                 <label
                     htmlFor="fileInput"
