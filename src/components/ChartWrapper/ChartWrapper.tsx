@@ -3,7 +3,9 @@ import { navigate } from 'astro/virtual-modules/transitions-router.js'
 import * as Plot from '@observablehq/plot'
 
 import { queryDB } from '../../db/queries/queryDB'
+
 import { useChartsData } from './useChartsData'
+import { RetryButton } from '../RetryButton/RetryButton'
 
 function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
     return Plot.plot({
@@ -26,12 +28,17 @@ function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
 export function ChartWrapper() {
     const containerRef = useRef<HTMLDivElement>(null)
 
-    const { data, isLoading, error } = useChartsData({
+    const { data, isLoading, error, clearData } = useChartsData({
         onSuccess: () => console.debug('Data loaded successfully'),
         onFail: () => {
             navigate('/')
         },
     })
+
+    const retryUpload = () => {
+        clearData()
+        navigate('/')
+    }
 
     useEffect(() => {
         let element: ReturnType<typeof buildPlot> | undefined
@@ -50,8 +57,25 @@ export function ChartWrapper() {
     }
 
     if (error) {
-        return <div>Error loading data</div>
+        return (
+            <>
+                <div>Error loading data</div>
+                <RetryButton onClick={() => retryUpload()} />
+            </>
+        )
     }
 
-    return data && <div ref={containerRef} />
+    return (
+        data && (
+            <>
+                <div ref={containerRef} />
+                <RetryButton
+                    label="Upload other files"
+                    onClick={() => {
+                        retryUpload()
+                    }}
+                />
+            </>
+        )
+    )
 }
