@@ -1,6 +1,7 @@
-import { coverageConfigDefaults, ViteUserConfig } from 'vitest/config'
+import { getViteConfig } from 'astro/config'
+import { coverageConfigDefaults } from 'vitest/config'
 
-const config: ViteUserConfig = {
+const config = getViteConfig({
     test: {
         environment: 'jsdom',
         setupFiles: './vitest.setupFiles.ts',
@@ -17,6 +18,6 @@ const config: ViteUserConfig = {
         },
         restoreMocks: true,
     },
-}
+})
 
 export default config
