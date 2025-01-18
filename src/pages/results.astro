@@ -1,0 +1,13 @@
+---
+import { ChartWrapper } from '../components/ChartWrapper/ChartWrapper'
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Welcome to Astro.">
+    <div class="min-h-screen flex items-center justify-center bg-gray-50">
+        <div class="max-w-lg mx-auto">
+            <h1 class="text-xl font-bold text-center mb-4">Dropzone React</h1>
+            <ChartWrapper client:only="react" />
+        </div>
+    </div>
+</Layout>

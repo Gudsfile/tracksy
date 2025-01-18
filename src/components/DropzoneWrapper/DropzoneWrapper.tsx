@@ -1,19 +1,12 @@
-import { useState } from 'react'
+import { navigate } from 'astro:transitions/client'
 
-import { ChartWrapper } from '../ChartWrapper/ChartWrapper'
 import { Dropzone } from '../Dropzone/Dropzone'
 import { useFileUpload } from './useFileUpload'
 
 export const DropzoneWrapper = () => {
-    const [filesReadyToBeRequested, setFilesReadyToBeRequested] =
-        useState<boolean>(false)
-
     const { uploadFiles } = useFileUpload({
-        onSuccess: () => setFilesReadyToBeRequested(true),
-        onFail: () => {
-            console.error('Upload failed')
-            setFilesReadyToBeRequested(false)
-        },
+        onSuccess: () => navigate('/results'),
+        onFail: () => console.error('Upload failed'),
     })
 
     const handleFileUpload = async (
@@ -41,14 +34,11 @@ export const DropzoneWrapper = () => {
     }
 
     return (
-        <>
-            <Dropzone
-                handleDrop={handleDrop}
-                handleDragOver={handleDragOver}
-                handleFileUpload={handleFileUpload}
-                contentTypeAccepted=".zip,application/json"
-            />
-            {filesReadyToBeRequested && <ChartWrapper />}
-        </>
+        <Dropzone
+            handleDrop={handleDrop}
+            handleDragOver={handleDragOver}
+            handleFileUpload={handleFileUpload}
+            contentTypeAccepted=".zip,application/json"
+        />
     )
 }
