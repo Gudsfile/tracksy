@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react'
 import { it, vi } from 'vitest'
+
 import * as DB from '../../db/queries/queryDB'
 
 import { ChartWrapper } from './ChartWrapper'

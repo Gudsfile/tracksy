@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
-import { queryDB } from '../../db/queries/queryDB'
-import * as Plot from '@observablehq/plot'
-import { insertDataInDatabase } from '../../db/commands/insertDataInDatabase'
-import { retrieveJSON } from '../../db/storage/retriveJSON'
-import { SESSION_STORAGE_KEY } from '../../db/constants'
+import { useEffect, useRef } from 'react'
 import { navigate } from 'astro/virtual-modules/transitions-router.js'
+import * as Plot from '@observablehq/plot'
+
+import { queryDB } from '../../db/queries/queryDB'
+import { useChartsData } from './useChartsData'
 
 function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
     return Plot.plot({
@@ -25,38 +24,34 @@ function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
 }
 
 export function ChartWrapper() {
-    const [chartData, setChartData] = useState<
-        Awaited<ReturnType<typeof queryDB>> | undefined
-    >()
-
     const containerRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        const getChartData = async () => {
-            const datasets =
-                retrieveJSON<Record<string, unknown>[]>(SESSION_STORAGE_KEY)
-            if (datasets !== null) {
-                await insertDataInDatabase(datasets)
-                const result = await queryDB()
-                setChartData(result)
-            } else {
-                navigate('/')
-            }
-        }
-        getChartData()
-    }, [])
+    const { data, isLoading, error } = useChartsData({
+        onSuccess: () => console.debug('Data loaded successfully'),
+        onFail: () => {
+            navigate('/')
+        },
+    })
 
     useEffect(() => {
         let element: ReturnType<typeof buildPlot> | undefined
 
-        if (chartData !== undefined) {
-            element = buildPlot(chartData)
+        if (data !== undefined) {
+            element = buildPlot(data)
             containerRef.current?.append(element)
         }
         return () => {
             element?.remove()
         }
-    }, [chartData])
+    }, [data])
 
-    return chartData && <div ref={containerRef} />
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
+
+    if (error) {
+        return <div>Error loading data</div>
+    }
+
+    return data && <div ref={containerRef} />
 }
