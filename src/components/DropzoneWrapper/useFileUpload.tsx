@@ -1,9 +1,11 @@
-import { insertFilesInDatabase } from '../../db/queries/insertFilesInDatabase'
+import { insertFilesInDatabase } from '../../db/commands/insertFilesInDatabase'
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
+import { convertFilesToJSON } from '../../utils/convertFilesToJSON'
 import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
 import { isSpotifyFilename } from '../../utils/isSpotifyFilename'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { openArchive } from '../../utils/openArchive'
+import { storeJSON } from '../../utils/storeJSON'
 
 const HIDDEN_FILE_PREFIX = ['__MACOSX']
 
@@ -99,11 +101,14 @@ export function useFileUpload({
         try {
             controlUploadedFiles(files)
 
-            await insertFilesInDatabase(
+            const datasets = await convertFilesToJSON(
                 files.length === 1 && isZipArchive(files[0])
                     ? await manageZipArchive(files[0])
                     : files
             )
+
+            storeJSON('DATASET', datasets)
+            insertFilesInDatabase(datasets)
 
             onSuccess?.()
         } catch (error) {
