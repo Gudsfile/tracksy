@@ -5,7 +5,7 @@ import { convertFilesToJSON } from '../../utils/convertFilesToJSON'
 
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
 
-export async function insertFilesInDatabase(
+export async function insertDataInDatabase(
     datasets: Awaited<ReturnType<typeof convertFilesToJSON>>
 ) {
     const { conn } = await getDB()
