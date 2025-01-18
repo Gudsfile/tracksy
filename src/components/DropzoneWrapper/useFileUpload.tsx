@@ -1,11 +1,11 @@
-import { insertFilesInDatabase } from '../../db/commands/insertFilesInDatabase'
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 import { convertFilesToJSON } from '../../utils/convertFilesToJSON'
 import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
 import { isSpotifyFilename } from '../../utils/isSpotifyFilename'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { openArchive } from '../../utils/openArchive'
-import { storeJSON } from '../../utils/storeJSON'
+import { storeJSON } from '../../db/storage/storeJSON'
+import { SESSION_STORAGE_KEY } from '../../db/constants'
 
 const HIDDEN_FILE_PREFIX = ['__MACOSX']
 
@@ -107,8 +107,7 @@ export function useFileUpload({
                     : files
             )
 
-            storeJSON('DATASET', datasets)
-            insertFilesInDatabase(datasets)
+            storeJSON(SESSION_STORAGE_KEY, datasets)
 
             onSuccess?.()
         } catch (error) {
