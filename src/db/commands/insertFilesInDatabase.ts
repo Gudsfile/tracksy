@@ -1,5 +1,5 @@
 import { getDB } from '../getDB'
-import { TABLE } from './constants'
+import { TABLE } from '../constants'
 import { tableFromJSON } from 'apache-arrow'
 
 const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
@@ -14,8 +14,8 @@ export async function insertFilesInDatabase(files: FileList | undefined) {
             throw new Error('No data to process')
         }
 
-        await conn.query(DROP_TABLE_QUERY)
-        console.debug(`Table ${TABLE} dropped.`)
+    await conn.query(DROP_TABLE_QUERY)
+    console.debug(`Table ${TABLE} dropped.`)
 
         arrayOfFilesContents = (
             await Promise.all(

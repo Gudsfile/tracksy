@@ -1,5 +1,5 @@
 import { getDB } from '../getDB'
-import { TABLE } from './constants'
+import { TABLE } from '../constants'
 
 import * as arrow from 'apache-arrow'
 
