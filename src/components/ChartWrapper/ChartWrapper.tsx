@@ -6,6 +6,7 @@ import { queryDB } from '../../db/queries/queryDB'
 
 import { useChartsData } from './useChartsData'
 import { RetryButton } from '../RetryButton/RetryButton'
+import { Spinner } from '../Spinner/Spinner'
 
 function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
     return Plot.plot({
@@ -53,7 +54,11 @@ export function ChartWrapper() {
     }, [data])
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return (
+            <div className="flex justify-center items-center">
+                <Spinner />
+            </div>
+        )
     }
 
     if (error) {
