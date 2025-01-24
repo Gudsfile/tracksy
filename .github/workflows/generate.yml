@@ -1,0 +1,54 @@
+name: Generate or update datasets
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'synthetic_datasets/**/*.py'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    name: generate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.11"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install the project
+        run: uv sync
+
+      - name: Generate datasets
+        run: |
+          uv run generate 10
+          uv run generate 100
+          uv run generate 1000
+          uv run generate 500000
+
+      - name: Clone HF repo and move datasets into it
+        env:
+          GIT_LFS_SKIP_SMUDGE: 1
+        run: |
+          git clone --depth 1 https://${{ vars.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/datasets/tracksy-app/synthetic-datasets ../.tmp/synthetic-datasets
+          rsync -a datasets ../.tmp/synthetic-datasets/
+
+      - name: Commit datasets
+        run: |
+          cd ../.tmp/synthetic-datasets
+          git config user.name "${{ vars.GIT_AUTHOR_NAME }}"
+          git config user.email "${{ vars.GIT_AUTHOR_EMAIL }}"
+          git add -f datasets/
+          git commit -m "🍱 add or update generated datasets"
+          git push origin main

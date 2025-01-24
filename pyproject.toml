@@ -1,0 +1,27 @@
+[project]
+name = "synthetic_datasets"
+version = "0.1.0"
+description = "Tracksy app test datasets"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "faker>=33.1.0",
+    "pydantic>=2.10.3",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8.3",
+]
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+py-modules = ["synthetic_datasets"]
+
+[tool.ruff]
+line-length = 120
+
+[project.scripts]
+generate = "synthetic_datasets.hello:main"
