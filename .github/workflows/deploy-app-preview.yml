@@ -1,4 +1,4 @@
-name: Build App
+name: App preview
 
 on:
     pull_request:
@@ -11,7 +11,8 @@ permissions:
     pull-requests: write
 
 jobs:
-    build:
+    app:
+        name: Audit, build and deploy
         runs-on: ubuntu-latest
         defaults:
           run:
@@ -56,5 +57,6 @@ jobs:
                   repoToken: ${{ secrets.GITHUB_TOKEN }}
                   firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
                   projectId: tracksy-app
+                  entryPoint: ./app
               env:
                   FIREBASE_CLI_EXPERIMENTS: webframeworks
