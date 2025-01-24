@@ -1,0 +1,14 @@
+# Mock data
+lib/
+generated/
+
+node_modules/
+
+# Ignore dependency locks
+.yarn/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Firebase
+google-application-credentials.json

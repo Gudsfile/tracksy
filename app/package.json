@@ -1,0 +1,51 @@
+{
+  "name": "app",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "prettier --write .",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "format:check": "prettier --check .",
+    "lint": "eslint 'src/**/*.{astro,ts,tsx}' --fix",
+    "lint:check": "eslint 'src/**/*.{astro,ts,tsx}'",
+    "prepare": "cd .. && husky ./app/.husky"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/react": "^3.6.3",
+    "@astrojs/tailwind": "^5.1.2",
+    "@duckdb/duckdb-wasm": "^1.29.0",
+    "@observablehq/plot": "^0.6.16",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "apache-arrow": "^17.0.0",
+    "astro": "^4.16.17",
+    "libarchive.js": "^2.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@vitest/coverage-v8": "2.1.8",
+    "eslint": "^9.16.0",
+    "eslint-plugin-astro": "^1.3.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "vite-plugin-static-copy": "^2.2.0",
+    "vitest": "^2.1.8"
+  },
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+}
