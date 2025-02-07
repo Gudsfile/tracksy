@@ -39,7 +39,7 @@ jobs:
 
             - name: Deploy functions
               env:
-                  FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
+                  FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_FUNCTIONS }}
                   SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
                   SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
               run: |
