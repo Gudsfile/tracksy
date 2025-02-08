@@ -2,7 +2,7 @@ import sys
 import time
 from pathlib import Path
 
-from tqdm import tqdm
+from tqdm import trange
 
 from .factories.factory_config import FactoryConfig
 from .factories.spotify import generate_streamings, init_faker
@@ -11,6 +11,7 @@ from .writers.spotify import DEFAULT_EXTENSION, DEFAULT_FOLDER, DEFAULT_PREFIX, 
 
 def spotify(nb_streams):
     def generator(nb_streams):
+        print(nb_streams)
         yield generate_streamings(
             init_faker(),
             FactoryConfig(
@@ -31,9 +32,11 @@ def spotify(nb_streams):
     chunk_size = 20000
     minimum_nb_file = 4
     nb_file_to_write = max(int(nb_streams / chunk_size), minimum_nb_file)
+    minimum_chunk_size = 10
+    chunk_size = max(int(nb_streams / nb_file_to_write), minimum_chunk_size)
     print(f"Generating {nb_file_to_write} files to be zipped")
     write_zip(
-        [next(generator(int(nb_streams / nb_file_to_write))) for _ in tqdm(range(0, nb_file_to_write))],
+        [next(generator(chunk_size), minimum_chunk_size) for _ in trange(0, nb_file_to_write)],
         Path(f"datasets/{DEFAULT_FOLDER}/"),
     )
 
