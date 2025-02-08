@@ -28,4 +28,5 @@ export async function insertFilesInDatabase(files: FileList) {
         name: TABLE,
         create: true,
     })
+    console.debug(`Table ${TABLE} created.`)
 }
