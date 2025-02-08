@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import TracksyWrapper from '../components/TracksyWrapper'
 ---
 
 <Layout title="Tracksy">
@@ -10,6 +11,7 @@ import Layout from '../layouts/Layout.astro'
             <h1 class="text-xl font-bold text-center mb-4 dark:text-white">
                 Tracksy
             </h1>
+            <TracksyWrapper client:only="react" />
         </div>
     </div>
 </Layout>
