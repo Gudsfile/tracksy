@@ -4,5 +4,6 @@
         "jsx": "react-jsx",
         "jsxImportSource": "react",
         "verbatimModuleSyntax": false
-    }
+    },
+    "exclude": ["node_modules", "dist", "public", "**/*.test.tsx"]
 }
