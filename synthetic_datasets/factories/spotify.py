@@ -103,7 +103,7 @@ def random_tracks(fake: Faker, nb_tracks: int, albums) -> list[Track]:
 
 def random_streaming(fake: Faker, track: Track, user: User) -> Streaming:
     return Streaming(
-        ts=fake.date_this_year(after_today=False),
+        ts=fake.date_time_between(start_date="-3y", end_date="now").isoformat(),
         username=user.name,
         platform=random.choice(user.platforms),
         ms_played=random.randint(0, 720000),
