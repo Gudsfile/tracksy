@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "faker>=33.1.0",
     "pydantic>=2.10.3",
+    "tqdm>=4.67.1",
 ]
 
 [dependency-groups]
