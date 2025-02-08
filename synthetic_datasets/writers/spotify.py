@@ -1,4 +1,5 @@
 import json
+from os.path import basename
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -57,5 +58,5 @@ def write_zip(streamings: list[list[Streaming]], folder: Path):
         with ZipFile(zip_file["path"], "w") as myzip:
             for streaming_file in zip_file["streaming_files"]:
                 write(streaming_file["streamings"], streaming_file["path"])
-                myzip.write(streaming_file["path"])
+                myzip.write(streaming_file["path"], basename(streaming_file["path"]))
                 streaming_file["path"].unlink()
