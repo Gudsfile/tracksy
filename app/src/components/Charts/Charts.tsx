@@ -1,7 +1,7 @@
-import StreamPerMonth from './StreamPerMonth'
-import StreamPerHour from './StreamPerHour'
+import { StreamPerMonth } from './StreamPerMonth'
+import { StreamPerHour } from './StreamPerHour'
 
-export default function Charts() {
+export function Charts() {
     return (
         <>
             <StreamPerMonth />

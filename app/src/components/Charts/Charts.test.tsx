@@ -1,13 +1,15 @@
 import { describe, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import Charts from './Charts'
+import { Charts } from './Charts'
 
 vi.mock('./StreamPerMonth', () => ({
-    default: () => <div data-testid="stream-per-month">StreamPerMonth</div>,
+    StreamPerMonth: () => (
+        <div data-testid="stream-per-month">StreamPerMonth</div>
+    ),
 }))
 
 vi.mock('./StreamPerHour', () => ({
-    default: () => <div data-testid="stream-per-hour">StreamPerHour</div>,
+    StreamPerHour: () => <div data-testid="stream-per-hour">StreamPerHour</div>,
 }))
 
 describe('Charts Component', () => {

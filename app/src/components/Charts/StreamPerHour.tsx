@@ -34,7 +34,7 @@ function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
     })
 }
 
-export default function StreamPerHour() {
+export function StreamPerHour() {
     const [data, setData] = useState<
         Awaited<ReturnType<typeof queryDB>> | undefined
     >()

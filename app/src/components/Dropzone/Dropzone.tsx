@@ -5,7 +5,7 @@ type Props = {
     contentTypeAccepted?: string
 }
 
-export default function Dropzone({
+export function Dropzone({
     handleDrop,
     handleDragOver,
     handleFileUpload,
