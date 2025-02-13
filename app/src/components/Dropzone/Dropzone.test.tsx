@@ -1,7 +1,7 @@
 import { render, fireEvent, screen } from '@testing-library/react'
 import { it, vi, expect } from 'vitest'
 
-import Dropzone from './Dropzone'
+import { Dropzone } from './Dropzone'
 
 it('should render', () => {
     render(

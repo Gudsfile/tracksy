@@ -1,4 +1,4 @@
-import Dropzone from './Dropzone'
+import { Dropzone } from './Dropzone'
 import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { openArchive } from '../../utils/openArchive'
@@ -8,7 +8,7 @@ interface Props {
     setFiles: (files: FileList | null) => void
 }
 
-export default function DropzoneWrapper({ setFiles }: Props) {
+export function DropzoneWrapper({ setFiles }: Props) {
     const controlUploadedFiles = (files: FileList) => {
         const allowedFiles = Array.from(files).filter(isAllowedFileContentType)
 

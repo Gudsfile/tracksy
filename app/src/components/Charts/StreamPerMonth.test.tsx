@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import StreamPerMonth from './StreamPerMonth'
+import { StreamPerMonth } from './StreamPerMonth'
 
 vi.mock('../../db/queries/queryDB', () => ({
     queryDB: () => () => vi.fn(),

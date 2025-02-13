@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { getDB } from '../db/getDB'
-import DropzoneWrapper from './Dropzone/DropzoneWrapper'
+import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
 import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
-import Charts from './Charts/Charts'
+import { Charts } from './Charts/Charts'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 
-export default function TracksyWrapper() {
+export function TracksyWrapper() {
     const [db, setDb] = useState<DuckdbAppType | null>(null)
     const [isDataDropped, setIsDataDropped] = useState(false)
     const [isDataReady, setIsDataReady] = useState(false)

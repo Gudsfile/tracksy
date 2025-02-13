@@ -30,7 +30,7 @@ function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
     })
 }
 
-export default function StreamPerMonth() {
+export function StreamPerMonth() {
     const [data, setData] = useState<
         Awaited<ReturnType<typeof queryDB>> | undefined
     >()
