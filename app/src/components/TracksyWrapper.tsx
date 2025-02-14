@@ -21,18 +21,18 @@ export function TracksyWrapper() {
 
     async function handleFileUpload(files: FileList | null) {
         if (!files) return
-        console.log('New dropped files:', files)
+        console.debug('New dropped files:', files)
         setIsDataReady(false)
         setIsDataDropped(true)
         await insertFilesInDatabase(files)
         setIsDataReady(true)
-        console.log('New uploaded files:', files)
+        console.debug('New uploaded files:', files)
     }
 
     return (
         <>
             {db && !(isDataDropped && !isDataReady) && (
-                <DropzoneWrapper setFiles={handleFileUpload} />
+                <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
             )}
             {db && isDataDropped && !isDataReady && <Spinner />}
             {db && isDataReady && <Charts />}
