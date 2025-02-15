@@ -1,123 +1,98 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"syscall/js"
 )
 
-// Artist represents the data
+func MyGoFunc() js.Func {
+	return js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		// Get the URL as argument
+		// args[0] is a js.Value, so we need to get a string out of it
+		requestUrl := args[0].String()
 
-type Artist struct {
-	ID         string   `json:"id"`
-	Name       string   `json:"name"`
-	Popularity int      `json:"popularity"`
-	Genres     []string `json:"genres"`
-	Followers  struct {
-		Total int `json:"total"`
-	} `json:"followers"`
-	Images []struct {
-		URL    string `json:"url"`
-		Height int    `json:"height"`
-		Width  int    `json:"width"`
-	} `json:"images"`
+		// Handler for the Promise
+		// We need to return a Promise because HTTP requests are blocking in Go
+		handler := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+			resolve := args[0]
+			reject := args[1]
+
+			// Run this code asynchronously
+			go func() {
+				// Make the HTTP request
+				req, err := http.NewRequest("GET", requestUrl, nil)
+
+				if err != nil {
+					// Handle errors: reject the Promise if we have an error
+					errorConstructor := js.Global().Get("Error")
+					errorObject := errorConstructor.New(err.Error())
+					reject.Invoke(errorObject)
+					return
+				}
+
+				// Add CORS headers
+				req.Header.Set("Access-Control-Allow-Origin", "*")
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+				req.Header.Set("Access-Control-Allow-Headers", "Content-Type")
+
+				// Make the HTTP request
+				res, err := http.DefaultClient.Do(req)
+				if err != nil {
+					errorConstructor := js.Global().Get("Error")
+					errorObject := errorConstructor.New(err.Error())
+					reject.Invoke(errorObject)
+					return
+				}
+
+				defer res.Body.Close()
+
+				// Read the response body
+				data, err := io.ReadAll(res.Body)
+				if err != nil {
+					// Handle errors here too
+					errorConstructor := js.Global().Get("Error")
+					errorObject := errorConstructor.New(err.Error())
+					reject.Invoke(errorObject)
+					return
+				}
+
+				// "data" is a byte slice, so we need to convert it to a JS Uint8Array object
+				arrayConstructor := js.Global().Get("Uint8Array")
+				dataJS := arrayConstructor.New(len(data))
+				js.CopyBytesToJS(dataJS, data)
+
+				// Create a Response object and pass the data
+				responseConstructor := js.Global().Get("Response")
+				response := responseConstructor.New(dataJS)
+
+				// Resolve the Promise
+				resolve.Invoke(response)
+			}()
+
+			// The handler of a Promise doesn't return any value
+			return nil
+		})
+
+		// Create and return the Promise object
+		promiseConstructor := js.Global().Get("Promise")
+		return promiseConstructor.New(handler)
+	})
 }
 
-// convertArtistToJS convertit la structure Artist en objet JavaScript
-func convertArtistToJS(artist *Artist) map[string]interface{} {
-	images := make([]interface{}, len(artist.Images))
-	for i, img := range artist.Images {
-		images[i] = map[string]interface{}{
-			"url":    img.URL,
-			"height": img.Height,
-			"width":  img.Width,
-		}
-	}
-
-	return map[string]interface{}{
-		"id":         artist.ID,
-		"name":       artist.Name,
-		"popularity": artist.Popularity,
-		"genres":     artist.Genres,
-		"followers":  artist.Followers.Total,
-		"images":     images,
-	}
-}
-
-// getArtist récupère les informations d'un artiste depuis l'API Spotify
-func getArtist(this js.Value, args []js.Value) interface{} {
-	if len(args) != 2 {
-		return map[string]interface{}{
-			"error": "Requiert 2 arguments: token et artistId",
-		}
-	}
-
-	token := args[0].String()
-	artistID := args[1].String()
-
-	// Préparer l'URL
-	url := fmt.Sprintf("https://api.spotify.com/v1/artists/%s", artistID)
-
-	// Créer l'objet Headers via l'API JavaScript
-	headers := js.Global().Get("Object").New()
-	headers.Set("Authorization", "Bearer "+token)
-	headers.Set("Content-Type", "application/json")
-
-	// Créer l'objet options pour fetch
-	options := js.Global().Get("Object").New()
-	options.Set("method", "GET")
-	options.Set("headers", headers)
-
-	// Appeler fetch
-	promiseResp := js.Global().Get("fetch").Invoke(url, options)
-
-	// Attendre la réponse
-	responseReady := make(chan js.Value)
-	promiseResp.Call("then", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		responseReady <- args[0]
-		return nil
-	}))
-	response := <-responseReady
-
-	// Vérifier le status
-	if response.Get("status").Int() != http.StatusOK {
-		return map[string]interface{}{
-			"error": fmt.Sprintf("Erreur API Spotify: %d", response.Get("status").Int()),
-		}
-	}
-
-	// Obtenir le JSON
-	jsonPromise := response.Call("json")
-	jsonReady := make(chan js.Value)
-	jsonPromise.Call("then", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		jsonReady <- args[0]
-		return nil
-	}))
-	jsonData := <-jsonReady
-
-	// Convertir le JSON en structure Artist
-	var artist Artist
-	if err := json.Unmarshal([]byte(jsonData.String()), &artist); err != nil {
-		return map[string]interface{}{
-			"error": fmt.Sprintf("Erreur décodage: %v", err),
-		}
-	}
-
-	// Convertir et retourner le résultat
-	return convertArtistToJS(&artist)
-}
-
-func testHelloWorld(this js.Value, args []js.Value) {
+func testHelloWorld(this js.Value, args []js.Value) interface{} {
 	fmt.Println("Hello from WebAssembly written with Go mothafucka!")
+	return nil
 }
 
 func main() {
 	c := make(chan struct{}, 0)
 
 	// Enregistrer la fonction
-	// js.Global().Set("testHelloWorld", js.FuncOf(testHelloWorld))
-	js.Global().Set("getSpotifyArtist", js.FuncOf(getArtist))
+	js.Global().Set("testHelloWorld", js.FuncOf(testHelloWorld))
+	js.Global().Set("MyGoFunc", MyGoFunc())
 
 	<-c
 }

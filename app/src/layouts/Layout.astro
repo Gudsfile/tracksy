@@ -26,13 +26,15 @@ const { title } = Astro.props
             ).then(async (result) => {
                 go.run(result.instance)
 
-                // Une fois le WASM chargé, on peut charger l'artiste
-                // Exemple avec Daft Punk
-                const token =
-                    'BQBWI42gHsN9zzyAXKcqqsTo0XCAR-bei4-ppYfzVLVTPRM1DISuGt2UnQ5XSVFuI8jVq1QE4Qp40wNEq_ZUiLTAx4OTRmPxeOHnrdXqHIUHtEi5-MGS1WXM6R4EBImX1KzNVUJ4tV0'
-                const artistId = '4tZwfgrHOc3mvqYlEYSvVi'
-                const tt = await window.getSpotifyArtist(token, artistId)
-                console.log(tt)
+                try {
+                    const response = await window.MyGoFunc(
+                        'https://cat-fact.herokuapp.com/facts'
+                    )
+                    const message = await response.json()
+                    console.log(message)
+                } catch (err) {
+                    console.error('Caught exception', err)
+                }
             })
         </script>
     </head>
