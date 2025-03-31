@@ -16,7 +16,7 @@ def spotify(nb_streams):
             init_faker(),
             FactoryConfig(
                 nb_streams=nb_streams,
-                nb_users=2,
+                nb_users=1,
                 nb_tracks=int(nb_streams * 0.5),
                 nb_albums=int(nb_streams * 0.3),
                 nb_artists=int(nb_streams * 0.2),
