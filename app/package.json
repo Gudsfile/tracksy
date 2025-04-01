@@ -26,6 +26,7 @@
     "@types/react-dom": "^18.3.1",
     "apache-arrow": "^17.0.0",
     "astro": "^4.16.17",
+    "d3": "^7.9.0",
     "eslint-plugin-import": "^2.31.0",
     "libarchive.js": "^2.0.2",
     "react": "^18.3.1",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.1.0",
+    "@types/d3": "^7.4.3",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "@vitest/coverage-v8": "2.1.8",
