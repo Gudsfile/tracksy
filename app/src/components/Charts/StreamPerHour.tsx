@@ -7,12 +7,27 @@ import type { Table, Int, Utf8 } from 'apache-arrow'
 
 const query = `
 SELECT
-  count(*)::int as count_stream,
-  hour(ts::datetime)::int as hour,
-  username
-FROM ${TABLE}
-group by hour(ts::datetime), username
-order by hour
+    COALESCE(count_stream, 0)::INT AS count_stream,
+    hour::INT AS hour,
+    username
+FROM (
+    SELECT
+        UNNEST(RANGE(24)) AS hour,
+        username
+    FROM (
+        SELECT DISTINCT username
+        FROM ${TABLE}
+    )
+)
+LEFT JOIN (
+    SELECT
+        COUNT(*) AS count_stream,
+        HOUR(ts::DATETIME) AS hour,
+        username
+    FROM ${TABLE}
+    GROUP BY HOUR(ts::DATETIME), username
+) USING(hour, username)
+ORDER BY hour
 `
 
 type QueryResult = {
