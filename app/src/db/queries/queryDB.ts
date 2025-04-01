@@ -1,16 +1,11 @@
 import { getDB } from '../getDB'
 
-import * as arrow from 'apache-arrow'
+import type { DataType, Table } from 'apache-arrow'
 
-export type QueryResult = {
-    ms_played: arrow.Float
-    ts: arrow.Date_
-    username: arrow.Utf8
-}
-
-export async function queryDB(query: string) {
+export async function queryDB<T extends { [key: string]: DataType }>(
+    query: string
+): Promise<Table<T>> {
     const { conn } = await getDB()
 
-    const results = await conn.query<QueryResult>(query)
-    return results
+    return conn.query<T>(query)
 }
