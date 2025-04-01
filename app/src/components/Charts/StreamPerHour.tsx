@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { queryDB } from '../../db/queries/queryDB'
 import { TABLE } from '../../db/queries/constants'
 import * as d3 from 'd3'
-import { Int } from 'apache-arrow'
+import type { Table, Int, Utf8 } from 'apache-arrow'
 
 const query = `
 SELECT
@@ -15,7 +15,13 @@ group by hour(ts::datetime), username
 order by hour
 `
 
-function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
+type QueryResult = {
+    ms_played: Int
+    ts: Int
+    username: Utf8
+}
+
+function buildPlot(data: Table<QueryResult>) {
     const longitude = d3
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
         .padding(0.5)
@@ -99,15 +105,13 @@ function buildPlot(data: Awaited<ReturnType<typeof queryDB>>) {
 }
 
 export function StreamPerHour() {
-    const [data, setData] = useState<
-        Awaited<ReturnType<typeof queryDB>> | undefined
-    >()
+    const [data, setData] = useState<Table<QueryResult> | undefined>()
 
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const getData = async () => {
-            const result = await queryDB(query)
+            const result = await queryDB<QueryResult>(query)
             setData(result)
         }
         getData()
