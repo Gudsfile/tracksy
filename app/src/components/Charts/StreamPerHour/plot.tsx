@@ -1,42 +1,9 @@
 import * as Plot from '@observablehq/plot'
-import { useState, useEffect, useRef } from 'react'
-import { queryDB } from '../../../db/queries/queryDB'
-import { TABLE } from '../../../db/queries/constants'
 import * as d3 from 'd3'
-import type { Table, Int, Utf8 } from 'apache-arrow'
+import type { Table } from 'apache-arrow'
+import type { QueryResult } from './query'
 
-const query = `
-SELECT
-    COALESCE(count_stream, 0)::INT AS count_stream,
-    hour::INT AS hour,
-    username
-FROM (
-    SELECT
-        UNNEST(RANGE(24)) AS hour,
-        username
-    FROM (
-        SELECT DISTINCT username
-        FROM ${TABLE}
-    )
-)
-LEFT JOIN (
-    SELECT
-        COUNT(*) AS count_stream,
-        HOUR(ts::DATETIME) AS hour,
-        username
-    FROM ${TABLE}
-    GROUP BY HOUR(ts::DATETIME), username
-) USING(hour, username)
-ORDER BY hour
-`
-
-type QueryResult = {
-    ms_played: Int
-    ts: Int
-    username: Utf8
-}
-
-function buildPlot(data: Table<QueryResult>) {
+export function buildPlot(data: Table<QueryResult>) {
     const longitude = d3
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
         .padding(0.5)
@@ -117,32 +84,4 @@ function buildPlot(data: Table<QueryResult>) {
             ),
         ],
     })
-}
-
-export function StreamPerHour() {
-    const [data, setData] = useState<Table<QueryResult> | undefined>()
-
-    const containerRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const getData = async () => {
-            const result = await queryDB<QueryResult>(query)
-            setData(result)
-        }
-        getData()
-    }, [])
-
-    useEffect(() => {
-        let element: ReturnType<typeof buildPlot> | undefined
-
-        if (data !== undefined) {
-            element = buildPlot(data)
-            containerRef.current?.append(element)
-        }
-        return () => {
-            element?.remove()
-        }
-    }, [data])
-
-    return data && <div ref={containerRef} />
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { StreamPerHour } from './StreamPerHour'
+import { StreamPerHour } from '.'
 import React from 'react'
 
 const queryResult = [
