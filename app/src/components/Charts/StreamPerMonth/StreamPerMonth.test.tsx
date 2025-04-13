@@ -3,8 +3,13 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { StreamPerMonth } from '.'
 import React from 'react'
 
-vi.mock('../../db/queries/queryDB', () => ({
+vi.mock('../../../db/queries/queryDB', () => ({
     queryDB: () => () => vi.fn(),
+}))
+
+vi.mock('../../../db/getDB', () => ({
+    getDB: vi.fn(() => Promise.resolve({})),
+    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
 }))
 
 describe('StreamPerMonth Component', () => {

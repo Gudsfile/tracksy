@@ -6,10 +6,20 @@ import { Charts } from './Charts/Charts'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 
-export function TracksyWrapper() {
-    const [db, setDb] = useState<DuckdbAppType | null>(null)
-    const [isDataDropped, setIsDataDropped] = useState(false)
-    const [isDataReady, setIsDataReady] = useState(false)
+interface TracksyWrapperProps {
+    initialDb?: DuckdbAppType | null
+    initialIsDataDropped?: boolean
+    initialIsDataReady?: boolean
+}
+
+export function TracksyWrapper({
+    initialDb = null,
+    initialIsDataDropped = false,
+    initialIsDataReady = false,
+}: TracksyWrapperProps) {
+    const [db, setDb] = useState<DuckdbAppType | null>(initialDb)
+    const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
+    const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
 
     useEffect(() => {
         const initDB = async () => {

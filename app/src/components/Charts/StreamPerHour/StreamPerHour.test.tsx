@@ -16,8 +16,13 @@ const queryResult = [
     { username: 'bob', count_stream: 20, hour: 8 },
 ]
 
-vi.mock('../../db/queries/queryDB', () => ({
+vi.mock('../../../db/queries/queryDB', () => ({
     queryDB: () => () => queryResult,
+}))
+
+vi.mock('../../../db/getDB', () => ({
+    getDB: vi.fn(() => Promise.resolve({})),
+    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
 }))
 
 describe('StreamPerHour Component', () => {

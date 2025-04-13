@@ -3,7 +3,10 @@ import * as d3 from 'd3'
 import type { Table } from 'apache-arrow'
 import type { QueryResult } from './query'
 
-export function buildPlot(data: Table<QueryResult>) {
+export function buildPlot(
+    data?: Table<QueryResult>
+): ReturnType<typeof Plot.plot> | undefined {
+    if (!data) return undefined
     const longitude = d3
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
         .padding(0.5)
