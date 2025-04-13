@@ -1,7 +1,7 @@
 import * as Plot from '@observablehq/plot'
 import { useState, useEffect, useRef } from 'react'
-import { queryDB } from '../../db/queries/queryDB'
-import { TABLE } from '../../db/queries/constants'
+import { queryDB } from '../../../db/queries/queryDB'
+import { TABLE } from '../../../db/queries/constants'
 import type { Table, Float, Date_, Utf8 } from 'apache-arrow'
 
 const query = `
