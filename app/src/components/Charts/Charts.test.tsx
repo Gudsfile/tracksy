@@ -13,11 +13,18 @@ vi.mock('./StreamPerHour', () => ({
     StreamPerHour: () => <div data-testid="stream-per-hour">StreamPerHour</div>,
 }))
 
+vi.mock('./SummaryPerYear', () => ({
+    SummaryPerYear: () => (
+        <div data-testid="summary-per-year">SummaryPerYear</div>
+    ),
+}))
+
 describe('Charts Component', () => {
-    it('renders StreamPerMonth and StreamPerHour', () => {
+    it('renders all Charts', () => {
         render(<Charts />)
 
         screen.getByTestId('stream-per-month')
         screen.getByTestId('stream-per-hour')
+        screen.getByTestId('summary-per-year')
     })
 })
