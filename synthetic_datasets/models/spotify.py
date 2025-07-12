@@ -7,7 +7,6 @@ DEFAULT_TRACK_URI_SUFFIX = "spotify:track:"
 
 
 class User(BaseModel):
-    name: str
     platforms: list[str]
 
 
@@ -28,7 +27,6 @@ class Track(BaseModel):
 
 class Streaming(BaseModel):
     ts: PastDatetime  # should be ISO8601
-    username: str
     platform: str
     ms_played: int
     conn_country: str = Field(pattern="[A-Z]{2}")

@@ -68,16 +68,6 @@ def random_platforms(fake: Faker, nb_platforms: int) -> list[str]:
     ]
 
 
-def random_users(fake: Faker, nb_users: int, platforms: list[str], ratio_platform_by_user: int):
-    return [
-        User(
-            name=fake.user_name(),
-            platforms=random.choices(platforms, k=random.randint(1, ratio_platform_by_user)),
-        )
-        for _ in range(nb_users)
-    ]
-
-
 def random_artists(fake: Faker, nb_artists: int) -> list[Artist]:
     return [Artist(name=fake.name()) for _ in range(nb_artists)]
 
@@ -104,7 +94,6 @@ def random_tracks(fake: Faker, nb_tracks: int, albums) -> list[Track]:
 def random_streaming(fake: Faker, track: Track, user: User) -> Streaming:
     return Streaming(
         ts=fake.date_time_between(start_date="-3y", end_date="now").isoformat(),
-        username=user.name,
         platform=random.choice(user.platforms),
         ms_played=random.randint(0, 720000),
         conn_country=fake.country_code(),
@@ -127,14 +116,13 @@ def random_streaming(fake: Faker, track: Track, user: User) -> Streaming:
     )
 
 
-def random_streamings(fake: Faker, nb_streams: int, users: list[User], tracks: list[Track]) -> list[Streaming]:
-    return [random_streaming(fake, random.choice(tracks), random.choice(users)) for _ in range(0, nb_streams)]
+def random_streamings(fake: Faker, nb_streams: int, user: User, tracks: list[Track]) -> list[Streaming]:
+    return [random_streaming(fake, random.choice(tracks), user) for _ in range(0, nb_streams)]
 
 
 def generate_streamings(fake: Faker, config: FactoryConfig) -> list[Streaming]:
-    platforms = random_platforms(fake, config.nb_platforms)
-    users = random_users(fake, config.nb_users, platforms, config.ratio_platform_by_user)
+    user = User(platforms=random_platforms(fake, config.nb_platforms))
     artists = random_artists(fake, config.nb_artists)
     albums = random_albums(fake, config.nb_albums, artists)
     tracks = random_tracks(fake, config.nb_tracks, albums)
-    return random_streamings(fake, config.nb_streams, users, tracks)
+    return random_streamings(fake, config.nb_streams, user, tracks)
