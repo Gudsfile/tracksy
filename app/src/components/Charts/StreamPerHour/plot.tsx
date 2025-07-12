@@ -23,7 +23,6 @@ export function buildPlot(
             rotate: [0, -90],
             domain: d3.geoCircle().center([0, 90]).radius(0.625)(),
         },
-        color: { legend: true },
         marks: [
             // grey discs
             Plot.geo([0.5, 0.4, 0.3, 0.2, 0.1], {
@@ -58,8 +57,8 @@ export function buildPlot(
                 y1: ({ count_stream }) => 90 - latitude(count_stream),
                 x2: 0,
                 y2: 90,
-                fill: 'username',
-                stroke: 'username',
+                fill: true,
+                stroke: true,
                 curve: 'cardinal-closed',
                 fillOpacity: 0.3,
             }),
@@ -67,7 +66,7 @@ export function buildPlot(
             Plot.dot(data, {
                 x: ({ hour }) => longitude(hour),
                 y: ({ count_stream }) => 90 - latitude(count_stream),
-                fill: 'username',
+                fill: true,
                 stroke: 'white',
                 className: 'stream-per-hour-points',
             }),
