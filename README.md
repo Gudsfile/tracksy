@@ -23,7 +23,7 @@ We don't want to help you understand your data without knowing your data.
 For developers, take a look at [`app/README.md`](app/README.md) for more details on development.
 
 `functions/` is the backend part for enriching your data from the provider's API. Although **the application doesn't yet use this part**, it is present because development is taking place in parallel. This part is being reworked for a more privacy-friendly solution.
-For developers, take a look at [`functions/README.md`](functions/README.md) for more details on development.
+For developers, take a look at [`functions/README.md` (wip)](functions/README.md) for more details on development.
 
 ## Usage
 
@@ -45,7 +45,7 @@ Or use your own Spotify data:
 
 ### 🚀 Upload your data
 
-Go to [tracksy] (https://tracksy-app.web.app) and upload your file.
+Go to [tracksy](https://tracksy-app.web.app) and upload your file.
 
 Or run the application locally with:
 ```shell
