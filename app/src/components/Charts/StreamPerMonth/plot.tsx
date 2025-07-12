@@ -9,14 +9,17 @@ export function buildPlot(
     return Plot.plot({
         x: { type: 'utc' },
         y: { grid: true },
-        color: { legend: true, type: 'categorical' },
         marks: [
             Plot.ruleY([0]),
             Plot.rectY(
                 data,
-                Plot.binX<{ y: string; fill: string; tip: boolean }>(
+                Plot.binX<{
+                    y: string
+                    fill: Plot.ChannelValueSpec
+                    tip: boolean
+                }>(
                     { y: 'sum' },
-                    { x: 'ts', y: 'ms_played', fill: 'username', tip: true }
+                    { x: 'ts', y: 'ms_played', fill: true, tip: true }
                 )
             ),
         ],
