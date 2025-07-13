@@ -1,4 +1,4 @@
-name: Generate or update datasets
+name: Deploy datasets
 
 on:
   pull_request:
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   generate:
-    name: generate
+    name: Generate
     runs-on: ubuntu-latest
     defaults:
       run:
