@@ -1,4 +1,4 @@
-name: Build
+name: Audit datasets generator
 
 on:
   push:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    name: build
+    name: Audit
     runs-on: ubuntu-latest
     defaults:
       run:
