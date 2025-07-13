@@ -3,12 +3,12 @@ name: Build
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-        - ".github/workflows/generate.yml"
   pull_request:
     branches: ["main"]
-    paths-ignore:
-        - ".github/workflows/generate.yml"
+    paths:
+      - "synthetic-datasets/synthetic_datasets/**/*.py"
+      - "synthetic-datasets/pyproject.toml"
+      - "synthetic-datasets/uv.lock"
 
 permissions:
   contents: read
@@ -17,6 +17,9 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./synthetic-datasets
 
     strategy:
       matrix:

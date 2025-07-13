@@ -3,7 +3,7 @@ name = "synthetic_datasets"
 version = "0.1.0"
 description = "Tracksy app test datasets"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "faker>=33.1.0",
     "pydantic>=2.10.3",
