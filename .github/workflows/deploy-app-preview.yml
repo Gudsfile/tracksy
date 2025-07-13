@@ -2,10 +2,9 @@ name: App preview
 
 on:
     pull_request:
-        branches:
-            - main
         paths:
           - "app/**"
+          - ".github/workflows/deploy-app-preview.yml"
 
 permissions:
     checks: write

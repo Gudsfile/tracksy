@@ -2,10 +2,9 @@ name: Test functions
 
 on:
     pull_request:
-        branches:
-            - main
         paths:
           - "functions/**"
+          - ".github/workflows/test-functions.yml"
 
 jobs:
     app:
