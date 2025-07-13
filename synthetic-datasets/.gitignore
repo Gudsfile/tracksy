@@ -1,0 +1,12 @@
+# virtualenv
+.venv/
+
+# build
+*.egg-info
+
+# caches
+__pycache__/
+.ruff_cache/
+
+# generated
+datasets/
