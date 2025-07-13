@@ -1,6 +1,9 @@
 name: Generate or update datasets
 
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/generate-synthetic-datasets.yml"
   push:
     branches: ["main"]
     paths:
