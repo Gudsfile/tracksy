@@ -12,6 +12,8 @@ jobs:
         defaults:
           run:
             working-directory: ./app
+        env:
+          PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
 
         steps:
             - name: Checkout code
@@ -39,6 +41,7 @@ jobs:
 
             - name: Build project
               run: pnpm run build
+
 
             - name: Deploy app
               uses: FirebaseExtended/action-hosting-deploy@v0
