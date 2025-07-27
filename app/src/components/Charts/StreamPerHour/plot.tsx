@@ -3,15 +3,20 @@ import * as d3 from 'd3'
 import type { Table } from 'apache-arrow'
 import type { QueryResult } from './query'
 
-export function buildPlot(
-    data?: Table<QueryResult>
+export function buildPlotWrapper(maxValue: number) {
+    return (data: Table<QueryResult> | undefined) => buildPlot(data, maxValue)
+}
+
+function buildPlot(
+    data?: Table<QueryResult>,
+    maxValue?: number
 ): ReturnType<typeof Plot.plot> | undefined {
     if (!data) return undefined
     const longitude = d3
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
         .padding(0.5)
         .align(1)
-    const maxCountStream = d3.max(data, (d) => d.count_stream)
+    const maxCountStream = maxValue || d3.max(data, (d) => d.count_stream)
     const latitude = d3
         .scaleLinear()
         .domain([maxCountStream, 0])
