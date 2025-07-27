@@ -33,10 +33,11 @@ func MyGoFunc() js.Func {
 				}
 
 				// Add CORS headers
-				req.Header.Set("Access-Control-Allow-Origin", "*")
+				// req.Header.Set("Access-Control-Allow-Origin", "*")
 				req.Header.Set("Content-Type", "application/json")
-				req.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-				req.Header.Set("Access-Control-Allow-Headers", "Content-Type")
+				// req.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+				// req.Header.Set("Access-Control-Allow-Headers", "Content-Type")
+				req.Header.Set("Authorization", "Bearer BQCiM46VGfoeOpRQUDsVz9lqLhzdybmIMcU45S1f3cKi0v8sW9LJusuXd-9DvdtMYv1amRqKplC2yteqGX_tIBDjTo2Hh_PkKxBND1PwWr-93UWmcGajHaGEnw5g4FXSRE1q5nrIm48")
 
 				// Make the HTTP request
 				res, err := http.DefaultClient.Do(req)

@@ -18,7 +18,7 @@ const { title } = Astro.props
 
         <script src="/wasm_exec.js" "is:inline"></script>
         <script>
-            // Initialiser le WASM
+            // WASM Initialization
             const go = new Go()
             WebAssembly.instantiateStreaming(
                 fetch('/main.wasm'),
@@ -28,7 +28,7 @@ const { title } = Astro.props
 
                 try {
                     const response = await window.MyGoFunc(
-                        'https://cat-fact.herokuapp.com/facts'
+                        'https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb'
                     )
                     const message = await response.json()
                     console.log(message)
