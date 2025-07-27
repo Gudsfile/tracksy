@@ -18,6 +18,8 @@ jobs:
         defaults:
           run:
             working-directory: ./app
+        env:
+          PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
 
         steps:
             - name: Checkout code
