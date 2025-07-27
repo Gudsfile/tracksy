@@ -1,7 +1,17 @@
-import { type QueryResult, query } from './query'
-import { buildPlot } from './plot'
+import { type QueryResult, queryByYear } from './query'
+import { buildPlotWrapper } from './plot'
 import { Common } from '../Common'
 
-export function StreamPerHour() {
-    return <Common<QueryResult> query={query} buildPlot={buildPlot} />
+interface StreamPerHourProps {
+    year: number
+    maxValue: number
+}
+
+export function StreamPerHour({ year, maxValue }: StreamPerHourProps) {
+    return (
+        <Common<QueryResult>
+            query={queryByYear(year)}
+            buildPlot={buildPlotWrapper(maxValue)}
+        />
+    )
 }
