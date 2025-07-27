@@ -1,17 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import { TracksyWrapper } from '../components/TracksyWrapper'
+import { SpotifyAuth } from '../components/Spotify/SpotifyAuth'
 ---
 
 <Layout title="Tracksy">
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950 relative">
         <!-- Connect to Spotify button -->
         <div class="absolute top-4 right-4">
-            <button
-                class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-            >
-                Connect to Spotify
-            </button>
+            <SpotifyAuth client:only="react" />
         </div>
 
         <!-- Main content area -->
