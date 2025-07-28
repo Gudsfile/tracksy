@@ -1,12 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import { TracksyWrapper } from '../components/TracksyWrapper'
+import { Tutorial } from '../components/Tutorial'
 ---
 
 <Layout title="Tracksy">
     <div
-        class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950"
+        class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 relative"
     >
+        <!-- Bouton Spotify avec attribut tutorial -->
+        <div class="absolute top-4 right-4" data-tutorial="spotify-auth">
+            <button
+                class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+            >
+                Connexion à Spotify
+            </button>
+        </div>
+
         <div class="max-w-lg mx-auto">
             <h1 class="text-xl font-bold text-center mb-4 dark:text-white">
                 Tracksy
@@ -14,4 +24,7 @@ import { TracksyWrapper } from '../components/TracksyWrapper'
             <TracksyWrapper client:only="react" />
         </div>
     </div>
+
+    <!-- Tutoriel interactif -->
+    <Tutorial client:only="react" />
 </Layout>

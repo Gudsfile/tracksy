@@ -42,7 +42,9 @@ export function TracksyWrapper({
     return (
         <>
             {db && !(isDataDropped && !isDataReady) && (
-                <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
+                <div data-tutorial="dropzone">
+                    <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
+                </div>
             )}
             {db && isDataDropped && !isDataReady && <Spinner />}
             {db && isDataReady && <Charts />}
