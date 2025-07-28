@@ -4,7 +4,7 @@ const SPOTIFY_CONFIG = {
     clientId: import.meta.env.PUBLIC_SPOTIFY_CLIENT_ID || '',
     redirectUri:
         typeof window !== 'undefined' ? `${window.location.origin}/` : '',
-    scopes: ['user-library-read', 'user-top-read'],
+    scopes: [],
 }
 
 export const SpotifyAuth = () => {
