@@ -14,7 +14,7 @@ export const useSpotifyAuth = (config: SpotifyAuthConfig) => {
     // The PKCE authorization flow starts with the creation of a code verifier.
     // A code verifier is a high-entropy cryptographic random string with a length between 43 and 128 characters.
     const generateCodeVerifier = () => {
-        const array = new Uint8Array(32)
+        const array = new Uint8Array(64)
         window.crypto.getRandomValues(array)
         return btoa(String.fromCharCode(...array))
             .replace(/\+/g, '-')
