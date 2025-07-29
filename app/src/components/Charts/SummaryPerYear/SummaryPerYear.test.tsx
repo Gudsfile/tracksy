@@ -26,7 +26,6 @@ describe('SummaryPerYear Component', () => {
         await waitFor(() => {
             expect(container.querySelectorAll('svg')).toHaveLength(4)
         })
-        screen.debug()
         screen.getByText('Portition of new streams')
         screen.getByText('count_new_tracks_played')
         screen.getByText('count_unique_track_played')
