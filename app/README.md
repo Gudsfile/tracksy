@@ -54,6 +54,30 @@ All commands are run from `tracksy/app/`, from a terminal:
 
 ## 🔧 Components
 
+### 🗂️ TracksyWrapper Component
+
+The `TracksyWrapper` component is the main orchestrator for Tracksy's UI state transitions. It manages the initialization of the database, file uploads, demo data loading, and the conditional rendering of child components based on the application's state. Below is a mermaid diagram illustrating the state transitions and what is rendered in each state:
+
+```mermaid
+stateDiagram-v2
+  [*] --> Nothing:Mount
+  Nothing --> Dropzone_and_DemoButton:DB initialized
+  Dropzone_and_DemoButton --> Spinner:File uploaded
+  Dropzone_and_DemoButton --> Dropzone_and_Charts:Button clicked
+  Spinner --> Dropzone_and_Charts:Data inserted
+  Dropzone_and_Charts --> Spinner:File uploaded
+
+  Nothing:Nothing
+  Dropzone_and_DemoButton:Dropzone_and_DemoButton
+  Spinner:Spinner
+  Dropzone_and_Charts:Dropzone_and_Charts
+
+Nothing:Renders nothing
+Dropzone_and_DemoButton:Shows the file dropzone and the demo button
+Spinner:Shows a spinner while processing
+Dropzone_and_Charts:Shows the charts and the dropzone for further uploads
+```
+
 ### 📊 Charts Component
 
 The `Charts` component is responsible for orchestrating and rendering visualizations in the app. It manages how different components interact with each other, such as coordinating between the `RangeSlider` and `StreamPerHour` components. Below is a mermaid diagram that illustrates how the `Charts` works (without the summarize query):

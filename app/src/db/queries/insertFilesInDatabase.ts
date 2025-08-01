@@ -30,3 +30,14 @@ export async function insertFilesInDatabase(files: FileList) {
     })
     console.debug(`Table ${TABLE} created.`)
 }
+
+const DemoJsonUrl =
+    'https://huggingface.co/datasets/tracksy/synthetic-datasets/resolve/main/datasets/spotify/streamings_1000.json'
+
+export async function insertDemoInDatabase() {
+    const { conn } = await getDB()
+    await conn.query(DROP_TABLE_QUERY)
+    console.debug('Table dropped.', { tableName: TABLE })
+    await conn.insertJSONFromPath(DemoJsonUrl, { name: TABLE })
+    console.debug('Table created.', { tableName: TABLE, withDemoData: true })
+}
