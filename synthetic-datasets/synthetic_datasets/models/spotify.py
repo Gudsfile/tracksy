@@ -1,13 +1,9 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, IPvAnyAddress, PastDatetime, field_serializer
+from pydantic import BaseModel, Field, IPvAnyAddress, PastDatetime, field_serializer, model_validator
 
 DEFAULT_TRACK_ID_SIZE = 22
 DEFAULT_TRACK_URI_SUFFIX = "spotify:track:"
-
-
-class User(BaseModel):
-    platforms: list[str]
 
 
 class Artist(BaseModel):
@@ -23,6 +19,7 @@ class Track(BaseModel):
     uri: str
     name: str
     album: Album
+    duration_ms: int
 
 
 class Streaming(BaseModel):
@@ -35,18 +32,30 @@ class Streaming(BaseModel):
     master_metadata_track_name: str
     master_metadata_album_artist_name: str
     master_metadata_album_album_name: str
-    spotify_track_uri: str = Field(pattern=f"{DEFAULT_TRACK_URI_SUFFIX}[a-z0-9]{{{DEFAULT_TRACK_ID_SIZE}}}")
-    episode_name: str | None
-    episode_show_name: str | None
-    spotify_episode_uri: str | None
-    reason_start: str | None
-    reason_end: str | None
+    spotify_track_uri: str = Field(pattern=f"{DEFAULT_TRACK_URI_SUFFIX}[a-zA-Z0-9]{{{DEFAULT_TRACK_ID_SIZE}}}")
+    episode_name: str | None = None
+    episode_show_name: str | None = None
+    spotify_episode_uri: str | None = None
+    reason_start: str
+    reason_end: str
     shuffle: bool
     skipped: bool
     offline: bool
-    offline_timestamp: str | None
+    offline_timestamp: int | None = None
     incognito_mode: bool
 
     @field_serializer("ts")
-    def format_ts(cls, ts: datetime):
-        return cls.strftime("%Y-%m-%dT%H:%M:%SZ")
+    def serialize_ts(self, ts: datetime):
+        return ts.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    @model_validator(mode="after")
+    def set_skipped_and_reason(self):
+        if self.skipped is None:
+            self.skipped = self.ms_played < 30000
+
+        if self.skipped and self.reason_end not in ["fwdbtn", "backbtn"]:
+            self.reason_end = "fwdbtn"
+        elif not self.skipped and self.reason_end not in ["trackdone"]:
+            self.reason_end = "trackdone"
+
+        return self
