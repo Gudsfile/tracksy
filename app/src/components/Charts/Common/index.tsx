@@ -7,9 +7,7 @@ import { plot } from '@observablehq/plot'
 
 export interface CommonProps<T extends TypeMap> {
     query: string
-    buildPlot: (
-        data: Table<T> | undefined
-    ) => ReturnType<typeof plot> | undefined
+    buildPlot: (data: Table<T>) => ReturnType<typeof plot>
 }
 
 export function Common<T extends TypeMap>({
@@ -29,12 +27,13 @@ export function Common<T extends TypeMap>({
     }, [query])
 
     useEffect(() => {
-        const element = buildPlot?.(data)
-        if (element && containerRef.current) {
+        if (!data) return
+        const element = buildPlot(data)
+        if (containerRef.current) {
             containerRef.current.appendChild(element)
         }
         return () => {
-            element?.remove()
+            element.remove()
         }
     }, [data, buildPlot])
 

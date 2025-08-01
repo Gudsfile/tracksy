@@ -4,14 +4,13 @@ import type { Table } from 'apache-arrow'
 import type { QueryResult } from './query'
 
 export function buildPlotWrapper(maxValue: number) {
-    return (data: Table<QueryResult> | undefined) => buildPlot(data, maxValue)
+    return (data: Table<QueryResult>) => buildPlot(data, maxValue)
 }
 
 function buildPlot(
-    data?: Table<QueryResult>,
-    maxValue?: number
-): ReturnType<typeof Plot.plot> | undefined {
-    if (!data) return undefined
+    data: Table<QueryResult>,
+    maxValue: number | undefined
+): ReturnType<typeof Plot.plot> {
     const longitude = d3
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
         .padding(0.5)
