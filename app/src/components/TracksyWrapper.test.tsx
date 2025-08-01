@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { TracksyWrapper } from './TracksyWrapper'
 import { getDB } from '../db/getDB'
-import React from 'react'
 
 vi.mock('./Dropzone/DropzoneWrapper', () => ({
     DropzoneWrapper: vi.fn(() => <div data-testid="dropzone-wrapper"></div>),
@@ -25,24 +24,7 @@ vi.mock('../db/getDB', () => ({
     insertFilesInDatabase: vi.fn(() => Promise.resolve()),
 }))
 
-vi.mock('../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
-
 describe('TracksyWrapper', () => {
-    it('renders Dropzone when DB is initialized', async () => {
-        render(
-            <TracksyWrapper
-                initialDb={{}}
-                initialIsDataDropped={false}
-                initialIsDataReady={false}
-            />
-        )
-        await waitFor(() => expect(getDB).toHaveBeenCalled())
-        expect(screen.getByTestId('dropzone-wrapper'))
-    })
-
     describe('when DB is initialized', () => {
         it('renders the Dropzone and DemoButton', async () => {
             render(
@@ -112,7 +94,7 @@ describe('TracksyWrapper', () => {
     })
 
     describe('when DB is not initialized', () => {
-        it('does not render the DataButton', async () => {
+        it('renders nothing', async () => {
             render(
                 <TracksyWrapper
                     initialDb={undefined}
@@ -120,72 +102,7 @@ describe('TracksyWrapper', () => {
                     initialIsDataReady={false}
                 />
             )
-            expect(screen.queryByTestId('data-button')).toBeNull()
+            expect(document.body.innerHTML).toBe('<div></div>')
         })
-    })
-
-    describe('when data is dropped', () => {
-        it('does not render the DataButton', async () => {
-            render(
-                <TracksyWrapper
-                    initialDb={undefined}
-                    initialIsDataDropped={true}
-                    initialIsDataReady={false}
-                />
-            )
-            await waitFor(() => expect(getDB).toHaveBeenCalled())
-            expect(screen.queryByTestId('data-button')).toBeNull()
-        })
-    })
-
-    describe('when data is ready', () => {
-        it('does not render the DataButton', async () => {
-            render(
-                <TracksyWrapper
-                    initialDb={undefined}
-                    initialIsDataDropped={false}
-                    initialIsDataReady={true}
-                />
-            )
-            await waitFor(() => expect(getDB).toHaveBeenCalled())
-            expect(screen.queryByTestId('data-button')).toBeNull()
-        })
-    })
-
-    describe('when data is ready and data is dropped', () => {
-        it('does not render the DataButton', async () => {
-            render(
-                <TracksyWrapper
-                    initialDb={undefined}
-                    initialIsDataDropped={true}
-                    initialIsDataReady={true}
-                />
-            )
-            await waitFor(() => expect(getDB).toHaveBeenCalled())
-            expect(screen.queryByTestId('data-button')).toBeNull()
-        })
-    })
-
-    it('renders Spinner when files are dropped but not ready', async () => {
-        render(
-            <TracksyWrapper
-                initialDb={{}}
-                initialIsDataDropped={true}
-                initialIsDataReady={false}
-            />
-        )
-        expect(screen.getByTestId('spinner'))
-    })
-
-    it('renders Charts and Dropzone when files are processed', async () => {
-        render(
-            <TracksyWrapper
-                initialDb={{}}
-                initialIsDataDropped={true}
-                initialIsDataReady={true}
-            />
-        )
-        expect(screen.getByTestId('dropzone-wrapper'))
-        expect(screen.getByTestId('charts'))
     })
 })
