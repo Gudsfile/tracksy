@@ -1,0 +1,28 @@
+[package]
+name = "synthetic-datasets-rust"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Sérialisation / Désérialisation (équivalent de json)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Dates et heures (équivalent de datetime)
+chrono = { version = "0.4", features = ["serde"] }
+
+# Génération de données aléatoires (équivalent de numpy.random et random)
+rand = "0.8"
+
+# Génération de fausses données (équivalent de Faker)
+fake = "2.9" #"4.3.0"
+faker_rand = "0.1.1" # Pour intégrer `fake` avec le crate `rand`
+
+# Barres de progression (équivalent de tqdm)
+indicatif = { version = "0.17", features = ["rayon"] }
+
+# Manipulation de ZIP (équivalent de zipfile)
+zip = "2.1"
+
+# Gestion simple des erreurs
+anyhow = "1.0"
