@@ -1,128 +1,183 @@
 import random
 import string
+from datetime import datetime, timedelta
 
+import numpy as np
 from faker import Faker
-from faker.providers import DynamicProvider
+from tqdm import tqdm
 
-from ..models.spotify import DEFAULT_TRACK_ID_SIZE, DEFAULT_TRACK_URI_SUFFIX, Album, Artist, Streaming, Track, User
-from .factory_config import FactoryConfig
-
-
-def init_faker() -> Faker:
-    fake = Faker()
-
-    reason_start_provider = DynamicProvider(
-        provider_name="reason_start",
-        elements=[
-            None,
-            "appload",
-            "clickrow",
-            "click-row",
-            "backbtn",
-            "fwdbtn",
-            "persisted",
-            "playbtn",
-            "remote",
-            "trackdone",
-            "trackerror",
-            "unknown",
-        ],
-    )
-    fake.add_provider(reason_start_provider)
-
-    reason_end_provider = DynamicProvider(
-        provider_name="reason_end",
-        elements=[
-            None,
-            "backbtn",
-            "clickrow",
-            "click-row",
-            "endplay",
-            "fwdbtn",
-            "logout",
-            "playbtn",
-            "remote",
-            "trackdone",
-            "trackerror",
-            "unexpected-exit",
-            "unexpected-exit-while-paused",
-            "unknown",
-        ],
-    )
-    fake.add_provider(reason_end_provider)
-    return fake
+from ..models.spotify import Album, Artist, Streaming, Track
 
 
-def random_platforms(fake: Faker, nb_platforms: int) -> list[str]:
-    return [
-        fake.random_element(
-            [
-                fake.android_platform_token(),
-                fake.ios_platform_token(),
-                fake.linux_platform_token(),
-                fake.mac_platform_token(),
-                fake.windows_platform_token(),
+class SpotifyFactory:
+    month_weights = [0.08, 0.07, 0.07, 0.06, 0.07, 0.08, 0.08, 0.08, 0.1, 0.10, 0.11, 0.1]
+    hour_weights = [
+        0.01, 0.01, 0.01, 0.01, 0.02, 0.04, 0.07, 0.09, 0.08, 0.06, 0.04, 0.04,
+        0.05, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.06, 0.05, 0.03, 0.02, 0.01,
+    ]  # fmt: skip
+    reason_start = ["trackdone", "fwdbtn", "backbtn", "clickrow"]
+    skip_chance_trend = np.linspace(0.15, 0.30, 6)
+
+    def __init__(self, num_records: int):
+        self.faker = Faker()
+        self.now = datetime.now()
+        self.start_year = 2020
+        num_artists = int(num_records * 0.2)
+        num_albums = int(num_records * 0.3)
+        num_tracks = int(num_records * 0.5)
+        num_platforms = 5
+        num_countries = 5
+        num_ips = 20
+
+        print("🎵 Generating music catalog...")
+        print(f" - records: {num_records}")
+        print(f" - artists: {num_artists}")
+        print(f" - albums : {num_albums}")
+        print(f" - tracks : {num_tracks}")
+        self.tracks = self._generate_catalog(num_artists, num_albums, num_tracks)
+
+        print("📈 Generating evolving listening tastes...")
+        self.weighted_tracks = self._generate_weighted_tracks_by_year()
+        for year, weighted_records in self.weighted_tracks.items():
+            print(f" - {year}: {len(weighted_records)} records")
+
+        print("📅 Generating distribution over year...")
+        self.records_per_year = self._generate_distribution_over_year(num_records)
+        for year, num_records in self.records_per_year.items():
+            print(f" - {year}: {num_records} records")
+
+        print("💻 Generating platforms...")
+        self.platforms = [
+            self.faker.random_element(
+                [
+                    self.faker.android_platform_token(),
+                    self.faker.ios_platform_token(),
+                    self.faker.linux_platform_token(),
+                    self.faker.mac_platform_token(),
+                    self.faker.windows_platform_token(),
+                ]
+            )
+            for _ in range(0, num_platforms)
+        ]
+
+        print("🌏 Generating country codes...")
+        self.countries = [self.faker.country_code() for _ in range(0, num_countries)]
+        print("🛜 Generatin IPs...")
+        self.ips = [self.faker.ipv4() for _ in range(0, num_ips)]
+
+    def _generate_catalog(self, num_artists: int, num_albums: int, num_tracks: int) -> list[Track]:
+        track_uri_chars = string.ascii_letters + string.digits
+        artists = [Artist(name=self.faker.name()) for _ in range(num_artists)]
+        albums = [
+            Album(name=" ".join(self.faker.words(3)).title(), artist=random.choice(artists)) for _ in range(num_albums)
+        ]
+        tracks = [
+            Track(
+                uri=f"spotify:track:{''.join(random.choices(track_uri_chars, k=22))}",
+                name=" ".join(self.faker.words(4)).title(),
+                album=random.choice(albums),
+                duration_ms=random.randint(120_000, 360_000),
+            )
+            for _ in range(num_tracks)
+        ]
+        return tracks
+
+    def _generate_weighted_tracks_by_year(self) -> dict[int, list]:
+        weighted_tracks_by_year = {}
+        for year in range(self.start_year, self.now.year + 1):
+            popularity = np.random.zipf(a=1.8, size=len(self.tracks))
+            np.random.shuffle(popularity)
+
+            weighted = []
+            for track, weight in zip(self.tracks, popularity):
+                repeats = min(int(weight / 10), 100)
+                if repeats > 0:
+                    weighted.extend([track] * repeats)
+
+            weighted_tracks_by_year[year] = weighted
+
+        return weighted_tracks_by_year
+
+    def _get_random_datetime_for_year(self, year: int) -> datetime:
+        while True:
+            if year < self.now.year:
+                months = range(1, 13)
+                weights = self.month_weights
+            else:
+                valid_months = range(1, self.now.month + 1)
+                valid_weights = self.month_weights[: self.now.month]
+                weights = np.array(valid_weights) / sum(valid_weights)
+                months = valid_months
+
+            month = np.random.choice(months, p=weights)
+
+            day = random.randint(1, 28)
+            hour = np.random.choice(range(24), p=rotate(self.hour_weights, random.randint(0, 12)))
+            minute = random.randint(0, 59)
+            second = random.randint(0, 59)
+
+            gen_date = datetime(year, month, day, hour, minute, second)
+
+            if gen_date <= self.now:
+                return gen_date
+
+            gen_date = self.faker.date_time_between(start_date="-1y", end_date="now")
+            if gen_date <= self.now:
+                return gen_date
+            print(f"Warning getting a random datetime for year once again: rejected_date: `{gen_date}`")
+
+    def _create_one_streaming_record(self, ts: datetime) -> Streaming:
+        year_index = ts.year - self.start_year
+
+        is_skipped = random.random() < self.skip_chance_trend[year_index]
+        is_offline = random.random() < 0.1
+
+        track = random.choice(self.weighted_tracks[ts.year])
+        platform = random.choice(self.platforms)
+
+        return Streaming(
+            ts=ts,
+            platform=platform,
+            ms_played=random.randint(1000, 29000) if is_skipped else int(track.duration_ms * random.uniform(0.95, 1.0)),
+            conn_country=random.choice(self.countries),
+            ip_addr_decrypted=random.choice(self.ips),
+            user_agent_decrypted=platform,
+            master_metadata_track_name=track.name,
+            master_metadata_album_artist_name=track.album.artist.name,
+            master_metadata_album_album_name=track.album.name,
+            spotify_track_uri=track.uri,
+            reason_start=random.choice(self.reason_start),
+            reason_end="fwdbtn" if is_skipped else "trackdone",
+            shuffle=bool(random.getrandbits(1)),
+            skipped=is_skipped,
+            offline=is_offline,
+            offline_timestamp=int((ts - timedelta(minutes=random.randint(1, 60))).timestamp()) if is_offline else None,
+            incognito_mode=bool(random.getrandbits(1)),
+        )
+
+    def _generate_distribution_over_year(self, n_records):
+        years = range(self.start_year, self.now.year + 1)
+
+        year_weights = [random.uniform(0.5, 1.5) for _ in years]
+        base_records_per_year = n_records / sum(year_weights)
+        records_per_year = {
+            year: int(base_records_per_year * year_weight) for year, year_weight in zip(years, year_weights)
+        }
+        records_per_year[self.now.year] += n_records - sum(records_per_year.values())
+        return records_per_year
+
+    def create_streaming_history(self) -> list[Streaming]:
+        all_streamings = []
+
+        for year, num_records_for_year in self.records_per_year.items():
+            year_records = [
+                self._create_one_streaming_record(self._get_random_datetime_for_year(year))
+                for _ in tqdm(range(num_records_for_year), desc=f"💿 Generating streamings for {year}", leave=True)
             ]
-        )
-        for _ in range(0, nb_platforms)
-    ]
+            all_streamings.extend(year_records)
+
+        return all_streamings
 
 
-def random_artists(fake: Faker, nb_artists: int) -> list[Artist]:
-    return [Artist(name=fake.name()) for _ in range(nb_artists)]
-
-
-def random_albums(fake: Faker, nb_albums: int, artists) -> list[Album]:
-    return [
-        Album(name=fake.sentence(nb_words=3, variable_nb_words=True)[:-1], artist=random.choice(artists))
-        for _ in range(0, nb_albums)
-    ]
-
-
-def random_tracks(fake: Faker, nb_tracks: int, albums) -> list[Track]:
-    return [
-        Track(
-            uri=DEFAULT_TRACK_URI_SUFFIX
-            + "".join(random.choices(string.ascii_lowercase + string.digits, k=DEFAULT_TRACK_ID_SIZE)),
-            name=fake.sentence(nb_words=2, variable_nb_words=True)[:-1],
-            album=random.choice(albums),
-        )
-        for _ in range(0, nb_tracks)
-    ]
-
-
-def random_streaming(fake: Faker, track: Track, user: User) -> Streaming:
-    return Streaming(
-        ts=fake.date_time_between(start_date="-3y", end_date="now").isoformat(),
-        platform=random.choice(user.platforms),
-        ms_played=random.randint(0, 720000),
-        conn_country=fake.country_code(),
-        ip_addr_decrypted=fake.ipv4(),
-        user_agent_decrypted=fake.user_agent(),
-        master_metadata_track_name=track.name,
-        master_metadata_album_artist_name=track.album.artist.name,
-        master_metadata_album_album_name=track.album.name,
-        spotify_track_uri=track.uri,
-        episode_name=None,
-        episode_show_name=None,
-        spotify_episode_uri=None,
-        reason_start=fake.reason_start(),
-        reason_end=fake.reason_end(),
-        shuffle=bool(random.getrandbits(1)),
-        skipped=bool(random.getrandbits(1)),
-        offline=bool(random.getrandbits(1)),
-        offline_timestamp=None,
-        incognito_mode=False,
-    )
-
-
-def random_streamings(fake: Faker, nb_streams: int, user: User, tracks: list[Track]) -> list[Streaming]:
-    return [random_streaming(fake, random.choice(tracks), user) for _ in range(0, nb_streams)]
-
-
-def generate_streamings(fake: Faker, config: FactoryConfig) -> list[Streaming]:
-    user = User(platforms=random_platforms(fake, config.nb_platforms))
-    artists = random_artists(fake, config.nb_artists)
-    albums = random_albums(fake, config.nb_albums, artists)
-    tracks = random_tracks(fake, config.nb_tracks, albums)
-    return random_streamings(fake, config.nb_streams, user, tracks)
+def rotate(elements, step):
+    return elements[step:] + elements[:step]

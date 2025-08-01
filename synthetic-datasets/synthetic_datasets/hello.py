@@ -1,55 +1,37 @@
-import sys
+import argparse
 import time
 from pathlib import Path
 
-from tqdm import trange
-
-from .factories.factory_config import FactoryConfig
-from .factories.spotify import generate_streamings, init_faker
-from .writers.spotify import DEFAULT_EXTENSION, DEFAULT_FOLDER, DEFAULT_PREFIX, write, write_zip
+from synthetic_datasets.factories.spotify import SpotifyFactory
+from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
-def spotify(nb_streams):
-    def generator(nb_streams):
-        print(nb_streams)
-        yield generate_streamings(
-            init_faker(),
-            FactoryConfig(
-                nb_streams=nb_streams,
-                nb_tracks=int(nb_streams * 0.5),
-                nb_albums=int(nb_streams * 0.3),
-                nb_artists=int(nb_streams * 0.2),
-            ),
-        )
+def spotify(num_records, output_dir):
+    factory = SpotifyFactory(num_records)
+    all_streamings = factory.create_streaming_history()
 
-    print(f"Generating one file of {nb_streams} lines")
-    write(
-        next(generator(nb_streams)),
-        Path(f"datasets/{DEFAULT_FOLDER}/{DEFAULT_PREFIX}_2024-2025_{nb_streams}{DEFAULT_EXTENSION}"),
-    )
+    writer = SpotifyWriter(output_dir=output_dir)
+    writer.write(all_streamings)
 
-    chunk_size = 20000
-    minimum_nb_file = 4
-    nb_file_to_write = max(int(nb_streams / chunk_size), minimum_nb_file)
-    minimum_chunk_size = 10
-    chunk_size = max(int(nb_streams / nb_file_to_write), minimum_chunk_size)
-    print(f"Generating {nb_file_to_write} files to be zipped")
-    write_zip(
-        [next(generator(chunk_size), minimum_chunk_size) for _ in trange(0, nb_file_to_write)],
-        Path(f"datasets/{DEFAULT_FOLDER}/"),
-    )
+
+def min_int(min_value):
+    def checker(value):
+        ivalue = int(value)
+        if ivalue < min_value:
+            raise argparse.ArgumentTypeError(f"Minimal value is: {min_value}")
+        return ivalue
+
+    return checker
 
 
 def main():
-    args = sys.argv[1:]
-    if len(args) < 1 or len(args) > 1:
-        print(f"One and only one argument is required to set the number of lines to be generated. Given args: {args}")
-        sys.exit(1)
-    if not args[0].isdigit():
-        print(f"Number of lines to be generated should be integer. Given arg: {args[0]}")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("num_records", type=min_int(10), help="Number of lines to be generated (>= 10)")
+    parser.add_argument("-o", "--output-dir", type=Path, default=Path("datasets"))
+    args = parser.parse_args()
+
     start_data_generation = time.time()
-    spotify(int(args[0]))
+    spotify(args.num_records, args.output_dir)
     print("--- %s seconds ---" % (time.time() - start_data_generation))
 
 

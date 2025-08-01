@@ -1,19 +1,18 @@
 [project]
 name = "synthetic_datasets"
-version = "0.1.0"
+version = "0.2.0"
 description = "Tracksy app test datasets"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
     "faker>=33.1.0",
+    "numpy>=2.3.2",
     "pydantic>=2.10.3",
     "tqdm>=4.67.1",
 ]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.8.3",
-]
+dev = ["ruff>=0.8.3"]
 
 [tool.uv]
 package = true
