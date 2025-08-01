@@ -1,7 +1,8 @@
 import { TABLE } from '../../../db/queries/constants'
 import type { Int } from 'apache-arrow'
 
-export const query = `
+export function queryByYear(year: number | undefined) {
+    return `
 SELECT
     COALESCE(count_stream, 0)::INT AS count_stream,
     hour::INT AS hour
@@ -11,12 +12,14 @@ LEFT JOIN (
         COUNT(*) AS count_stream,
         HOUR(ts::DATETIME) AS hour
     FROM ${TABLE}
+    ${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
     GROUP BY HOUR(ts::DATETIME)
 ) USING(hour)
 ORDER BY hour
 `
+}
 
 export type QueryResult = {
-    ms_played: Int
+    count_stream: Int
     ts: Int
 }
