@@ -3,9 +3,8 @@ import type { Table } from 'apache-arrow'
 import { QueryResult } from './query'
 
 export function buildPlot(
-    data?: Table<QueryResult>
-): ReturnType<typeof Plot.plot> | undefined {
-    if (!data) return undefined
+    data: Table<QueryResult>
+): ReturnType<typeof Plot.plot> {
     return Plot.plot({
         x: { type: 'utc' },
         y: { grid: true },
