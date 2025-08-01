@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
 import { getDB } from '../db/getDB'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
-import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
+import {
+    insertFilesInDatabase,
+    insertDemoInDatabase,
+} from '../db/queries/insertFilesInDatabase'
 import { Charts } from './Charts/Charts'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
+import { DemoButton } from './DemoButton/DemoButton'
 
 interface TracksyWrapperProps {
     initialDb?: DuckdbAppType | null
@@ -31,18 +35,28 @@ export function TracksyWrapper({
 
     async function handleFileUpload(files: FileList | null) {
         if (!files) return
-        console.debug('New dropped files:', files)
         setIsDataReady(false)
         setIsDataDropped(true)
         await insertFilesInDatabase(files)
         setIsDataReady(true)
-        console.debug('New uploaded files:', files)
+    }
+
+    const handleDemoButtonClick = async () => {
+        setIsDataReady(false)
+        await insertDemoInDatabase()
+        setIsDataReady(true)
     }
 
     return (
         <>
             {db && !(isDataDropped && !isDataReady) && (
                 <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
+            )}
+            {db && !isDataDropped && !isDataReady && (
+                <DemoButton
+                    label="Charger les données de démo"
+                    handleClick={handleDemoButtonClick}
+                />
             )}
             {db && isDataDropped && !isDataReady && <Spinner />}
             {db && isDataReady && <Charts />}
