@@ -22,4 +22,4 @@ All commands are run from the root of the project, from a terminal:
 | Command                                              | Action                                           |
 | :--------------------------------------------------- | :----------------------------------------------- |
 | `uv sync`                                            | Installs dependencies                            |
-| `uv run hello 10`                                    | Generates a ten lines dataset                    |
+| `uv run generate 10`                                 | Generates a ten lines dataset                    |
