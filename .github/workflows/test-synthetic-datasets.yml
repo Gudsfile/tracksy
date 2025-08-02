@@ -47,3 +47,6 @@ jobs:
 
       - name: Run lint
         run: uv run ruff check
+
+      - name: Run type check
+        run: uv run ty check --python-version ${{ matrix.python-version }}
