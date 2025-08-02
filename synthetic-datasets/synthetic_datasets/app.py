@@ -26,7 +26,7 @@ def min_int(min_value):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("num_records", type=min_int(10), help="Number of lines to be generated (>= 10)")
+    parser.add_argument("num_records", type=min_int(100), help="Number of lines to be generated (>= 100)")
     parser.add_argument("-o", "--output-dir", type=Path, default=Path("datasets"))
     args = parser.parse_args()
 

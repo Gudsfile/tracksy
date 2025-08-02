@@ -44,8 +44,6 @@ jobs:
 
       - name: Generate datasets
         run: |
-          uv run generate 10
-          uv run generate 100
           uv run generate 1000
           uv run generate 500000
 
