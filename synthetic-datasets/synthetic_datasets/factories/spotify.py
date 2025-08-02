@@ -15,7 +15,12 @@ class SpotifyFactory:
         0.01, 0.01, 0.01, 0.01, 0.02, 0.04, 0.07, 0.09, 0.08, 0.06, 0.04, 0.04,
         0.05, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.06, 0.05, 0.03, 0.02, 0.01,
     ]  # fmt: skip
-    reason_start = ["trackdone", "fwdbtn", "backbtn", "clickrow"]
+    reason_start = [
+        ReasonStartEnum.TRACK_DONE,
+        ReasonStartEnum.FORWARD_BUTTON,
+        ReasonStartEnum.BACK_BUTTON,
+        ReasonStartEnum.CLICK_ROW,
+    ]
     skip_chance_trend = np.linspace(0.15, 0.30, 6)
 
     def __init__(self, num_records: int):
@@ -146,7 +151,7 @@ class SpotifyFactory:
             master_metadata_album_album_name=track.album.name,
             spotify_track_uri=track.uri,
             reason_start=random.choice(self.reason_start),
-            reason_end="fwdbtn" if is_skipped else "trackdone",
+            reason_end=ReasonEndEnum.FORWARD_BUTTON if is_skipped else ReasonEndEnum.TRACK_DONE,
             shuffle=bool(random.getrandbits(1)),
             skipped=is_skipped,
             offline=is_offline,
