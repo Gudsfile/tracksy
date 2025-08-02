@@ -6,7 +6,7 @@ import numpy as np
 from faker import Faker
 from tqdm import tqdm
 
-from ..models.spotify import Album, Artist, Streaming, Track
+from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Streaming, Track
 
 
 class SpotifyFactory:
@@ -27,7 +27,7 @@ class SpotifyFactory:
         num_tracks = int(num_records * 0.5)
         num_platforms = 5
         num_countries = 5
-        num_ips = 20
+        num_ip_addresses = 20
 
         print("🎵 Generating music catalog...")
         print(f" - records: {num_records}")
@@ -63,7 +63,7 @@ class SpotifyFactory:
         print("🌏 Generating country codes...")
         self.countries = [self.faker.country_code() for _ in range(0, num_countries)]
         print("🛜 Generatin IPs...")
-        self.ips = [self.faker.ipv4() for _ in range(0, num_ips)]
+        self.ip_addr = [self.faker.ipv4() for _ in range(0, num_ip_addresses)]
 
     def _generate_catalog(self, num_artists: int, num_albums: int, num_tracks: int) -> list[Track]:
         track_uri_chars = string.ascii_letters + string.digits
@@ -140,8 +140,7 @@ class SpotifyFactory:
             platform=platform,
             ms_played=random.randint(1000, 29000) if is_skipped else int(track.duration_ms * random.uniform(0.95, 1.0)),
             conn_country=random.choice(self.countries),
-            ip_addr_decrypted=random.choice(self.ips),
-            user_agent_decrypted=platform,
+            ip_addr=random.choice(self.ip_addr),
             master_metadata_track_name=track.name,
             master_metadata_album_artist_name=track.album.artist.name,
             master_metadata_album_album_name=track.album.name,

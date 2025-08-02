@@ -27,8 +27,7 @@ class Streaming(BaseModel):
     platform: str
     ms_played: int
     conn_country: str = Field(pattern="[A-Z]{2}")
-    ip_addr_decrypted: IPvAnyAddress # ty: ignore[invalid-type-form]
-    user_agent_decrypted: str
+    ip_addr: IPvAnyAddress  # ty: ignore[invalid-type-form]
     master_metadata_track_name: str
     master_metadata_album_artist_name: str
     master_metadata_album_album_name: str
@@ -36,6 +35,10 @@ class Streaming(BaseModel):
     episode_name: str | None = None
     episode_show_name: str | None = None
     spotify_episode_uri: str | None = None
+    audiobook_title: str | None = None
+    audiobook_uri: str | None = None
+    audiobook_chapter_uri: str | None = None
+    audiobook_chapter_title: str | None = None
     reason_start: str
     reason_end: str
     shuffle: bool
