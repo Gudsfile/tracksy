@@ -12,7 +12,10 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ruff>=0.8.3"]
+dev = [
+    "ruff>=0.8.3",
+    "ty>=0.0.1a16",
+]
 
 [tool.uv]
 package = true

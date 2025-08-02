@@ -27,7 +27,7 @@ class Streaming(BaseModel):
     platform: str
     ms_played: int
     conn_country: str = Field(pattern="[A-Z]{2}")
-    ip_addr_decrypted: IPvAnyAddress
+    ip_addr_decrypted: IPvAnyAddress # ty: ignore[invalid-type-form]
     user_agent_decrypted: str
     master_metadata_track_name: str
     master_metadata_album_artist_name: str
