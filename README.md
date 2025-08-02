@@ -35,8 +35,8 @@ For developers, take a look at [`synthetic-datasets/README.md`](synthetic-datase
 
 You can use pre-generated datasets avaible at [tracksy/synthetic-datasets](https://huggingface.co/datasets/tracksy-app/synthetic-datasets):
 ```shell
-# /!\ The size of this file is greater than 16.8Mb.
-wget https://huggingface.co/datasets/tracksy/synthetic-datasets/resolve/main/datasets/spotify/one_file_multiple_years.zip?download=true
+# /!\ The size of this file is greater than 44Mb.
+wget https://huggingface.co/datasets/tracksy/synthetic-datasets/resolve/main/datasets/spotify/streamings_500000.zip?download=true
 ```
 Other files are available, see [tracksy/synthetic-datasets](https://huggingface.co/datasets/tracksy-app/synthetic-datasets) on huggingface.
 
