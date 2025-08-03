@@ -21,5 +21,5 @@ ORDER BY hour
 
 export type QueryResult = {
     count_stream: Int
-    ts: Int
+    hour: Int
 }

@@ -27,5 +27,5 @@ INTO
 export type QueryResult = {
     year: Int
     type: Utf8
-    count: Int
+    count_streams: Int
 }
