@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { TracksyWrapper } from './TracksyWrapper'
 import { getDB } from '../db/getDB'
@@ -24,9 +24,22 @@ vi.mock('../db/getDB', () => ({
     insertFilesInDatabase: vi.fn(() => Promise.resolve()),
 }))
 
+beforeEach(() => {
+    vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
+})
+
+afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+})
+
 describe('TracksyWrapper', () => {
     describe('when DB is initialized', () => {
-        it('renders the Dropzone and DemoButton', async () => {
+        it('renders the Dropzone only', async () => {
+            const warnSpy = vi
+                .spyOn(console, 'warn')
+                .mockImplementation(() => {})
+            vi.stubEnv('PUBLIC_DEMO_JSON_URL', undefined)
             render(
                 <TracksyWrapper
                     initialDb={undefined}
@@ -36,9 +49,29 @@ describe('TracksyWrapper', () => {
             )
             await waitFor(() => expect(getDB).toHaveBeenCalled())
             screen.getByTestId('dropzone-wrapper')
-            screen.getByTestId('demo-button')
+            expect(screen.queryByTestId('demo-button')).toBeNull()
             expect(screen.queryByTestId('spinner')).toBeNull()
             expect(screen.queryByTestId('charts')).toBeNull()
+            expect(warnSpy).toHaveBeenCalledWith(
+                'Missing PUBLIC_DEMO_JSON_URL environment variable'
+            )
+        })
+
+        describe('and the demo URL is valued', () => {
+            it('renders the Dropzone and DemoButton', async () => {
+                render(
+                    <TracksyWrapper
+                        initialDb={undefined}
+                        initialIsDataDropped={false}
+                        initialIsDataReady={false}
+                    />
+                )
+                await waitFor(() => expect(getDB).toHaveBeenCalled())
+                screen.getByTestId('dropzone-wrapper')
+                screen.getByTestId('demo-button')
+                expect(screen.queryByTestId('spinner')).toBeNull()
+                expect(screen.queryByTestId('charts')).toBeNull()
+            })
         })
 
         describe('when data is dropped', () => {
