@@ -3,7 +3,7 @@ import { getDB } from '../db/getDB'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
 import {
     insertFilesInDatabase,
-    insertDemoInDatabase,
+    insertUrlInDatabase,
 } from '../db/queries/insertFilesInDatabase'
 import { Charts } from './Charts/Charts'
 import { Spinner } from './Spinner/Spinner'
@@ -25,6 +25,22 @@ export function TracksyWrapper({
     const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
     const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
 
+    const demoJsonUrl: URL | undefined = (() => {
+        const url = import.meta.env.PUBLIC_DEMO_JSON_URL
+        if (!url) {
+            console.warn('Missing PUBLIC_DEMO_JSON_URL environment variable')
+            return undefined
+        }
+        try {
+            return new URL(url)
+        } catch {
+            console.warn('Invalid PUBLIC_DEMO_JSON_URL environment variable:', {
+                url,
+            })
+        }
+        return undefined
+    })()
+
     useEffect(() => {
         const initDB = async () => {
             const dbInstance = await getDB()
@@ -43,8 +59,17 @@ export function TracksyWrapper({
 
     const handleDemoButtonClick = async () => {
         setIsDataReady(false)
-        await insertDemoInDatabase()
-        setIsDataReady(true)
+        if (!demoJsonUrl) return
+        try {
+            await insertUrlInDatabase(demoJsonUrl)
+            setIsDataReady(true)
+        } catch (error) {
+            console.error('Failed to insert demo data', {
+                url: demoJsonUrl.toString(),
+                error,
+            })
+            setIsDataReady(false)
+        }
     }
 
     return (
@@ -52,7 +77,7 @@ export function TracksyWrapper({
             {db && !(isDataDropped && !isDataReady) && (
                 <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
             )}
-            {db && !isDataDropped && !isDataReady && (
+            {db && !isDataDropped && !isDataReady && demoJsonUrl && (
                 <DemoButton
                     label="Charger les données de démo"
                     handleClick={handleDemoButtonClick}
