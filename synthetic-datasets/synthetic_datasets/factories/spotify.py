@@ -184,4 +184,5 @@ class SpotifyFactory:
 
 
 def rotate(elements, step):
+    step = step % len(elements)
     return elements[step:] + elements[:step]

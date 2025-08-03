@@ -1,24 +1,6 @@
 import pytest
 
-from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
-
-BASE_STREAMING = {
-    "ts": "2020-08-07T11:48:23Z",
-    "platform": "Android",
-    "ms_played": 213_000,
-    "conn_country": "SE",
-    "ip_addr": "127.0.0.1",
-    "master_metadata_track_name": "Never Gonna Give You Up",
-    "master_metadata_album_artist_name": "Rick Astley",
-    "master_metadata_album_album_name": "Whenever You Need Somebody",
-    "spotify_track_uri": "spotify:track:4PTG3Z6ehGkBFwjybzWkR8",
-    "reason_start": ReasonStartEnum.NONE,
-    "reason_end": ReasonEndEnum.NONE,
-    "shuffle": False,
-    "skipped": False,
-    "offline": False,
-    "incognito_mode": False,
-}
+from synthetic_datasets.models.spotify import ReasonEndEnum, Streaming
 
 
 @pytest.mark.parametrize("skipped, reason_end",[
@@ -27,11 +9,14 @@ BASE_STREAMING = {
         (False, ReasonEndEnum.TRACK_DONE),
         (False, ReasonEndEnum.REMOTE),
 ])  # fmt: skip
-def test_valid_reason_end(skipped, reason_end):
-    data = BASE_STREAMING.copy()
+def test_valid_reason_end(skipped, reason_end, streaming_record):
+    # given
+    data = streaming_record.model_dump().copy()
     data["skipped"] = skipped
     data["reason_end"] = reason_end
+    # when
     streaming = Streaming(**data)  # ty: ignore[missing-argument] # https://github.com/astral-sh/ty/issues/247
+    # then
     assert streaming.reason_end == reason_end
 
 
@@ -41,10 +26,13 @@ def test_valid_reason_end(skipped, reason_end):
     (False, ReasonEndEnum.BACK_BUTTON, "The end reason must not be `backbtn` or `fwdbtn` if streaming is not skipped: reason_end: `{reason_end}`"),
     (False, ReasonEndEnum.FORWARD_BUTTON, "The end reason must not be `backbtn` or `fwdbtn` if streaming is not skipped: reason_end: `{reason_end}`"),
 ])  # fmt: skip
-def test_invalid_reason_end(skipped, reason_end, error_msg):
-    data = BASE_STREAMING.copy()
+def test_invalid_reason_end(skipped, reason_end, error_msg, streaming_record):
+    # given
+    data = streaming_record.model_dump().copy()
     data["skipped"] = skipped
     data["reason_end"] = reason_end
+    # when
     with pytest.raises(ValueError) as err:
         Streaming(**data)  # ty: ignore[missing-argument] # https://github.com/astral-sh/ty/issues/247
+    # then
     assert error_msg.replace("{reason_end}", reason_end.value) in str(err.value)
