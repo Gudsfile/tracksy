@@ -33,6 +33,28 @@ afterEach(() => {
     vi.unstubAllEnvs()
 })
 
+const createAssertions = (testId: string) => ({
+    is: {
+        rendered: () => {
+            screen.getByTestId(testId)
+            return createAssertions(testId)
+        },
+        not: {
+            rendered: () => {
+                expect(screen.queryByTestId(testId)).toBeNull()
+                return createAssertions(testId)
+            },
+        },
+    },
+})
+
+const assert = {
+    dropzone: createAssertions('dropzone-wrapper'),
+    demoButton: createAssertions('demo-button'),
+    spinner: createAssertions('spinner'),
+    charts: createAssertions('charts'),
+}
+
 describe('TracksyWrapper', () => {
     describe('when DB is initialized', () => {
         it('renders the Dropzone only', async () => {
@@ -48,10 +70,10 @@ describe('TracksyWrapper', () => {
                 />
             )
             await waitFor(() => expect(getDB).toHaveBeenCalled())
-            screen.getByTestId('dropzone-wrapper')
-            expect(screen.queryByTestId('demo-button')).toBeNull()
-            expect(screen.queryByTestId('spinner')).toBeNull()
-            expect(screen.queryByTestId('charts')).toBeNull()
+            assert.dropzone.is.rendered()
+            assert.demoButton.is.not.rendered()
+            assert.spinner.is.not.rendered()
+            assert.charts.is.not.rendered()
             expect(warnSpy).toHaveBeenCalledWith(
                 'Missing PUBLIC_DEMO_JSON_URL environment variable'
             )
@@ -67,10 +89,10 @@ describe('TracksyWrapper', () => {
                     />
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
-                screen.getByTestId('dropzone-wrapper')
-                screen.getByTestId('demo-button')
-                expect(screen.queryByTestId('spinner')).toBeNull()
-                expect(screen.queryByTestId('charts')).toBeNull()
+                assert.dropzone.is.rendered()
+                assert.demoButton.is.rendered()
+                assert.spinner.is.not.rendered()
+                assert.charts.is.not.rendered()
             })
         })
 
@@ -84,10 +106,10 @@ describe('TracksyWrapper', () => {
                     />
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
-                expect(screen.queryByTestId('dropzone-wrapper')).toBeNull()
-                expect(screen.queryByTestId('demo-button')).toBeNull()
-                screen.getByTestId('spinner')
-                expect(screen.queryByTestId('charts')).toBeNull()
+                assert.dropzone.is.not.rendered()
+                assert.demoButton.is.not.rendered()
+                assert.spinner.is.rendered()
+                assert.charts.is.not.rendered()
             })
         })
 
@@ -101,10 +123,10 @@ describe('TracksyWrapper', () => {
                     />
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
-                screen.getByTestId('dropzone-wrapper')
-                expect(screen.queryByTestId('demo-button')).toBeNull()
-                expect(screen.queryByTestId('spinner')).toBeNull()
-                screen.queryByTestId('charts')
+                assert.dropzone.is.rendered()
+                assert.demoButton.is.not.rendered()
+                assert.spinner.is.not.rendered()
+                assert.charts.is.rendered()
             })
         })
 
@@ -118,10 +140,10 @@ describe('TracksyWrapper', () => {
                     />
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
-                screen.getByTestId('dropzone-wrapper')
-                expect(screen.queryByTestId('demo-button')).toBeNull()
-                expect(screen.queryByTestId('spinner')).toBeNull()
-                screen.getByTestId('charts')
+                assert.dropzone.is.rendered()
+                assert.demoButton.is.not.rendered()
+                assert.spinner.is.not.rendered()
+                assert.charts.is.rendered()
             })
         })
     })
