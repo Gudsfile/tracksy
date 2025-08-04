@@ -1,0 +1,67 @@
+- name: "[ [ meta ] ]"
+  color: "ffffff"
+  description: "Refers to project management, organizational decisions…"
+  # aliases: An array containing the "aliases" of the label. If an existing
+  # label's name is an alias that label will be edited to match your config:
+  # this way you don't loose issues and PRs that have been labeled previously.
+  # example: aliases: ["meta", "[ meta ]"]
+
+- name: "[ app ]"
+  color: "bfffbe"
+  description: "Concerns the front-end"
+
+- name: "[ blog ]"
+  color: "ffffad"
+  description: "Concerns the blog website"
+
+- name: "[ synthetic-datasets ]"
+  color: "ffdaff"
+  description: "Concerns the synthetic dataset generation"
+
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "ci/cd"
+  color: "013C25"
+  description: "Impacts continuous integration and continuous delivery"
+
+- name: "dependencies"
+  color: "078e0a"
+  description: "Pull requests that update a dependency file"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "refactor"
+  color: "f0ad4e"
+  description: "Involves code restructuring or cleanup"
+
+- name: "{ a11y }"
+  color: "87666c"
+  description: "About accessibility"
+
+- name: "{ i18n }"
+  color: "87666c"
+  description: "About translation"
+
+- name: "➡️ good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "➡️ help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "➡️ to maturate"
+  color: "cccc00"
+  description: "To be discussed or developed before it's ready"
