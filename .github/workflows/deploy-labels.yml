@@ -9,6 +9,9 @@ on:
       - .github/workflows/deploy-labels.yml
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   sync-labels:
     runs-on: ubuntu-latest
