@@ -15,16 +15,12 @@ Inside of this project, you'll see the following folders and files:
 ```text
 /
 ├── app/
-└── functions/
 └── synthetic-datasets/
 ```
 
 `app/` is the front end. It's an Astro project using DuckDB for data storage. This means that your uploaded data stays with you, client-side.
 We don't want to help you understand your data without knowing your data.
 For developers, take a look at [`app/README.md`](app/README.md) for more details on development.
-
-`functions/` is the backend part for enriching your data from the provider's API. Although **the application doesn't yet use this part**, it is present because development is taking place in parallel. This part is being reworked for a more privacy-friendly solution.
-For developers, take a look at [`functions/README.md` (wip)](functions/README.md) for more details on development.
 
 `synthetic-datasets/` is use to generate datasets to test the Tracksy application. Datasets are avaible on [Hugging Face](https://huggingface.co/datasets/tracksy-app/synthetic-datasets).
 For developers, take a look at [`synthetic-datasets/README.md`](synthetic-datasets/README.md) for more details on development.
