@@ -11,7 +11,7 @@ on:
       - ".github/workflows/generate-synthetic-datasets.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
