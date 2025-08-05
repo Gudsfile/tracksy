@@ -21,8 +21,8 @@ importers:
         specifier: ^1.29.0
         version: 1.29.0
       '@observablehq/plot':
-        specifier: ^0.6.16
-        version: 0.6.16
+        specifier: ^0.6.17
+        version: 0.6.17
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.12
@@ -907,8 +907,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@observablehq/plot@0.6.16':
-    resolution: {integrity: sha512-LRi9Rn93yUx90MIo2Md7+vazxO3Wiat14but2ttCER0xVS+jnfoUjuCGoz6H7bz/lgI9CFcW0HWlvWjMFjAv8g==}
+  '@observablehq/plot@0.6.17':
+    resolution: {integrity: sha512-/qaXP/7mc4MUS0s4cPPFASDRjtsWp85/TbfsciqDgU1HwYixbSbbytNuInD8AcTYC3xaxACgVX06agdfQy9W+g==}
     engines: {node: '>=12'}
 
   '@oslojs/encoding@1.1.0':
@@ -5023,7 +5023,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@observablehq/plot@0.6.16':
+  '@observablehq/plot@0.6.17':
     dependencies:
       d3: 7.9.0
       interval-tree-1d: 1.0.4
