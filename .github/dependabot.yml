@@ -21,6 +21,15 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    # Dependabot don't support pyproject.toml updates: https://github.com/astral-sh/uv/issues/2512
+    # It only updates the uv.lock file, so we've decided to group together all bumps (except major ones).
+    groups:
+      bump-uv-lock:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
