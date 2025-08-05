@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import { TracksyWrapper } from '../components/TracksyWrapper'
 import { SpotifyAuth } from '../components/Spotify/SpotifyAuth'
+import { DuckDBShell } from '../components/Shell/Shell'
 ---
 
 <Layout title="Tracksy">
@@ -19,6 +20,9 @@ import { SpotifyAuth } from '../components/Spotify/SpotifyAuth'
                 </h1>
                 <TracksyWrapper client:only="react" />
             </div>
+        </div>
+        <div class="flex items-center justify-center min-h-screen">
+            <DuckDBShell client:load />
         </div>
     </div>
 </Layout>
