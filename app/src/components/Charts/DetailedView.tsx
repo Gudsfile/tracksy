@@ -16,6 +16,7 @@ import { TopArtists } from './DetailedCharts/TopArtists'
 import { Streaks } from './DetailedCharts/Streaks'
 import { Top10Evolution } from './DetailedCharts/Top10Evolution'
 import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
+import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function DetailedView() {
     const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
@@ -87,6 +88,7 @@ export function DetailedView() {
                 <Top10Evolution />
                 <StreamPerDayOfWeek year={year} />
             </section>
+            <DuckDBShell />
         </>
     )
 }
