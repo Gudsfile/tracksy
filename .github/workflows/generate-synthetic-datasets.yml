@@ -1,14 +1,11 @@
 name: Deploy datasets
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/generate-synthetic-datasets.yml"
   push:
     branches: ["main"]
     paths:
       - "synthetic-datasets/synthetic_datasets/**/*.py"
-      - ".github/workflows/generate-synthetic-datasets.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
