@@ -1,5 +1,9 @@
 # Tracksy
 
+[![Astro badge](https://img.shields.io/badge/-Astro-AF56E6?logo=Astro&logoColor=FFFFFF&label=Built%20with&labelColor=000000)](https://github.com/withastro/astro) [![DuckDB badge](https://img.shields.io/badge/-DuckDB-FCF550?logo=DuckDB&label=Powered%20by&labelColor=000000)](https://github.com/duckdb/duckdb) [![Hugging Face badge](https://img.shields.io/badge/-available-F8D44E?logo=Hugging%20Face&label=Datasets&labelColor=000000)](https://huggingface.co/datasets/tracksy/synthetic-datasets) [![uv badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) [![Ruff badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![ty badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE) [![Actions status](https://github.com/gudsfile/tracksy/actions/workflows/deploy-app-live.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions/workflows/deploy-app-live.yml) [![Actions status](https://github.com/gudsfile/tracksy/actions/workflows/generate-synthetic-datasets.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions/workdlows/generate-synthetic-datasets.yml)
+
 👀 Visualize and understand how you listen to music.
 
 - > The same old song? Late at night? Only in summer?
