@@ -27,9 +27,9 @@ class SpotifyFactory:
         self.faker = Faker()
         self.now = datetime.now()
         self.start_year = 2020
-        num_artists = int(num_records * 0.2)
-        num_albums = int(num_records * 0.3)
-        num_tracks = int(num_records * 0.5)
+        num_artists = max(int(num_records * 0.2), 1)
+        num_albums = max(int(num_records * 0.3), 1)
+        num_tracks = max(int(num_records * 0.5), 1)
         num_platforms = 5
         num_countries = 5
         num_ip_addresses = 20
@@ -98,6 +98,8 @@ class SpotifyFactory:
                 repeats = min(int(weight / 10), 100)
                 if repeats > 0:
                     weighted.extend([track] * repeats)
+                else:
+                    weighted.extend([track])
 
             weighted_tracks_by_year[year] = weighted
 
