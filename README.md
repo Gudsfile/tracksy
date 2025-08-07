@@ -1,5 +1,9 @@
 # Tracksy
 
+[![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build) [![Powered by DuckDB](https://img.shields.io/badge/-Powered%20by%20DuckDB-000?logo=DuckDB)](https://github.com/duckdb/duckdb) [![Actions status](https://github.com/gudsfile/tracksy/actions/workflows/deploy-app-live.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions)
+<a href="https://huggingface.co/datasets/tracksy/synthetic-datasets"><picture><source media="(prefers-color-scheme: dark)" srcset="https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-sm-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-sm.svg">
+<img alt="Dataset on HF" src="https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-sm.svg"></picture></a> [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) [![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![ty](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty) [![Actions status](https://github.com/gudsfile/tracksy/actions/workflows/generate-synthetic-datasets.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions)
+
 👀 Visualize and understand how you listen to music.
 
 - > The same old song? Late at night? Only in summer?
