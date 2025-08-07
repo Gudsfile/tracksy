@@ -42,15 +42,19 @@ export function TracksyWrapper({
 
     return (
         <>
-            {db && !(isDataDropped && !isDataReady) && (
+            {db && (!isDataDropped || isDataReady) && (
                 <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
             )}
-            {db && !isDataDropped && !isDataReady && demoJsonUrl && (
-                <DemoButton
-                    label="Charger les données de démo"
-                    handleClick={handleDemoButtonClick}
-                />
-            )}
+            {db &&
+                !isDataDropped &&
+                !isDataReady &&
+                !isDemoReady &&
+                demoJsonUrl && (
+                    <DemoButton
+                        label="Charger les données de démo"
+                        handleClick={handleDemoButtonClick}
+                    />
+                )}
             {db && isDataDropped && !isDataReady && <Spinner />}
             {db && (isDataReady || isDemoReady) && <Charts />}
         </>
