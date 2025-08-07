@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react'
 import { getDB } from '../db/getDB'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
-import {
-    insertFilesInDatabase,
-    insertUrlInDatabase,
-} from '../db/queries/insertFilesInDatabase'
+import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
 import { Charts } from './Charts/Charts'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 import { DemoButton } from './DemoButton/DemoButton'
+import { useDemo } from '../hooks/useDemo'
 
 interface TracksyWrapperProps {
     initialDb?: DuckdbAppType | null
@@ -24,22 +22,7 @@ export function TracksyWrapper({
     const [db, setDb] = useState<DuckdbAppType | null>(initialDb)
     const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
     const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
-
-    const demoJsonUrl: URL | undefined = (() => {
-        const url = import.meta.env.PUBLIC_DEMO_JSON_URL
-        if (!url) {
-            console.warn('Missing PUBLIC_DEMO_JSON_URL environment variable')
-            return undefined
-        }
-        try {
-            return new URL(url)
-        } catch {
-            console.warn('Invalid PUBLIC_DEMO_JSON_URL environment variable:', {
-                url,
-            })
-        }
-        return undefined
-    })()
+    const { isDemoReady, handleDemoButtonClick, demoJsonUrl } = useDemo()
 
     useEffect(() => {
         const initDB = async () => {
@@ -57,21 +40,6 @@ export function TracksyWrapper({
         setIsDataReady(true)
     }
 
-    const handleDemoButtonClick = async () => {
-        setIsDataReady(false)
-        if (!demoJsonUrl) return
-        try {
-            await insertUrlInDatabase(demoJsonUrl)
-            setIsDataReady(true)
-        } catch (error) {
-            console.error('Failed to insert demo data', {
-                url: demoJsonUrl.toString(),
-                error,
-            })
-            setIsDataReady(false)
-        }
-    }
-
     return (
         <>
             {db && !(isDataDropped && !isDataReady) && (
@@ -84,7 +52,7 @@ export function TracksyWrapper({
                 />
             )}
             {db && isDataDropped && !isDataReady && <Spinner />}
-            {db && isDataReady && <Charts />}
+            {db && (isDataReady || isDemoReady) && <Charts />}
         </>
     )
 }
