@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { insertUrlInDatabase } from '../db/queries/insertFilesInDatabase'
+import { insertUrlInDatabase } from '../db/queries/insertUrlInDatabase'
 
 export function useDemo() {
     const [isDemoReady, setIsDemoReady] = useState(false)

@@ -1,8 +1,6 @@
 import { getDB } from '../getDB'
-import { TABLE } from './constants'
+import { TABLE, DROP_TABLE_QUERY } from './constants'
 import { tableFromJSON } from 'apache-arrow'
-
-const DROP_TABLE_QUERY = `DROP TABLE IF EXISTS ${TABLE}`
 
 export async function insertFilesInDatabase(files: FileList) {
     if (files.length < 1) {
@@ -29,10 +27,4 @@ export async function insertFilesInDatabase(files: FileList) {
         create: true,
     })
     console.debug(`Table ${TABLE} created.`)
-}
-
-export async function insertUrlInDatabase(jsonUrl: URL) {
-    const { conn } = await getDB()
-    await conn.query(DROP_TABLE_QUERY)
-    await conn.insertJSONFromPath(jsonUrl.toString(), { name: TABLE })
 }
