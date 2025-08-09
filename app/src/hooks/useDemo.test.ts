@@ -13,6 +13,7 @@ describe('useDemo', () => {
         const { result } = renderHook(() => useDemo())
         const { isDemoReady, handleDemoButtonClick, demoJsonUrl } =
             result.current
+
         expect(warnSpy).toHaveBeenCalledWith(
             'Missing PUBLIC_DEMO_JSON_URL environment variable'
         )
@@ -20,8 +21,9 @@ describe('useDemo', () => {
         expect(handleDemoButtonClick).toBeDefined()
         expect(demoJsonUrl).toBeUndefined()
     })
-    describe('when a bad JSONURL is valorized', () => {
-        it('should return a warn', () => {
+
+    describe('when an incorrectly formatted URL is passed', () => {
+        it('should log a warning', () => {
             vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'bad-url')
             const warnSpy = vi
                 .spyOn(console, 'warn')
@@ -29,6 +31,7 @@ describe('useDemo', () => {
             const { result } = renderHook(() => useDemo())
             const { isDemoReady, handleDemoButtonClick, demoJsonUrl } =
                 result.current
+
             expect(warnSpy).toHaveBeenCalledWith(
                 'Invalid PUBLIC_DEMO_JSON_URL environment variable:',
                 { url: 'bad-url' }
@@ -38,12 +41,14 @@ describe('useDemo', () => {
             expect(demoJsonUrl).toBeUndefined()
         })
     })
-    describe('when a good JSONURL is valorized', () => {
-        it('should return the good url', () => {
+
+    describe('when a correctly formatted URL is passed', () => {
+        it('should define the URL', () => {
             vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
             const { result } = renderHook(() => useDemo())
             const { isDemoReady, handleDemoButtonClick, demoJsonUrl } =
                 result.current
+
             expect(isDemoReady).toBe(false)
             expect(handleDemoButtonClick).toBeDefined()
             const expectedUrl = new URL('https://example.com')
