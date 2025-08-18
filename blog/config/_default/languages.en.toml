@@ -9,3 +9,7 @@ displayName = "EN"
 isoCode = "en"
 rtl = false
 dateFormat = "2 January 2006"
+description = "We are publishing our thoughts, researches and experimentations when building Tracksy."
+
+["params.author"]
+name = "Tracksy team"
