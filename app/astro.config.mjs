@@ -20,6 +20,11 @@ export default defineConfig({
                 ],
             }),
         ],
+        define: {
+            'import.meta.env.PUBLIC_DEMO_JSON_URL': JSON.stringify(
+                process.env.PUBLIC_DEMO_JSON_URL
+            ),
+        },
     },
     integrations: [tailwind(), react()],
 })
