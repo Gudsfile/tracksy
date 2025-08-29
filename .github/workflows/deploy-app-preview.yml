@@ -54,6 +54,8 @@ jobs:
 
       - name: Build project
         run: pnpm run build
+        env:
+          PUBLIC_DEMO_JSON_URL: ${{ vars.PUBLIC_DEMO_JSON_URL }}
 
       - name: Deploy preview
         uses: FirebaseExtended/action-hosting-deploy@v0
