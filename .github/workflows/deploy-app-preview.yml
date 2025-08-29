@@ -53,7 +53,7 @@ jobs:
         run: pnpm run test:coverage
 
       - name: Build project
-        run: PUBLIC_DEMO_JSON_URL=$PUBLIC_DEMO_JSON_URL pnpm run build
+        run: pnpm run build
         env:
           PUBLIC_DEMO_JSON_URL: ${{ vars.PUBLIC_DEMO_JSON_URL }}
 
