@@ -1,66 +1,66 @@
 name: App preview
 
 on:
-    pull_request:
-        paths:
-          - "app/**"
-          - ".github/workflows/deploy-app-preview.yml"
+  pull_request:
+    paths:
+      - "app/**"
+      - ".github/workflows/deploy-app-preview.yml"
 
 permissions:
-    checks: write
-    contents: read
-    pull-requests: write
+  checks: write
+  contents: read
+  pull-requests: write
 
 jobs:
-    app:
-        name: Audit, build and deploy
-        runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: ./app
+  app:
+    name: Audit, build and deploy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    env:
+      PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Audit dependencies
+        continue-on-error: true
+        run: pnpm audit --prod
+
+      - name: Check format
+        run: pnpm run format:check
+
+      - name: Check Lint
+        run: pnpm run lint
+
+      - name: Check test
+        run: pnpm run test:coverage
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Deploy preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
+          projectId: tracksy-app
+          entryPoint: ./app
         env:
-          PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  run_install: false
-
-            - name: Use Node 20
-              uses: actions/setup-node@v4
-              with:
-                  node-version: '22'
-                  cache: 'pnpm'
-
-            - name: Install dependencies
-              run: pnpm install
-
-            - name: Audit dependencies
-              continue-on-error: true
-              run: pnpm audit --prod
-
-            - name: Check format
-              run: pnpm run format:check
-
-            - name: Check Lint
-              run: pnpm run lint
-
-            - name: Check test
-              run: pnpm run test:coverage
-
-            - name: Build project
-              run: pnpm run build
-
-            - name: Deploy preview
-              uses: FirebaseExtended/action-hosting-deploy@v0
-              with:
-                  repoToken: ${{ secrets.GITHUB_TOKEN }}
-                  firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
-                  projectId: tracksy-app
-                  entryPoint: ./app
-              env:
-                  FIREBASE_CLI_EXPERIMENTS: webframeworks
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
