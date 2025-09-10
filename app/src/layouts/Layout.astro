@@ -15,6 +15,28 @@ const { title } = Astro.props
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
+
+        <script src="/wasm_exec.js" "is:inline"></script>
+        <script>
+            // WASM Initialization
+            const go = new Go()
+            WebAssembly.instantiateStreaming(
+                fetch('/main.wasm'),
+                go.importObject
+            ).then(async (result) => {
+                go.run(result.instance)
+
+                try {
+                    const response = await window.MyGoFunc(
+                        'https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb'
+                    )
+                    const message = await response.json()
+                    console.log(message)
+                } catch (err) {
+                    console.error('Caught exception', err)
+                }
+            })
+        </script>
     </head>
     <body>
         <slot />
