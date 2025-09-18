@@ -65,3 +65,7 @@
 - name: "➡️ to maturate"
   color: "cccc00"
   description: "To be discussed or developed before it's ready"
+
+- name: "hacktoberfest"
+  color: "9393e6"
+
