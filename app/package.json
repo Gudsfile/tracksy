@@ -23,7 +23,7 @@
     "@duckdb/duckdb-wasm": "^1.29.0",
     "@observablehq/plot": "^0.6.17",
     "@types/react": "^19.1.9",
-    "@types/react-dom": "^18.3.1",
+    "@types/react-dom": "^19.1.9",
     "apache-arrow": "^17.0.0",
     "astro": "^5.13.9",
     "d3": "^7.9.0",
