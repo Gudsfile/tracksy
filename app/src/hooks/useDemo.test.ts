@@ -9,6 +9,7 @@ afterEach(() => {
 
 describe('useDemo', () => {
     it('should return initial values', () => {
+        vi.stubEnv('PUBLIC_DEMO_JSON_URL', undefined)
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
         const { result } = renderHook(() => useDemo())
         const { isDemoReady, handleDemoButtonClick, demoJsonUrl } =
