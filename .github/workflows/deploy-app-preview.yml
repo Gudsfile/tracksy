@@ -20,6 +20,7 @@ jobs:
             working-directory: ./app
         env:
           PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          PUBLIC_DEMO_JSON_URL: ${{ variables.PUBLIC_DEMO_JSON_URL }}
 
         steps:
             - name: Checkout code
