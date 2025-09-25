@@ -1,0 +1,17 @@
+[[main]]
+none = "none"
+
+[[main]]
+name = "articles"
+pageRef = "posts"
+identifier = "Lqnxdg6lfH"
+weight = 9_999
+
+[[main]]
+pre = "github"
+url = "https://github.com/Gudsfile/tracksy/"
+identifier = "ERQWJreRzM"
+weight = 9_999
+
+[[footer]]
+none = "none"
