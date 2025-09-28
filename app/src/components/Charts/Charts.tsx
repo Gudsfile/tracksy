@@ -23,7 +23,7 @@ export function Charts() {
 
     useEffect(() => {
         if (summarize)
-            setYear(new Date(summarize.min_datetime as number).getFullYear())
+            setYear(new Date(summarize.max_datetime as number).getFullYear())
     }, [summarize])
 
     return (
