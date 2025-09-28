@@ -28,27 +28,27 @@ export function Charts() {
 
     return (
         <>
-            <StreamPerMonth />
             {summarize && (
-                <StreamPerHour
-                    year={year}
-                    maxValue={Number(summarize.max_count_hourly_stream)}
-                />
+                <>
+                    <RangeSlider
+                        value={year}
+                        onChange={setYear}
+                        min={new Date(
+                            summarize.min_datetime as number
+                        ).getFullYear()}
+                        max={new Date(
+                            summarize.max_datetime as number
+                        ).getFullYear()}
+                        step={1}
+                    />
+                    <StreamPerMonth year={year} />
+                    <StreamPerHour
+                        year={year}
+                        maxValue={Number(summarize.max_count_hourly_stream)}
+                    />
+                    <SummaryPerYear year={year} />
+                </>
             )}
-            {summarize && (
-                <RangeSlider
-                    value={year}
-                    onChange={setYear}
-                    min={new Date(
-                        summarize.min_datetime as number
-                    ).getFullYear()}
-                    max={new Date(
-                        summarize.max_datetime as number
-                    ).getFullYear()}
-                    step={1}
-                />
-            )}
-            <SummaryPerYear />
         </>
     )
 }
