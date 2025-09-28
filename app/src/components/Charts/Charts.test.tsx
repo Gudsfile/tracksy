@@ -33,11 +33,11 @@ describe('Charts Component', () => {
     it('renders all Charts', async () => {
         render(<Charts />)
 
-        screen.getByTestId('stream-per-month')
         screen.getByTestId('summary-per-year')
         await waitFor(() => {
             screen.getByTestId('stream-per-hour')
             screen.getByTestId('range-slider')
+            screen.getByTestId('stream-per-month')
         })
     })
 })

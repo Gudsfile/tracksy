@@ -28,13 +28,6 @@ export function Charts() {
 
     return (
         <>
-            <StreamPerMonth />
-            {summarize && (
-                <StreamPerHour
-                    year={year}
-                    maxValue={Number(summarize.max_count_hourly_stream)}
-                />
-            )}
             {summarize && (
                 <RangeSlider
                     value={year}
@@ -46,6 +39,13 @@ export function Charts() {
                         summarize.max_datetime as number
                     ).getFullYear()}
                     step={1}
+                />
+            )}
+            {summarize && <StreamPerMonth year={year} />}
+            {summarize && (
+                <StreamPerHour
+                    year={year}
+                    maxValue={Number(summarize.max_count_hourly_stream)}
                 />
             )}
             <SummaryPerYear />
