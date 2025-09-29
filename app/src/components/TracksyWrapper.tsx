@@ -51,7 +51,7 @@ export function TracksyWrapper({
                 !isDemoReady &&
                 demoJsonUrl && (
                     <DemoButton
-                        label="Charger les données de démo"
+                        label="Load demo data"
                         handleClick={handleDemoButtonClick}
                     />
                 )}
