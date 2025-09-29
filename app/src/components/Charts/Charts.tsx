@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { query, SummarizeData } from './summarizeQuery'
 import { StructRowProxy } from 'apache-arrow'
 import { queryDB } from '../../db/queries/queryDB'
+import { LineChartPulse } from './Test'
 
 export function Charts() {
     const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
@@ -49,6 +50,7 @@ export function Charts() {
                 />
             )}
             {summarize && <SummaryPerYear year={year} />}
+            {<LineChartPulse />}
         </>
     )
 }
