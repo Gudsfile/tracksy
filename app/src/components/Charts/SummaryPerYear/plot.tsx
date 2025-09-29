@@ -7,23 +7,19 @@ export function buildPlot(
 ): ReturnType<typeof Plot.plot> {
     return Plot.plot({
         title: 'Portition of new streams',
-        y: { grid: true },
+        axis: null,
+        marginTop: 20,
+        marginBottom: 70,
         color: { legend: true },
         marks: [
-            Plot.rectY(
-                data,
-                Plot.binX<{ y: string; fill: string; tip: boolean }>(
-                    { y: 'sum' },
-                    {
-                        x: 'year',
-                        y: 'count_streams',
-                        fill: 'type',
-                        tip: true,
-                        interval: 1,
-                    }
-                )
-            ),
-            Plot.ruleY([0]),
+            Plot.waffleY(data, {
+                x: 'year',
+                y: 'count_streams',
+                fill: 'type',
+                unit: 100,
+                tip: true,
+                rx: '100%',
+            }),
         ],
     })
 }
