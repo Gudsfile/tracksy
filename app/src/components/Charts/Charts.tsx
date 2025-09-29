@@ -48,7 +48,7 @@ export function Charts() {
                     maxValue={Number(summarize.max_count_hourly_stream)}
                 />
             )}
-            <SummaryPerYear />
+            {summarize && <SummaryPerYear year={year} />}
         </>
     )
 }
