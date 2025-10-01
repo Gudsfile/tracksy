@@ -2,6 +2,7 @@ name: App preview
 
 on:
     pull_request:
+        types: [labeled]
         paths:
           - "app/**"
           - ".github/workflows/deploy-app-preview.yml"
@@ -16,6 +17,7 @@ jobs:
     app:
         name: Audit, build and deploy
         runs-on: ubuntu-latest
+        if: contains(github.event.label.name, 'deploy-preview')
         defaults:
           run:
             working-directory: ./app
