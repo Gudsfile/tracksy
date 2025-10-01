@@ -10,6 +10,13 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      npm-packages:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "uv"
     directory: "/synthetic-datasets"
@@ -41,3 +48,10 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
