@@ -5,6 +5,7 @@ on:
         paths:
           - "app/**"
           - ".github/workflows/deploy-app-preview.yml"
+    workflow_dispatch:
 
 permissions:
     checks: write
