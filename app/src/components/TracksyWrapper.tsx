@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { getDB } from '../db/getDB'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
 import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
-import { Charts } from './Charts/Charts'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 import { DemoButton } from './DemoButton/DemoButton'
 import { useDemo } from '../hooks/useDemo'
+import { Results } from './Results/Results'
 
 interface TracksyWrapperProps {
     initialDb?: DuckdbAppType | null
@@ -56,7 +56,7 @@ export function TracksyWrapper({
                     />
                 )}
             {db && isDataDropped && !isDataReady && <Spinner />}
-            {db && (isDataReady || isDemoReady) && <Charts />}
+            {db && (isDataReady || isDemoReady) && <Results />}
         </>
     )
 }
