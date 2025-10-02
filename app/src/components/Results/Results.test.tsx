@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { Results } from './Results'
 
 vi.mock('../Charts/Charts', () => ({
@@ -10,53 +9,43 @@ vi.mock('../Charts/Charts', () => ({
 describe('Results Component', () => {
     it('renders properly', () => {
         render(<Results />)
-
         // Check that both buttons are rendered
-        expect(
-            screen.getByRole('button', { name: /simple view/i })
-        ).toBeInTheDocument()
-        expect(
-            screen.getByRole('button', { name: /expert view/i })
-        ).toBeInTheDocument()
+        screen.getByRole('button', { name: 'Simple View' })
+        screen.getByRole('button', { name: 'Expert View' })
     })
 
-    it('switches to simple view when Simple View button is clicked', async () => {
-        const user = userEvent.setup()
+    it('switches to simple view when Simple View button is clicked', () => {
         render(<Results />)
-
         const simpleButton = screen.getByRole('button', {
-            name: /simple view/i,
+            name: 'Simple View',
         })
 
-        await user.click(simpleButton)
+        fireEvent.click(simpleButton)
 
         // Simple view content should be visible
-        expect(screen.getByText('simple view')).toBeInTheDocument()
-
+        screen.getByText('simple view')
         // Charts component should not be visible
-        expect(screen.queryByTestId('charts')).not.toBeInTheDocument()
+        expect(screen.queryByTestId('charts')).toBeNull()
     })
 
-    it('switches to expert view when Expert View button is clicked', async () => {
-        const user = userEvent.setup()
+    it('switches to expert view when Expert View button is clicked', () => {
         render(<Results />)
 
         // First switch to simple view
         const simpleButton = screen.getByRole('button', {
-            name: /simple view/i,
+            name: 'Simple View',
         })
-        await user.click(simpleButton)
+        fireEvent.click(simpleButton)
 
         // Then switch back to expert view
         const expertButton = screen.getByRole('button', {
-            name: /expert view/i,
+            name: 'Expert View',
         })
-        await user.click(expertButton)
+        fireEvent.click(expertButton)
 
         // Charts component should be visible again
-        expect(screen.getByTestId('charts')).toBeInTheDocument()
-
+        screen.getByTestId('charts')
         // Simple view content should not be visible
-        expect(screen.queryByText('simple view')).not.toBeInTheDocument()
+        expect(screen.queryByText('simple view')).toBeNull()
     })
 })
