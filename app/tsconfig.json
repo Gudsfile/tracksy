@@ -3,7 +3,8 @@
     "compilerOptions": {
         "jsx": "react-jsx",
         "jsxImportSource": "react",
-        "verbatimModuleSyntax": false
+        "verbatimModuleSyntax": false,
+        "types": ["@testing-library/jest-dom"]
     },
-    "exclude": ["node_modules", "dist", "public", "**/*.test.tsx"]
+    "exclude": ["node_modules", "dist", "public"]
 }
