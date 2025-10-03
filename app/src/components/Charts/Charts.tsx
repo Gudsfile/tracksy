@@ -23,18 +23,11 @@ export function Charts() {
 
     useEffect(() => {
         if (summarize)
-            setYear(new Date(summarize.min_datetime as number).getFullYear())
+            setYear(new Date(summarize.max_datetime as number).getFullYear())
     }, [summarize])
 
     return (
         <>
-            <StreamPerMonth />
-            {summarize && (
-                <StreamPerHour
-                    year={year}
-                    maxValue={Number(summarize.max_count_hourly_stream)}
-                />
-            )}
             {summarize && (
                 <RangeSlider
                     value={year}
@@ -48,7 +41,14 @@ export function Charts() {
                     step={1}
                 />
             )}
-            <SummaryPerYear />
+            {summarize && <StreamPerMonth year={year} />}
+            {summarize && (
+                <StreamPerHour
+                    year={year}
+                    maxValue={Number(summarize.max_count_hourly_stream)}
+                />
+            )}
+            {summarize && <SummaryPerYear year={year} />}
         </>
     )
 }

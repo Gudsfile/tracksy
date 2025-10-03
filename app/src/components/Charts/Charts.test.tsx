@@ -1,7 +1,6 @@
 import { describe, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { Charts } from './Charts'
-import React from 'react'
 
 vi.mock('./StreamPerMonth', () => ({
     StreamPerMonth: () => <div data-testid="stream-per-month" />,
@@ -33,11 +32,11 @@ describe('Charts Component', () => {
     it('renders all Charts', async () => {
         render(<Charts />)
 
-        screen.getByTestId('stream-per-month')
-        screen.getByTestId('summary-per-year')
         await waitFor(() => {
-            screen.getByTestId('stream-per-hour')
             screen.getByTestId('range-slider')
+            screen.getByTestId('stream-per-hour')
+            screen.getByTestId('stream-per-month')
+            screen.getByTestId('summary-per-year')
         })
     })
 })
