@@ -1,19 +1,17 @@
-name: Deploy App Preview
+name: Build App
 
 on:
   pull_request:
-    types: [labeled]
-  workflow_dispatch:
+    paths:
+      - "app/**"
+      - ".github/workflows/deploy-app-preview.yml"
 
 permissions:
-  checks: write
   contents: read
-  pull-requests: write
 
 jobs:
   app:
-    name: Deploy App Preview
-    if: ${{ github.event.label.name == 'preview' }}
+    name: Test and Build App
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,15 +38,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Audit dependencies
+        continue-on-error: true
+        run: pnpm audit --prod
+
+      - name: Check format
+        run: pnpm run format:check
+
+      - name: Check Lint
+        run: pnpm run lint
+
+      - name: Check test
+        run: pnpm run test:coverage
+
       - name: Build project
         run: pnpm run build
-
-      - name: Deploy preview
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
-          projectId: tracksy-app
-          entryPoint: ./app
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks

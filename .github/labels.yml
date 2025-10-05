@@ -69,3 +69,5 @@
 - name: "hacktoberfest"
   color: "9393e6"
 
+- name: "preview"
+  color: "171f2b"
