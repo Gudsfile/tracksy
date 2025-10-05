@@ -67,7 +67,8 @@
   description: "To be discussed or developed before it's ready"
 
 - name: "hacktoberfest"
-  color: "9393e6"
+  color: "000000"
 
 - name: "preview"
   color: "171f2b"
+  description: "Deploy the app preview"
