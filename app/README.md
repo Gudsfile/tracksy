@@ -2,6 +2,8 @@
 
 Front end of Tracksy based on [Astro](https://docs.astro.build/en/getting-started/) and use [DuckDB](https://duckdb.org/docs/) as embedded database.
 
+## ⏩ Quick Start
+
 Run the application locally with:
 
 ```shell
@@ -11,6 +13,8 @@ pnpm dev
 ```
 
 Go to [`http://localhost:4321/`](http://localhost:4321/) and upload your downloaded file.
+
+> **Note:** To enable Spotify integration features, you'll need to configure your Spotify Client ID. See the **[Development Guide](../DEVELOPMENT.md#spotify-api-configuration)** for detailed instructions on how to retrieve and configure your Spotify Client ID.
 
 ## 🚀 Project Structure
 
