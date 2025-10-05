@@ -46,7 +46,7 @@ export function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(cycleTheme(theme))}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 shadow-sm"
             aria-label={`Current theme: ${label}. Click to change theme.`}
             title={label}
         >
