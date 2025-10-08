@@ -1,30 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import { TracksyWrapper } from '../components/TracksyWrapper'
-import { SpotifyAuth } from '../components/Spotify/SpotifyAuth'
-import { ThemeToggle } from '../components/ThemeToggle/ThemeToggle'
+import { App } from '../components/App'
 ---
 
 <Layout title="Tracksy">
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 relative">
-        <!-- Theme toggle button -->
-        <div class="absolute top-4 left-4">
-            <ThemeToggle client:only="react" />
-        </div>
-
-        <!-- Connect to Spotify button -->
-        <div class="absolute top-4 right-4 hidden">
-            <SpotifyAuth client:only="react" />
-        </div>
-
-        <!-- Main content area -->
-        <div class="flex items-center justify-center min-h-screen">
-            <div class="max-w-lg mx-auto">
-                <h1 class="text-xl font-bold text-center mb-4 dark:text-white">
-                    Tracksy
-                </h1>
-                <TracksyWrapper client:only="react" />
-            </div>
-        </div>
-    </div>
+    <App client:only="react" />
 </Layout>

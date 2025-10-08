@@ -3,12 +3,19 @@ import type { Table } from 'apache-arrow'
 import { QueryResult } from './query'
 
 export function buildPlot(
-    data: Table<QueryResult>
+    data: Table<QueryResult>,
+    isDark = false
 ): ReturnType<typeof Plot.plot> {
     return Plot.plot({
         title: 'Portition of new streams',
         y: { grid: true },
-        color: { legend: true },
+        color: {
+            legend: true,
+            scheme: isDark ? 'tableau10' : 'tableau10',
+        },
+        style: {
+            background: 'transparent',
+        },
         marks: [
             Plot.rectY(
                 data,

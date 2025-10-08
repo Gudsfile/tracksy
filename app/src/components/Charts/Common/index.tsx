@@ -1,13 +1,14 @@
 // Common part of all charts components like StreamPerHour, StreamPerDay, etc.
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import { queryDB } from '../../../db/queries/queryDB'
 import type { Table, TypeMap } from 'apache-arrow'
 import { plot } from '@observablehq/plot'
+import { ThemeContext } from '../../../hooks/ThemeContext'
 
 export interface CommonProps<T extends TypeMap> {
     query: string
-    buildPlot: (data: Table<T>) => ReturnType<typeof plot>
+    buildPlot: (data: Table<T>, isDark?: boolean) => ReturnType<typeof plot>
 }
 
 export function Common<T extends TypeMap>({
@@ -15,6 +16,7 @@ export function Common<T extends TypeMap>({
     buildPlot,
 }: CommonProps<T>) {
     const [data, setData] = useState<Table<T> | undefined>()
+    const { effectiveTheme } = useContext(ThemeContext)
 
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -28,14 +30,16 @@ export function Common<T extends TypeMap>({
 
     useEffect(() => {
         if (!data) return
-        const element = buildPlot(data)
+        const element = buildPlot(data, effectiveTheme === 'dark')
         if (containerRef.current) {
             containerRef.current.appendChild(element)
         }
         return () => {
             element.remove()
         }
-    }, [data, buildPlot])
+    }, [data, buildPlot, effectiveTheme])
 
-    return <div ref={containerRef} />
+    return (
+        <div ref={containerRef} className="text-gray-900 dark:text-gray-100" />
+    )
 }

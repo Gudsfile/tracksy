@@ -49,4 +49,29 @@ const { title } = Astro.props
             Courier New,
             monospace;
     }
+
+    /* Observable Plot tooltip styling */
+    [aria-label][role='tooltip'] {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #d1d5db !important;
+        box-shadow:
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .dark [aria-label][role='tooltip'] {
+        background: #1f2937 !important;
+        color: #f3f4f6 !important;
+        border: 1px solid #4b5563 !important;
+    }
+
+    /* Observable Plot legend styling for dark mode */
+    .dark svg text {
+        fill: #e5e7eb;
+    }
+
+    .dark svg [aria-label='title'] {
+        fill: #e5e7eb;
+    }
 </style>

@@ -1,4 +1,5 @@
-import { useTheme } from '../../hooks/useTheme'
+import { useContext } from 'react'
+import { ThemeContext } from '../../hooks/ThemeContext'
 import { THEMES, type Theme } from '../../hooks/theme.constants'
 
 const THEME_CONFIG = {
@@ -38,7 +39,7 @@ const cycleTheme = (current: Theme): Theme => {
 }
 
 export function ThemeToggle() {
-    const { theme, setTheme, effectiveTheme } = useTheme()
+    const { theme, setTheme, effectiveTheme } = useContext(ThemeContext)
 
     const config = THEME_CONFIG[theme]
     const label = config.label(effectiveTheme)

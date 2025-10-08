@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { ThemeToggle } from './ThemeToggle'
+import { ThemeProvider } from '../../hooks/ThemeContext'
 
 // Mock the useTheme hook
 vi.mock('../../hooks/useTheme', () => ({
@@ -23,7 +24,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'light',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         screen.getByText('System (light)')
     })
@@ -35,7 +40,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'light',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         screen.getByText('Light')
     })
@@ -47,7 +56,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'dark',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         screen.getByText('Dark')
     })
@@ -59,7 +72,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'light',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         const button = screen.getByRole('button')
         fireEvent.click(button)
@@ -74,7 +91,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'dark',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         const button = screen.getByRole('button')
         fireEvent.click(button)
@@ -89,7 +110,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'light',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         const button = screen.getByRole('button')
         fireEvent.click(button)
@@ -104,7 +129,11 @@ describe('ThemeToggle', () => {
             effectiveTheme: 'light',
         })
 
-        render(<ThemeToggle />)
+        render(
+            <ThemeProvider>
+                <ThemeToggle />
+            </ThemeProvider>
+        )
 
         const button = screen.getByRole('button')
         expect(button.getAttribute('aria-label')).toBe(

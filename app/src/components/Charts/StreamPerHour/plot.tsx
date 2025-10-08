@@ -4,12 +4,14 @@ import type { Table } from 'apache-arrow'
 import type { QueryResult } from './query'
 
 export function buildPlotWrapper(maxValue: number) {
-    return (data: Table<QueryResult>) => buildPlot(data, maxValue)
+    return (data: Table<QueryResult>, isDark?: boolean) =>
+        buildPlot(data, maxValue, isDark)
 }
 
 function buildPlot(
     data: Table<QueryResult>,
-    maxValue: number | undefined
+    maxValue: number | undefined,
+    isDark = false
 ): ReturnType<typeof Plot.plot> {
     const longitude = d3
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
@@ -27,14 +29,17 @@ function buildPlot(
             rotate: [0, -90],
             domain: d3.geoCircle().center([0, 90]).radius(0.625)(),
         },
+        style: {
+            background: 'transparent',
+        },
         marks: [
             // grey discs
             Plot.geo([0.5, 0.4, 0.3, 0.2, 0.1], {
                 geometry: (r) => d3.geoCircle().center([0, 90]).radius(r)(),
-                stroke: 'black',
-                fill: 'black',
-                strokeOpacity: 0.3,
-                fillOpacity: 0.03,
+                stroke: isDark ? 'white' : 'black',
+                fill: isDark ? 'white' : 'black',
+                strokeOpacity: isDark ? 0.2 : 0.3,
+                fillOpacity: isDark ? 0.02 : 0.03,
                 strokeWidth: 0.5,
             }),
             // white axes
@@ -43,8 +48,8 @@ function buildPlot(
                 y1: 90 - 0.57,
                 x2: 0,
                 y2: 90,
-                stroke: 'white',
-                strokeOpacity: 0.5,
+                stroke: isDark ? 'white' : 'white',
+                strokeOpacity: isDark ? 0.3 : 0.5,
                 strokeWidth: 2.5,
             }),
             // hours
@@ -84,7 +89,7 @@ function buildPlot(
                     textAnchor: 'start',
                     dx: 4,
                     fill: 'currentColor',
-                    stroke: 'white',
+                    stroke: isDark ? 'black' : 'white',
                     maxRadius: 10,
                 })
             ),
