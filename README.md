@@ -30,14 +30,9 @@ We don't want to help you understand your data without knowing your data.
 
 ### For Developers
 
-If you want to contribute or run Tracksy locally, check out our **[Development Guide](DEVELOPMENT.md)** which includes:
+For detailed information about development setup:
 
-- Setting up your development environment
-- How to retrieve and configure your Spotify Client ID
-
-For more detailed information about specific components:
-
-- [`app/README.md`](app/#tracksy-app) - Front-end architecture and components
+- [`app/README.md`](app/#tracksy-app) - Front-end architecture, components, and Spotify API setup
 - [`synthetic-datasets/README.md`](synthetic-datasets/) - Data generation details
 
 ## Usage

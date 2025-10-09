@@ -14,7 +14,32 @@ pnpm dev
 
 Go to [`http://localhost:4321/`](http://localhost:4321/) and upload your downloaded file.
 
-> **Note:** To enable Spotify integration features, you'll need to configure your Spotify Client ID. See the **[Development Guide](../DEVELOPMENT.md#spotify-api-configuration)** for detailed instructions on how to retrieve and configure your Spotify Client ID.
+### 🎵 Spotify API Configuration
+
+To enable Spotify integration features locally, you'll need to configure your Spotify Client ID:
+
+1. **Create a Spotify Developer App**
+    - Go to [https://developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) and log in with your Spotify account
+    - Click **"Create an App"**
+    - Fill in the app name (e.g., "Tracksy Local Dev") and description
+    - Click **"CREATE"**
+
+2. **Configure Redirect URI**
+    - On your app overview page, click **"Edit Settings"**
+    - Add `http://localhost:4321/` to **Redirect URIs**
+    - Click **"SAVE"**
+
+3. **Get Your Client ID**
+    - Copy the **Client ID** displayed on your app overview page
+
+4. **Configure Environment**
+    - Copy `.env.example` to `.env` in the `app/` directory
+    - Update `PUBLIC_SPOTIFY_CLIENT_ID` with your Client ID:
+        ```bash
+        PUBLIC_SPOTIFY_CLIENT_ID=your_actual_client_id_here
+        ```
+
+> **Note:** You do NOT need the Client Secret. Tracksy uses the PKCE flow which only requires the Client ID.
 
 ## 🚀 Project Structure
 
