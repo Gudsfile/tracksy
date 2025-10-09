@@ -25,15 +25,10 @@ Inside of this project, you'll see the following folders and files:
 
 `app/` is the front end. It's an Astro project using DuckDB for data storage. This means that your uploaded data stays with you, client-side.
 We don't want to help you understand your data without knowing your data.
+For developers or curious, take a look at [`app/README.md`](app/#tracksy-app) for more details on development.
 
 `synthetic-datasets/` is use to generate datasets to test the Tracksy application.
-
-### For Developers
-
-For detailed information about development setup:
-
-- [`app/README.md`](app/#tracksy-app) - Front-end architecture, components, and Spotify API setup
-- [`synthetic-datasets/README.md`](synthetic-datasets/) - Data generation details
+For developers or curious, take a look at [`synthetic-datasets/README.md`](synthetic-datasets/) for more details on development.
 
 ## Usage
 
