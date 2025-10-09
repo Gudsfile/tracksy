@@ -34,6 +34,12 @@ const { title } = Astro.props
             white 60%
         );
     }
+    /* This is jank. There's got to be a better way to do this with https://observablehq.com/plot/features/plots#other-options
+    but just couldn't figure it out at the time 10/8/2025 ☹️ */
+    .dark g[aria-label='tip'] path {
+        /* little less than black */
+        fill: hsl(0 0% 10%);
+    }
     html {
         font-family: system-ui, sans-serif;
         background: #13151a;
@@ -48,30 +54,5 @@ const { title } = Astro.props
             Bitstream Vera Sans Mono,
             Courier New,
             monospace;
-    }
-
-    /* Observable Plot tooltip styling */
-    [aria-label][role='tooltip'] {
-        background: white !important;
-        color: black !important;
-        border: 1px solid #d1d5db !important;
-        box-shadow:
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-    }
-
-    .dark [aria-label][role='tooltip'] {
-        background: #1f2937 !important;
-        color: #f3f4f6 !important;
-        border: 1px solid #4b5563 !important;
-    }
-
-    /* Observable Plot legend styling for dark mode */
-    .dark svg text {
-        fill: #e5e7eb;
-    }
-
-    .dark svg [aria-label='title'] {
-        fill: #e5e7eb;
     }
 </style>
