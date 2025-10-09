@@ -9,7 +9,7 @@ on:
       - "synthetic-datasets/synthetic_datasets/**/*.py"
       - "synthetic-datasets/pyproject.toml"
       - "synthetic-datasets/uv.lock"
-      - ".github/workflows/test-synthetic-datasets.yml"
+      - ".github/workflows/datasets-test-synthetic.yml"
 
 permissions:
   contents: read

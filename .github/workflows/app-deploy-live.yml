@@ -1,19 +1,17 @@
-name: Deploy App Preview
+name: App live
 
 on:
-  pull_request:
-    types: [labeled]
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
-  checks: write
   contents: read
-  pull-requests: write
 
 jobs:
   app:
-    name: Deploy App Preview
-    if: ${{ github.event.label.name == 'preview' }}
+    name: Deploy App to Live
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -31,8 +29,8 @@ jobs:
         with:
           run_install: false
 
-      - name: Use Node 22
-        uses: actions/setup-node@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: "pnpm"
@@ -40,14 +38,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Check format
+        run: pnpm run format:check
+
+      - name: Check Lint
+        run: pnpm run lint
+
       - name: Build project
         run: pnpm run build
 
-      - name: Deploy preview
+      - name: Deploy app
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
+          channelId: live
           projectId: tracksy-app
           entryPoint: ./app
         env:

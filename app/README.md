@@ -67,19 +67,19 @@ stateDiagram-v2
   [*] --> Nothing:Mount
   Nothing --> Dropzone_and_DemoButton:DB initialized
   Dropzone_and_DemoButton --> Spinner:File uploaded
-  Dropzone_and_DemoButton --> Dropzone_and_Charts:Button clicked
-  Spinner --> Dropzone_and_Charts:Data inserted
-  Dropzone_and_Charts --> Spinner:File uploaded
+  Dropzone_and_DemoButton --> Dropzone_RangeSlider_and_Charts:Button clicked
+  Spinner --> Dropzone_RangeSlider_and_Charts:Data inserted
+  Dropzone_RangeSlider_and_Charts --> Spinner:File uploaded
 
   Nothing:Nothing
   Dropzone_and_DemoButton:Dropzone_and_DemoButton
   Spinner:Spinner
-  Dropzone_and_Charts:Dropzone_and_Charts
+  Dropzone_RangeSlider_and_Charts:Dropzone_RangeSlider_and_Charts
 
 Nothing:Renders nothing
 Dropzone_and_DemoButton:Shows the file dropzone and the demo button
 Spinner:Shows a spinner while processing
-Dropzone_and_Charts:Shows the charts and the dropzone for further uploads
+Dropzone_RangeSlider_and_Charts:Shows the charts and the dropzone for further uploads
 ```
 
 ### 📊 Charts Component
@@ -94,14 +94,18 @@ sequenceDiagram
   actor StreamPerHour
   actor RangeSlider
 
-  Charts ->> SummaryPerYear: render
+  Charts ->> SummaryPerYear: render with default year
   Charts ->> StreamPerHour: render with default year
   Charts ->> RangeSlider: render with default year
-  Charts ->> StreamPerMonth: render
+  Charts ->> StreamPerMonth: render with default year
   RangeSlider ->> Charts: year=2006
   Charts ->> StreamPerHour: render with year=2006
+  Charts ->> StreamPerMonth: render with year=2006
+  Charts ->> SummaryPerYear: render with year=2006
   RangeSlider ->> Charts: year=2007
   Charts ->> StreamPerHour: render with year=2007
+  Charts ->> StreamPerMonth: render with year=2007
+  Charts ->> SummaryPerYear: render with year=2007
 ```
 
 This flow shows how user interaction leads to the rendering of dynamic charts based on fetched data.

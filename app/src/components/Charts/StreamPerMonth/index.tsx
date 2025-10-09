@@ -1,7 +1,13 @@
-import { type QueryResult, query } from './query'
+import { type QueryResult, queryByYear } from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 
-export function StreamPerMonth() {
-    return <Common<QueryResult> query={query} buildPlot={buildPlot} />
+interface StreamPerMonthProps {
+    year: number
+}
+
+export function StreamPerMonth({ year }: StreamPerMonthProps) {
+    return (
+        <Common<QueryResult> query={queryByYear(year)} buildPlot={buildPlot} />
+    )
 }
