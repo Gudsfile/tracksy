@@ -1,7 +1,13 @@
-import { type QueryResult, query } from './query'
+import { type QueryResult, queryByYear } from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 
-export function SummaryPerYear() {
-    return <Common<QueryResult> query={query} buildPlot={buildPlot} />
+interface SummaryPerYearProps {
+    year: number
+}
+
+export function SummaryPerYear({ year }: SummaryPerYearProps) {
+    return (
+        <Common<QueryResult> query={queryByYear(year)} buildPlot={buildPlot} />
+    )
 }
