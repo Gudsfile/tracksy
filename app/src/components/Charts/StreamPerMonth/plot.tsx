@@ -1,7 +1,7 @@
 import * as Plot from '@observablehq/plot'
 import { QueryResult } from './query'
-import { formatDuration } from './hooks/formatDuration'
-import { formatMonthYear } from './hooks/formatMonthYear'
+import { formatDuration } from '../../../utils/formatDuration'
+import { formatMonthYear } from '../../../utils/formatMonthYear'
 import * as d3 from 'd3'
 
 export function buildPlot(
