@@ -10,10 +10,9 @@ export interface CommonProps<T> {
     buildPlot: (data: T[], isDark?: boolean) => ReturnType<typeof plot>
 }
 
-export function Common<T extends Record<string, string | number | null>>({
-    query,
-    buildPlot,
-}: CommonProps<T>) {
+export function Common<
+    T extends Record<string, string | number | bigint | null>,
+>({ query, buildPlot }: CommonProps<T>) {
     const [data, setData] = useState<T[] | undefined>()
     const { effectiveTheme } = useContext(ThemeContext)
 

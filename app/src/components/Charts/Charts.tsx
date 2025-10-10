@@ -5,6 +5,7 @@ import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect } from 'react'
 import { query, type SummarizeData } from './summarizeQuery'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
+import { TopTracks } from './TopTracks'
 
 export function Charts() {
     const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
@@ -42,6 +43,7 @@ export function Charts() {
                         maxValue={Number(summarize.max_count_hourly_stream)}
                     />
                     <SummaryPerYear year={year} />
+                    <TopTracks year={year} />
                 </>
             )}
         </>
