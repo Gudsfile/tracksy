@@ -8,7 +8,7 @@ export function buildPlot(
     return Plot.plot({
         x: { type: 'utc' },
         y: { grid: true },
-        color: { scheme: isDark ? 'warm' : 'blues' },
+        color: { scheme: isDark ? 'warm' : 'viridis' },
         style: {
             background: 'transparent',
         },
@@ -21,8 +21,8 @@ export function buildPlot(
                     fill: Plot.ChannelValueSpec
                     tip: boolean
                 }>(
-                    { y: 'sum' },
-                    { x: 'ts', y: 'ms_played', fill: true, tip: true }
+                    { y: 'sum', interval: 'month' },
+                    { x: 'ts', y: 'ms_played', fill: 'ts', tip: true }
                 )
             ),
         ],
