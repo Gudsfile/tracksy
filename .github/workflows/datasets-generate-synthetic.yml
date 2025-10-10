@@ -42,6 +42,7 @@ jobs:
       - name: Generate datasets
         run: |
           uv run generate 1000
+          uv run generate 25000
           uv run generate 500000
 
       - name: Clone HF repo and move datasets into it
