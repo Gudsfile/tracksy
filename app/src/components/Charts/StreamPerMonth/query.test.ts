@@ -33,16 +33,21 @@ beforeEach(async () => {
 function generateExpectedMonths(
     start: string,
     end: string,
-    overrides: Record<string, number> = {}
+    overrides: Record<string, { ms_played: number; count_streams: number }> = {}
 ) {
     const startDate = new Date(`${start}T00:00:00Z`)
     const endDate = new Date(`${end}T00:00:00Z`)
-    const result: { ts: string; ms_played: number }[] = []
+    const result: { ts: string; ms_played: number; count_streams: number }[] =
+        []
 
     const currentDate = new Date(startDate.getTime())
     while (currentDate <= endDate) {
         const dateString = currentDate.toISOString().slice(0, 10)
-        result.push({ ts: dateString, ms_played: overrides[dateString] || 0.0 })
+        result.push({
+            ts: dateString,
+            ms_played: overrides[dateString]?.ms_played || 0.0,
+            count_streams: overrides[dateString]?.count_streams || 0,
+        })
         currentDate.setUTCMonth(currentDate.getUTCMonth() + 1)
     }
     return result
@@ -54,12 +59,12 @@ describe('StreamPerMonth query', () => {
         const rows = result.getRowObjectsJson()
 
         const expected = generateExpectedMonths('2006-01-01', '2025-12-01', {
-            '2006-01-01': 3.3,
-            '2006-04-01': 2.2,
-            '2006-06-01': 1.1,
-            '2006-10-01': 2.2,
-            '2006-12-01': 1.1,
-            '2025-12-01': 1.1,
+            '2006-01-01': { ms_played: 3.3, count_streams: 1 },
+            '2006-04-01': { ms_played: 2.2, count_streams: 1 },
+            '2006-06-01': { ms_played: 1.1, count_streams: 1 },
+            '2006-10-01': { ms_played: 2.2, count_streams: 2 },
+            '2006-12-01': { ms_played: 1.1, count_streams: 1 },
+            '2025-12-01': { ms_played: 1.1, count_streams: 1 },
         })
 
         expect(rows).toEqual(expected)
@@ -70,18 +75,18 @@ describe('StreamPerMonth query', () => {
         const rows = result.getRowObjectsJson()
 
         expect(rows).toEqual([
-            { ts: '2006-01-01', ms_played: 3.3 },
-            { ts: '2006-02-01', ms_played: 0.0 },
-            { ts: '2006-03-01', ms_played: 0.0 },
-            { ts: '2006-04-01', ms_played: 2.2 },
-            { ts: '2006-05-01', ms_played: 0.0 },
-            { ts: '2006-06-01', ms_played: 1.1 },
-            { ts: '2006-07-01', ms_played: 0.0 },
-            { ts: '2006-08-01', ms_played: 0.0 },
-            { ts: '2006-09-01', ms_played: 0.0 },
-            { ts: '2006-10-01', ms_played: 2.2 },
-            { ts: '2006-11-01', ms_played: 0.0 },
-            { ts: '2006-12-01', ms_played: 1.1 },
+            { ts: '2006-01-01', ms_played: 3.3, count_streams: 1 },
+            { ts: '2006-02-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-03-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-04-01', ms_played: 2.2, count_streams: 1 },
+            { ts: '2006-05-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-06-01', ms_played: 1.1, count_streams: 1 },
+            { ts: '2006-07-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-08-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-09-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-10-01', ms_played: 2.2, count_streams: 2 },
+            { ts: '2006-11-01', ms_played: 0.0, count_streams: 0 },
+            { ts: '2006-12-01', ms_played: 1.1, count_streams: 1 },
         ])
     })
 })

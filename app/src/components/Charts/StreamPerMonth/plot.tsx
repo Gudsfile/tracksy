@@ -25,10 +25,14 @@ export function buildPlot(
                 x: 'ts',
                 y: 'ms_played',
                 fill: 'ts',
+                channels: {
+                    count_streams: 'count_streams',
+                },
                 tip: {
                     format: {
                         y: formatDuration,
                         x: formatMonthYear,
+                        count_streams: true,
                     },
                 },
             }),
