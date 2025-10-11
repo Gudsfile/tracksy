@@ -1,5 +1,7 @@
 import * as Plot from '@observablehq/plot'
 import { QueryResult } from './query'
+import { formatDuration } from './hooks/formatDuration'
+import { formatMonthYear } from './hooks/formatMonthYear'
 
 export function buildPlot(
     data: QueryResult[],
@@ -7,7 +9,7 @@ export function buildPlot(
 ): ReturnType<typeof Plot.plot> {
     return Plot.plot({
         x: { type: 'utc', label: null },
-        y: { grid: true, label: null },
+        y: { grid: true, label: null, tickFormat: formatDuration },
         color: { scheme: isDark ? 'warm' : 'viridis' },
         style: {
             background: 'transparent',
@@ -20,10 +22,20 @@ export function buildPlot(
                 Plot.binX<{
                     y: string
                     fill: Plot.ChannelValueSpec
-                    tip: boolean
+                    tip: Plot.TipOptions
                 }>(
                     { y: 'sum', interval: 'month' },
-                    { x: 'ts', y: 'ms_played', fill: 'ts', tip: true }
+                    {
+                        x: 'ts',
+                        y: 'ms_played',
+                        fill: 'ts',
+                        tip: {
+                            format: {
+                                y: formatDuration,
+                                x: formatMonthYear,
+                            },
+                        },
+                    }
                 )
             ),
         ],
