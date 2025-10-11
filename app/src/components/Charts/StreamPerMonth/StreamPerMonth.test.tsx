@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { StreamPerMonth } from '.'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
 
@@ -23,6 +23,5 @@ describe('StreamPerMonth Component', () => {
         await waitFor(() => {
             expect(container.querySelectorAll('svg')).toHaveLength(1)
         })
-        screen.getByText('ms_played')
     })
 })

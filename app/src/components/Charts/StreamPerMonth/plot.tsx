@@ -6,12 +6,13 @@ export function buildPlot(
     isDark = false
 ): ReturnType<typeof Plot.plot> {
     return Plot.plot({
-        x: { type: 'utc' },
-        y: { grid: true },
+        x: { type: 'utc', label: null },
+        y: { grid: true, label: null },
         color: { scheme: isDark ? 'warm' : 'viridis' },
         style: {
             background: 'transparent',
         },
+        marginLeft: 100,
         marks: [
             Plot.ruleY([0]),
             Plot.rectY(
