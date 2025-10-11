@@ -39,7 +39,8 @@ To enable Spotify integration features locally, you'll need to configure your Sp
         PUBLIC_SPOTIFY_CLIENT_ID=your_actual_client_id_here
         ```
 
-> **Note:** You do NOT need the Client Secret. Tracksy uses the PKCE flow which only requires the Client ID.
+> [!NOTE]  
+> You do NOT need the Client Secret. Tracksy uses the PKCE flow which only requires the Client ID.
 
 ## 🚀 Project Structure
 
