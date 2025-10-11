@@ -8,7 +8,11 @@ export function buildPlot(
     isDark = false
 ): ReturnType<typeof Plot.plot> {
     return Plot.plot({
-        x: { type: 'utc', label: null },
+        x: {
+            type: 'band',
+            label: null,
+            transform: Plot.utcInterval('month').floor,
+        },
         y: { grid: true, label: null, tickFormat: formatDuration },
         color: { scheme: isDark ? 'warm' : 'viridis' },
         style: {
@@ -17,27 +21,17 @@ export function buildPlot(
         marginLeft: 100,
         marks: [
             Plot.ruleY([0]),
-            Plot.rectY(
-                data,
-                Plot.binX<{
-                    y: string
-                    fill: Plot.ChannelValueSpec
-                    tip: Plot.TipOptions
-                }>(
-                    { y: 'sum', interval: 'month' },
-                    {
-                        x: 'ts',
-                        y: 'ms_played',
-                        fill: 'ts',
-                        tip: {
-                            format: {
-                                y: formatDuration,
-                                x: formatMonthYear,
-                            },
-                        },
-                    }
-                )
-            ),
+            Plot.barY(data, {
+                x: 'ts',
+                y: 'ms_played',
+                fill: 'ts',
+                tip: {
+                    format: {
+                        y: formatDuration,
+                        x: formatMonthYear,
+                    },
+                },
+            }),
         ],
     })
 }
