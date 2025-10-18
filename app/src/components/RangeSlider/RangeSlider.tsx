@@ -53,7 +53,7 @@ export function RangeSlider({
                 />
             </div>
 
-            <div className="flex justify-between text-sm text-gray-500">
+            <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                 <span>{min}</span>
                 <span>{max}</span>
             </div>

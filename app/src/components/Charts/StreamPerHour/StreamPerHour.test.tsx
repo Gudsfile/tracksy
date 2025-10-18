@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { StreamPerHour } from '.'
 import React from 'react'
+import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 const queryResult = [
     { count_stream: 10, hour: 0 },
@@ -25,7 +26,11 @@ vi.mock('../../../db/getDB', () => ({
 
 describe('StreamPerHour Component', () => {
     it('should render the svg', async () => {
-        const { container } = render(<StreamPerHour />)
+        const { container } = render(
+            <ThemeProvider>
+                <StreamPerHour year={2020} maxValue={100} />
+            </ThemeProvider>
+        )
 
         await waitFor(() => {
             expect(container.querySelectorAll('svg')).toHaveLength(1)
