@@ -4,14 +4,14 @@ import { StreamPerHour } from '.'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 const queryResult = [
-    { count_stream: 10, hour: 0 },
-    { count_stream: 12, hour: 1 },
-    { count_stream: 14, hour: 2 },
-    { count_stream: 16, hour: 3 },
-    { count_stream: 18, hour: 4 },
-    { count_stream: 20, hour: 5 },
-    { count_stream: 2, hour: 6 },
-    { count_stream: 4, hour: 7 },
+    { count_streams: 10, hour: 0, ms_played: 0 },
+    { count_streams: 12, hour: 1, ms_played: 1 },
+    { count_streams: 14, hour: 2, ms_played: 2 },
+    { count_streams: 16, hour: 3, ms_played: 3 },
+    { count_streams: 18, hour: 4, ms_played: 4 },
+    { count_streams: 20, hour: 5, ms_played: 5 },
+    { count_streams: 2, hour: 6, ms_played: 6 },
+    { count_streams: 4, hour: 7, ms_played: 7 },
 ]
 
 vi.mock('../../../db/queries/queryDB', () => ({
@@ -40,6 +40,6 @@ describe('StreamPerHour Component', () => {
                 container.querySelectorAll('.stream-per-hour-points circle')
             ).toHaveLength(8)
         })
-        screen.getByText('Streams per hour')
+        screen.getByText('Number of streams per hour')
     })
 })
