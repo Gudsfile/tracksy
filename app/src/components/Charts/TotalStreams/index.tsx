@@ -1,9 +1,9 @@
-import { QueryResult, query } from './query'
-import { TopStreak as TopStreakPlot } from './TopStreak'
+import { type QueryResult, query } from './query'
 import { queryDBAsJSON } from '../../../db/queries/queryDB'
 import { useState, useEffect } from 'react'
+import { TotalStreams as TotalStreamsPlot } from './TotalStreams'
 
-export function TopStreak() {
+export function TotalStreams() {
     const [data, setData] = useState<QueryResult[] | undefined>()
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export function TopStreak() {
 
     return (
         <div className="p-4 my-4 border rounded-lg shadow-sm bg-white dark:bg-gray-900 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            <TopStreakPlot data={data} />
+            <TotalStreamsPlot data={data} />
         </div>
     )
 }
