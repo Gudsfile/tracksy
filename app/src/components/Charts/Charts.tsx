@@ -3,6 +3,7 @@ import { StreamPerHour } from './StreamPerHour'
 import { TopStreak } from './TopStreak'
 import { SummaryPerYear } from './SummaryPerYear'
 import { TotalStreams } from './TotalStreams'
+import { TopArtist } from './TopArtist'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect } from 'react'
 import { query, type SummarizeData } from './summarizeQuery'
@@ -30,9 +31,10 @@ export function Charts() {
 
     return (
         <>
-            <div className="flex justify-around items-center">
+            <div className="flex flex-col md:flex-row gap-3 items-stretch">
                 <TopStreak />
                 <TotalStreams />
+                <TopArtist />
             </div>
             {summarize && (
                 <>
