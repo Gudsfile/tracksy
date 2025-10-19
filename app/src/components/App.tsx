@@ -15,7 +15,7 @@ export function App() {
                 <div className="flex items-center justify-center min-h-screen">
                     <div className="max-w-4xl mx-auto">
                         <h1 className="text-xl font-bold text-center mb-4 dark:text-white">
-                            Tracksy
+                            <a href="/">Tracksy</a>
                         </h1>
                         <TracksyWrapper />
                     </div>
