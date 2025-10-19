@@ -33,7 +33,10 @@ export function Charts() {
                         max={new Date(summarize.max_datetime).getFullYear()}
                         step={1}
                     />
-                    <StreamPerMonth year={year} />
+                    <StreamPerMonth
+                        year={year}
+                        maxValue={summarize.max_monthly_duration}
+                    />
                     <StreamPerHour
                         year={year}
                         maxValue={Number(summarize.max_count_hourly_stream)}
