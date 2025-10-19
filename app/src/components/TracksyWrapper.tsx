@@ -5,6 +5,7 @@ import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 import { DemoButton } from './DemoButton/DemoButton'
+import { HowToButton } from './HowToButton/HowToButton'
 import { useDemo } from '../hooks/useDemo'
 import { Results } from './Results/Results'
 
@@ -19,6 +20,7 @@ export function TracksyWrapper({
     initialIsDataDropped = false,
     initialIsDataReady = false,
 }: TracksyWrapperProps) {
+    const [hoveredButton, setHoveredButton] = useState<string | null>(null)
     const [db, setDb] = useState<DuckdbAppType | null>(initialDb)
     const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
     const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
@@ -53,13 +55,32 @@ export function TracksyWrapper({
     return (
         <>
             {(!isDataDropped || isDataReady) && (
-                <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
-            )}
-            {!isDataDropped && !isDataReady && !isDemoReady && demoJsonUrl && (
-                <DemoButton
-                    label="Load demo data"
-                    handleClick={handleDemoButtonClick}
-                />
+                <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                    <div className="flex-grow transition-all duration-300">
+                        <DropzoneWrapper
+                            handleValidatedFiles={handleFileUpload}
+                        />
+                    </div>
+                    <div className="flex flex-col justify-center gap-4">
+                        <HowToButton
+                            label="How do I get my data?"
+                            reducedLabel="?"
+                            isHovered={hoveredButton === 'howto'}
+                            onMouseEnter={() => setHoveredButton('howto')}
+                            onMouseLeave={() => setHoveredButton(null)}
+                        />
+                        {demoJsonUrl && (
+                            <DemoButton
+                                label="Load demo data"
+                                reducedLabel="↓"
+                                handleClick={handleDemoButtonClick}
+                                isHovered={hoveredButton === 'demo'}
+                                onMouseEnter={() => setHoveredButton('demo')}
+                                onMouseLeave={() => setHoveredButton(null)}
+                            />
+                        )}
+                    </div>
+                </div>
             )}
             {isDataDropped && !isDataReady && <Spinner />}
             {(isDataReady || isDemoReady) && <Results />}
