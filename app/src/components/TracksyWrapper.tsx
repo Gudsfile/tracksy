@@ -5,6 +5,7 @@ import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
 import { Spinner } from './Spinner/Spinner'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 import { DemoButton } from './DemoButton/DemoButton'
+import { HowToButton } from './HowToButton/HowToButton'
 import { useDemo } from '../hooks/useDemo'
 import { Results } from './Results/Results'
 
@@ -53,13 +54,26 @@ export function TracksyWrapper({
     return (
         <>
             {(!isDataDropped || isDataReady) && (
-                <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
-            )}
-            {!isDataDropped && !isDataReady && !isDemoReady && demoJsonUrl && (
-                <DemoButton
-                    label="Load demo data"
-                    handleClick={handleDemoButtonClick}
-                />
+                <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                    <div className="flex-grow transition-all duration-300">
+                        <DropzoneWrapper
+                            handleValidatedFiles={handleFileUpload}
+                        />
+                    </div>
+                    <div className="flex flex-col justify-center gap-4">
+                        <HowToButton
+                            label="?"
+                            tooltip="How do I get my data?"
+                        />
+                        {demoJsonUrl && (
+                            <DemoButton
+                                label="↓"
+                                tooltip="Load demo data"
+                                handleClick={handleDemoButtonClick}
+                            />
+                        )}
+                    </div>
+                </div>
             )}
             {isDataDropped && !isDataReady && <Spinner />}
             {(isDataReady || isDemoReady) && <Results />}
