@@ -1,6 +1,7 @@
 import * as Plot from '@observablehq/plot'
 import * as d3 from 'd3'
 import type { QueryResult } from './query'
+import { formatDuration } from '../../../hooks/formatDuration'
 
 export function buildPlot(
     data: QueryResult[],
@@ -12,13 +13,13 @@ export function buildPlot(
         .padding(0.5)
         .align(1)
     const maxCountStream =
-        maxValue || d3.max(data, (d) => d.count_stream) || 100
+        maxValue || d3.max(data, (d) => d.count_streams) || 100
     const latitude = d3
         .scaleLinear()
         .domain([maxCountStream, 0])
         .range([0.5, 0])
     return Plot.plot({
-        title: 'Streams per hour',
+        title: 'Number of streams per hour',
         projection: {
             type: 'azimuthal-equidistant',
             rotate: [0, -90],
@@ -58,7 +59,7 @@ export function buildPlot(
             // areas
             Plot.area(data, {
                 x1: ({ hour }) => longitude(hour),
-                y1: ({ count_stream }) => 90 - latitude(count_stream),
+                y1: ({ count_streams }) => 90 - latitude(count_streams),
                 x2: 0,
                 y2: 90,
                 fill: true,
@@ -69,7 +70,7 @@ export function buildPlot(
             // points
             Plot.dot(data, {
                 x: ({ hour }) => longitude(hour),
-                y: ({ count_stream }) => 90 - latitude(count_stream),
+                y: ({ count_streams }) => 90 - latitude(count_streams),
                 fill: true,
                 stroke: 'white',
                 className: 'stream-per-hour-points',
@@ -79,8 +80,9 @@ export function buildPlot(
                 data,
                 Plot.pointer({
                     x: ({ hour }) => longitude(hour),
-                    y: ({ count_stream }) => 90 - latitude(count_stream),
-                    text: (d) => `${d.count_stream.toLocaleString()} stream(s)`,
+                    y: ({ count_streams }) => 90 - latitude(count_streams),
+                    text: (d) =>
+                        `${d.count_streams.toLocaleString()} stream(s) for ${formatDuration(d.ms_played)}`,
                     textAnchor: 'start',
                     dx: 4,
                     fill: 'currentColor',
