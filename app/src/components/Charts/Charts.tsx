@@ -19,7 +19,7 @@ export function Charts() {
             setSummarize(result?.get(0) || undefined)
         }
         initDataSummarize()
-    }, [query])
+    }, [])
 
     useEffect(() => {
         if (summarize)
