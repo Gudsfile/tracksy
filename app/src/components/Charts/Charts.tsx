@@ -1,5 +1,6 @@
 import { StreamPerMonth } from './StreamPerMonth'
 import { StreamPerHour } from './StreamPerHour'
+import { TopStreak } from './TopStreak'
 import { SummaryPerYear } from './SummaryPerYear'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect } from 'react'
@@ -24,6 +25,7 @@ export function Charts() {
 
     return (
         <>
+            <TopStreak />
             {summarize && (
                 <>
                     <RangeSlider
