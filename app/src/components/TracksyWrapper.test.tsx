@@ -11,6 +11,10 @@ vi.mock('./DemoButton/DemoButton', () => ({
     DemoButton: vi.fn(() => <div data-testid="demo-button"></div>),
 }))
 
+vi.mock('./HowToButton/HowToButton', () => ({
+    HowToButton: vi.fn(() => <div data-testid="howto-button"></div>),
+}))
+
 vi.mock('./Spinner/Spinner', () => ({
     Spinner: vi.fn(() => <div data-testid="spinner"></div>),
 }))
@@ -25,7 +29,7 @@ vi.mock('../db/getDB', () => ({
 }))
 
 let mockIsDemoReady = false
-let mockDemoJsonUrl: string | undefined = undefined
+let mockDemoJsonUrl: string | undefined = 'url'
 
 vi.mock('../hooks/useDemo', () => ({
     useDemo: vi.fn(() => ({
@@ -38,7 +42,7 @@ vi.mock('../hooks/useDemo', () => ({
 beforeEach(() => {
     vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
     mockIsDemoReady = false
-    mockDemoJsonUrl = undefined
+    mockDemoJsonUrl = 'url'
 })
 
 afterEach(() => {
@@ -65,13 +69,14 @@ const createAssertions = (testId: string) => ({
 const assert = {
     dropzone: createAssertions('dropzone-wrapper'),
     demoButton: createAssertions('demo-button'),
+    howToButton: createAssertions('howto-button'),
     spinner: createAssertions('spinner'),
     charts: createAssertions('charts'),
 }
 
 describe('TracksyWrapper', () => {
     describe('when DB is initialized', () => {
-        it('renders the Dropzone only', async () => {
+        it('renders the Dropzone and Buttons', async () => {
             render(
                 <TracksyWrapper
                     initialDb={undefined}
@@ -81,14 +86,15 @@ describe('TracksyWrapper', () => {
             )
             await waitFor(() => expect(getDB).toHaveBeenCalled())
             assert.dropzone.is.rendered()
-            assert.demoButton.is.not.rendered()
+            assert.demoButton.is.rendered()
+            assert.howToButton.is.rendered()
             assert.spinner.is.not.rendered()
             assert.charts.is.not.rendered()
         })
 
-        describe('and the demo URL is valued', () => {
-            it('renders the Dropzone and DemoButton', async () => {
-                mockDemoJsonUrl = 'url'
+        describe('and the demo URL is not valued', () => {
+            it('renders the Dropzone and HowToButton', async () => {
+                mockDemoJsonUrl = undefined
                 render(
                     <TracksyWrapper
                         initialDb={undefined}
@@ -98,7 +104,8 @@ describe('TracksyWrapper', () => {
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
                 assert.dropzone.is.rendered()
-                assert.demoButton.is.rendered()
+                assert.demoButton.is.not.rendered()
+                assert.howToButton.is.rendered()
                 assert.spinner.is.not.rendered()
                 assert.charts.is.not.rendered()
             })
@@ -116,13 +123,14 @@ describe('TracksyWrapper', () => {
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
                 assert.dropzone.is.not.rendered()
                 assert.demoButton.is.not.rendered()
+                assert.howToButton.is.not.rendered()
                 assert.spinner.is.rendered()
                 assert.charts.is.not.rendered()
             })
         })
 
         describe('when data is ready', () => {
-            it('renders Dropzone and Charts', async () => {
+            it('renders Dropzone, Buttons and Charts', async () => {
                 render(
                     <TracksyWrapper
                         initialDb={undefined}
@@ -132,14 +140,15 @@ describe('TracksyWrapper', () => {
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
                 assert.dropzone.is.rendered()
-                assert.demoButton.is.not.rendered()
+                assert.demoButton.is.rendered()
+                assert.howToButton.is.rendered()
                 assert.spinner.is.not.rendered()
                 assert.charts.is.rendered()
             })
         })
 
         describe('when demo is ready', () => {
-            it('renders Dropzone and Charts', async () => {
+            it('renders Dropzone, Buttons and Charts', async () => {
                 mockIsDemoReady = true
                 mockDemoJsonUrl = 'https://example.com'
                 render(
@@ -151,14 +160,15 @@ describe('TracksyWrapper', () => {
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
                 assert.dropzone.is.rendered()
-                assert.demoButton.is.not.rendered()
+                assert.demoButton.is.rendered()
+                assert.howToButton.is.rendered()
                 assert.spinner.is.not.rendered()
                 assert.charts.is.rendered()
             })
         })
 
         describe('when data dropped and ready', () => {
-            it('renders Charts and Dropzone', async () => {
+            it('renders Dropzone, Buttons and Charts', async () => {
                 render(
                     <TracksyWrapper
                         initialDb={undefined}
@@ -168,7 +178,8 @@ describe('TracksyWrapper', () => {
                 )
                 await waitFor(() => expect(getDB).toHaveBeenCalled())
                 assert.dropzone.is.rendered()
-                assert.demoButton.is.not.rendered()
+                assert.demoButton.is.rendered()
+                assert.howToButton.is.rendered()
                 assert.spinner.is.not.rendered()
                 assert.charts.is.rendered()
             })
