@@ -16,7 +16,7 @@ describe('StreamPerMonth Component', () => {
     it('should render the svg', async () => {
         const { container } = render(
             <ThemeProvider>
-                <StreamPerMonth />
+                <StreamPerMonth year={2006} maxValue={100} />
             </ThemeProvider>
         )
 
