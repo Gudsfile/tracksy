@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { query } from './query'
+import { queryTopStreak, queryCurrentStreak } from './query'
 import { TABLE } from '../../../db/queries/constants'
 
 const seedPath = 'src/components/Charts/TopStreak/fixtures/seed.json'
@@ -19,13 +19,23 @@ beforeEach(async () => {
 })
 
 describe('TopStreak query', () => {
-    it('returns the longest streak', async () => {
-        const result = await conn.runAndReadAll(query())
+    it('queryTopStreak returns the longest streak', async () => {
+        const result = await conn.runAndReadAll(queryTopStreak())
         const rows = result.getRowObjectsJson()
         expect(rows.length).toBe(1)
         const row = rows[0]
-        expect(row.streaks).toBe('4')
-        expect(row.start_ts).toBe('2024-02-09')
-        expect(row.end_ts).toBe('2024-02-12')
+        expect(row.streaks).toBe(5)
+        expect(row.start_ts).toBe('2025-01-01')
+        expect(row.end_ts).toBe('2025-01-05')
+    })
+
+    it('queryCurrentStreak returns the most recent streak', async () => {
+        const result = await conn.runAndReadAll(queryCurrentStreak())
+        const rows = result.getRowObjectsJson()
+        expect(rows.length).toBe(1)
+        const row = rows[0]
+        expect(row.streaks).toBe(3)
+        expect(row.start_ts).toBe('2025-10-17')
+        expect(row.end_ts).toBe('2025-10-19')
     })
 })
