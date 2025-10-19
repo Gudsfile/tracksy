@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { StreamPerHour } from '.'
-import React from 'react'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
 import { tableFromJSON } from 'apache-arrow'
 
