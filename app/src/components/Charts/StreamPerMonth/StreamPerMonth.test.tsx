@@ -4,7 +4,7 @@ import { StreamPerMonth } from '.'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 vi.mock('../../../db/queries/queryDB', () => ({
-    queryDB: () => () => vi.fn(),
+    queryDBAsJSON: () => () => vi.fn(),
 }))
 
 vi.mock('../../../db/getDB', () => ({

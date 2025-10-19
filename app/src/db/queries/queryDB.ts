@@ -1,11 +1,10 @@
 import { getDB } from '../getDB'
 
-import type { DataType, Table } from 'apache-arrow'
-
-export async function queryDB<T extends { [key: string]: DataType }>(
-    query: string
-): Promise<Table<T>> {
+export async function queryDBAsJSON<
+    T extends Record<string, string | number | null>,
+>(query: string): Promise<T[]> {
     const { conn } = await getDB()
-
-    return conn.query<T>(query)
+    const table = await conn.query(query)
+    const jsonResult = table.toArray().map((row) => row.toJSON())
+    return jsonResult as T[]
 }

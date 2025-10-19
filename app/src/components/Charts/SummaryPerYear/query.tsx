@@ -1,5 +1,4 @@
 import { TABLE } from '../../../db/queries/constants'
-import type { Int, Utf8 } from 'apache-arrow'
 
 export function queryByYear(year: number | undefined) {
     return `
@@ -28,7 +27,7 @@ INTO
 }
 
 export type QueryResult = {
-    year: Int
-    type: Utf8
-    count_streams: Int
+    year: number
+    type: string
+    count_streams: number
 }

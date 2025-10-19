@@ -1,10 +1,9 @@
 import * as Plot from '@observablehq/plot'
 import * as d3 from 'd3'
-import type { Table } from 'apache-arrow'
 import type { QueryResult } from './query'
 
 export function buildPlot(
-    data: Table<QueryResult>,
+    data: QueryResult[],
     maxValue: number | undefined,
     isDark = false
 ): ReturnType<typeof Plot.plot> {
@@ -12,7 +11,8 @@ export function buildPlot(
         .scalePoint(new Set(Plot.valueof(data, 'hour')), [180, -180])
         .padding(0.5)
         .align(1)
-    const maxCountStream = maxValue || d3.max(data, (d) => d.count_stream)
+    const maxCountStream =
+        maxValue || d3.max(data, (d) => d.count_stream) || 100
     const latitude = d3
         .scaleLinear()
         .domain([maxCountStream, 0])

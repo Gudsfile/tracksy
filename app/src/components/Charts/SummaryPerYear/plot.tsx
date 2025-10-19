@@ -1,18 +1,12 @@
 import * as Plot from '@observablehq/plot'
-import type { Table } from 'apache-arrow'
 import { QueryResult } from './query'
 
-export function buildPlot(
-    data: Table<QueryResult>
-): ReturnType<typeof Plot.plot> {
+export function buildPlot(data: QueryResult[]): ReturnType<typeof Plot.plot> {
     let total = 1
     let unit = 1
 
-    if (data.numRows > 0) {
-        total = data
-            .select(['count_streams'])
-            .toArray()
-            .reduce((acc, val) => acc + val.count_streams, 0)
+    if (data.length > 0) {
+        total = data.reduce((acc, val) => acc + val.count_streams, 0)
     }
     unit = Math.max(1, 10 ** (String(total).length - 3))
 

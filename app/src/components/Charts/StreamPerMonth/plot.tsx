@@ -1,9 +1,8 @@
 import * as Plot from '@observablehq/plot'
-import type { Table } from 'apache-arrow'
 import { QueryResult } from './query'
 
 export function buildPlot(
-    data: Table<QueryResult>,
+    data: QueryResult[],
     isDark = false
 ): ReturnType<typeof Plot.plot> {
     return Plot.plot({
