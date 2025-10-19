@@ -40,6 +40,9 @@ export function Common<T extends TypeMap>({
     }, [data, buildPlot, effectiveTheme])
 
     return (
-        <div ref={containerRef} className="text-gray-900 dark:text-gray-100" />
+        <div
+            ref={containerRef}
+            className="p-4 my-4 border rounded-lg shadow-sm bg-white dark:bg-gray-900 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+        />
     )
 }
