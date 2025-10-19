@@ -4,7 +4,7 @@ export function query() {
     return `
 SELECT
   COUNT(*)::INTEGER AS count_streams,
-  SUM(ms_played)::INTEGER AS ms_played
+  SUM(ms_played) AS ms_played
 FROM ${TABLE}
 `
 }
