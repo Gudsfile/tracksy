@@ -6,8 +6,7 @@ interface TopStreakProps {
 }
 
 export const TopStreak = memo(function TopStreak({ data }: TopStreakProps) {
-    console.log(data)
-    if (!data || data.length === 0) return <></>
+    if (data.length === 0) return null
 
     const streak = data[0]
     const from = new Date(streak.start_ts).toLocaleDateString('en-US', {
