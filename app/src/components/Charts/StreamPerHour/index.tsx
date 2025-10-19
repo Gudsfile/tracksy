@@ -2,7 +2,6 @@ import { type QueryResult, queryByYear } from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 import { useCallback } from 'react'
-import { Table } from 'apache-arrow'
 
 interface StreamPerHourProps {
     year: number
@@ -11,7 +10,7 @@ interface StreamPerHourProps {
 
 export function StreamPerHour({ year, maxValue }: StreamPerHourProps) {
     const plotBuilder = useCallback(
-        (data: Table<QueryResult>, isDark: boolean | undefined) =>
+        (data: QueryResult[], isDark: boolean | undefined) =>
             buildPlot(data, maxValue, isDark),
         [maxValue]
     )

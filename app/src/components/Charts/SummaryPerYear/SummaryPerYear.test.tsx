@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { SummaryPerYear } from '.'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
-import { tableFromJSON } from 'apache-arrow'
 
 const queryResult = [
     { year: '2024', count_streams: 10131, type: 'count_new_tracks_played' },
@@ -11,10 +10,8 @@ const queryResult = [
     { year: '2025', count_streams: 1, type: 'count_unique_track_played' },
 ]
 
-const mockArrowTable = tableFromJSON(queryResult)
-
 vi.mock('../../../db/queries/queryDB', () => ({
-    queryDB: () => () => mockArrowTable,
+    queryDBAsJSON: () => () => queryResult,
 }))
 
 vi.mock('../../../db/getDB', () => ({

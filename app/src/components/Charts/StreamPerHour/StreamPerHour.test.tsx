@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { StreamPerHour } from '.'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
-import { tableFromJSON } from 'apache-arrow'
 
 const queryResult = [
     { count_stream: 10, hour: 0 },
@@ -15,10 +14,8 @@ const queryResult = [
     { count_stream: 4, hour: 7 },
 ]
 
-const mockArrowTable = tableFromJSON(queryResult)
-
 vi.mock('../../../db/queries/queryDB', () => ({
-    queryDB: () => () => mockArrowTable,
+    queryDBAsJSON: () => () => queryResult,
 }))
 
 vi.mock('../../../db/getDB', () => ({

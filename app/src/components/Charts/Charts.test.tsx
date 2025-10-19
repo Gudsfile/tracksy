@@ -19,13 +19,13 @@ vi.mock('../RangeSlider/RangeSlider', () => ({
 }))
 
 vi.mock('../../db/queries/queryDB', () => ({
-    queryDB: vi.fn(() => ({
-        get: (index: number) => ({
-            min_datetime: index,
-            max_datetime: index,
-            max_count_hourly_stream: index,
-        }),
-    })),
+    queryDBAsJSON: vi.fn(() => [
+        {
+            min_datetime: 'dateA',
+            max_datetime: 'dateB',
+            max_count_hourly_stream: 10,
+        },
+    ]),
 }))
 
 describe('Charts Component', () => {

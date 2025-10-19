@@ -1,28 +1,27 @@
 // Common part of all charts components like StreamPerHour, StreamPerDay, etc.
 
 import { useState, useEffect, useRef, useContext } from 'react'
-import { queryDB } from '../../../db/queries/queryDB'
-import type { Table, TypeMap } from 'apache-arrow'
+import { queryDBAsJSON } from '../../../db/queries/queryDB'
 import { plot } from '@observablehq/plot'
 import { ThemeContext } from '../../../hooks/ThemeContext'
 
-export interface CommonProps<T extends TypeMap> {
+export interface CommonProps<T> {
     query: string
-    buildPlot: (data: Table<T>, isDark?: boolean) => ReturnType<typeof plot>
+    buildPlot: (data: T[], isDark?: boolean) => ReturnType<typeof plot>
 }
 
-export function Common<T extends TypeMap>({
+export function Common<T extends Record<string, string | number | null>>({
     query,
     buildPlot,
 }: CommonProps<T>) {
-    const [data, setData] = useState<Table<T> | undefined>()
+    const [data, setData] = useState<T[] | undefined>()
     const { effectiveTheme } = useContext(ThemeContext)
 
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const getData = async () => {
-            const result = await queryDB<T>(query)
+            const result = await queryDBAsJSON<T>(query)
             setData(result)
         }
         getData()

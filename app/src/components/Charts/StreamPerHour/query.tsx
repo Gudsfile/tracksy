@@ -1,5 +1,4 @@
 import { TABLE } from '../../../db/queries/constants'
-import type { Int } from 'apache-arrow'
 
 export function queryByYear(year: number | undefined) {
     return `
@@ -20,6 +19,6 @@ ORDER BY hour
 }
 
 export type QueryResult = {
-    count_stream: Int
-    hour: Int
+    count_stream: number
+    hour: number
 }

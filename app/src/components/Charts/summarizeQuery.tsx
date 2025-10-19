@@ -1,5 +1,4 @@
 import { TABLE } from '../../db/queries/constants'
-import type { Timestamp, Int } from 'apache-arrow'
 
 export const query = `
 SELECT
@@ -17,7 +16,7 @@ FROM (
 `
 
 export type SummarizeData = {
-    min_datetime: Timestamp
-    max_datetime: Timestamp
-    max_count_hourly_stream: Int
+    min_datetime: string
+    max_datetime: string
+    max_count_hourly_stream: number
 }

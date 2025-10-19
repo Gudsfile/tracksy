@@ -1,5 +1,4 @@
 import { TABLE } from '../../../db/queries/constants'
-import type { Float, Date_ } from 'apache-arrow'
 
 export function queryByYear(year: number | undefined) {
     return `
@@ -13,6 +12,6 @@ ORDER BY ts
 }
 
 export type QueryResult = {
-    ms_played: Float
-    ts: Date_
+    ms_played: number
+    ts: number
 }
