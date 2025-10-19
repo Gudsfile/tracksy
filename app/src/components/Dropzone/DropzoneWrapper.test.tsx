@@ -4,5 +4,5 @@ import { it, vi } from 'vitest'
 import { DropzoneWrapper } from './DropzoneWrapper'
 
 it('should render', () => {
-    render(<DropzoneWrapper setFiles={vi.fn()} />)
+    render(<DropzoneWrapper handleValidatedFiles={vi.fn()} />)
 })
