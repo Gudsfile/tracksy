@@ -2,6 +2,7 @@ import { StreamPerMonth } from './StreamPerMonth'
 import { StreamPerHour } from './StreamPerHour'
 import { TopStreak } from './TopStreak'
 import { SummaryPerYear } from './SummaryPerYear'
+import { TotalStreams } from './TotalStreams'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect } from 'react'
 import { query, type SummarizeData } from './summarizeQuery'
@@ -29,7 +30,10 @@ export function Charts() {
 
     return (
         <>
-            <TopStreak />
+            <div className="flex justify-around items-center">
+                <TopStreak />
+                <TotalStreams />
+            </div>
             {summarize && (
                 <>
                     <RangeSlider
