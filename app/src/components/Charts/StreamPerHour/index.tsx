@@ -1,5 +1,5 @@
 import { type QueryResult, queryByYear } from './query'
-import { buildPlotWrapper } from './plot'
+import { buildPlot } from './plot'
 import { Common } from '../Common'
 
 interface StreamPerHourProps {
@@ -11,7 +11,7 @@ export function StreamPerHour({ year, maxValue }: StreamPerHourProps) {
     return (
         <Common<QueryResult>
             query={queryByYear(year)}
-            buildPlot={buildPlotWrapper(maxValue)}
+            buildPlot={(data, isDark) => buildPlot(data, maxValue, isDark)}
         />
     )
 }

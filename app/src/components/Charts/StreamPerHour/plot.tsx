@@ -3,12 +3,7 @@ import * as d3 from 'd3'
 import type { Table } from 'apache-arrow'
 import type { QueryResult } from './query'
 
-export function buildPlotWrapper(maxValue: number) {
-    return (data: Table<QueryResult>, isDark?: boolean) =>
-        buildPlot(data, maxValue, isDark)
-}
-
-function buildPlot(
+export function buildPlot(
     data: Table<QueryResult>,
     maxValue: number | undefined,
     isDark = false
