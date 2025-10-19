@@ -12,7 +12,7 @@ LEFT JOIN (
         COUNT(*) AS count_stream,
         HOUR(ts::DATETIME) AS hour
     FROM ${TABLE}
-    ${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
+    ${year ? `WHERE YEAR(ts::DATETIME) = ${year}` : ''}
     GROUP BY HOUR(ts::DATETIME)
 ) USING(hour)
 ORDER BY hour

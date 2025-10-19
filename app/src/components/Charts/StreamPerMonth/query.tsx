@@ -3,12 +3,12 @@ import type { Float, Date_ } from 'apache-arrow'
 
 export function queryByYear(year: number | undefined) {
     return `
-  SELECT
-    ms_played,
-    ts::DATE AS ts
-  FROM ${TABLE}
-  ${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
-  ORDER BY ts
+SELECT
+  ms_played,
+  ts::DATE AS ts
+FROM ${TABLE}
+${year ? `WHERE YEAR(ts::DATETIME) = ${year}` : ''}
+ORDER BY ts
 `
 }
 
