@@ -5,10 +5,15 @@ import { useCallback } from 'react'
 
 interface StreamPerMonthProps {
     year: number
+    maxValue: number
 }
 
-export function StreamPerMonth({ year }: StreamPerMonthProps) {
-    const plotBuilder = useCallback(buildPlot, [])
+export function StreamPerMonth({ year, maxValue }: StreamPerMonthProps) {
+    const plotBuilder = useCallback(
+        (data: QueryResult[], isDark: boolean | undefined) =>
+            buildPlot(data, maxValue, isDark),
+        [maxValue]
+    )
     return (
         <Common<QueryResult>
             query={queryByYear(year)}
