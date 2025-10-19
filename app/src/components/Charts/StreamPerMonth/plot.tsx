@@ -11,6 +11,7 @@ export function buildPlot(
 ): ReturnType<typeof Plot.plot> {
     const maxDuration = maxValue || d3.max(data, (d) => d.ms_played) || 100
     return Plot.plot({
+        title: 'Stream duration per month',
         x: {
             type: 'band',
             label: null,
