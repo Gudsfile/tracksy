@@ -40,23 +40,29 @@ export function TracksyWrapper({
         setIsDataReady(true)
     }
 
+    if (!db) {
+        return (
+            <>
+                <p className="dark:text-white">
+                    Initializing the database engine (DuckDB-WASM)...
+                </p>
+            </>
+        )
+    }
+
     return (
         <>
-            {db && (!isDataDropped || isDataReady) && (
+            {(!isDataDropped || isDataReady) && (
                 <DropzoneWrapper handleValidatedFiles={handleFileUpload} />
             )}
-            {db &&
-                !isDataDropped &&
-                !isDataReady &&
-                !isDemoReady &&
-                demoJsonUrl && (
-                    <DemoButton
-                        label="Load demo data"
-                        handleClick={handleDemoButtonClick}
-                    />
-                )}
-            {db && isDataDropped && !isDataReady && <Spinner />}
-            {db && (isDataReady || isDemoReady) && <Results />}
+            {!isDataDropped && !isDataReady && !isDemoReady && demoJsonUrl && (
+                <DemoButton
+                    label="Load demo data"
+                    handleClick={handleDemoButtonClick}
+                />
+            )}
+            {isDataDropped && !isDataReady && <Spinner />}
+            {(isDataReady || isDemoReady) && <Results />}
         </>
     )
 }

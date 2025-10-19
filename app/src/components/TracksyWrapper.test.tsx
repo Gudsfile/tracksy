@@ -176,7 +176,7 @@ describe('TracksyWrapper', () => {
     })
 
     describe('when DB is not initialized', () => {
-        it('renders nothing', async () => {
+        it('renders initialization message', async () => {
             render(
                 <TracksyWrapper
                     initialDb={undefined}
@@ -184,7 +184,9 @@ describe('TracksyWrapper', () => {
                     initialIsDataReady={false}
                 />
             )
-            expect(document.body.innerHTML).toBe('<div></div>')
+            expect(document.body.innerHTML).toBe(
+                '<div><p class="dark:text-white">Initializing the database engine (DuckDB-WASM)...</p></div>'
+            )
         })
     })
 })
