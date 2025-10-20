@@ -7,6 +7,7 @@ import { query, type SummarizeData } from './summarizeQuery'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { TopTracks } from './TopTracks'
 import { TopArtists } from './TopArtists'
+import { Streaks } from './Streaks'
 
 export function Charts() {
     const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
@@ -26,6 +27,7 @@ export function Charts() {
 
     return (
         <>
+            <Streaks />
             {summarize && (
                 <>
                     <RangeSlider

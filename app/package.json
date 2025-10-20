@@ -27,6 +27,7 @@
     "apache-arrow": "^17.0.0",
     "astro": "^5.15.9",
     "d3": "^7.9.0",
+    "dayjs": "^1.11.18",
     "eslint-plugin-import": "^2.32.0",
     "libarchive.js": "^2.0.2",
     "react": "^19.1.1",
