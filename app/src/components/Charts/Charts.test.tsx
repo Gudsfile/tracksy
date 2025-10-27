@@ -2,8 +2,7 @@ import { it, vi, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { Charts } from './Charts'
 import * as db from '../../db/queries/queryDB'
-import type { SummarizeData } from './summarizeQuery'
-import { query as summarizeQuery } from './summarizeQuery'
+import { type SummarizeDataQueryResult, summarizeQuery } from './summarizeQuery'
 import {
     type StreamPerMonthQueryResult,
     queryStreamsPerMonthByYear,
@@ -27,7 +26,17 @@ import {
     queryTopArtistsByYear,
 } from './TopArtists/query'
 
-const summarizedDataMock: SummarizeData[] = [
+import {
+    type Top10EvolutionQueryResult,
+    queryTop10Evolution,
+} from './Top10Evolution/query'
+
+import {
+    type StreamPerDayOfWeekQueryResult,
+    streamPerDayOfWeekQueryByYear,
+} from './StreamPerDayOfWeek/query'
+
+const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
         max_count_hourly_stream: 1234,
         max_datetime: '1734134400000',
