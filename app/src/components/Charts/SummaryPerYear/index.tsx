@@ -1,4 +1,4 @@
-import { type QueryResult, queryByYear } from './query'
+import { type SummaryPerYearQueryResult, summarizePerYearQuery } from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 import { useCallback } from 'react'
@@ -10,8 +10,8 @@ interface SummaryPerYearProps {
 export function SummaryPerYear({ year }: SummaryPerYearProps) {
     const plotBuilder = useCallback(buildPlot, [])
     return (
-        <Common<QueryResult>
-            query={queryByYear(year)}
+        <Common<SummaryPerYearQueryResult>
+            query={summarizePerYearQuery(year)}
             buildPlot={plotBuilder}
         />
     )
