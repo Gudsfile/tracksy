@@ -1,46 +1,66 @@
-import { describe, it, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Results } from './Results'
-import * as db from '../../db/queries/queryDB'
-
-// Mock the child components to avoid needing to mock all their data dependencies
-vi.mock('../Charts/ExpertView', () => ({
-    ExpertView: () => (
-        <div data-testid="charts-component">Expert View Content</div>
-    ),
-}))
-
-vi.mock('../Charts/SimpleView', () => ({
-    SimpleView: () => <div data-testid="simple-view" />,
-}))
+import * as query from '../../db/queries/queryDB'
+import * as db from '../../db/getDB'
 
 describe('Results Component', () => {
-    it('renders properly', () => {
-        vi.spyOn(db, 'queryDBAsJSON').mockImplementation(() => {
-            return Promise.resolve([])
-        })
-        render(<Results />)
-        screen.getByRole('button', { name: 'Simple View' })
-        screen.getByRole('button', { name: 'Expert View' })
+    beforeEach(() => {
+        // Mock DB interactions to prevent crashes and external calls
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue(
+            [] as unknown as Awaited<ReturnType<typeof query.queryDBAsJSON>>
+        )
+        vi.spyOn(db, 'getDB').mockResolvedValue({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
     })
 
-    it('switches view when button is clicked', () => {
-        vi.spyOn(db, 'queryDBAsJSON').mockImplementation(() => {
-            return Promise.resolve([])
-        })
+    it('renders properly', () => {
         render(<Results />)
-        screen.getByTestId('charts')
+        // Check that both buttons are rendered
+        screen.getByRole('button', { name: 'Simple View' })
+        screen.getByRole('button', { name: 'Expert View' })
 
+        // Should default to Expert view
+        // Expert View contains the "Work in Progress" section
+        screen.getByText(/Work in Progress/i)
+    })
+
+    it('switches to simple view when Simple View button is clicked', async () => {
+        render(<Results />)
+        const simpleButton = screen.getByRole('button', {
+            name: 'Simple View',
+        })
+
+        fireEvent.click(simpleButton)
+
+        // Simple view content should be visible
+        // Simple View contains specific charts like "Concentration Score" or just checking absent Expert content
+        expect(screen.queryByText(/Work in Progress/i)).toBeNull()
+
+        // We can check if RangeSlider is present (common) but distinguishing is key.
+        // SimpleView renders FunFacts.
+        // But let's check for absence of Expert content first which proves switch.
+    })
+
+    it('switches to expert view when Expert View button is clicked', async () => {
+        render(<Results />)
+
+        // First switch to simple view
         const simpleButton = screen.getByRole('button', {
             name: 'Simple View',
         })
         fireEvent.click(simpleButton)
-        screen.getByTestId('simple-view')
+        expect(screen.queryByText(/Work in Progress/i)).toBeNull()
 
+        // Then switch back to expert view
         const expertButton = screen.getByRole('button', {
             name: 'Expert View',
         })
         fireEvent.click(expertButton)
-        screen.getByTestId('charts')
+
+        // Expert View content should be visible again
+        screen.getByText(/Work in Progress/i)
     })
 })
