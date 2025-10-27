@@ -27,7 +27,8 @@ export function Charts() {
     }, [])
 
     useEffect(() => {
-        if (summarize) setYear(new Date(summarize.max_datetime).getFullYear())
+        if (summarize)
+            setYear(new Date(Number(summarize.max_datetime)).getFullYear())
     }, [summarize])
 
     return (
@@ -42,8 +43,12 @@ export function Charts() {
                     <RangeSlider
                         value={year}
                         onChange={setYear}
-                        min={new Date(summarize.min_datetime).getFullYear()}
-                        max={new Date(summarize.max_datetime).getFullYear()}
+                        min={new Date(
+                            Number(summarize.min_datetime)
+                        ).getFullYear()}
+                        max={new Date(
+                            Number(summarize.max_datetime)
+                        ).getFullYear()}
                         step={1}
                     />
                     <StreamPerMonth
