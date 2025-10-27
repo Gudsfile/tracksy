@@ -1,9 +1,9 @@
 import * as Plot from '@observablehq/plot'
-import { QueryResult } from './query'
+import { TopTracksQueryResult } from './query'
 import { formatDuration } from '../../../utils/formatDuration'
 
 export function buildPlot(
-    data: QueryResult[],
+    data: TopTracksQueryResult[],
     isDark: boolean = false
 ): ReturnType<typeof Plot.plot> {
     if (data.length === 0) {

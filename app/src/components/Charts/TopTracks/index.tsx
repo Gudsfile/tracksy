@@ -1,4 +1,4 @@
-import { type QueryResult, queryByYear } from './query'
+import { type TopTracksQueryResult, queryTopTracksByYear } from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 import { useCallback } from 'react'
@@ -9,13 +9,13 @@ interface TopTracksProps {
 
 export function TopTracks({ year }: TopTracksProps) {
     const plotBuilder = useCallback(
-        (data: QueryResult[], isDark: boolean | undefined) =>
+        (data: TopTracksQueryResult[], isDark: boolean | undefined) =>
             buildPlot(data, isDark),
         []
     )
     return (
-        <Common<QueryResult>
-            query={queryByYear(year)}
+        <Common<TopTracksQueryResult>
+            query={queryTopTracksByYear(year)}
             buildPlot={plotBuilder}
         />
     )
