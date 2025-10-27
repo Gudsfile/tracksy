@@ -23,8 +23,8 @@ import {
 } from './TopTracks/query'
 
 import {
-    type QueryResult as TopArtistsQueryResult,
-    queryByYear as topArtistsQuery,
+    type TopArtistsQueryResult,
+    queryTopArtistsByYear,
 } from './TopArtists/query'
 
 const summarizedDataMock: SummarizeData[] = [
@@ -321,7 +321,7 @@ it('renders all Charts', async () => {
             return Promise.resolve(summaryPerYearResultMock)
         if (query === queryTopTracksByYear(2024))
             return Promise.resolve(topTracksResultMock)
-        if (query === topArtistsQuery(2024))
+        if (query === queryTopArtistsByYear(2024))
             return Promise.resolve(topArtistsResultMock)
     })
 
