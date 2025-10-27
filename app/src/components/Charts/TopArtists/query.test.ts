@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { queryByYear } from './query'
+import { queryTopArtistsByYear } from './query'
 import { TABLE } from '../../../db/queries/constants'
 
 const seedPath = 'src/components/Charts/TopArtists/fixtures/seed.json'
@@ -20,7 +20,9 @@ beforeEach(async () => {
 
 describe('TopArtists query', () => {
     it('returns the tracks top 10 for all years', async () => {
-        const result = await conn.runAndReadAll(queryByYear(undefined))
+        const result = await conn.runAndReadAll(
+            queryTopArtistsByYear(undefined)
+        )
         const rows = result.getRowObjects()
         expect(rows).toEqual([
             {
@@ -37,7 +39,7 @@ describe('TopArtists query', () => {
     })
 
     it('returns the tracks top 10 for a specific year', async () => {
-        const result = await conn.runAndReadAll(queryByYear(2006))
+        const result = await conn.runAndReadAll(queryTopArtistsByYear(2006))
         const rows = result.getRowObjects()
         expect(rows).toEqual([
             {

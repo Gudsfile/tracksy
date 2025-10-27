@@ -1,4 +1,4 @@
-import { type QueryResult, queryByYear } from './query'
+import { type TopArtistsQueryResult, queryTopArtistsByYear } from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 
@@ -8,6 +8,9 @@ interface TopArtistsProps {
 
 export function TopArtists({ year }: TopArtistsProps) {
     return (
-        <Common<QueryResult> query={queryByYear(year)} buildPlot={buildPlot} />
+        <Common<TopArtistsQueryResult>
+            query={queryTopArtistsByYear(year)}
+            buildPlot={buildPlot}
+        />
     )
 }
