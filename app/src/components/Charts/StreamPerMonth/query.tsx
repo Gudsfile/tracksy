@@ -32,7 +32,7 @@ export function queryStreamsPerMonthByYear(year: number | undefined) {
     return queryByYear(year)
 }
 
-export type QueryResult = {
+export type StreamPerMonthQueryResult = {
     ts: number
     ms_played: number
     count_streams: number
