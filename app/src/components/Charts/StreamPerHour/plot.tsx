@@ -1,10 +1,10 @@
 import * as Plot from '@observablehq/plot'
 import * as d3 from 'd3'
-import type { QueryResult } from './query'
+import type { StreamPerHourQueryResult } from './query'
 import { formatDuration } from '../../../utils/formatDuration'
 
 export function buildPlot(
-    data: QueryResult[],
+    data: StreamPerHourQueryResult[],
     maxValue: number | undefined,
     isDark = false
 ): ReturnType<typeof Plot.plot> {

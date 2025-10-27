@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { queryByYear } from './query'
+import { queryStreamsPerHoursByYear } from './query'
 import { TABLE } from '../../../db/queries/constants'
 
 const seedPath = 'src/components/Charts/StreamPerHour/fixtures/seed.json'
@@ -21,7 +21,9 @@ beforeEach(async () => {
 describe('SummaryPerYear query', () => {
     describe('query with year', () => {
         it('counts the streams of the year per hour', async () => {
-            const result = await conn.runAndReadAll(queryByYear(2006))
+            const result = await conn.runAndReadAll(
+                queryStreamsPerHoursByYear(2006)
+            )
             const rows = result.getRowObjects()
             expect(rows).toEqual([
                 { hour: 0, count_streams: 0, ms_played: 0 },
@@ -52,7 +54,9 @@ describe('SummaryPerYear query', () => {
         })
 
         it('counts 0 if there is no stream', async () => {
-            const result = await conn.runAndReadAll(queryByYear(2025))
+            const result = await conn.runAndReadAll(
+                queryStreamsPerHoursByYear(2025)
+            )
             const rows = result.getRowObjects()
             expect(rows).toEqual([
                 { hour: 0, count_streams: 0, ms_played: 0 },
@@ -85,7 +89,9 @@ describe('SummaryPerYear query', () => {
 
     describe('query without year', () => {
         it('counts the streams of all years per hour', async () => {
-            const result = await conn.runAndReadAll(queryByYear(undefined))
+            const result = await conn.runAndReadAll(
+                queryStreamsPerHoursByYear(undefined)
+            )
             const rows = result.getRowObjects()
             expect(rows).toEqual([
                 { hour: 0, count_streams: 0, ms_played: 0 },

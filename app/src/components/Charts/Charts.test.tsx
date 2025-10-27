@@ -9,8 +9,8 @@ import {
     queryStreamsPerMonthByYear,
 } from './StreamPerMonth/query'
 import {
-    type QueryResult as StreamPerHourQueryResult,
-    queryByYear as queryByHour,
+    type StreamPerHourQueryResult,
+    queryStreamsPerHoursByYear,
 } from './StreamPerHour/query'
 import {
     type QueryResult as SummaryPerYearQueryResult,
@@ -289,7 +289,7 @@ it('renders charts', async () => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
         if (query === queryStreamsPerMonthByYear(2024))
             return Promise.resolve(streamPerMonthResultMock)
-        if (query === queryByHour(2024))
+        if (query === queryStreamsPerHoursByYear(2024))
             return Promise.resolve(streamPerHourResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
