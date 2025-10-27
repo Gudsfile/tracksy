@@ -18,8 +18,8 @@ import {
 } from './SummaryPerYear/query'
 
 import {
-    type QueryResult as TopTracksQueryResult,
-    queryByYear as topTracksQuery,
+    type TopTracksQueryResult,
+    queryTopTracksByYear,
 } from './TopTracks/query'
 
 import {
@@ -293,7 +293,7 @@ it('renders charts', async () => {
             return Promise.resolve(streamPerHourResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
-        if (query === topTracksQuery(2024))
+        if (query === queryTopTracksByYear(2024))
             return Promise.resolve(topTracksResultMock)
         if (query === topArtistsQuery(2024))
             return Promise.resolve(topArtistsResultMock)
