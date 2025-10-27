@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { query } from './summarizeQuery'
+import { summarizeQuery } from './summarizeQuery'
 import { TABLE } from '../../db/queries/constants'
 
 const seedPath = 'src/components/Charts/fixtures/seed.json'
@@ -20,7 +20,7 @@ beforeEach(async () => {
 
 describe('Charts summarizeQuery', () => {
     it('summarizes the streams', async () => {
-        const result = await conn.runAndReadAll(query)
+        const result = await conn.runAndReadAll(summarizeQuery)
         const rows = result.getRowObjectsJS()
         expect(rows).toEqual([
             {
