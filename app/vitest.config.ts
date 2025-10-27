@@ -19,4 +19,9 @@ const config: ViteUserConfig = {
     },
 }
 
+/**
+ * We disable this rule because vitest expect default export
+ * @see https://vitest.dev/config/
+ */
+// eslint-disable-next-line import/no-default-export
 export default config
