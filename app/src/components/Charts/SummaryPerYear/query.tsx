@@ -1,6 +1,6 @@
 import { TABLE } from '../../../db/queries/constants'
 
-export function queryByYear(year: number | undefined) {
+export function summarizePerYearQuery(year: number | undefined) {
     return `
 WITH ranked_streams AS (
   SELECT
@@ -28,7 +28,7 @@ INTO
 `
 }
 
-export type QueryResult = {
+export type SummaryPerYearQueryResult = {
     year: number
     type: string
     count_streams: number
