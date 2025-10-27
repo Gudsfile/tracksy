@@ -5,8 +5,8 @@ import * as db from '../../db/queries/queryDB'
 import type { SummarizeData } from './summarizeQuery'
 import { query as summarizeQuery } from './summarizeQuery'
 import {
-    type QueryResult as StreamPerMonthQueryResult,
-    queryByYear as queryByMonth,
+    type StreamPerMonthQueryResult,
+    queryStreamsPerMonthByYear,
 } from './StreamPerMonth/query'
 import {
     type QueryResult as StreamPerHourQueryResult,
@@ -287,7 +287,7 @@ it('renders charts', async () => {
     // @ts-expect-error
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
-        if (query === queryByMonth(2024))
+        if (query === queryStreamsPerMonthByYear(2024))
             return Promise.resolve(streamPerMonthResultMock)
         if (query === queryByHour(2024))
             return Promise.resolve(streamPerHourResultMock)
