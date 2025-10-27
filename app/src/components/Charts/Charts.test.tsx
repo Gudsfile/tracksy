@@ -13,8 +13,8 @@ import {
     queryStreamsPerHoursByYear,
 } from './StreamPerHour/query'
 import {
-    type QueryResult as SummaryPerYearQueryResult,
-    queryByYear as summarizePerYearQuery,
+    type SummaryPerYearQueryResult,
+    summarizePerYearQuery,
 } from './SummaryPerYear/query'
 
 import {
