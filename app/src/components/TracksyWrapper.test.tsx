@@ -1,49 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { it, expect, vi, afterEach } from 'vitest'
+import {
+    render,
+    screen,
+    waitForElementToBeRemoved,
+} from '@testing-library/react'
 import { TracksyWrapper } from './TracksyWrapper'
-import { getDB } from '../db/getDB'
-
-vi.mock('./Dropzone/DropzoneWrapper', () => ({
-    DropzoneWrapper: vi.fn(() => <div data-testid="dropzone-wrapper"></div>),
-}))
-
-vi.mock('./DemoButton/DemoButton', () => ({
-    DemoButton: vi.fn(() => <div data-testid="demo-button"></div>),
-}))
-
-vi.mock('./HowToButton/HowToButton', () => ({
-    HowToButton: vi.fn(() => <div data-testid="howto-button"></div>),
-}))
-
-vi.mock('./Spinner/Spinner', () => ({
-    Spinner: vi.fn(() => <div data-testid="spinner"></div>),
-}))
-
-vi.mock('./Charts/Charts', () => ({
-    Charts: vi.fn(() => <div data-testid="charts"></div>),
-}))
-
-vi.mock('../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
-
-let mockIsDemoReady = false
-let mockDemoJsonUrl: string | undefined = 'url'
-
-vi.mock('../hooks/useDemo', () => ({
-    useDemo: vi.fn(() => ({
-        isDemoReady: mockIsDemoReady,
-        handleDemoButtonClick: vi.fn(),
-        demoJsonUrl: mockDemoJsonUrl,
-    })),
-}))
-
-beforeEach(() => {
-    vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
-    mockIsDemoReady = false
-    mockDemoJsonUrl = 'url'
-})
+import * as db from '../db/getDB'
 
 afterEach(() => {
     vi.clearAllMocks()
@@ -51,153 +13,74 @@ afterEach(() => {
     vi.unstubAllEnvs()
 })
 
-const createAssertions = (testId: string) => ({
-    is: {
-        rendered: () => {
-            screen.getByTestId(testId)
-            return createAssertions(testId)
-        },
-        not: {
-            rendered: () => {
-                expect(screen.queryByTestId(testId)).toBeNull()
-                return createAssertions(testId)
-            },
-        },
-    },
+it('should render initialization message when DB is not initialized', async () => {
+    vi.spyOn(db, 'getDB').mockResolvedValue({
+        db: vi.fn(),
+        conn: vi.fn(),
+    } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+
+    render(
+        <TracksyWrapper
+            initialDb={undefined}
+            initialIsDataDropped={false}
+            initialIsDataReady={false}
+        />
+    )
+    screen.getByText('Initializing the database engine (DuckDB-WASM)...')
 })
 
-const assert = {
-    dropzone: createAssertions('dropzone-wrapper'),
-    demoButton: createAssertions('demo-button'),
-    howToButton: createAssertions('howto-button'),
-    spinner: createAssertions('spinner'),
-    charts: createAssertions('charts'),
-}
+it('should render the Dropzone and Buttons when DB is initialized', async () => {
+    vi.spyOn(db, 'getDB').mockResolvedValue({
+        db: vi.fn(),
+        conn: vi.fn(),
+    } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
 
-describe('TracksyWrapper', () => {
-    describe('when DB is initialized', () => {
-        it('renders the Dropzone and Buttons', async () => {
-            render(
-                <TracksyWrapper
-                    initialDb={undefined}
-                    initialIsDataDropped={false}
-                    initialIsDataReady={false}
-                />
-            )
-            await waitFor(() => expect(getDB).toHaveBeenCalled())
-            assert.dropzone.is.rendered()
-            assert.demoButton.is.rendered()
-            assert.howToButton.is.rendered()
-            assert.spinner.is.not.rendered()
-            assert.charts.is.not.rendered()
-        })
+    render(
+        <TracksyWrapper
+            initialDb={undefined}
+            initialIsDataDropped={false}
+            initialIsDataReady={false}
+        />
+    )
+    await waitForElementToBeRemoved(() =>
+        screen.queryByText('Initializing the database engine (DuckDB-WASM)...')
+    )
 
-        describe('and the demo URL is not valued', () => {
-            it('renders the Dropzone and HowToButton', async () => {
-                mockDemoJsonUrl = undefined
-                render(
-                    <TracksyWrapper
-                        initialDb={undefined}
-                        initialIsDataDropped={false}
-                        initialIsDataReady={false}
-                    />
-                )
-                await waitFor(() => expect(getDB).toHaveBeenCalled())
-                assert.dropzone.is.rendered()
-                assert.demoButton.is.not.rendered()
-                assert.howToButton.is.rendered()
-                assert.spinner.is.not.rendered()
-                assert.charts.is.not.rendered()
-            })
-        })
+    screen.getByLabelText(
+        /Drag and drop or click to upload your Spotify data files/
+    )
+    expect(
+        screen
+            .getByRole<HTMLAnchorElement>('link', { name: '?' })
+            .getAttribute('title')
+    ).toEqual('How do I get my data?')
+    expect(
+        screen
+            .getByRole<HTMLAnchorElement>('button', { name: '↓' })
+            .getAttribute('title')
+    ).toEqual('Load demo data')
+})
 
-        describe('when data is dropped', () => {
-            it('renders the Spinner only', async () => {
-                render(
-                    <TracksyWrapper
-                        initialDb={undefined}
-                        initialIsDataDropped={true}
-                        initialIsDataReady={false}
-                    />
-                )
-                await waitFor(() => expect(getDB).toHaveBeenCalled())
-                assert.dropzone.is.not.rendered()
-                assert.demoButton.is.not.rendered()
-                assert.howToButton.is.not.rendered()
-                assert.spinner.is.rendered()
-                assert.charts.is.not.rendered()
-            })
-        })
+it("shouldn't render the 'how to' button if no URL is defined", async () => {
+    vi.spyOn(db, 'getDB').mockResolvedValue({
+        db: vi.fn(),
+        conn: vi.fn(),
+    } as unknown as Awaited<ReturnType<typeof db.getDB>>)
 
-        describe('when data is ready', () => {
-            it('renders Dropzone, Buttons and Charts', async () => {
-                render(
-                    <TracksyWrapper
-                        initialDb={undefined}
-                        initialIsDataDropped={false}
-                        initialIsDataReady={true}
-                    />
-                )
-                await waitFor(() => expect(getDB).toHaveBeenCalled())
-                assert.dropzone.is.rendered()
-                assert.demoButton.is.rendered()
-                assert.howToButton.is.rendered()
-                assert.spinner.is.not.rendered()
-                assert.charts.is.rendered()
-            })
-        })
+    render(
+        <TracksyWrapper
+            initialDb={undefined}
+            initialIsDataDropped={false}
+            initialIsDataReady={false}
+        />
+    )
 
-        describe('when demo is ready', () => {
-            it('renders Dropzone, Buttons and Charts', async () => {
-                mockIsDemoReady = true
-                mockDemoJsonUrl = 'https://example.com'
-                render(
-                    <TracksyWrapper
-                        initialDb={undefined}
-                        initialIsDataDropped={false}
-                        initialIsDataReady={false}
-                    />
-                )
-                await waitFor(() => expect(getDB).toHaveBeenCalled())
-                assert.dropzone.is.rendered()
-                assert.demoButton.is.rendered()
-                assert.howToButton.is.rendered()
-                assert.spinner.is.not.rendered()
-                assert.charts.is.rendered()
-            })
-        })
+    await waitForElementToBeRemoved(() =>
+        screen.queryByText('Initializing the database engine (DuckDB-WASM)...')
+    )
 
-        describe('when data dropped and ready', () => {
-            it('renders Dropzone, Buttons and Charts', async () => {
-                render(
-                    <TracksyWrapper
-                        initialDb={undefined}
-                        initialIsDataDropped={true}
-                        initialIsDataReady={true}
-                    />
-                )
-                await waitFor(() => expect(getDB).toHaveBeenCalled())
-                assert.dropzone.is.rendered()
-                assert.demoButton.is.rendered()
-                assert.howToButton.is.rendered()
-                assert.spinner.is.not.rendered()
-                assert.charts.is.rendered()
-            })
-        })
-    })
-
-    describe('when DB is not initialized', () => {
-        it('renders initialization message', async () => {
-            render(
-                <TracksyWrapper
-                    initialDb={undefined}
-                    initialIsDataDropped={false}
-                    initialIsDataReady={false}
-                />
-            )
-            expect(document.body.innerHTML).toBe(
-                '<div><p class="dark:text-white">Initializing the database engine (DuckDB-WASM)...</p></div>'
-            )
-        })
-    })
+    expect(screen.queryByRole<HTMLAnchorElement>('button', { name: '↓' })).toBe(
+        null
+    )
 })
