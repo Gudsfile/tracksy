@@ -25,7 +25,7 @@
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "apache-arrow": "^17.0.0",
-    "astro": "^5.14.3",
+    "astro": "^5.15.6",
     "d3": "^7.9.0",
     "eslint-plugin-import": "^2.32.0",
     "libarchive.js": "^2.0.2",
