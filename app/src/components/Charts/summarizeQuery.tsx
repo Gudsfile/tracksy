@@ -1,6 +1,6 @@
 import { TABLE } from '../../db/queries/constants'
 
-export const query = `
+export const summarizeQuery = `
 WITH monthly_aggregates AS (
     SELECT SUM(ms_played) AS monthly_duration FROM ${TABLE} GROUP BY YEAR(ts::DATE), MONTH(ts::DATE)
 ),
@@ -15,7 +15,7 @@ SELECT
 FROM ${TABLE};
 `
 
-export type SummarizeData = {
+export type SummarizeDataQueryResult = {
     min_datetime: string
     max_datetime: string
     max_count_hourly_stream: number

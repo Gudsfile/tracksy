@@ -1,11 +1,11 @@
 import * as Plot from '@observablehq/plot'
-import { QueryResult } from './query'
+import { StreamPerMonthQueryResult } from './query'
 import { formatDuration } from '../../../utils/formatDuration'
 import { formatMonthYear } from '../../../utils/formatMonthYear'
 import * as d3 from 'd3'
 
 export function buildPlot(
-    data: QueryResult[],
+    data: StreamPerMonthQueryResult[],
     maxValue: number | undefined,
     isDark = false
 ): ReturnType<typeof Plot.plot> {

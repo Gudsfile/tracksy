@@ -1,6 +1,6 @@
 import { TABLE } from '../../../db/queries/constants'
 
-export function queryByYear(year: number | undefined) {
+export function queryStreamsPerMonthByYear(year: number | undefined) {
     return `
     WITH all_months AS (
       SELECT LAST_DAY(month) as ts
@@ -28,7 +28,7 @@ export function queryByYear(year: number | undefined) {
     ORDER BY all_months.ts`
 }
 
-export type QueryResult = {
+export type StreamPerMonthQueryResult = {
     ts: number
     ms_played: number
     count_streams: number
