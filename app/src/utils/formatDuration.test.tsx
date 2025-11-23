@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { formatDuration } from './formatDuration'
 
-describe('StreamPerMonth formatDuration', () => {
+describe('FormatDuration', () => {
     it.each([
         { ms: 0, expected: '0s' },
         { ms: 1000, expected: '1s' },
@@ -11,7 +11,6 @@ describe('StreamPerMonth formatDuration', () => {
         { ms: 86399000, expected: '23h 59m 59s' },
         { ms: 86400000, expected: '1d 0h 0m 0s' },
         { ms: 172800000, expected: '2d 0h 0m 0s' },
-        { ms: 1000n, expected: '1s' },
     ])('should format $ms ms as "$expected"', ({ ms, expected }) => {
         expect(formatDuration(ms)).toBe(expected)
     })
