@@ -17,7 +17,7 @@
     "prepare": "cd .. && husky ./app/.husky"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
+    "@astrojs/check": "^0.9.5",
     "@astrojs/react": "^4.4.0",
     "@astrojs/tailwind": "^6.0.2",
     "@duckdb/duckdb-wasm": "^1.30.0",
