@@ -28,7 +28,6 @@ export function Charts() {
 
     return (
         <>
-            <Streaks />
             {summarize && (
                 <>
                     <RangeSlider
@@ -49,9 +48,24 @@ export function Charts() {
                     <SummaryPerYear year={year} />
                     <TopTracks year={year} />
                     <TopArtists year={year} />
-                    <Top10Evolution />
                 </>
             )}
+
+            <section className="backdrop-blur-lg border border-white/30 shadow-lg p-6 rounded-2xl mt-12 ">
+                <div className="relative mb-12">
+                    <div className="border-t border-gray-300"></div>
+                    <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-white px-3 py-1 text-sm font-medium rounded-full border">
+                        🚧 Work in Progress
+                    </span>
+                </div>
+                <p className="mb-4 text-gray-900 dark:text-gray-100">
+                    Experimental section: the graphs below are currently under
+                    development and may contain errors.
+                </p>
+
+                <Streaks />
+                <Top10Evolution />
+            </section>
         </>
     )
 }
