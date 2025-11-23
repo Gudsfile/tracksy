@@ -26,20 +26,20 @@ describe('TopTracks query', () => {
             {
                 track_name: 'track_a',
                 artist_name: 'artist_a',
-                ms_played: 88n,
-                count_streams: 8n,
+                ms_played: 88,
+                count_streams: 8,
             },
             {
                 track_name: 'track_b',
                 artist_name: 'artist_a',
-                ms_played: 66n,
-                count_streams: 2n,
+                ms_played: 66,
+                count_streams: 2,
             },
             {
                 track_name: 'track_a',
                 artist_name: 'artist_b',
-                ms_played: 44n,
-                count_streams: 2n,
+                ms_played: 44,
+                count_streams: 2,
             },
         ])
     })
@@ -51,20 +51,20 @@ describe('TopTracks query', () => {
             {
                 track_name: 'track_a',
                 artist_name: 'artist_a',
-                ms_played: 44n,
-                count_streams: 4n,
+                ms_played: 44,
+                count_streams: 4,
             },
             {
                 track_name: 'track_b',
                 artist_name: 'artist_a',
-                ms_played: 33n,
-                count_streams: 1n,
+                ms_played: 33,
+                count_streams: 1,
             },
             {
                 track_name: 'track_a',
                 artist_name: 'artist_b',
-                ms_played: 22n,
-                count_streams: 1n,
+                ms_played: 22,
+                count_streams: 1,
             },
         ])
     })

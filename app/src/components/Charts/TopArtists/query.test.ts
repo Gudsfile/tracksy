@@ -25,13 +25,13 @@ describe('TopArtists query', () => {
         expect(rows).toEqual([
             {
                 artist_name: 'artist_a',
-                ms_played: 154n,
-                count_streams: 10n,
+                ms_played: 154,
+                count_streams: 10,
             },
             {
                 artist_name: 'artist_b',
-                ms_played: 44n,
-                count_streams: 2n,
+                ms_played: 44,
+                count_streams: 2,
             },
         ])
     })
@@ -42,13 +42,13 @@ describe('TopArtists query', () => {
         expect(rows).toEqual([
             {
                 artist_name: 'artist_a',
-                ms_played: 77n,
-                count_streams: 5n,
+                ms_played: 77,
+                count_streams: 5,
             },
             {
                 artist_name: 'artist_b',
-                ms_played: 22n,
-                count_streams: 1n,
+                ms_played: 22,
+                count_streams: 1,
             },
         ])
     })
