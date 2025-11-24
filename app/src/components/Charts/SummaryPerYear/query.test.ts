@@ -23,12 +23,14 @@ describe('SummaryPerYear query', () => {
         const result = await conn.runAndReadAll(queryByYear(undefined))
         const rows = result.getRowObjects()
         expect(rows).toEqual([
-            { year: 2006, type: 'count_new_tracks_played', count_streams: 3 },
-            { year: 2006, type: 'count_unique_track_played', count_streams: 0 },
-            { year: 2006, type: 'count_other_tracks_played', count_streams: 3 },
-            { year: 2025, type: 'count_new_tracks_played', count_streams: 0 },
-            { year: 2025, type: 'count_unique_track_played', count_streams: 3 },
-            { year: 2025, type: 'count_other_tracks_played', count_streams: 3 },
+            { year: 2006, type: 'new_unique', count_streams: 3 },
+            { year: 2006, type: 'new_repeat', count_streams: 3 },
+            { year: 2006, type: 'old_unique', count_streams: 0 },
+            { year: 2006, type: 'old_repeat', count_streams: 0 },
+            { year: 2025, type: 'new_unique', count_streams: 0 },
+            { year: 2025, type: 'new_repeat', count_streams: 0 },
+            { year: 2025, type: 'old_unique', count_streams: 3 },
+            { year: 2025, type: 'old_repeat', count_streams: 3 },
         ])
     })
 
@@ -36,9 +38,10 @@ describe('SummaryPerYear query', () => {
         const result = await conn.runAndReadAll(queryByYear(2006))
         const rows = result.getRowObjects()
         expect(rows).toEqual([
-            { year: 2006, type: 'count_new_tracks_played', count_streams: 3 },
-            { year: 2006, type: 'count_unique_track_played', count_streams: 0 },
-            { year: 2006, type: 'count_other_tracks_played', count_streams: 3 },
+            { year: 2006, type: 'new_unique', count_streams: 3 },
+            { year: 2006, type: 'new_repeat', count_streams: 3 },
+            { year: 2006, type: 'old_unique', count_streams: 0 },
+            { year: 2006, type: 'old_repeat', count_streams: 0 },
         ])
     })
 })
