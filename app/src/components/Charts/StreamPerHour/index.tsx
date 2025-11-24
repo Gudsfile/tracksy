@@ -1,4 +1,7 @@
-import { type QueryResult, queryByYear } from './query'
+import {
+    type StreamPerHourQueryResult,
+    queryStreamsPerHoursByYear,
+} from './query'
 import { buildPlot } from './plot'
 import { Common } from '../Common'
 import { useCallback } from 'react'
@@ -10,14 +13,14 @@ interface StreamPerHourProps {
 
 export function StreamPerHour({ year, maxValue }: StreamPerHourProps) {
     const plotBuilder = useCallback(
-        (data: QueryResult[], isDark: boolean | undefined) =>
+        (data: StreamPerHourQueryResult[], isDark: boolean | undefined) =>
             buildPlot(data, maxValue, isDark),
         [maxValue]
     )
 
     return (
-        <Common<QueryResult>
-            query={queryByYear(year)}
+        <Common<StreamPerHourQueryResult>
+            query={queryStreamsPerHoursByYear(year)}
             buildPlot={plotBuilder}
         />
     )

@@ -1,6 +1,6 @@
 import { TABLE } from '../../../db/queries/constants'
 
-export function queryByYear(year: number | undefined) {
+export function queryTopArtistsByYear(year: number | undefined) {
     return `
 SELECT
   master_metadata_album_artist_name AS artist_name,
@@ -14,7 +14,7 @@ LIMIT 10
 `
 }
 
-export type QueryResult = {
+export type TopArtistsQueryResult = {
     artist_name: string
     count_streams: number
     ms_played: number
