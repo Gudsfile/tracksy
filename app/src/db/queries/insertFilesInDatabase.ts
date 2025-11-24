@@ -1,5 +1,9 @@
 import { getDB } from '../getDB'
-import { TABLE, DROP_TABLE_QUERY } from './constants'
+import {
+    TABLE,
+    DROP_TABLE_QUERY,
+    DELETE_SHORT_STREAMS_QUERY,
+} from './constants'
 import { tableFromJSON } from 'apache-arrow'
 import {
     extractMusicOnly,
@@ -32,4 +36,5 @@ export async function insertFilesInDatabase(files: FileList) {
         create: true,
     })
     console.debug(`Table ${TABLE} created.`)
+    await conn.query(DELETE_SHORT_STREAMS_QUERY)
 }
