@@ -4,10 +4,10 @@ import { SummaryPerYear } from '.'
 import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 const queryResult = [
-    { year: '2024', count_streams: 10131, type: 'count_new_tracks_played' },
-    { year: '2024', count_streams: 3861, type: 'count_unique_track_played' },
-    { year: '2024', count_streams: 17932, type: 'count_other_tracks_played' },
-    { year: '2025', count_streams: 1, type: 'count_unique_track_played' },
+    { year: '2024', count_streams: 10131, type: 'new_unique' },
+    { year: '2024', count_streams: 3861, type: 'new_repeat' },
+    { year: '2024', count_streams: 17932, type: 'old_unique' },
+    { year: '2025', count_streams: 1, type: 'old_repeat' },
 ]
 
 vi.mock('../../../db/queries/queryDB', () => ({
@@ -28,11 +28,12 @@ describe('SummaryPerYear Component', () => {
         )
 
         await waitFor(() => {
-            expect(container.querySelectorAll('svg')).toHaveLength(4)
+            expect(container.querySelectorAll('svg')).toHaveLength(3)
         })
-        screen.getByText('Distribution of new streams')
-        screen.getByText('count_new_tracks_played')
-        screen.getByText('count_unique_track_played')
-        screen.getByText('count_other_tracks_played')
+        screen.getByText('Distribution of streams')
+        screen.getByText('First Listen')
+        screen.getByText('Repeats')
+        screen.getByText('44% New Tracks')
+        screen.getByText('56% Old Tracks')
     })
 })
