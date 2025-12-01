@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { queryByYear } from './query'
+import { summarizePerYearQuery } from './query'
 import { TABLE } from '../../../db/queries/constants'
 
 const seedPath = 'src/components/Charts/SummaryPerYear/fixtures/seed.json'
@@ -20,7 +20,9 @@ beforeEach(async () => {
 
 describe('SummaryPerYear query', () => {
     it('counts the distribution of streams during the year for all years', async () => {
-        const result = await conn.runAndReadAll(queryByYear(undefined))
+        const result = await conn.runAndReadAll(
+            summarizePerYearQuery(undefined)
+        )
         const rows = result.getRowObjects()
         expect(rows).toEqual([
             { year: 2006, type: 'new_unique', count_streams: 3 },
@@ -35,7 +37,7 @@ describe('SummaryPerYear query', () => {
     })
 
     it('counts the distribution of streams during the year for a specific year', async () => {
-        const result = await conn.runAndReadAll(queryByYear(2006))
+        const result = await conn.runAndReadAll(summarizePerYearQuery(2006))
         const rows = result.getRowObjects()
         expect(rows).toEqual([
             { year: 2006, type: 'new_unique', count_streams: 3 },

@@ -1,6 +1,6 @@
 import { TABLE } from '../../../db/queries/constants'
 
-export function queryByYear(year: number | undefined) {
+export function queryStreamsPerHoursByYear(year: number | undefined) {
     return `
 SELECT
     hour::INT AS hour,
@@ -20,7 +20,7 @@ ORDER BY hour
 `
 }
 
-export type QueryResult = {
+export type StreamPerHourQueryResult = {
     hour: number
     count_streams: number
     ms_played: number
