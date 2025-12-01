@@ -9,7 +9,7 @@
 - > The same old song? Late at night? Only in summer?
 - Tracksy aims to help you answer these questions. It helps you see your data without us seeing your data.
 
-🦆 Powered by DuckDB WASM and Astro x React.
+🦆 Powered by DuckDB WASM x Astro x React.
 
 🚧 Currently only works with Spotify streaming data.
 
@@ -34,15 +34,9 @@ For developers or curious, take a look at [`synthetic-datasets/README.md`](synth
 
 ### ⬇️ Download your data
 
-You can use pre-generated datasets available on Hugging Face [tracksy/synthetic-datasets](https://huggingface.co/datasets/tracksy/synthetic-datasets/tree/main).
-For example, download one of the files from the interface or with the following command:
+You can skip this step using pre-generated datasets through the demo button on the home page.
 
-```shell
-# /!\ The size of this file is greater than 44Mb, other files are available.
-curl -LO https://huggingface.co/datasets/tracksy/synthetic-datasets/resolve/main/datasets/spotify/streamings_500000.zip?download=true
-```
-
-Or use your own Spotify data:
+**Or use your own Spotify data:**
 
 1. Request your Spotify data on [your Spotify account](https://www.spotify.com/account/privacy/)
    - Select "_Extended streaming history_"
@@ -53,7 +47,9 @@ Or use your own Spotify data:
 
 ### 🚀 Upload your data
 
-Go to [Tracksy](https://tracksy-app.web.app) and upload your file.
+Go to [Tracksy](https://tracksy-app.web.app) and upload your file or use the demo button.
+
+No data is sent to us, it stays with you!
 
 You can also deploy Tracksy on your own, just take a look at the [documentation](app/).
 
