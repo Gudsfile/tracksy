@@ -28,6 +28,10 @@ export function queryByYear(year: number | undefined) {
     ORDER BY all_months.ts`
 }
 
+export function queryStreamsPerMonthByYear(year: number | undefined) {
+    return queryByYear(year)
+}
+
 export type QueryResult = {
     ts: number
     ms_played: number

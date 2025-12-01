@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { StreamPerMonth } from '.'
-import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 vi.mock('../../../db/queries/queryDB', () => ({
     queryDBAsJSON: () => () => vi.fn(),
@@ -15,9 +14,7 @@ vi.mock('../../../db/getDB', () => ({
 describe('StreamPerMonth Component', () => {
     it('should render the svg', async () => {
         const { container } = render(
-            <ThemeProvider>
-                <StreamPerMonth year={2006} maxValue={100} />
-            </ThemeProvider>
+            <StreamPerMonth year={2006} maxValue={100} />
         )
 
         await waitFor(() => {

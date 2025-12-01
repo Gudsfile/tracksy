@@ -1,7 +1,6 @@
 import { describe, it, vi } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { TopStreak } from '.'
-import { ThemeProvider } from '../../../hooks/ThemeContext'
 import * as queries from './query'
 
 const topStreakData = [
@@ -39,11 +38,7 @@ vi.mock('../../../db/getDB', () => ({
 
 describe('TopStreak Component', () => {
     it('should render the top streak by default', async () => {
-        render(
-            <ThemeProvider>
-                <TopStreak />
-            </ThemeProvider>
-        )
+        render(<TopStreak />)
 
         await waitFor(() => {
             screen.getByText('10')

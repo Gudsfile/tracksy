@@ -1,7 +1,6 @@
 import { describe, it, vi } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { TopArtist } from '.'
-import { ThemeProvider } from '../../../hooks/ThemeContext'
 import * as queries from './query'
 
 vi.mock('../../../db/queries/queryDB', () => ({
@@ -35,11 +34,7 @@ vi.mock('../../../db/getDB', () => ({
 
 describe('TopArtist Component', () => {
     it('should render the top artist by count by default', async () => {
-        render(
-            <ThemeProvider>
-                <TopArtist />
-            </ThemeProvider>
-        )
+        render(<TopArtist />)
 
         await waitFor(() => {
             screen.getByText('TestArtistByCount')

@@ -1,4 +1,5 @@
 import { Charts } from '../Charts/Charts'
+import { SimpleView } from '../Charts/SimpleView'
 import { useState } from 'react'
 
 export function Results() {
@@ -30,7 +31,7 @@ export function Results() {
             </div>
 
             <div className="min-h-screen">
-                {activeTab === 'simple' ? <p>simple view</p> : <Charts />}
+                {activeTab === 'simple' ? <SimpleView /> : <Charts />}
             </div>
         </div>
     )

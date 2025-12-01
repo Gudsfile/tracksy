@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { TopArtists } from '.'
-import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 vi.mock('../../../db/queries/queryDB', () => ({
     queryDBAsJSON: () => () => [
@@ -20,11 +19,7 @@ vi.mock('../../../db/getDB', () => ({
 
 describe('TopArtists Component', () => {
     it('should render the svg', async () => {
-        const { container } = render(
-            <ThemeProvider>
-                <TopArtists year={2006} />
-            </ThemeProvider>
-        )
+        const { container } = render(<TopArtists year={2006} />)
 
         await waitFor(() => {
             expect(container.querySelectorAll('svg')).toHaveLength(1)
