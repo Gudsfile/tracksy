@@ -1,7 +1,6 @@
 import { describe, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { TotalStreams } from '.'
-import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 vi.mock('../../../db/queries/queryDB', () => ({
     queryDBAsJSON: () =>
@@ -20,11 +19,7 @@ vi.mock('../../../db/getDB', () => ({
 
 describe('TotalStreams Component', () => {
     it('should render the text', async () => {
-        render(
-            <ThemeProvider>
-                <TotalStreams />
-            </ThemeProvider>
-        )
+        render(<TotalStreams />)
 
         await waitFor(() => {
             screen.getByText('1s')

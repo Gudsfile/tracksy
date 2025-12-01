@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { SummaryPerYear } from '.'
-import { ThemeProvider } from '../../../hooks/ThemeContext'
 
 const queryResult = [
     { year: '2024', count_streams: 10131, type: 'new_unique' },
@@ -21,11 +20,7 @@ vi.mock('../../../db/getDB', () => ({
 
 describe('SummaryPerYear Component', () => {
     it('should render the svg', async () => {
-        const { container } = render(
-            <ThemeProvider>
-                <SummaryPerYear year={2024} />
-            </ThemeProvider>
-        )
+        const { container } = render(<SummaryPerYear year={2024} />)
 
         await waitFor(() => {
             expect(container.querySelectorAll('svg')).toHaveLength(3)
