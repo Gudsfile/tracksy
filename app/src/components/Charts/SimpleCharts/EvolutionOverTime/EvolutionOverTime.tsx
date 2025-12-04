@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import type { EvolutionResult } from './query'
+import { formatDuration } from '../../../../utils/formatDuration'
 
 type Props = {
     data: EvolutionResult[]
@@ -38,7 +39,9 @@ export const EvolutionOverTime: FC<Props> = ({ data }) => {
                                     style={{ height: '100%' }}
                                 ></div>
                                 <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-black text-white text-xs px-2 py-1 rounded pointer-events-none whitespace-nowrap z-10">
-                                    {d.year}: {d.streams}
+                                    {d.year}
+                                    <br /> {d.streams.toLocaleString()} streams
+                                    <br /> ({formatDuration(d.ms_played)})
                                 </div>
                             </div>
                         )
