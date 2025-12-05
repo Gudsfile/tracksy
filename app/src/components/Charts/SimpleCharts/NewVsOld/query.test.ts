@@ -16,6 +16,8 @@ const testData: TestStreamEntry[] = [
     { ts: '2025-01-01', master_metadata_album_artist_name: 'old_artist' },
     { ts: '2022-01-02', master_metadata_album_artist_name: 'old_artist' },
     { ts: '2022-01-02', master_metadata_album_artist_name: 'old_artist' },
+    // Future data should not be taken into account
+    { ts: '2026-01-01', master_metadata_album_artist_name: 'future_artist' },
 ]
 
 describe('NewVsOld Query', () => {
@@ -32,7 +34,7 @@ describe('NewVsOld Query', () => {
     })
 
     it('should return new vs old metrics', async () => {
-        const rows = await testQuery(conn, queryNewVsOld())
+        const rows = await testQuery(conn, queryNewVsOld(2025))
 
         expect(rows.length).toBe(1)
         const row = rows[0]

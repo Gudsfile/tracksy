@@ -11,12 +11,16 @@ import type { DuckDBConnection } from '@duckdb/node-api'
 
 let conn: DuckDBConnection
 
+const testYear = 2025
+const testDate = `${testYear}-01-01`
+const anotherYear = `${testYear - 1}-01-01`
 const testData: TestStreamEntry[] = [
-    { platform: 'android' },
-    { platform: 'ios' },
-    { platform: 'dummy1' },
-    { platform: 'dummy2' },
-    { platform: 'dummy3' },
+    { ts: testDate, platform: 'android' },
+    { ts: testDate, platform: 'ios' },
+    { ts: testDate, platform: 'dummy1' },
+    { ts: testDate, platform: 'dummy2' },
+    { ts: testDate, platform: 'dummy3' },
+    { ts: anotherYear, platform: 'android' },
 ]
 
 describe('PrincipalPlatform Query', () => {
@@ -33,7 +37,7 @@ describe('PrincipalPlatform Query', () => {
     })
 
     it('should return platform metrics', async () => {
-        const rows = await testQuery(conn, queryPrincipalPlatform())
+        const rows = await testQuery(conn, queryPrincipalPlatform(testYear))
 
         expect(rows).toEqual([
             { pct: 20, platform: 'iOS', stream_count: 1 },

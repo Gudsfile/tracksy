@@ -11,11 +11,15 @@ import type { DuckDBConnection } from '@duckdb/node-api'
 
 let conn: DuckDBConnection
 
+const testYear = 2025
+const testDate = `${testYear}-01-01`
+const anotherYear = testYear - 1
 const testData: TestStreamEntry[] = [
-    { reason_end: 'fwdbtn' },
-    { reason_end: 'trackdone' },
-    { reason_end: 'trackdone' },
-    { reason_end: 'trackdone' },
+    { ts: testDate, reason_end: 'fwdbtn' },
+    { ts: testDate, reason_end: 'trackdone' },
+    { ts: testDate, reason_end: 'trackdone' },
+    { ts: testDate, reason_end: 'trackdone' },
+    { ts: `${anotherYear}-01-01`, reason_end: 'trackdone' },
 ]
 
 describe('SkipRate Query', () => {
@@ -32,7 +36,7 @@ describe('SkipRate Query', () => {
     })
 
     it('should return skip rate metrics', async () => {
-        const rows = await testQuery(conn, querySkipRate())
+        const rows = await testQuery(conn, querySkipRate(testYear))
 
         expect(rows.length).toBe(1)
         const row = rows[0]

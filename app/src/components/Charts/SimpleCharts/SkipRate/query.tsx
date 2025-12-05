@@ -5,11 +5,12 @@ export type SkipRateResult = {
     skipped_listens: number
 }
 
-export function querySkipRate(): string {
+export function querySkipRate(year: number): string {
     return `
   SELECT
     COUNT(*) FILTER (WHERE reason_end = 'trackdone')::DOUBLE AS complete_listens,
     COUNT(*) FILTER (WHERE reason_end IN ('fwdbtn', 'click-row', 'clickrow'))::DOUBLE AS skipped_listens
   FROM ${TABLE}
+  WHERE YEAR(ts::DATE) = ${year}
   `
 }

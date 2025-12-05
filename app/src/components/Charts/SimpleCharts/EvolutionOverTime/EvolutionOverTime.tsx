@@ -4,14 +4,14 @@ import { formatDuration } from '../../../../utils/formatDuration'
 
 type Props = {
     data: EvolutionResult[]
+    year: number
 }
 
-export const EvolutionOverTime: FC<Props> = ({ data }) => {
+export const EvolutionOverTime: FC<Props> = ({ data, year }) => {
     if (data.length === 0) return null
 
     const maxStreams = Math.max(...data.map((d) => d.streams))
-    const currentYear = new Date().getFullYear()
-    const currentYearData = data.find((d) => d.year === currentYear)
+    const currentYearData = data.find((d) => d.year === year)
     const totalStreams = data.reduce((acc, curr) => acc + curr.streams, 0)
     const startYear = Math.min(...data.map((d) => d.year))
 
@@ -32,9 +32,7 @@ export const EvolutionOverTime: FC<Props> = ({ data }) => {
                             >
                                 <div
                                     className={`absolute bottom-0 left-0 right-0 bg-blue-500 rounded-t transition-all duration-300 ${
-                                        d.year === currentYear
-                                            ? 'bg-purple-500'
-                                            : ''
+                                        d.year === year ? 'bg-purple-500' : ''
                                     }`}
                                     style={{ height: '100%' }}
                                 ></div>

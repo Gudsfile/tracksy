@@ -6,7 +6,7 @@ export type ConcentrationResult = {
     top20_pct: number
 }
 
-export function queryConcentrationScore(): string {
+export function queryConcentrationScore(year: number): string {
     return `
     WITH artist_streams AS (
       SELECT
@@ -14,6 +14,7 @@ export function queryConcentrationScore(): string {
         COUNT(*) AS stream_count
       FROM ${TABLE}
       WHERE master_metadata_album_artist_name IS NOT NULL
+      AND YEAR(ts::DATE) = ${year}
       GROUP BY master_metadata_album_artist_name
     ),
     ranked_artists AS (
@@ -24,7 +25,7 @@ export function queryConcentrationScore(): string {
       FROM artist_streams
     ),
     total_streams AS (
-      SELECT COUNT(*) AS total FROM ${TABLE}
+      SELECT COUNT(*) AS total FROM ${TABLE} WHERE YEAR(ts::DATE) = ${year}
     )
     SELECT
       (SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 5)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100 AS top5_pct,

@@ -6,9 +6,13 @@ export type PlatformResult = {
     pct: number
 }
 
-export function queryPrincipalPlatform(): string {
+export function queryPrincipalPlatform(year: number): string {
     return `
-    WITH normalized_platforms AS (
+    WITH 
+    selected_streams AS (
+      SELECT * FROM ${TABLE} WHERE YEAR(ts::date) = ${year}
+    ),
+    normalized_platforms AS (
       SELECT
         CASE
           WHEN LOWER(platform) LIKE 'android%' AND LOWER(platform) NOT LIKE '%tv%' THEN 'Android OS'
@@ -22,14 +26,14 @@ export function queryPrincipalPlatform(): string {
           WHEN LOWER(platform) LIKE 'windows%' THEN 'Windows'
           ELSE 'Others'
         END as platform
-      FROM ${TABLE}
+      FROM selected_streams
       WHERE platform IS NOT NULL
     ),
     platform_counts AS (
       SELECT
         platform,
         COUNT(*) as stream_count,
-        COUNT(*)::DOUBLE / (SELECT COUNT(*) FROM ${TABLE} WHERE platform IS NOT NULL)::DOUBLE * 100 as pct
+        COUNT(*)::DOUBLE / (SELECT COUNT(*) FROM selected_streams WHERE platform IS NOT NULL)::DOUBLE * 100 as pct
       FROM normalized_platforms
       GROUP BY platform
     ),
