@@ -4,10 +4,7 @@ from synthetic_datasets.factories.spotify import SpotifyFactory, rotate
 from synthetic_datasets.models.spotify import Streaming
 
 
-@pytest.mark.parametrize(
-    "num_records",
-   range(0, 100, 3)
-)
+@pytest.mark.parametrize("num_records", range(0, 100, 3))
 def test_create_streaming_history(num_records):
     # given
     factory = SpotifyFactory(num_records=num_records)
