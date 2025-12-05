@@ -54,7 +54,7 @@ export const NewVsOld: FC<Props> = ({ data }) => {
 
             <div className="mt-4 text-xs text-center text-gray-500 dark:text-gray-400">
                 <span className="font-medium text-gray-900 dark:text-gray-100">
-                    {new_artists_count}
+                    {new_artists_count.toLocaleString()}
                 </span>{' '}
                 new artists discovered this year! 🚀
             </div>
