@@ -7,7 +7,7 @@ export type RepeatResult = {
     avg_repeat_length: number
 }
 
-export function queryRepeatBehavior(): string {
+export function queryRepeatBehavior(year: number): string {
     return `
     WITH ordered_streams AS (
       SELECT
@@ -17,6 +17,7 @@ export function queryRepeatBehavior(): string {
         LAG(spotify_track_uri) OVER (ORDER BY ts) AS prev_track
       FROM ${TABLE}
       WHERE spotify_track_uri IS NOT NULL
+      AND YEAR(ts::DATE) = ${year}
     ),
     repeat_groups AS (
       SELECT

@@ -48,12 +48,12 @@ const testData: TestStreamEntry[] = [
         spotify_track_uri: 'artist2:track1',
     },
     {
-        ts: '2018-07-03T19:00:00Z',
+        ts: '2024-07-03T19:00:00Z',
         master_metadata_track_name: 'repeated_2_times_consecutively_track',
         spotify_track_uri: 'artist3:track1',
     },
     {
-        ts: '2018-07-03T19:05:00Z',
+        ts: '2024-07-03T19:05:00Z',
         master_metadata_track_name: 'repeated_2_times_consecutively_track',
         spotify_track_uri: 'artist3:track1',
     },
@@ -77,6 +77,16 @@ const testData: TestStreamEntry[] = [
         master_metadata_track_name: 'non_repeating_track',
         spotify_track_uri: 'artist5:track1',
     },
+    {
+        ts: '2018-01-24T10:00:00Z',
+        master_metadata_track_name: 'unselected_year_track',
+        spotify_track_uri: 'artist6:track1',
+    },
+    {
+        ts: '2018-01-24T10:00:00Z',
+        master_metadata_track_name: 'unselected_year_track',
+        spotify_track_uri: 'artist6:track1',
+    },
 ]
 
 describe('RepeatBehavior Query', () => {
@@ -93,7 +103,7 @@ describe('RepeatBehavior Query', () => {
     })
 
     it('should return repeat behavior metrics', async () => {
-        const rows = await testQuery(conn, queryRepeatBehavior())
+        const rows = await testQuery(conn, queryRepeatBehavior(2024))
 
         expect(rows.length).toBe(1)
         const row = rows[0]

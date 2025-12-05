@@ -3,7 +3,7 @@ import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { queryEvolutionOverTime, EvolutionResult } from './query'
 import { EvolutionOverTime as EvolutionOverTimeView } from './EvolutionOverTime'
 
-export function EvolutionOverTime() {
+export function EvolutionOverTime({ year }: { year: number }) {
     const [data, setData] = useState<EvolutionResult[]>([])
 
     useEffect(() => {
@@ -13,8 +13,8 @@ export function EvolutionOverTime() {
             setData(result)
         }
         fetch()
-    }, [])
+    }, [year])
 
     if (data.length === 0) return null
-    return <EvolutionOverTimeView data={data} />
+    return <EvolutionOverTimeView data={data} year={year} />
 }

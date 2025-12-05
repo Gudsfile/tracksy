@@ -8,7 +8,7 @@ export type SeasonalResult = {
     total: number
 }
 
-export function querySeasonalPatterns(): string {
+export function querySeasonalPatterns(year: number): string {
     return `
     SELECT
       SUM(CASE WHEN MONTH(ts::DATE) IN (12, 1, 2) THEN 1 ELSE 0 END)::DOUBLE AS winter,
@@ -17,5 +17,6 @@ export function querySeasonalPatterns(): string {
       SUM(CASE WHEN MONTH(ts::DATE) IN (9, 10, 11) THEN 1 ELSE 0 END)::DOUBLE AS fall,
       COUNT(*)::DOUBLE AS total
     FROM ${TABLE}
+    WHERE YEAR(ts::DATE) = ${year}
   `
 }

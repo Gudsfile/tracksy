@@ -20,6 +20,8 @@ const testData: TestStreamEntry[] = [
     { ts: '2025-12-05' },
     { ts: '2025-12-06' },
     { ts: '2025-12-07' },
+    // Another year
+    { ts: '2024-12-01' },
 ]
 
 describe('FavoriteWeekday Query', () => {
@@ -36,7 +38,7 @@ describe('FavoriteWeekday Query', () => {
     })
 
     it('should return weekday statistics', async () => {
-        const rows = await testQuery(conn, queryFavoriteWeekday())
+        const rows = await testQuery(conn, queryFavoriteWeekday(2025))
 
         expect(rows).toEqual([
             { day_name: 'Monday', stream_count: 2, pct: 25 },

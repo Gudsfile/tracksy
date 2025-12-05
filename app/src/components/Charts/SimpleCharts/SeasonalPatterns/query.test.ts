@@ -18,6 +18,7 @@ const testData: TestStreamEntry[] = [
     { ts: '2022-05-01' },
     { ts: '2022-07-01' },
     { ts: '2022-08-01' },
+    { ts: '2023-08-01' },
 ]
 
 describe('SeasonalPatterns Query', () => {
@@ -34,7 +35,7 @@ describe('SeasonalPatterns Query', () => {
     })
 
     it('should return seasonal metrics', async () => {
-        const rows = await testQuery(conn, querySeasonalPatterns())
+        const rows = await testQuery(conn, querySeasonalPatterns(2022))
 
         expect(rows.length).toBe(1)
         const row = rows[0]

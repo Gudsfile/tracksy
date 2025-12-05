@@ -6,7 +6,7 @@ export type DiversityResult = {
     avg_streams_per_artist: number
 }
 
-export function queryDiversityScore(): string {
+export function queryDiversityScore(year: number): string {
     return `
     SELECT
       COUNT(DISTINCT master_metadata_album_artist_name)::DOUBLE AS unique_artists,
@@ -14,5 +14,6 @@ export function queryDiversityScore(): string {
       (COUNT(*)::DOUBLE / COUNT(DISTINCT master_metadata_album_artist_name)::DOUBLE) AS avg_streams_per_artist
     FROM ${TABLE}
     WHERE master_metadata_album_artist_name IS NOT NULL
+    AND YEAR(ts::DATE) = ${year}
   `
 }

@@ -19,6 +19,7 @@ const testData: TestStreamEntry[] = [
     { ts: '2024-01-01 20:00:00' },
     { ts: '2024-01-01 22:00:00' },
     { ts: '2024-01-01 23:00:00' },
+    { ts: '2025-01-01 23:00:00' },
 ]
 
 describe('ListeningRhythm Query', () => {
@@ -35,7 +36,7 @@ describe('ListeningRhythm Query', () => {
     })
 
     it('should return rhythm metrics', async () => {
-        const rows = await testQuery(conn, queryListeningRhythm())
+        const rows = await testQuery(conn, queryListeningRhythm(2024))
 
         expect(rows.length).toBe(1)
         const row = rows[0]

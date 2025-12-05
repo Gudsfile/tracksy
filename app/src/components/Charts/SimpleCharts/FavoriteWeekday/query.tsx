@@ -6,14 +6,18 @@ export type FavoriteWeekdayResult = {
     pct: number
 }
 
-export function queryFavoriteWeekday(): string {
+export function queryFavoriteWeekday(year: number): string {
     return `
-    WITH day_streams AS (
+    WITH 
+    selected_streams AS (
+      SELECT * FROM ${TABLE} WHERE YEAR(ts::date) = ${year}
+    ),
+    day_streams AS (
       SELECT
         DAYNAME(ts::DATE) as day_name,
         COUNT(*) as stream_count,
-        COUNT(*)::DOUBLE / (SELECT COUNT(*) FROM ${TABLE})::DOUBLE * 100 as pct
-      FROM ${TABLE}
+        COUNT(*)::DOUBLE / (SELECT COUNT(*) FROM selected_streams)::DOUBLE * 100 as pct
+      FROM selected_streams
       GROUP BY DAYNAME(ts::DATE)
     )
     SELECT
