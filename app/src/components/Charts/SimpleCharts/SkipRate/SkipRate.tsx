@@ -37,8 +37,8 @@ export const SkipRate: FC<Props> = ({ data }) => {
             </div>
 
             <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
-                <span>Skippped ({skipped_listens})</span>
-                <span>Completed ({complete_listens})</span>
+                <span>Skippped ({skipped_listens.toLocaleString()})</span>
+                <span>Completed ({complete_listens.toLocaleString()})</span>
             </div>
 
             <div className="text-sm text-center font-medium text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg">
