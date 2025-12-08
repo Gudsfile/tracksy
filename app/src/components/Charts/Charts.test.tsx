@@ -290,9 +290,52 @@ const topArtistsResultMock: TopArtistsQueryResult[] = [
         count_streams: 23n,
         ms_played: BigInt(8557410),
     },
+    {
+        artist_name: 'Robert Hill',
+        count_streams: 19n,
+        ms_played: BigInt(4125663),
+    },
+    {
+        artist_name: 'Leslie Wright',
+        count_streams: 19n,
+        ms_played: BigInt(7299586),
+    },
+    {
+        artist_name: 'Erica Gentry',
+        count_streams: 19n,
+        ms_played: BigInt(8076933),
+    },
+    {
+        artist_name: 'Cameron Carson',
+        count_streams: 18n,
+        ms_played: BigInt(7122097),
+    },
+    {
+        artist_name: 'Dr. Stephanie Hill',
+        count_streams: 17n,
+        ms_played: BigInt(6505425),
+    },
 ]
 
-it('renders charts', async () => {
+const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
+    {
+        year: 2024,
+        artist: 'Richard Snyder',
+        rank: 1,
+        play_count: 100,
+    },
+]
+
+const streamPerDayOfWeekResultMock: StreamPerDayOfWeekQueryResult[] = [
+    {
+        dayOfWeek: 1,
+        hour: 12,
+        count_streams: 10,
+    },
+]
+
+it('renders all Charts', async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
@@ -306,6 +349,10 @@ it('renders charts', async () => {
             return Promise.resolve(topTracksResultMock)
         if (query === queryTopArtistsByYear(2024))
             return Promise.resolve(topArtistsResultMock)
+        if (query === queryTop10Evolution())
+            return Promise.resolve(top10EvolutionResultMock)
+        if (query === streamPerDayOfWeekQueryByYear(2024))
+            return Promise.resolve(streamPerDayOfWeekResultMock)
     })
 
     render(<Charts />)
@@ -316,21 +363,16 @@ it('renders charts', async () => {
     await waitFor(() => {
         expect(slider.getAttribute('value')).toEqual('2024')
     })
-        if (query === queryTop10Evolution())
-            return Promise.resolve(top10EvolutionResultMock)
-        if (query === streamPerDayOfWeekQueryByYear(2024))
-            return Promise.resolve(streamPerDayOfWeekResultMock)
 
     await screen.findByRole('heading', { name: 'Stream duration per month' })
     await screen.findByRole('heading', { name: 'Number of streams per hour' })
-    await screen.findByRole('heading', { name: 'Distribution of new streams' })
+    await screen.findByRole('heading', { name: 'Distribution of streams' })
     await screen.findByRole('heading', { name: 'Top Tracks' })
     await screen.findByRole('heading', { name: 'Top Artists' })
-})
-    await screen.findByRole('heading', { name: 'Distribution of streams' })
     await screen.findByRole('heading', {
         name: 'Global Top 10 Artists Evolution',
     })
     await screen.findByRole('heading', {
         name: 'Stream per hour and day of week',
     })
+})

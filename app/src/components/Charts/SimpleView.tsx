@@ -15,7 +15,7 @@ import { DiversityScore } from './SimpleCharts/DiversityScore'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
-import { SummarizeData, query as summarizeQuery } from './summarizeQuery'
+import { SummarizeDataQueryResult, summarizeQuery } from './summarizeQuery'
 import { useState, useEffect } from 'react'
 
 export function SimpleView() {
@@ -25,7 +25,8 @@ export function SimpleView() {
 
     useEffect(() => {
         const initDataSummarize = async () => {
-            const results = await queryDBAsJSON<SummarizeData>(summarizeQuery)
+            const results =
+                await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
             if (results.length === 0) return
             setMinYear(new Date(results[0].min_datetime).getFullYear() || 2006)
             setMaxYear(
