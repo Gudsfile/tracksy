@@ -1,5 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
+import * as query from '../../../db/queries/queryDB'
+import { StreamPerHourQueryResult } from './query'
+import * as db from '../../../db/getDB'
+
 import { StreamPerHour } from '.'
 
 const queryResult = [
@@ -13,16 +17,18 @@ const queryResult = [
     { count_streams: 4, hour: 7, ms_played: 7 },
 ]
 
-vi.mock('../../../db/queries/queryDB', () => ({
-    queryDBAsJSON: () => () => queryResult,
-}))
-
-vi.mock('../../../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
-
 describe('StreamPerHour Component', () => {
+    beforeEach(() => {
+        vi.spyOn(query, 'queryDBAsJSON').mockImplementation(() =>
+            Promise.resolve(queryResult as StreamPerHourQueryResult[])
+        )
+
+        vi.spyOn(db, 'getDB').mockResolvedValue({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
     it('should render the svg', async () => {
         const { container } = render(
             <StreamPerHour year={2020} maxValue={100} />
