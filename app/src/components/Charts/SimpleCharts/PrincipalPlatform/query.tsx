@@ -42,7 +42,7 @@ export function queryPrincipalPlatform(year: number): string {
         platform,
         stream_count,
         pct,
-        ROW_NUMBER() OVER (ORDER BY stream_count DESC) as rank
+        ROW_NUMBER() OVER (ORDER BY stream_count DESC, platform DESC) as rank
       FROM platform_counts
       WHERE platform != 'Others'
     ),
@@ -68,6 +68,7 @@ export function queryPrincipalPlatform(year: number): string {
     )
     ORDER BY 
       CASE WHEN platform = 'Others' THEN 1 ELSE 0 END,
-      stream_count DESC
+      stream_count DESC,
+      platform DESC
   `
 }
