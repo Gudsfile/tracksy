@@ -1,6 +1,6 @@
 import { it, vi, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { Charts } from './Charts'
+import { ExpertView } from './ExpertView'
 import * as db from '../../db/queries/queryDB'
 import { type SummarizeDataQueryResult, summarizeQuery } from './summarizeQuery'
 import {
@@ -355,7 +355,7 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamPerDayOfWeekResultMock)
     })
 
-    render(<Charts />)
+    render(<ExpertView />)
 
     //range slider
     const slider = await screen.findByRole('slider')

@@ -3,8 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { Results } from './Results'
 import * as db from '../../db/queries/queryDB'
 
-vi.mock('../Charts/Charts', () => ({
-    Charts: () => <div data-testid="charts" />,
+// Mock the child components to avoid needing to mock all their data dependencies
+vi.mock('../Charts/ExpertView', () => ({
+    ExpertView: () => (
+        <div data-testid="charts-component">Expert View Content</div>
+    ),
 }))
 
 vi.mock('../Charts/SimpleView', () => ({
