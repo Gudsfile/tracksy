@@ -3,10 +3,6 @@ import { render, screen } from '@testing-library/react'
 import { ListeningRhythm } from './ListeningRhythm'
 import * as db from '../../../../db/queries/queryDB'
 
-vi.mock('../../../../db/queries/queryDB', () => ({
-    queryDBAsJSON: vi.fn(),
-}))
-
 describe('ListeningRhythm Component', () => {
     it('renders correctly with data', async () => {
         const mockData = {
