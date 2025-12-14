@@ -75,3 +75,31 @@ We use **rebase and merge** as our preferred merge strategy. This approach helps
 
 - Keep your commits focused and atomic
 - Squash related commits if they represent a single logical change
+
+## Testing Best Practices
+
+We strive to maintain high-quality tests that are robust and easy to maintain.
+
+### Mocks and Spies
+
+- **Avoid `vi.mock()`**: We have configured ESLint to restrict the usage of `vi.mock()`. This global mocking strategy can lead to tests that are hard to understand and debug, and often breaks type safety.
+- **Prefer `vi.spyOn()`**: Instead, use `vi.spyOn()` to mock specific methods or functions. This allows for:
+    - Better type inference and safety.
+    - More granular control over what is being mocked.
+    - Easier restoration of original implementations (`mockRestore`).
+
+#### Example
+
+**❌ Avoid:**
+```ts
+vi.mock('../db/queries', () => ({
+    getUser: vi.fn(),
+}))
+```
+
+**✅ Prefer:**
+```ts
+import * as queries from '../db/queries'
+
+vi.spyOn(queries, 'getUser').mockResolvedValue(mockUser)
+```
