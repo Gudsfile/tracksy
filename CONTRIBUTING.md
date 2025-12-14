@@ -50,6 +50,7 @@ We use **rebase and merge** as our preferred merge strategy. This approach helps
 ### Workflow
 
 1. **Create a Feature Branch**: Always work on a separate branch from `main`
+
    ```bash
    git checkout -b feat/your-feature-name
    ```
@@ -57,6 +58,7 @@ We use **rebase and merge** as our preferred merge strategy. This approach helps
 2. **Make Your Changes**: Implement your feature or fix with clear, focused commits
 
 3. **Rebase Before Submitting**: Before creating a pull request, rebase your branch onto the latest `main`
+
    ```bash
    git fetch origin
    git rebase origin/main
@@ -65,6 +67,7 @@ We use **rebase and merge** as our preferred merge strategy. This approach helps
 4. **Submit Pull Request**: Create a PR with a clear description of your changes
 
 5. **Address Feedback**: Make any requested changes and force-push if needed
+
    ```bash
    git push --force-with-lease origin feat/your-feature-name
    ```
@@ -84,13 +87,14 @@ We strive to maintain high-quality tests that are robust and easy to maintain.
 
 - **Avoid `vi.mock()`**: We have configured ESLint to restrict the usage of `vi.mock()`. This global mocking strategy can lead to tests that are hard to understand and debug, and often breaks type safety.
 - **Prefer `vi.spyOn()`**: Instead, use `vi.spyOn()` to mock specific methods or functions. This allows for:
-    - Better type inference and safety.
-    - More granular control over what is being mocked.
-    - Easier restoration of original implementations (`mockRestore`).
+  - Better type inference and safety.
+  - More granular control over what is being mocked.
+  - Easier restoration of original implementations (`mockRestore`).
 
 #### Example
 
 **❌ Avoid:**
+
 ```ts
 vi.mock('../db/queries', () => ({
     getUser: vi.fn(),
@@ -98,6 +102,7 @@ vi.mock('../db/queries', () => ({
 ```
 
 **✅ Prefer:**
+
 ```ts
 import * as queries from '../db/queries'
 
