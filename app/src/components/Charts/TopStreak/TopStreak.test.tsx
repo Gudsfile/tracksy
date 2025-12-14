@@ -1,7 +1,11 @@
-import { describe, it, vi } from 'vitest'
+import { describe, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-import { TopStreak } from '.'
+
 import * as queries from './query'
+import * as query from '../../../db/queries/queryDB'
+import * as db from '../../../db/getDB'
+
+import { TopStreak } from '.'
 
 const topStreakData = [
     {
@@ -19,24 +23,30 @@ const currentStreakData = [
     },
 ]
 
-vi.mock('../../../db/queries/queryDB', () => ({
-    queryDBAsJSON: (query: string) => {
-        if (query === queries.queryTopStreak()) {
-            return Promise.resolve(topStreakData)
-        }
-        if (query === queries.queryCurrentStreak()) {
-            return Promise.resolve(currentStreakData)
-        }
-        return Promise.resolve([])
-    },
-}))
-
-vi.mock('../../../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
-
 describe('TopStreak Component', () => {
+    beforeEach(() => {
+        vi.spyOn(query, 'queryDBAsJSON').mockImplementation((query) => {
+            if (query === queries.queryTopStreak()) {
+                return Promise.resolve(
+                    topStreakData as unknown as queries.TopStreakQueryResult[]
+                )
+            }
+            if (query === queries.queryCurrentStreak()) {
+                return Promise.resolve(
+                    currentStreakData as unknown as queries.TopStreakQueryResult[]
+                )
+            }
+            return Promise.resolve(
+                [] as unknown as queries.TopStreakQueryResult[]
+            )
+        })
+
+        vi.spyOn(db, 'getDB').mockResolvedValue({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
     it('should render the top streak by default', async () => {
         render(<TopStreak />)
 
