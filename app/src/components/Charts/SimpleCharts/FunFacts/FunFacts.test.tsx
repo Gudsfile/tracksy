@@ -1,10 +1,14 @@
-import { describe, it, vi, expect } from 'vitest'
+import { describe, it, vi, expect, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { FunFacts } from '.'
 
-vi.mock('../../../../db/queries/queryDB', () => ({
-    queryDBAsJSON: vi.fn(() =>
-        Promise.resolve([
+import * as query from '../../../../db/queries/queryDB'
+import * as db from '../../../../db/getDB'
+import { FunFactResult } from './queries'
+
+describe('FunFacts Component', () => {
+    beforeEach(() => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 factType: 'marathon',
                 mainText: 'Test Artist',
@@ -12,16 +16,14 @@ vi.mock('../../../../db/queries/queryDB', () => ({
                 unit: 'streams',
                 context: '2024-01-15',
             },
-        ])
-    ),
-}))
+        ] as FunFactResult[])
 
-vi.mock('../../../../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
+        vi.spyOn(db, 'getDB').mockResolvedValue({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
 
-describe('FunFacts Component', () => {
     it('should render a fun fact', async () => {
         render(<FunFacts />)
 
