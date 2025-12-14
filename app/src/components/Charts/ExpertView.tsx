@@ -14,7 +14,7 @@ import { Streaks } from './Streaks'
 import { Top10Evolution } from './Top10Evolution'
 import { StreamPerDayOfWeek } from './StreamPerDayOfWeek'
 
-export function Charts() {
+export function ExpertView() {
     const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined

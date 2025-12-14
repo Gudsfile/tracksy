@@ -1,4 +1,4 @@
-import { Charts } from '../Charts/Charts'
+import { ExpertView } from '../Charts/ExpertView'
 import { SimpleView } from '../Charts/SimpleView'
 import { useState } from 'react'
 
@@ -31,7 +31,7 @@ export function Results() {
             </div>
 
             <div className="min-h-screen">
-                {activeTab === 'simple' ? <SimpleView /> : <Charts />}
+                {activeTab === 'simple' ? <SimpleView /> : <ExpertView />}
             </div>
         </div>
     )
