@@ -1,5 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
+
+import * as query from '../../../db/queries/queryDB'
+import * as db from '../../../db/getDB'
+import { SummaryPerYearQueryResult } from './query'
+
 import { SummaryPerYear } from '.'
 
 const queryResult = [
@@ -9,16 +14,18 @@ const queryResult = [
     { year: '2025', count_streams: 1, type: 'old_repeat' },
 ]
 
-vi.mock('../../../db/queries/queryDB', () => ({
-    queryDBAsJSON: () => () => queryResult,
-}))
-
-vi.mock('../../../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
-
 describe('SummaryPerYear Component', () => {
+    beforeEach(() => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue(
+            queryResult as unknown as SummaryPerYearQueryResult[]
+        )
+
+        vi.spyOn(db, 'getDB').mockResolvedValue({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
     it('should render the svg', async () => {
         const { container } = render(<SummaryPerYear year={2024} />)
 
