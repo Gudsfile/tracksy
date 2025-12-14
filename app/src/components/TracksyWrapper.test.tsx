@@ -1,13 +1,14 @@
-import { it, expect, vi, afterEach } from 'vitest'
+import { it, expect, vi, beforeEach } from 'vitest'
 import {
     render,
     screen,
+    waitFor,
     waitForElementToBeRemoved,
 } from '@testing-library/react'
 import { TracksyWrapper } from './TracksyWrapper'
 import * as db from '../db/getDB'
 
-afterEach(() => {
+beforeEach(() => {
     vi.clearAllMocks()
     vi.restoreAllMocks()
     vi.unstubAllEnvs()
@@ -63,6 +64,7 @@ it('should render the Dropzone and Buttons when DB is initialized', async () => 
 })
 
 it("shouldn't render the 'how to' button if no URL is defined", async () => {
+    vi.stubEnv('PUBLIC_DEMO_JSON_URL', undefined)
     vi.spyOn(db, 'getDB').mockResolvedValue({
         db: vi.fn(),
         conn: vi.fn(),
@@ -80,7 +82,9 @@ it("shouldn't render the 'how to' button if no URL is defined", async () => {
         screen.queryByText('Initializing the database engine (DuckDB-WASM)...')
     )
 
-    expect(screen.queryByRole<HTMLAnchorElement>('button', { name: '↓' })).toBe(
-        null
+    await waitFor(() =>
+        expect(
+            screen.queryByRole<HTMLAnchorElement>('button', { name: '↓' })
+        ).toBe(null)
     )
 })
