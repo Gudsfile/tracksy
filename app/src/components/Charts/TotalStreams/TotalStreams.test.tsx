@@ -1,23 +1,26 @@
-import { describe, it, vi } from 'vitest'
+import { describe, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { TotalStreams } from '.'
 
-vi.mock('../../../db/queries/queryDB', () => ({
-    queryDBAsJSON: () =>
-        Promise.resolve([
+import * as query from '../../../db/queries/queryDB'
+import * as db from '../../../db/getDB'
+import { TotalStreamsQueryResult } from './query'
+
+import { TotalStreams } from '.'
+describe('TotalStreams Component', () => {
+    beforeEach(() => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 count_streams: 123,
                 ms_played: 1000,
             },
-        ]),
-}))
+        ] as TotalStreamsQueryResult[])
 
-vi.mock('../../../db/getDB', () => ({
-    getDB: vi.fn(() => Promise.resolve({})),
-    insertFilesInDatabase: vi.fn(() => Promise.resolve()),
-}))
+        vi.spyOn(db, 'getDB').mockResolvedValue({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
 
-describe('TotalStreams Component', () => {
     it('should render the text', async () => {
         render(<TotalStreams />)
 
