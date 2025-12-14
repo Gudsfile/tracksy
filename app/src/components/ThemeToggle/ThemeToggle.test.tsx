@@ -4,6 +4,8 @@ import { ThemeToggle } from './ThemeToggle'
 import { ThemeProvider } from '../../hooks/ThemeContext'
 
 // Mock the useTheme hook
+// FIXME: Remove this when refactoring the ThemeToggle component
+// eslint-disable-next-line no-restricted-syntax
 vi.mock('../../hooks/useTheme', () => ({
     useTheme: vi.fn(),
 }))
