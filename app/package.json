@@ -10,7 +10,7 @@
         "astro": "astro",
         "format": "prettier --write .",
         "test": "vitest",
-        "test:coverage": "vitest --coverage",
+        "test:coverage": "vitest run --coverage",
         "format:check": "prettier --check .",
         "lint": "eslint 'src/**/*.{astro,ts,tsx}' --fix",
         "lint:check": "eslint 'src/**/*.{astro,ts,tsx}'",

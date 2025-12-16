@@ -10,6 +10,12 @@ const config: ViteUserConfig = {
         passWithNoTests: false,
         coverage: {
             reporter: ['text'],
+            thresholds: {
+                statements: 81,
+                branches: 78,
+                functions: 85,
+                lines: 81,
+            },
             exclude: [
                 ...coverageConfigDefaults.exclude,
                 'astro.config.*',
