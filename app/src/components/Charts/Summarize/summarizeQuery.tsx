@@ -1,4 +1,4 @@
-import { TABLE } from '../../db/queries/constants'
+import { TABLE } from '../../../db/queries/constants'
 
 export const summarizeQuery = `
 WITH monthly_aggregates AS (

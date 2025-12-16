@@ -12,7 +12,10 @@ import { DiversityScore } from './SimpleCharts/DiversityScore'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
-import { SummarizeDataQueryResult, summarizeQuery } from './summarizeQuery'
+import {
+    SummarizeDataQueryResult,
+    summarizeQuery,
+} from './Summarize/summarizeQuery'
 import { useState, useEffect } from 'react'
 
 export function SimpleView() {

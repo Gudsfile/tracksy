@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
 import { summarizeQuery } from './summarizeQuery'
-import { TABLE } from '../../db/queries/constants'
+import { TABLE } from '../../../db/queries/constants'
 
-const seedPath = 'src/components/Charts/fixtures/seed.json'
+const seedPath = 'src/components/Charts/Summarize/fixtures/seed.json'
 let conn: DuckDBConnection
 
 beforeAll(async () => {

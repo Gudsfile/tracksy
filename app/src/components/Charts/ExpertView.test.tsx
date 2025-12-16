@@ -2,7 +2,10 @@ import { it, vi, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { ExpertView } from './ExpertView'
 import * as db from '../../db/queries/queryDB'
-import { type SummarizeDataQueryResult, summarizeQuery } from './summarizeQuery'
+import {
+    type SummarizeDataQueryResult,
+    summarizeQuery,
+} from './Summarize/summarizeQuery'
 import {
     type StreamPerMonthQueryResult,
     queryStreamsPerMonthByYear,
