@@ -6,7 +6,10 @@ import { TotalStreams } from './ExpertCharts/TotalStreams'
 import { TopArtist } from './ExpertCharts/TopArtist'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect } from 'react'
-import { summarizeQuery, type SummarizeDataQueryResult } from './summarizeQuery'
+import {
+    summarizeQuery,
+    type SummarizeDataQueryResult,
+} from './Summarize/summarizeQuery'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { TopTracks } from './ExpertCharts/TopTracks'
 import { TopArtists } from './ExpertCharts/TopArtists'
