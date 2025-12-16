@@ -19,8 +19,8 @@ describe('Results Component', () => {
     it('renders properly', () => {
         render(<Results />)
         // Check that both buttons are rendered
-        screen.getByRole('button', { name: 'Simple View' })
-        screen.getByRole('button', { name: 'Expert View' })
+        screen.getByRole('button', { name: '✨ Simple View' })
+        screen.getByRole('button', { name: '🔬 Expert View' })
 
         // Should default to Expert view
         // Expert View contains the "Work in Progress" section
@@ -30,7 +30,7 @@ describe('Results Component', () => {
     it('switches to simple view when Simple View button is clicked', async () => {
         render(<Results />)
         const simpleButton = screen.getByRole('button', {
-            name: 'Simple View',
+            name: '✨ Simple View',
         })
 
         fireEvent.click(simpleButton)
@@ -49,14 +49,14 @@ describe('Results Component', () => {
 
         // First switch to simple view
         const simpleButton = screen.getByRole('button', {
-            name: 'Simple View',
+            name: '✨ Simple View',
         })
         fireEvent.click(simpleButton)
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
 
         // Then switch back to expert view
         const expertButton = screen.getByRole('button', {
-            name: 'Expert View',
+            name: '🔬 Expert View',
         })
         fireEvent.click(expertButton)
 

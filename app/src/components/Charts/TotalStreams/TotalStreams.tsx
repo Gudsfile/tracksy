@@ -15,18 +15,25 @@ export const TotalStreams = memo(function TotalStreams({
     const countStreams = data[0].count_streams
 
     return (
-        <div className="text-center flex flex-col items-center justify-between h-full overflow-hidden py-2">
-            <div className="flex-1 flex flex-col justify-center items-center min-h-0 w-full">
-                <div className="text-5xl md:text-6xl font-bold break-words leading-tight text-balance px-2">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="text-3xl md:text-4xl flex-shrink-0 animate-bounce-slow">
+                ⏳
+            </div>
+
+            <div className="flex-1 text-center md:text-left">
+                <div className="text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2">
+                    Total streams
+                </div>
+
+                <div className="text-3xl md:text-6xl font-bold text-gray-900 dark:text-white break-words text-balance">
                     {playedDuration}
                 </div>
-                <div className="text-5xl md:text-6xl mt-2 flex-shrink-0">
-                    ⏳
-                </div>
-            </div>
-            <div className="mt-2 flex-shrink-0">
-                <div className="text-2xl font-medium">played duration</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                    played duration
+                </span>
+
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 italic">
                     For {countStreams} streams
                 </div>
             </div>

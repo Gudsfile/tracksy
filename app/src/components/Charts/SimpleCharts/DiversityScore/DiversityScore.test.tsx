@@ -12,8 +12,10 @@ describe('DiversityScore Component', () => {
         render(<DiversityScore data={data} />)
         screen.getByText('Balanced')
         screen.getByText('30.0 streams/artist (average)')
-        screen.getByText(/100 artists/)
-        screen.getByText(/300 streams/)
+        screen.getByText(/100/)
+        screen.getByText(/Artists/)
+        screen.getByText(/300/)
+        screen.getByText(/Streams/)
     })
 
     it('renders correctly with loyal data', () => {

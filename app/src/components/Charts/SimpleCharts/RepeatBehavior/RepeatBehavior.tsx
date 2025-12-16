@@ -19,25 +19,27 @@ export const RepeatBehavior: FC<Props> = ({ data }) => {
     )
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            <h3 className="text-lg font-semibold mb-2 flex items-center">
+        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 🔁 Repeat Behavior
             </h3>
 
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <div className="text-2xl font-bold">{classification}</div>
-                    <div className="text-xs text-gray-500">Your style</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                        Your style
+                    </div>
                 </div>
                 <div className="text-4xl">{emoji}</div>
             </div>
 
             <div className="space-y-3">
-                <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <div className="bg-gray-200 dark:bg-slate-700/50 p-3 rounded-lg">
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                         Repeat Record
                     </div>
-                    <div className="font-medium text-purple-600 dark:text-purple-400 line-clamp-1">
+                    <div className="font-medium text-brand-purple dark:text-brand-purple line-clamp-1">
                         "{most_repeated_track}"
                     </div>
                     <div className="text-sm font-bold mt-1">
@@ -45,20 +47,24 @@ export const RepeatBehavior: FC<Props> = ({ data }) => {
                     </div>
                 </div>
 
-                <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">
-                        Repeated sequences
-                    </span>
-                    <span className="font-bold">{total_repeat_sequences}</span>
-                </div>
+                <div className="mb-1">
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">
+                            Repeated sequences
+                        </span>
+                        <span className="font-bold">
+                            {total_repeat_sequences}
+                        </span>
+                    </div>
 
-                <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">
-                        Repeat average
-                    </span>
-                    <span className="font-bold">
-                        {avg_repeat_length?.toFixed(1) || 0} times
-                    </span>
+                    <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">
+                            Repeat average
+                        </span>
+                        <span className="font-bold">
+                            {avg_repeat_length.toFixed(1)} times
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

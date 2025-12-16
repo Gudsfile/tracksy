@@ -20,8 +20,8 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
     )
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            <h3 className="text-lg font-semibold mb-2 flex items-center">
+        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 🌺 Seasonal patterns
             </h3>
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -38,7 +38,7 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
                             <span>{season.name}</span>
                             <span>{percent(season.value).toFixed(1)}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div className="w-full bg-gray-200 dark:bg-slate-700/50 rounded-full h-2">
                             <div
                                 className={`${season.color} h-2 rounded-full`}
                                 style={{ width: `${percent(season.value)}%` }}

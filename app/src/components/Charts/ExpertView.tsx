@@ -36,7 +36,7 @@ export function ExpertView() {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row gap-3 items-stretch">
+            <div className="flex flex-col md:flex-row gap-4 items-stretch">
                 <TopStreak />
                 <TotalStreams />
                 <TopArtist />
@@ -68,7 +68,7 @@ export function ExpertView() {
                 </>
             )}
 
-            <section className="backdrop-blur-lg border border-white/30 shadow-lg p-6 rounded-2xl mt-12 ">
+            <section className="p-6 mt-12 border rounded-2xl border border-gray-300/60 dark:border-slate-700/50 shadow-lg">
                 <div className="relative mb-12">
                     <div className="border-t border-gray-300"></div>
                     <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-white px-3 py-1 text-sm font-medium rounded-full border">

@@ -6,28 +6,38 @@ export function Results() {
     const [activeTab, setActiveTab] = useState<'simple' | 'expert'>('expert')
 
     return (
-        <div className="py-8">
-            <div className="flex gap-2 mb-5 bg-gray-200 p-1 rounded-lg">
-                <button
-                    onClick={() => setActiveTab('simple')}
-                    className={`flex-1 px-5 py-2.5 text-base cursor-pointer border-none rounded-lg transition-colors duration-200 ${
-                        activeTab === 'simple'
-                            ? 'bg-white text-black'
-                            : 'bg-transparent text-gray-500 hover:text-gray-700'
-                    }`}
-                >
-                    Simple View
-                </button>
-                <button
-                    onClick={() => setActiveTab('expert')}
-                    className={`flex-1 px-5 py-2.5 text-base cursor-pointer border-none rounded-lg transition-colors duration-200 ${
+        <div className="py-8 animate-slide-up">
+            <div className="relative mb-8 bg-gray-100 dark:bg-slate-800/50 backdrop-blur-md p-1.5 rounded-2xl shadow-lg border border-gray-300/60 dark:border-slate-700/50 max-w-md mx-auto">
+                <div
+                    className={`absolute top-1.5 left-1.5 h-[calc(100%-0.75rem)] w-[calc(50%-0.375rem)] bg-gradient-brand rounded-xl shadow-glow transition-transform duration-300 ease-out ${
                         activeTab === 'expert'
-                            ? 'bg-white text-black'
-                            : 'bg-transparent text-gray-500 hover:text-gray-700'
+                            ? 'translate-x-full'
+                            : 'translate-x-0'
                     }`}
-                >
-                    Expert View
-                </button>
+                />
+
+                <div className="relative flex gap-1">
+                    <button
+                        onClick={() => setActiveTab('simple')}
+                        className={`relative z-10 flex-1 px-6 py-3 text-base font-semibold rounded-xl transition-all duration-300 ${
+                            activeTab === 'simple'
+                                ? 'text-white'
+                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                        }`}
+                    >
+                        ✨ Simple View
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('expert')}
+                        className={`relative z-10 flex-1 px-6 py-3 text-base font-semibold rounded-xl transition-all duration-300 ${
+                            activeTab === 'expert'
+                                ? 'text-white'
+                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                        }`}
+                    >
+                        🔬 Expert View
+                    </button>
+                </div>
             </div>
 
             <div className="min-h-screen">
