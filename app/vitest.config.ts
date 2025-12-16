@@ -9,6 +9,7 @@ const config: ViteUserConfig = {
         sequence: { shuffle: true },
         passWithNoTests: false,
         coverage: {
+            reporter: ['text'],
             exclude: [
                 ...coverageConfigDefaults.exclude,
                 'astro.config.*',
