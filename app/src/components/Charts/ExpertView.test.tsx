@@ -6,35 +6,35 @@ import { type SummarizeDataQueryResult, summarizeQuery } from './summarizeQuery'
 import {
     type StreamPerMonthQueryResult,
     queryStreamsPerMonthByYear,
-} from './StreamPerMonth/query'
+} from './ExpertCharts/StreamPerMonth/query'
 import {
     type StreamPerHourQueryResult,
     queryStreamsPerHoursByYear,
-} from './StreamPerHour/query'
+} from './ExpertCharts/StreamPerHour/query'
 import {
     type SummaryPerYearQueryResult,
     summarizePerYearQuery,
-} from './SummaryPerYear/query'
+} from './ExpertCharts/SummaryPerYear/query'
 
 import {
     type TopTracksQueryResult,
     queryTopTracksByYear,
-} from './TopTracks/query'
+} from './ExpertCharts/TopTracks/query'
 
 import {
     type TopArtistsQueryResult,
     queryTopArtistsByYear,
-} from './TopArtists/query'
+} from './ExpertCharts/TopArtists/query'
 
 import {
     type Top10EvolutionQueryResult,
     queryTop10Evolution,
-} from './Top10Evolution/query'
+} from './ExpertCharts/Top10Evolution/query'
 
 import {
     type StreamPerDayOfWeekQueryResult,
     streamPerDayOfWeekQueryByYear,
-} from './StreamPerDayOfWeek/query'
+} from './ExpertCharts/StreamPerDayOfWeek/query'
 
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
