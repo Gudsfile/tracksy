@@ -80,12 +80,12 @@ export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
         typeof value === 'number' ? value.toLocaleString() : value
 
     return (
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-dark-900 rounded-2xl shadow border border-purple-100 dark:border-gray-700 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-dark-900 rounded-2xl shadow border border-purple-100 dark:border-gray-700 relative overflow-hidden group transition-all duration-300 shadow-glass hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
+            <div className="absolute top-0 right-0 p-4 transition-opacity">
                 <button
                     onClick={onRefresh}
                     disabled={isLoading}
-                    className="p-2 bg-white dark:bg-gray-800 rounded-full shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="p-2 rounded-full shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     title="New fact"
                 >
                     <span
@@ -119,7 +119,7 @@ export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
                     </div>
 
                     {context && (
-                        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">
+                        <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 italic">
                             {context}
                         </div>
                     )}

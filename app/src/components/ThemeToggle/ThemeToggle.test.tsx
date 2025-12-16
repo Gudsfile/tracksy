@@ -32,7 +32,7 @@ describe('ThemeToggle', () => {
             </ThemeProvider>
         )
 
-        screen.getByText('System (light)')
+        screen.getByTitle('System (light)')
     })
 
     it('should render with light theme', () => {
@@ -48,7 +48,7 @@ describe('ThemeToggle', () => {
             </ThemeProvider>
         )
 
-        screen.getByText('Light')
+        screen.getByTitle('Light')
     })
 
     it('should render with dark theme', () => {
@@ -64,7 +64,7 @@ describe('ThemeToggle', () => {
             </ThemeProvider>
         )
 
-        screen.getByText('Dark')
+        screen.getByTitle('Dark')
     })
 
     it('should cycle from light to dark when clicked', () => {

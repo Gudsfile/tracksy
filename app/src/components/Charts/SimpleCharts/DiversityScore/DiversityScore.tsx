@@ -13,17 +13,20 @@ export const DiversityScore: FC<Props> = ({ data }) => {
                 label: 'Loyal',
                 color: 'text-purple-600 dark:text-purple-400',
                 barColor: 'bg-purple-500',
+                emoji: '🔂',
             }
         if (avg >= 25)
             return {
                 label: 'Balanced',
                 color: 'text-blue-600 dark:text-blue-400',
                 barColor: 'bg-blue-500',
+                emoji: '⚖️',
             }
         return {
             label: 'Explorer',
             color: 'text-green-600 dark:text-green-400',
             barColor: 'bg-green-500',
+            emoji: '🔍',
         }
     }
 
@@ -32,26 +35,50 @@ export const DiversityScore: FC<Props> = ({ data }) => {
     const barWidth = Math.min((avg_streams_per_artist / 100) * 100, 100)
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            <h3 className="text-lg font-semibold mb-2 flex items-center">
+        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 🎨 Loyalty vs Discovery
             </h3>
-            <div className={`text-2xl font-bold mb-1 ${classification.color}`}>
-                {classification.label}
+
+            <div className="flex items-center justify-between mb-4">
+                <div>
+                    <div
+                        className={`text-2xl font-bold ${classification.color}`}
+                    >
+                        {classification.label}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {avg_streams_per_artist.toFixed(1)} streams/artist
+                        (average)
+                    </div>
+                </div>
+                <div className="text-4xl">{classification.emoji}</div>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                {avg_streams_per_artist.toFixed(1)} streams/artist (average)
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+
+            <div className="w-full bg-gray-200 dark:bg-slate-700/50 rounded-full h-3 mb-3 overflow-hidden">
                 <div
-                    className={`${classification.barColor} h-2 rounded-full transition-all duration-300`}
+                    className={`${classification.barColor} h-3 rounded-full`}
                     style={{ width: `${barWidth}%` }}
                 ></div>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-                {unique_artists.toLocaleString()} artists •{' '}
-                {total_streams.toLocaleString()} streams
-            </p>
+
+            <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
+                <div className="flex-1 text-center">
+                    <div
+                        className={`text-2xl font-bold ${classification.color}`}
+                    >
+                        {unique_artists.toLocaleString()}
+                    </div>
+                    <div>Artists</div>
+                </div>
+                <div className="text-2xl">|</div>
+                <div className="flex-1 text-center">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                        {total_streams.toLocaleString()}
+                    </div>
+                    <div>Streams</div>
+                </div>
+            </div>
         </div>
     )
 }

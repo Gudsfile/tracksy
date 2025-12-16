@@ -5,17 +5,22 @@ import { ThemeToggle } from './ThemeToggle/ThemeToggle'
 export function App() {
     return (
         <ThemeProvider>
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 relative">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-950 relative transition-colors duration-300">
                 {/* Theme toggle button */}
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-6 right-6 z-50">
                     <ThemeToggle />
                 </div>
 
                 {/* Main content area */}
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="max-w-4xl mx-auto">
-                        <h1 className="text-xl font-bold text-center mb-4 dark:text-white">
-                            <a href="/">Tracksy</a>
+                <div className="flex items-center justify-center min-h-screen px-4 relative z-10">
+                    <div className="max-w-4xl w-full mx-auto py-12">
+                        <h1 className="text-4xl md:text-5xl font-bold text-center mb-8 animate-fade-in">
+                            <a
+                                href="/"
+                                className="bg-gradient-brand bg-clip-text text-transparent hover:opacity-80 transition-opacity drop-shadow-sm"
+                            >
+                                Tracksy
+                            </a>
                         </h1>
                         <TracksyWrapper />
                     </div>

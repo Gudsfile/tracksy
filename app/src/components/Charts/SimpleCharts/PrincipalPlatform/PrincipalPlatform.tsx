@@ -11,16 +11,16 @@ export const PrincipalPlatform: FC<Props> = ({ data }) => {
     const topPlatform = data[0]
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            <h3 className="text-lg font-semibold mb-2 flex items-center">
+        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 📱 Listening Devices
             </h3>
 
             <div className="mb-4">
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                <div className="text-2xl font-bold text-brand-purple">
                     {topPlatform.platform}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                <div className="text-sm text-gray-600 dark:text-gray-400 ">
                     Main platform
                 </div>
             </div>
@@ -32,14 +32,14 @@ export const PrincipalPlatform: FC<Props> = ({ data }) => {
                             <span className="font-medium">
                                 {platform.platform}
                             </span>
-                            <span className="text-gray-500 dark:text-gray-400">
+                            <span className="text-gray-600 dark:text-gray-400">
                                 {platform.stream_count.toLocaleString()} (
                                 {platform.pct.toFixed(1)}%)
                             </span>
                         </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div className="w-full bg-gray-200 dark:bg-slate-700/50 h-2 rounded-full">
                             <div
-                                className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                                className="bg-brand-purple h-2 rounded-full"
                                 style={{ width: `${platform.pct}%` }}
                             ></div>
                         </div>

@@ -1,6 +1,3 @@
-import { TopStreak } from './TopStreak'
-import { TotalStreams } from './TotalStreams'
-import { TopArtist } from './TopArtist'
 import { ConcentrationScore } from './SimpleCharts/ConcentrationScore'
 import { ListeningRhythm } from './SimpleCharts/ListeningRhythm'
 import { Regularity } from './SimpleCharts/Regularity'
@@ -39,10 +36,8 @@ export function SimpleView() {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row gap-4 items-stretch">
-                <TopStreak />
-                <TotalStreams />
-                <TopArtist />
+            <div className="mt-4">
+                <FunFacts />
             </div>
 
             <RangeSlider
@@ -67,9 +62,6 @@ export function SimpleView() {
                 <RepeatBehavior year={year} />
                 <PrincipalPlatform year={year} />
                 <FavoriteWeekday year={year} />
-            </div>
-            <div className="mt-4">
-                <FunFacts />
             </div>
         </>
     )

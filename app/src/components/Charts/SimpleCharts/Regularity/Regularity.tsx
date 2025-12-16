@@ -20,13 +20,13 @@ export const Regularity: FC<Props> = ({ data }) => {
     const offset = circumference - (regularity_pct / 100) * circumference
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 flex flex-col h-full relative">
-            <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in flex flex-col h-full relative">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 📅 Listening Regularity
             </h3>
 
             <div className={`text-2xl font-bold ${color}`}>{label}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 <span className="font-bold text-gray-900 dark:text-gray-100 text-base">
                     {days_with_streams}
                 </span>{' '}
@@ -73,9 +73,9 @@ export const Regularity: FC<Props> = ({ data }) => {
                 </div>
             </div>
 
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
                 Longest pause:{' '}
-                <span className="font-medium text-gray-300">
+                <span className="font-medium text-gray-700 dark:text-gray-300">
                     {longest_pause_days}d
                 </span>
             </div>

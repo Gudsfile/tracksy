@@ -17,42 +17,42 @@ export const NewVsOld: FC<Props> = ({ data }) => {
     const oldPct = total ? (old_artists_streams / total) * 100 : 0
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            <h3 className="text-lg font-semibold mb-2 flex items-center">
+        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 🆕 New vs Old
             </h3>
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Streams this year
             </div>
 
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold text-purple-500">
+                    <div className="text-2xl font-bold text-brand-purple">
                         {newPct.toFixed(0)}%
                     </div>
-                    <div className="text-xs text-gray-500">Découvertes</div>
+                    <div>Découvertes</div>
                 </div>
-                <div className="text-gray-300">|</div>
+                <div className="text-2xl">|</div>
                 <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold text-blue-500">
+                    <div className="text-2xl font-bold text-brand-blue">
                         {oldPct.toFixed(0)}%
                     </div>
-                    <div className="text-xs text-gray-500">Favorites</div>
+                    <div>Favorites</div>
                 </div>
             </div>
 
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden flex">
+            <div className="w-full bg-gray-200 dark:bg-slate-700/50 rounded-full h-3 mb-1 overflow-hidden flex">
                 <div
-                    className="bg-purple-500 h-full"
+                    className="bg-brand-purple h-full"
                     style={{ width: `${newPct}%` }}
                 ></div>
                 <div
-                    className="bg-blue-500 h-full"
+                    className="bg-brand-blue h-full"
                     style={{ width: `${oldPct}%` }}
                 ></div>
             </div>
 
-            <div className="mt-4 text-xs text-center text-gray-500 dark:text-gray-400">
+            <div className="mt-4 text-xs text-center text-gray-600 dark:text-gray-400">
                 <span className="font-medium text-gray-900 dark:text-gray-100">
                     {new_artists_count.toLocaleString()}
                 </span>{' '}
