@@ -37,8 +37,14 @@ export function TracksyWrapper({
         if (!files) return
         setIsDataReady(false)
         setIsDataDropped(true)
-        await insertFilesInDatabase(files)
-        setIsDataReady(true)
+        try {
+            await insertFilesInDatabase(files)
+            setIsDataReady(true)
+        } catch (error) {
+            console.error('Failed to upload files:', error)
+            setIsDataReady(false)
+            setIsDataDropped(false)
+        }
     }
 
     if (!db) {

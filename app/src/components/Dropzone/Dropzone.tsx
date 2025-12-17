@@ -2,14 +2,14 @@ type Props = {
     handleDrop: (event: React.DragEvent<HTMLDivElement>) => void
     handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
-    contentTypeAccepted?: string
+    contentTypeAccepted: string
 }
 
 export function Dropzone({
     handleDrop,
     handleDragOver,
     handleFileUpload,
-    contentTypeAccepted = '.zip,application/json',
+    contentTypeAccepted,
 }: Props) {
     return (
         <div>
