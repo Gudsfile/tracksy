@@ -3,7 +3,7 @@ import { SimpleView } from '../Charts/SimpleView'
 import { useState } from 'react'
 
 export function Results() {
-    const [activeTab, setActiveTab] = useState<'simple' | 'expert'>('expert')
+    const [activeTab, setActiveTab] = useState<'simple' | 'expert'>('simple')
 
     return (
         <div className="py-8 animate-slide-up">
@@ -41,7 +41,7 @@ export function Results() {
             </div>
 
             <div className="min-h-screen">
-                {activeTab === 'simple' ? <SimpleView /> : <ExpertView />}
+                {activeTab === 'expert' ? <ExpertView /> : <SimpleView />}
             </div>
         </div>
     )
