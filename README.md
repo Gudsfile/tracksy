@@ -65,6 +65,17 @@ The project is currently under development. We plan to add visualizations as wel
 We also intend to support other data sources (Deezer, Funkwhale, etc.).
 See our [issues](https://github.com/Gudsfile/tracksy/issues).
 
+## Installation
+
+ ```bash
+ moon setup
+
+ moon run app:dev
+ moon run synthetic-datasets:generate -- 100
+ ```
+
+ More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or a pull request (don't forget to consult our [CONTRIBUTING.md](CONTRIBUTING.md)).

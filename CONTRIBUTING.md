@@ -108,3 +108,57 @@ import * as queries from '../db/queries'
 
 vi.spyOn(queries, 'getUser').mockResolvedValue(mockUser)
 ```
+
+### Development
+
+This repository uses [Moon](https://moonrepo.dev/) to manage the workspace and tasks.
+
+#### Setup
+
+To get started, you don't need to install Node.js, Python, or pnpm manually. Moon handles the toolchain for you.
+
+1. **Install Moon**:
+
+    ```bash
+    # MacOS / Linux
+    curl -fsSL https://moonrepo.dev/install/moon.sh | bash
+
+    # Windows
+    irm https://moonrepo.dev/install/moon.ps1 | iex
+    ```
+
+2. **Initialize the workspace**:
+
+    ```bash
+    # This downloads the configured Node.js and Python versions
+    moon setup
+    ```
+
+#### Available Commands
+
+Run tasks across the entire monorepo or for specific projects.
+
+- **Run all tests**:
+
+    ```bash
+    moon run :test
+    ```
+
+- **Web App (`app`)**:
+
+    ```bash
+    moon run app:dev    # Start dev server
+    moon run app:build  # Build for production
+    moon run app:lint   # Lint code
+    ```
+
+- **Datasets (`synthetic-datasets`)**:
+
+    ```bash
+    moon run synthetic-datasets:generate  # Generate new datasets
+    moon run synthetic-datasets:test      # Run python tests
+    ```
+
+> [!NOTE]
+> ensure `proto` is in your PATH to use `uv` `pnpm` and python and Node.js tools.
+> `export PATH="$HOME/.proto/shims:$HOME/.proto/bin:$PATH"`

@@ -6,13 +6,14 @@ Front end of Tracksy based on [Astro](https://docs.astro.build/en/getting-starte
 
 Run the application locally with:
 
-```shell
-cd app
-pnpm install
-pnpm dev
+```bash
+moon setup
+moon run app:dev
 ```
 
 Go to [`http://localhost:4321/`](http://localhost:4321/) and upload your downloaded file.
+
+More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
 
 ### 🎵 Spotify API Configuration
 
@@ -67,20 +68,6 @@ Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page
 There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components. See [below](##Components) for details of specific Tracksy components.
 
 Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from `tracksy/app/`, from a terminal:
-
-| Command            | Action                                                          |
-| :----------------- | :-------------------------------------------------------------- |
-| **`pnpm install`** | Installs the project dependencies using [pnpm](https://pnpm.io) |
-| ------------       | --------------------------------------------                    |
-| **`pnpm dev`**     | Starts local dev server at `localhost:4321`                     |
-| ------------       | --------------------------------------------                    |
-| **`pnpm format`**  | Reformat files                                                  |
-| **`pnpm test`**    | Run tests                                                       |
-| **`pnpm build`**   | Build your production site to `./dist/`                         |
 
 ## 🔧 Components
 

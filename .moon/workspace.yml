@@ -1,0 +1,15 @@
+# https://moonrepo.dev/docs/config/workspace
+$schema: "./cache/schemas/workspace.json"
+
+projects:
+  app: "app"
+  synthetic-datasets: "synthetic-datasets"
+vcs:
+  manager: "git"
+  defaultBranch: "main"
+  hooks:
+    pre-commit:
+      - "moon app:format-check"
+      - "moon app:typecheck"
+      - "moon synthetic-datasets:typecheck"
+      - "moon synthetic-datasets:format-check"
