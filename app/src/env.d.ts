@@ -7,3 +7,9 @@ declare module '*.astro' {
     // eslint-disable-next-line import/no-default-export
     export default component
 }
+
+declare module '*.sql?raw' {
+    const content: string
+    // eslint-disable-next-line import/no-default-export
+    export default content
+}
