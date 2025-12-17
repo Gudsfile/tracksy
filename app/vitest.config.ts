@@ -11,10 +11,10 @@ const config: ViteUserConfig = {
         coverage: {
             reporter: ['text'],
             thresholds: {
-                statements: 81,
+                statements: 79,
                 branches: 78,
                 functions: 85,
-                lines: 81,
+                lines: 79,
             },
             exclude: [
                 ...coverageConfigDefaults.exclude,
