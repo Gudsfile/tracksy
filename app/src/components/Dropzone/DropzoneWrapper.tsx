@@ -1,3 +1,5 @@
+import { STREAM_PROVIDERS_CONTENT_TYPES } from '../../streamProvider'
+import { zipContentFile } from '../../utils/isZipArchive'
 import { Dropzone } from './Dropzone'
 import { useFileUpload } from './useFileUpload'
 
@@ -35,12 +37,15 @@ export function DropzoneWrapper({ handleValidatedFiles }: Props) {
         event.preventDefault()
     }
 
+    const contentTypeAccepted =
+        STREAM_PROVIDERS_CONTENT_TYPES.join(',') + zipContentFile
+
     return (
         <Dropzone
             handleDrop={handleDrop}
             handleDragOver={handleDragOver}
             handleFileUpload={handleFileUpload}
-            contentTypeAccepted=".zip,application/json"
+            contentTypeAccepted={contentTypeAccepted}
         />
     )
 }
