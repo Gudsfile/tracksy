@@ -1,0 +1,32 @@
+language: 'javascript'
+
+type: 'application'
+
+tasks:
+    dev:
+        command: 'astro dev'
+        preset: 'watcher'
+    build:
+        command: 'astro check && astro build'
+    preview:
+        command: 'astro preview'
+        preset: 'watcher'
+    test:
+        command: 'vitest run'
+    test-coverage:
+        command: 'vitest run --coverage'
+    test-watch:
+        command: 'vitest'
+        preset: 'watcher'
+    lint-fix:
+        command: 'eslint "src/**/*.{astro,ts,tsx}" --fix'
+    lint:
+        command: 'eslint "src/**/*.{astro,ts,tsx}"'
+    format:
+        command: 'prettier --write .'
+    format-check:
+        command: 'prettier --check .'
+    audit:
+        command: 'pnpm audit --prod'
+    typecheck:
+        command: 'tsc --noEmit'

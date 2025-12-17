@@ -1,0 +1,26 @@
+language: "system"
+
+type: "application"
+
+tasks:
+  generate:
+    command: "uv run generate"
+  test:
+    command: "uv run pytest"
+    inputs:
+      - "tests/**/*.py"
+      - "synthetic_datasets/**/*.py"
+  lint-fix:
+    command: "uv run ruff check --fix"
+  lint:
+    command: "uv run ruff check"
+    inputs:
+      - "**/*.py"
+  format:
+    command: "uv run ruff format"
+  format-check:
+    command: "uv run ruff format --check"
+  typecheck:
+    command: "uv run ty check"
+    inputs:
+      - "**/*.py"

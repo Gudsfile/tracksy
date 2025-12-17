@@ -1,0 +1,15 @@
+# https://moonrepo.dev/docs/config/toolchain
+$schema: "https://moonrepo.dev/schemas/toolchain.json"
+
+node:
+  version: "24"
+  packageManager: "pnpm"
+  pnpm:
+    version: "9"
+
+python:
+  #HACK: the version is needed to only activate Python toolchain for Moon (installs uv)
+  version: "3.12"
+  packageManager: "uv"
+  uv:
+    version: "0.9"

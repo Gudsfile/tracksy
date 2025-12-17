@@ -2,20 +2,6 @@
     "name": "app",
     "type": "module",
     "version": "0.0.1",
-    "scripts": {
-        "dev": "astro dev",
-        "start": "astro dev",
-        "build": "astro check && astro build",
-        "preview": "astro preview",
-        "astro": "astro",
-        "format": "prettier --write .",
-        "test": "vitest",
-        "test:coverage": "vitest run --coverage",
-        "format:check": "prettier --check .",
-        "lint": "eslint 'src/**/*.{astro,ts,tsx}' --fix",
-        "lint:check": "eslint 'src/**/*.{astro,ts,tsx}'",
-        "prepare": "cd .. && husky ./app/.husky"
-    },
     "dependencies": {
         "@astrojs/check": "^0.9.6",
         "@astrojs/react": "^4.4.2",
@@ -45,14 +31,12 @@
         "eslint": "^9.39.2",
         "eslint-plugin-astro": "^1.5.0",
         "eslint-plugin-jsx-a11y": "^6.10.2",
-        "husky": "^9.1.7",
         "jsdom": "^27.3.0",
         "prettier": "^3.7.4",
         "prettier-plugin-astro": "^0.14.1",
         "vite-plugin-static-copy": "^3.1.4",
         "vitest": "^3.2.4"
     },
-    "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
     "engines": {
         "node": ">=24 <25"
     }
