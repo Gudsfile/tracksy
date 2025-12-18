@@ -6,7 +6,7 @@ import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
 import { detectProvider } from '../../adapters'
 import type { StreamRecord } from '../../adapters/types'
-import { TABLE, MIN_STREAM_DURATION } from './constants'
+import { TABLE } from './constants'
 
 /**
  * We use this mock function due to JSDOM not supporting full File API : https://developer.mozilla.org/en-US/docs/Web/API/Blob/text
@@ -80,12 +80,9 @@ describe('insertFilesInDatabase', () => {
 
         await insertFilesInDatabase(filesMock)
 
-        expect(connectionMock.query).toHaveBeenCalledTimes(2)
+        expect(connectionMock.query).toHaveBeenCalledTimes(1)
         expect(connectionMock.query).toHaveBeenCalledWith(
             `DROP TABLE IF EXISTS ${TABLE}`
-        )
-        expect(connectionMock.query).toHaveBeenCalledWith(
-            `DELETE FROM ${TABLE} WHERE ms_played < ${MIN_STREAM_DURATION}`
         )
 
         expect(connectionMock.insertArrowTable).toHaveBeenCalledTimes(1)

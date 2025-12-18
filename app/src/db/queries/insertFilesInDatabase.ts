@@ -16,7 +16,6 @@ export async function insertFilesInDatabase(files: FileList) {
     console.debug(`Table ${TABLE} dropped.`)
 
     const allStreamRecords: StreamRecord[] = []
-    console.log(files)
 
     for (const file of Array.from(files)) {
         console.debug(`File ${file.name} is being processed.`)

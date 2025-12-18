@@ -1,6 +1,5 @@
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
-import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
-import { isSpotifyFilename } from '../../utils/isSpotifyFilename'
+import { isFileSupported, isAllowedFileContentType } from '../../adapters'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { openArchive } from '../../utils/openArchive'
 
@@ -33,7 +32,9 @@ export function useFileUpload({
      * @throws {Error} If one or more files have an unsupported content type.
      */
     const controlUploadedFiles = (files: FileList) => {
-        const allowedFiles = Array.from(files).filter(isAllowedFileContentType)
+        const allowedFiles = Array.from(files).filter(
+            isAllowedFileContentType || isZipArchive
+        )
 
         if (allowedFiles.length !== files.length) {
             throw new Error(
@@ -61,14 +62,13 @@ export function useFileUpload({
                 const fileOrFiles = extractedFiles[key]
                 if (fileOrFiles instanceof File) {
                     return isAllowedFileContentType(fileOrFiles) &&
-                        isSpotifyFilename(fileOrFiles)
+                        isFileSupported(fileOrFiles)
                         ? [fileOrFiles]
                         : []
                 }
                 return Object.values(fileOrFiles).filter(
                     (file: File) =>
-                        isAllowedFileContentType(file) &&
-                        isSpotifyFilename(file)
+                        isAllowedFileContentType(file) && isFileSupported(file)
                 )
             })
 
