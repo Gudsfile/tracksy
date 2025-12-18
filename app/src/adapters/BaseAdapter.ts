@@ -1,4 +1,5 @@
 import type { StreamRecord, ProviderMetadata } from './types'
+import { isValidStreamRecord, isLongEnoughStream } from './validation'
 
 /**
  * Abstract base class for streaming provider adapters.
@@ -27,68 +28,15 @@ export abstract class BaseAdapter {
      * @param rawData - Raw data from provider's export file
      * @returns Array of normalized stream records
      */
-    abstract transform(rawData: unknown[]): StreamRecord[]
+    abstract transform(rawData: Partial<StreamRecord>[]): StreamRecord[]
 
     /**
-     * Filter to music only
-     * and out short streams
-     *
-     * @param records - Array of stream records to filter
-     * @returns Filtered array containing only valid records
+     * Default filtering pipeline
+     * Providers can override if needed
      */
-    protected filterRecords(records: StreamRecord[]): StreamRecord[] {
-        return records.filter(
-            (record) => this.isMusic(record) && this.isLongEnoughStream(record)
-        )
-    }
-
-    protected filterRecordsWithWarning(
-        records: StreamRecord[]
+    protected filterAndValidate(
+        records: Partial<StreamRecord>[]
     ): StreamRecord[] {
-        return records.filter((record) => {
-            if (!this.tsIsPresent(record)) {
-                console.warn('Record is missing timestamp')
-                return false
-            }
-            if (!this.msPlayedIsPresentAndNumber(record)) {
-                console.warn(
-                    'Record is missing ms_played or ms_played is not a number'
-                )
-                return false
-            }
-            return true
-        })
-    }
-
-    /**
-     * Filter to music only (exclude podcasts, audiobooks, etc.)
-     */
-    private isMusic(record: StreamRecord): boolean {
-        return record.spotify_track_uri !== null
-    }
-
-    /**
-     * Filter out short streams (less than 30 seconds)
-     * Most providers consider a stream as a play of at least 30 seconds
-     * Also allows noise in the data to be removed
-     */
-    private isLongEnoughStream(record: StreamRecord): boolean {
-        return record.ms_played >= 30000
-    }
-
-    private tsIsPresent(record: StreamRecord): boolean {
-        return (
-            record.ts !== null &&
-            record.ts !== undefined &&
-            typeof record.ts === 'string'
-        )
-    }
-
-    private msPlayedIsPresentAndNumber(record: StreamRecord): boolean {
-        return (
-            record.ms_played !== null &&
-            record.ms_played !== undefined &&
-            typeof record.ms_played === 'number'
-        )
+        return records.filter(isValidStreamRecord).filter(isLongEnoughStream)
     }
 }

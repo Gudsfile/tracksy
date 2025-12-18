@@ -2,7 +2,7 @@
  * Generic stream record interface based on Spotify schema.
  * This serves as the canonical data model for all providers.
  *
- * Future providers (Deezer, Apple Music, etc.) will map their data to this structure.
+ * Future providers will map their data to this structure.
  */
 export interface StreamRecord {
     /**

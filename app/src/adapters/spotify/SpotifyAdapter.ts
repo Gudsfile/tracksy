@@ -23,15 +23,8 @@ export class SpotifyAdapter extends BaseAdapter {
         return this.metadata.filePattern.test(file.name)
     }
 
-    /**
-     * Transform Spotify raw data to canonical format.
-     * Since Spotify is the base model, this is mostly validation.
-     *
-     * @param rawData - Array of Spotify stream records
-     * @returns Validated and normalized stream records
-     */
     transform(rawData: unknown[]): StreamRecord[] {
-        const records = rawData as StreamRecord[]
-        return this.filterRecords(this.filterRecordsWithWarning(records))
+        const records = rawData as Partial<StreamRecord>[]
+        return this.filterAndValidate(records)
     }
 }
