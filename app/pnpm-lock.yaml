@@ -16,7 +16,7 @@ importers:
         version: 4.4.2(@types/node@25.0.3)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(jiti@1.21.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(yaml@2.8.2)
       '@astrojs/tailwind':
         specifier: ^6.0.2
-        version: 6.0.2(astro@5.16.6(@types/node@25.0.3)(jiti@1.21.7)(rollup@4.53.5)(typescript@5.9.3)(yaml@2.8.2))(tailwindcss@3.4.18(yaml@2.8.2))
+        version: 6.0.2(astro@5.16.6(@types/node@25.0.3)(jiti@1.21.7)(rollup@4.53.5)(typescript@5.9.3)(yaml@2.8.2))(tailwindcss@3.4.19(yaml@2.8.2))
       '@duckdb/duckdb-wasm':
         specifier: ^1.30.0
         version: 1.30.0
@@ -54,8 +54,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(react@19.2.3)
       tailwindcss:
-        specifier: ^3.4.18
-        version: 3.4.18(yaml@2.8.2)
+        specifier: ^3.4.19
+        version: 3.4.19(yaml@2.8.2)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -3529,8 +3529,8 @@ packages:
     resolution: {integrity: sha512-iK5/YhZxq5GO5z8wb0bY1317uDF3Zjpha0QFFLA8/trAoiLbQD0HUbMesEaxyzUgDxi2QlcbM8IvqOlEjgoXBA==}
     engines: {node: '>=12.17'}
 
-  tailwindcss@3.4.18:
-    resolution: {integrity: sha512-6A2rnmW5xZMdw11LYjhcI5846rt9pbLSabY5XPxo+XWdxwZaFEn47Go4NzFiHu9sNNmr/kXivP1vStfvMaK1GQ==}
+  tailwindcss@3.4.19:
+    resolution: {integrity: sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -4311,13 +4311,13 @@ snapshots:
       - tsx
       - yaml
 
-  '@astrojs/tailwind@6.0.2(astro@5.16.6(@types/node@25.0.3)(jiti@1.21.7)(rollup@4.53.5)(typescript@5.9.3)(yaml@2.8.2))(tailwindcss@3.4.18(yaml@2.8.2))':
+  '@astrojs/tailwind@6.0.2(astro@5.16.6(@types/node@25.0.3)(jiti@1.21.7)(rollup@4.53.5)(typescript@5.9.3)(yaml@2.8.2))(tailwindcss@3.4.19(yaml@2.8.2))':
     dependencies:
       astro: 5.16.6(@types/node@25.0.3)(jiti@1.21.7)(rollup@4.53.5)(typescript@5.9.3)(yaml@2.8.2)
       autoprefixer: 10.4.22(postcss@8.5.6)
       postcss: 8.5.6
       postcss-load-config: 4.0.2(postcss@8.5.6)
-      tailwindcss: 3.4.18(yaml@2.8.2)
+      tailwindcss: 3.4.19(yaml@2.8.2)
     transitivePeerDependencies:
       - ts-node
 
@@ -8258,7 +8258,7 @@ snapshots:
       array-back: 6.2.2
       wordwrapjs: 5.1.1
 
-  tailwindcss@3.4.18(yaml@2.8.2):
+  tailwindcss@3.4.19(yaml@2.8.2):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
