@@ -2,7 +2,9 @@ import argparse
 import time
 from pathlib import Path
 
+from synthetic_datasets.factories.applemusic import AppleMusicFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
+from synthetic_datasets.writers.applemusic import AppleMusicWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
@@ -12,6 +14,16 @@ def spotify(num_records, output_dir):
 
     writer = SpotifyWriter(output_dir=output_dir)
     writer.write(all_streamings)
+
+
+def applemusic(num_records, output_dir):
+    factory = AppleMusicFactory(num_records)
+    all_plays = factory.create_play_history()
+
+    writer = AppleMusicWriter(output_dir=output_dir)
+    writer.write(all_plays)
+
+
 
 
 def min_int(min_value):
@@ -25,13 +37,23 @@ def min_int(min_value):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("num_records", type=min_int(100), help="Number of lines to be generated (>= 100)")
     parser.add_argument("-o", "--output-dir", type=Path, default=Path("datasets"))
+    parser.add_argument("-p", "--provider", choices=switch.keys(), default="all", help="Provider to generate data for")
     args = parser.parse_args()
 
     start_data_generation = time.time()
-    spotify(args.num_records, args.output_dir)
+
+    if args.provider in ["spotify", "all"]:
+        print("\n🎵 Generating Spotify data...")
+        spotify(args.num_records, args.output_dir)
+
+    if args.provider in ["applemusic", "all"]:
+        print("\n🍎 Generating Apple Music data...")
+        applemusic(args.num_records, args.output_dir)
+
+    print("\n✅ Generation complete!")
     print("--- %s seconds ---" % (time.time() - start_data_generation))
 
 
