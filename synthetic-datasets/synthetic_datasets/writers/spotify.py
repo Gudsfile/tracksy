@@ -15,7 +15,7 @@ class SpotifyWriter:
 
     def __init__(self, output_dir: Path) -> None:
         folder = output_dir / "spotify"
-        self.json_path_template: str = str(folder) + "/streamings_{num_records}.json"
+        self.json_path_template: str = str(folder) + "/" + self.chunked_zip_file_name_template
         self.zip_path_template: str = str(folder) + "/streamings_{num_records}.zip"
 
     def write(self, records):
