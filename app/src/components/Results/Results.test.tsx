@@ -20,45 +20,45 @@ describe('Results Component', () => {
         render(<Results />)
         // Check that both buttons are rendered
         screen.getByRole('button', { name: '✨ Simple View' })
-        screen.getByRole('button', { name: '🔬 Expert View' })
+        screen.getByRole('button', { name: '🔬 Detailed View' })
 
         // Simple default to Simple view
-        // Simple View contains specific charts like "Concentration Score" or just checking absent Expert content
-        // Expert View contains the "Work in Progress" section
+        // Simple View contains specific charts like "Concentration Score" or just checking absent Detailed content
+        // Detailed View contains the "Work in Progress" section
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
     })
 
     it('switches to simple view when Simple View button is clicked', async () => {
         render(<Results />)
         const simpleButton = screen.getByRole('button', {
-            name: '🔬 Expert View',
+            name: '🔬 Detailed View',
         })
 
         fireEvent.click(simpleButton)
 
-        // Expert view content should be visible
+        // Detailed view content should be visible
         screen.queryByText(/Work in Progress/i)
 
         // We can check if RangeSlider is present (common) but distinguishing is key.
     })
 
-    it('switches to expert view when Expert View button is clicked', async () => {
+    it('switches to detailed view when Detailed View button is clicked', async () => {
         render(<Results />)
 
-        // First switch to expert view
+        // First switch to detailed view
         const simpleButton = screen.getByRole('button', {
-            name: '🔬 Expert View',
+            name: '🔬 Detailed View',
         })
         fireEvent.click(simpleButton)
         screen.getByText(/Work in Progress/i)
 
         // Then switch back to simple view
-        const expertButton = screen.getByRole('button', {
+        const detailedButton = screen.getByRole('button', {
             name: '✨ Simple View',
         })
-        fireEvent.click(expertButton)
+        fireEvent.click(detailedButton)
 
-        // Expert View content should not be visible again
+        // Detailed View content should not be visible again
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
     })
 })

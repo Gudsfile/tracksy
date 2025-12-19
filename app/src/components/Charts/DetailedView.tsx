@@ -1,9 +1,9 @@
-import { StreamPerMonth } from './ExpertCharts/StreamPerMonth'
-import { StreamPerHour } from './ExpertCharts/StreamPerHour'
-import { TopStreak } from './ExpertCharts/TopStreak'
-import { SummaryPerYear } from './ExpertCharts/SummaryPerYear'
-import { TotalStreams } from './ExpertCharts/TotalStreams'
-import { TopArtist } from './ExpertCharts/TopArtist'
+import { StreamPerMonth } from './DetailedCharts/StreamPerMonth'
+import { StreamPerHour } from './DetailedCharts/StreamPerHour'
+import { TopStreak } from './DetailedCharts/TopStreak'
+import { SummaryPerYear } from './DetailedCharts/SummaryPerYear'
+import { TotalStreams } from './DetailedCharts/TotalStreams'
+import { TopArtist } from './DetailedCharts/TopArtist'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect } from 'react'
 import {
@@ -11,13 +11,13 @@ import {
     type SummarizeDataQueryResult,
 } from './Summarize/summarizeQuery'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
-import { TopTracks } from './ExpertCharts/TopTracks'
-import { TopArtists } from './ExpertCharts/TopArtists'
-import { Streaks } from './ExpertCharts/Streaks'
-import { Top10Evolution } from './ExpertCharts/Top10Evolution'
-import { StreamPerDayOfWeek } from './ExpertCharts/StreamPerDayOfWeek'
+import { TopTracks } from './DetailedCharts/TopTracks'
+import { TopArtists } from './DetailedCharts/TopArtists'
+import { Streaks } from './DetailedCharts/Streaks'
+import { Top10Evolution } from './DetailedCharts/Top10Evolution'
+import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
 
-export function ExpertView() {
+export function DetailedView() {
     const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined
