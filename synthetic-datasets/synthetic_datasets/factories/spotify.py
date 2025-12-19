@@ -11,16 +11,19 @@ from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Stre
 
 class SpotifyFactory:
     month_weights = [0.08, 0.07, 0.07, 0.06, 0.07, 0.08, 0.08, 0.08, 0.1, 0.10, 0.11, 0.1]
+
     hour_weights = [
         0.01, 0.01, 0.01, 0.01, 0.02, 0.04, 0.07, 0.09, 0.08, 0.06, 0.04, 0.04,
         0.05, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.06, 0.05, 0.03, 0.02, 0.01,
     ]  # fmt: skip
+
     reason_start = [
         ReasonStartEnum.TRACK_DONE,
         ReasonStartEnum.FORWARD_BUTTON,
         ReasonStartEnum.BACK_BUTTON,
         ReasonStartEnum.CLICK_ROW,
     ]
+
     skip_chance_trend = np.linspace(0.15, 0.30, 6)
 
     def __init__(self, num_records: int):
@@ -34,7 +37,7 @@ class SpotifyFactory:
         num_countries = 5
         num_ip_addresses = 20
 
-        print("🎵 Generating music catalog...")
+        print("🎵 Generating Spotify catalog...")
         print(f" - records: {num_records}")
         print(f" - artists: {num_artists}")
         print(f" - albums : {num_albums}")
@@ -67,6 +70,7 @@ class SpotifyFactory:
 
         print("🌏 Generating country codes...")
         self.countries = [self.faker.country_code() for _ in range(0, num_countries)]
+
         print("🛜 Generatin IPs...")
         self.ip_addr = [self.faker.ipv4() for _ in range(0, num_ip_addresses)]
 
