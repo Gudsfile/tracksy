@@ -55,32 +55,30 @@ export function DuckDBShell() {
                 ⌨️ DuckDB Shell
             </h3>
 
-            <textarea
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                rows={4}
-                className="bg-gray-200 dark:bg-slate-700/50 rounded-lg text-sm"
-                style={{
-                    width: '100%',
-                    padding: '0.5rem',
-                    borderRadius: '4px',
-                    resize: 'vertical',
-                    fontFamily: 'monospace',
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    runQuery()
                 }}
-            />
+            >
+                <textarea
+                    value={query}
+                    placeholder="Write your SQL query here…"
+                    onChange={(e) => setQuery(e.target.value)}
+                    rows={4}
+                    className="bg-gray-200 dark:bg-slate-700/50 rounded-lg text-sm font-mono w-full"
+                />
 
-            <div className="grid grid-cols-3">
-                <button
-                    onClick={runQuery}
-                    className="bg-brand-purple rounded-lg text-gray-100 cursor-pointer col-start-2"
-                    style={{
-                        marginTop: '0.5rem',
-                        padding: '0.5rem 1rem',
-                    }}
-                >
-                    Run query
-                </button>
-            </div>
+                <div className="grid grid-cols-3">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="col-start-2 mt-2 bg-brand-purple rounded-lg text-gray-100 px-4 py-2"
+                    >
+                        Run query
+                    </button>
+                </div>
+            </form>
 
             {loading && (
                 <p className="mt-2 italic font-mono">Run in progress…</p>
