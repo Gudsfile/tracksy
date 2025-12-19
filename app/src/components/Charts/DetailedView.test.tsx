@@ -1,6 +1,6 @@
 import { it, vi, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { ExpertView } from './ExpertView'
+import { DetailedView } from './DetailedView'
 import * as db from '../../db/queries/queryDB'
 import {
     type SummarizeDataQueryResult,
@@ -9,35 +9,35 @@ import {
 import {
     type StreamPerMonthQueryResult,
     queryStreamsPerMonthByYear,
-} from './ExpertCharts/StreamPerMonth/query'
+} from './DetailedCharts/StreamPerMonth/query'
 import {
     type StreamPerHourQueryResult,
     queryStreamsPerHoursByYear,
-} from './ExpertCharts/StreamPerHour/query'
+} from './DetailedCharts/StreamPerHour/query'
 import {
     type SummaryPerYearQueryResult,
     summarizePerYearQuery,
-} from './ExpertCharts/SummaryPerYear/query'
+} from './DetailedCharts/SummaryPerYear/query'
 
 import {
     type TopTracksQueryResult,
     queryTopTracksByYear,
-} from './ExpertCharts/TopTracks/query'
+} from './DetailedCharts/TopTracks/query'
 
 import {
     type TopArtistsQueryResult,
     queryTopArtistsByYear,
-} from './ExpertCharts/TopArtists/query'
+} from './DetailedCharts/TopArtists/query'
 
 import {
     type Top10EvolutionQueryResult,
     queryTop10Evolution,
-} from './ExpertCharts/Top10Evolution/query'
+} from './DetailedCharts/Top10Evolution/query'
 
 import {
     type StreamPerDayOfWeekQueryResult,
     streamPerDayOfWeekQueryByYear,
-} from './ExpertCharts/StreamPerDayOfWeek/query'
+} from './DetailedCharts/StreamPerDayOfWeek/query'
 
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
@@ -358,7 +358,7 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamPerDayOfWeekResultMock)
     })
 
-    render(<ExpertView />)
+    render(<DetailedView />)
 
     //range slider
     const slider = await screen.findByRole('slider')

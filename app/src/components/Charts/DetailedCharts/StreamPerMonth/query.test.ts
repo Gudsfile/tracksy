@@ -12,7 +12,7 @@ import { queryStreamsPerMonthByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
 
 const seedPath =
-    'src/components/Charts/ExpertCharts/StreamPerMonth/fixtures/seed.json'
+    'src/components/Charts/DetailedCharts/StreamPerMonth/fixtures/seed.json'
 let conn: DuckDBConnection
 
 beforeAll(async () => {

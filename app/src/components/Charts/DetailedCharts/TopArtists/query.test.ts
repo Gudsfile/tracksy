@@ -4,7 +4,7 @@ import { queryTopArtistsByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
 
 const seedPath =
-    'src/components/Charts/ExpertCharts/TopArtists/fixtures/seed.json'
+    'src/components/Charts/DetailedCharts/TopArtists/fixtures/seed.json'
 let conn: DuckDBConnection
 
 beforeAll(async () => {
