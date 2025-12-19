@@ -145,7 +145,7 @@ class SpotifyFactory:
         return Streaming(
             ts=ts,
             platform=platform,
-            ms_played=random.randint(1000, 29000) if is_skipped else int(track.duration_ms * random.uniform(0.95, 1.0)),
+            ms_played=random.randint(19000, 39000) if is_skipped else int(track.duration_ms * random.uniform(0.95, 1.0)),
             conn_country=random.choice(self.countries),
             ip_addr=random.choice(self.ip_addr),
             master_metadata_track_name=track.name,
