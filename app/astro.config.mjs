@@ -8,6 +8,10 @@ import react from '@astrojs/react'
 
 // https://astro.build/config
 export default defineConfig({
+    site: 'https://gudsfile.github.io',
+    base: '/tracksy',
+    trailingSlash: 'never',
+    output: 'static',
     vite: {
         plugins: [
             // https://github.com/nika-begiashvili/libarchivejs/blob/0989c1a6db20d030d793b1763e20d880068091bd/examples/esbuild/build.mjs#L14

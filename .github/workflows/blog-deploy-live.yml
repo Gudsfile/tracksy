@@ -1,24 +1,24 @@
-name: Deploy Tracksy Blog to GitHub Pages
+name: Deploy Tracksy Blog to live
 
 on:
   push:
     branches: ["main"]
     paths:
       - "blog/**"
-      - ".github/workflows/blog.yml"
+      - ".github/workflows/blog-deploy-live.yml"
       - ".moon/toolchains.yml"
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  group: gh-pages-deploy
+  cancel-in-progress: false
 
 defaults:
   run:
@@ -49,8 +49,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages # default: gh-pages
+          publish_branch: gh-pages
           publish_dir: ./blog/public
           destination_dir: ./blog
-          keep_files: true # Important : garde les autres fichiers
-          # exclude_assets: "blog/**" # Ne touche pas au dossier blog
+          keep_files: true # Important : keep other files

@@ -1,13 +1,28 @@
-name: App live
+name: Deploy Tracksy App to live
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
+    paths:
+      - "app/**"
+      - ".github/workflows/app-deploy-live.yml"
+      - ".moon/toolchains.yml"
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   app:
@@ -45,13 +60,11 @@ jobs:
       - name: Build project
         run: moon run app:build
 
-      - name: Deploy app
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
-          channelId: live
-          projectId: tracksy-app
-          entryPoint: ./app
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./app/dist
+          destination_dir: .
+          keep_files: true
