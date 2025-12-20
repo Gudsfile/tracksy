@@ -3,27 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>/authors/</loc>
+    <loc>https://Gudsfile.github.io/tracksy/blog/authors/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>/</loc>
+    <loc>https://Gudsfile.github.io/tracksy/blog/categories/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>/categories/</loc>
+    <loc>https://Gudsfile.github.io/tracksy/blog/series/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>/series/</loc>
+    <loc>https://Gudsfile.github.io/tracksy/blog/tags/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>/tags/</loc>
+    <loc>https://Gudsfile.github.io/tracksy/blog/</loc>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
