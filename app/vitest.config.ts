@@ -1,6 +1,10 @@
-import { coverageConfigDefaults, ViteUserConfig } from 'vitest/config'
+/// <reference types="vitest" />
+import { getViteConfig } from 'astro/config'
+import { coverageConfigDefaults } from 'vitest/config'
 
-const config: ViteUserConfig = {
+const config = getViteConfig({
+    // https://docs.astro.build/en/guides/testing/#vitest
+    // @ts-expect-error regarding the types it test doesn't exist, but regarding the documentation it should work fine
     test: {
         environment: 'jsdom',
         setupFiles: './vitest.setupFiles.ts',
@@ -24,7 +28,7 @@ const config: ViteUserConfig = {
         },
         restoreMocks: true,
     },
-}
+})
 
 /**
  * We disable this rule because vitest expect default export

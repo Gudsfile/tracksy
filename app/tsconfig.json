@@ -5,5 +5,6 @@
         "jsxImportSource": "react",
         "verbatimModuleSyntax": false
     },
+    "include": [".astro/types.d.ts", "**/*"],
     "exclude": ["node_modules", "dist", "public", "**/*.test.tsx"]
 }
