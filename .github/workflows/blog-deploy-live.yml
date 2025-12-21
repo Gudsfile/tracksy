@@ -26,6 +26,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v6
+        with:
+          submodules: true # Fetch Blowfish theme
+          fetch-depth: 2
+
       - name: Install moon
         uses: moonrepo/setup-toolchain@v0
         with:
@@ -33,12 +39,6 @@ jobs:
 
       - name: Setup toolchains
         run: moon setup
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v6
-        with:
-          submodules: true # Fetch Blowfish theme
-          fetch-depth: 2
 
       - name: Setup Pages
         id: pages
