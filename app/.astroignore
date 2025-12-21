@@ -1,3 +1,0 @@
-src/**/*.test.*
-src/**/fixtures/*
-coverage/*

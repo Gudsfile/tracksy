@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://Gudsfile.github.io/tracksy/blog/sitemap.xml
