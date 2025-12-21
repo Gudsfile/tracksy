@@ -72,6 +72,7 @@ See our [issues](https://github.com/Gudsfile/tracksy/issues).
 
  moon run app:dev
  moon run synthetic-datasets:generate -- 100
+ moon run blog:dev  
  ```
 
  More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)

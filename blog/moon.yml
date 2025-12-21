@@ -1,0 +1,27 @@
+language: "go"
+type: "application"
+
+tasks:
+  dev:
+    command: "go run github.com/gohugoio/hugo@v0.152.0 server --minify -D -E -F"
+    local: true
+
+  build:
+    command: "go run github.com/gohugoio/hugo@v0.152.0 --minify"
+    inputs:
+      - "archetypes/**/*"
+      - "assets/**/*"
+      - "config/**/*"
+      - "content/**/*"
+      - "static/**/*"
+      - "themes/**/*"
+      - "hugo.toml"
+      - "config/**/*"
+    outputs:
+      - "public"
+    env:
+      HUGO_ENVIRONMENT: production
+      HUGO_ENV: production
+
+  clean:
+    command: "rm -rf public"

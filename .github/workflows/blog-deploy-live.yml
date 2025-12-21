@@ -26,11 +26,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Hugo setup
-        uses: peaceiris/actions-hugo@v3
+      - name: Install moon
+        uses: moonrepo/setup-toolchain@v0
         with:
-          hugo-version: 0.152.0
-          extended: true
+          auto-install: false
+
+      - name: Setup toolchains
+        run: moon setup
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v6
@@ -43,12 +45,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build with Hugo
-        working-directory: ./blog
-        env:
-          HUGO_ENVIRONMENT: production
-          HUGO_ENV: production
-        run: |
-          hugo -d ./public/blog --baseURL https://Gudsfile.github.io/tracksy/blog/
+        run: moon run blog:build -- -d ./public/blog --baseURL https://Gudsfile.github.io/tracksy/blog/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
