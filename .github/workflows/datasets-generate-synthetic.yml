@@ -18,43 +18,35 @@ jobs:
   generate:
     name: Generate
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./synthetic-datasets
-
     steps:
       - uses: actions/checkout@v6
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
         with:
-          version: "0.7.20"
-          enable-cache: true
+          fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Install moon
+        uses: moonrepo/setup-toolchain@v0
         with:
-          python-version-file: "./synthetic-datasets/.python-version"
+          auto-install: false
 
-      - name: Install the project
-        run: uv sync
+      - name: Setup toolchains
+        run: moon setup
 
       - name: Generate datasets
         run: |
-          uv run generate 1000
-          uv run generate 25000
-          uv run generate 500000
+          moon run synthetic-datasets:generate -- 1000
+          moon run synthetic-datasets:generate -- 25000
+          moon run synthetic-datasets:generate -- 500000
 
       - name: Clone HF repo and move datasets into it
         env:
           GIT_LFS_SKIP_SMUDGE: 1
         run: |
-          git clone --depth 1 https://${{ vars.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/datasets/tracksy-app/synthetic-datasets ../.tmp/synthetic-datasets
-          rsync -a datasets ../.tmp/synthetic-datasets/
+          git clone --depth 1 https://${{ vars.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/datasets/tracksy-app/synthetic-datasets .tmp/synthetic-datasets
+          rsync -a synthetic-datasets/datasets/ .tmp/synthetic-datasets/
 
       - name: Commit datasets
         run: |
-          cd ../.tmp/synthetic-datasets
+          cd .tmp/synthetic-datasets
           git config user.name "${{ vars.GIT_AUTHOR_NAME }}"
           git config user.email "${{ vars.GIT_AUTHOR_EMAIL }}"
           git add -f datasets/

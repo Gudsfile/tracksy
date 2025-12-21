@@ -13,43 +13,34 @@ jobs:
   app:
     name: Build audit and test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     env:
       PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
       PUBLIC_DEMO_JSON_URL: ${{ vars.PUBLIC_DEMO_JSON_URL }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
         with:
-          run_install: false
+          fetch-depth: 0
 
-      - name: Use Node 24
-        uses: actions/setup-node@v6
+      - name: Install moon
+        uses: moonrepo/setup-toolchain@v0
         with:
-          node-version: "24"
-          cache: "pnpm"
+          auto-install: false
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Setup toolchains
+        run: moon setup
 
       - name: Audit dependencies
-        continue-on-error: true
-        run: pnpm audit --prod
+        run: moon run app:audit
 
       - name: Check format
-        run: pnpm run format:check
+        run: moon run app:format-check
 
       - name: Check Lint
-        run: pnpm run lint
+        run: moon run app:lint
 
       - name: Check test
-        run: pnpm run test:coverage
+        run: moon run app:test-coverage
 
       - name: Build project
-        run: pnpm run build
+        run: moon run app:build

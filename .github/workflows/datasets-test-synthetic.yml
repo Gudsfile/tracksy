@@ -9,6 +9,7 @@ on:
       - "synthetic-datasets/synthetic_datasets/**/*.py"
       - "synthetic-datasets/pyproject.toml"
       - "synthetic-datasets/uv.lock"
+      - "synthetic-datasets/moon.yml"
       - ".github/workflows/datasets-test-synthetic.yml"
 
 permissions:
@@ -18,38 +19,33 @@ jobs:
   build:
     name: Audit
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: ./synthetic-datasets
 
-    strategy:
-      matrix:
-        python-version:
-          - "3.12"
-          - "3.13"
-
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
+      - name: Checkout code
+        uses: actions/checkout@v6
         with:
-          version: "0.7.20"
-          enable-cache: true
+          fetch-depth: 0
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - name: Install moon
+        uses: moonrepo/setup-toolchain@v0
         with:
-          python-version: ${{ matrix.python-version }}
+          auto-install: false
 
-      - name: Install the project
-        run: uv sync --all-extras --dev
+      - name: Setup toolchains
+        run: moon setup
 
-      - name: Run lint
-        run: uv run ruff check
+      - name: Run format check
+        run: moon run synthetic-datasets:format-check
+
+      - name: Run lint check
+        run: moon run synthetic-datasets:lint
 
       - name: Run type check
-        run: uv run ty check --python-version ${{ matrix.python-version }}
+        run: moon run synthetic-datasets:typecheck
 
       - name: Run tests
-        run: uv run pytest
+        run: moon run synthetic-datasets:test
