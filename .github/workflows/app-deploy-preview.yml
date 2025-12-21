@@ -1,19 +1,31 @@
-name: Deploy App in Preview
+name: Deploy Tracksy App in Preview
 
 on:
-  pull_request:
-    types: [labeled]
+  pull_request: # Github Actions only handles theses types. It cleans associated preview when a PR is closed.
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
   workflow_dispatch:
 
 permissions:
   checks: write
-  contents: read
+  contents: write
+  id-token: write
+  pages: write
   pull-requests: write
 
+# Allow one concurrent deployment
+concurrency: preview-${{ github.ref }}
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  app:
+  deploy-preview:
     name: Deploy App Preview
-    if: ${{ github.event.label.name == 'preview' }}
     runs-on: ubuntu-latest
     env:
       PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
@@ -34,13 +46,12 @@ jobs:
 
       - name: Build project
         run: moon run app:build
+        env:
+          BASE_PATH: /tracksy/pr-preview/pr-${{ github.event.pull_request.number }}
 
       - name: Deploy preview
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: rossjrw/pr-preview-action@v1
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKSY_APP }}
-          projectId: tracksy-app
-          entryPoint: ./app
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
+          source-dir: ./app/dist
+          deploy-commit-message: "chore(): deploy Tracksy App Preview for PR #${{ github.event.number }}"
+          remove-commit-message: "chore(): remove Tracksy App Preview for PR #${{ github.event.number }}"

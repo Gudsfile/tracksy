@@ -9,7 +9,7 @@ import react from '@astrojs/react'
 // https://astro.build/config
 export default defineConfig({
     site: 'https://gudsfile.github.io',
-    base: '/tracksy',
+    base: process.env.BASE_PATH || '/tracksy',
     trailingSlash: 'never',
     output: 'static',
     vite: {
