@@ -159,6 +159,13 @@ Run tasks across the entire monorepo or for specific projects.
     moon run synthetic-datasets:test      # Run python tests
     ```
 
+- **Blog (`blog`)**:
+
+    ```bash
+    moon run blog:dev    # Start dev server
+    moon run blog:build  # Build for production
+    ```
+
 > [!NOTE]
 > ensure `proto` is in your PATH to use `uv` `pnpm` and python and Node.js tools.
 > `export PATH="$HOME/.proto/shims:$HOME/.proto/bin:$PATH"`

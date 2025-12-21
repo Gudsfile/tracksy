@@ -1,6 +1,9 @@
 # https://moonrepo.dev/docs/config/toolchain
 $schema: "https://moonrepo.dev/schemas/toolchain.json"
 
+unstable_go:
+  version: "1.25.0"
+
 node:
   version: "24"
   packageManager: "pnpm"
