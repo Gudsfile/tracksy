@@ -166,6 +166,20 @@ Run tasks across the entire monorepo or for specific projects.
     moon run blog:build  # Build for production
     ```
 
+- **E2E (`e2e`)**:
+
+    ```bash
+    moon run e2e:install-browsers # Install Playwright browsers
+    moon run e2e:test-dev # Run tests alongside app dev server
+    moon run e2e:test-ui # Run tests in interactive UI mode
+    moon run e2e:codegen # Generate tests by recording actions
+    moon run e2e:show-report # View the last test report
+    moon run e2e:test    # Run tests against given url
+    ```
+
 > [!NOTE]
 > ensure `proto` is in your PATH to use `uv` `pnpm` and python and Node.js tools.
 > `export PATH="$HOME/.proto/shims:$HOME/.proto/bin:$PATH"`
+
+> [!NOTE]
+> commands `moon run e2e:test-ui` and `moon run e2e:test-dev` starts the application dev server (moon run app:dev) first then runs the tests.

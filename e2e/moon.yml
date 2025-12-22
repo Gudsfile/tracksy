@@ -1,0 +1,24 @@
+language: "javascript"
+type: "application"
+
+tasks:
+  test:
+    command: "playwright test"
+  test-dev:
+    command: "playwright test"
+    local: true
+    deps:
+      - "app:dev"
+  test-ui:
+    command: "playwright test --ui"
+    local: true
+    deps:
+      - "app:dev"
+  codegen:
+    command: "playwright codegen"
+    local: true
+  show-report:
+    command: "playwright show-report"
+    local: true
+  install-browsers:
+    command: "playwright install --with-deps"
