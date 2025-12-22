@@ -5,6 +5,7 @@ projects:
   app: "app"
   synthetic-datasets: "synthetic-datasets"
   blog: "blog"
+  e2e: "e2e"
 vcs:
   manager: "git"
   defaultBranch: "main"
