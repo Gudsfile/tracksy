@@ -9,12 +9,15 @@ permissions:
   checks: write
   contents: read
   pull-requests: write
+  actions: read
 
 jobs:
   app:
     name: Deploy App Preview
     if: ${{ github.event.label.name == 'preview' }}
     runs-on: ubuntu-latest
+    outputs:
+      details_url: ${{ steps.deploy_preview.outputs.details_url }}
     env:
       PUBLIC_SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
       PUBLIC_DEMO_JSON_URL: ${{ vars.PUBLIC_DEMO_JSON_URL }}
@@ -36,6 +39,7 @@ jobs:
         run: moon run app:build
 
       - name: Deploy preview
+        id: deploy_preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -44,3 +48,19 @@ jobs:
           entryPoint: ./app
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+      - name: Save Deployed URL
+        run: echo "${{ steps.deploy_preview.outputs.details_url }}" > deployed_url.txt
+
+      - name: Upload Deployed URL
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-url
+          path: deployed_url.txt
+
+  e2e-tests:
+    needs: app
+    uses: ./.github/workflows/e2e.yml
+    with:
+      url: ${{ needs.app.outputs.details_url }}
+    secrets: inherit
