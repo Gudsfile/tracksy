@@ -63,20 +63,24 @@ export const DiversityScore: FC<Props> = ({ data }) => {
             </div>
 
             <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex-1 text-center">
-                    <div
-                        className={`text-2xl font-bold ${classification.color}`}
-                    >
-                        {unique_artists.toLocaleString()}
+                <div role="list" className="flex-1 text-center contents">
+                    <div role="listitem" className="flex-1 text-center">
+                        <div
+                            className={`text-2xl font-bold ${classification.color}`}
+                        >
+                            {unique_artists.toLocaleString()}
+                        </div>
+                        <div>Artists</div>
                     </div>
-                    <div>Artists</div>
-                </div>
-                <div className="text-2xl">|</div>
-                <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        {total_streams.toLocaleString()}
+                    <div className="text-2xl" role="separator">
+                        |
                     </div>
-                    <div>Streams</div>
+                    <div role="listitem" className="flex-1 text-center">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                            {total_streams.toLocaleString()}
+                        </div>
+                        <div>Streams</div>
+                    </div>
                 </div>
             </div>
         </div>
