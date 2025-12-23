@@ -19,8 +19,8 @@ describe('Results Component', () => {
     it('renders properly', () => {
         render(<Results />)
         // Check that both buttons are rendered
-        screen.getByRole('button', { name: '✨ Simple View' })
-        screen.getByRole('button', { name: '🔬 Detailed View' })
+        screen.getByRole('tab', { name: '✨ Simple View' })
+        screen.getByRole('tab', { name: '🔬 Detailed View' })
 
         // Simple default to Simple view
         // Simple View contains specific charts like "Concentration Score" or just checking absent Detailed content
@@ -30,7 +30,7 @@ describe('Results Component', () => {
 
     it('switches to simple view when Simple View button is clicked', async () => {
         render(<Results />)
-        const simpleButton = screen.getByRole('button', {
+        const simpleButton = screen.getByRole('tab', {
             name: '🔬 Detailed View',
         })
 
@@ -46,14 +46,14 @@ describe('Results Component', () => {
         render(<Results />)
 
         // First switch to detailed view
-        const simpleButton = screen.getByRole('button', {
+        const simpleButton = screen.getByRole('tab', {
             name: '🔬 Detailed View',
         })
         fireEvent.click(simpleButton)
         screen.getByText(/Work in Progress/i)
 
         // Then switch back to simple view
-        const detailedButton = screen.getByRole('button', {
+        const detailedButton = screen.getByRole('tab', {
             name: '✨ Simple View',
         })
         fireEvent.click(detailedButton)

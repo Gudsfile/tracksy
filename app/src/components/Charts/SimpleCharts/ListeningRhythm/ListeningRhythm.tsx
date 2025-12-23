@@ -26,36 +26,44 @@ export const ListeningRhythm: FC<Props> = ({ data }) => {
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Share of listening time per time of day
             </div>
-            <div className="space-y-2">
-                <div className="flex justify-between text-xs font-medium mb-1.5">
-                    <span>Morning (6‑11h)</span>
-                    <span className="text-brand-purple">
-                        {percent(morning).toFixed(1)}%
-                    </span>
-                </div>
-                {bar(percent(morning))}
-                <div className="flex justify-between text-xs font-medium mb-1.5">
-                    <span>Afternoon (12‑17h)</span>
-                    <span className="text-brand-purple">
-                        {percent(afternoon).toFixed(1)}%
-                    </span>
-                </div>
-                {bar(percent(afternoon))}
-                <div className="flex justify-between text-xs font-medium mb-1.5">
-                    <span>Evening (18‑21h)</span>
-                    <span className="text-brand-purple">
-                        {percent(evening).toFixed(1)}%
-                    </span>
-                </div>
-                {bar(percent(evening))}
-                <div className="flex justify-between text-xs font-medium mb-1.5">
-                    <span>Night (22‑5h)</span>
-                    <span className="text-brand-purple">
-                        {percent(night).toFixed(1)}%
-                    </span>
-                </div>
-                {bar(percent(night))}
-            </div>
+            <ul className="space-y-2" role="list">
+                <li role="listitem">
+                    <div className="flex justify-between text-xs font-medium mb-1.5">
+                        <span>Morning (6‑11h)</span>
+                        <span className="text-brand-purple">
+                            {percent(morning).toFixed(1)}%
+                        </span>
+                    </div>
+                    {bar(percent(morning))}
+                </li>
+                <li role="listitem">
+                    <div className="flex justify-between text-xs font-medium mb-1.5">
+                        <span>Afternoon (12‑17h)</span>
+                        <span className="text-brand-purple">
+                            {percent(afternoon).toFixed(1)}%
+                        </span>
+                    </div>
+                    {bar(percent(afternoon))}
+                </li>
+                <li role="listitem">
+                    <div className="flex justify-between text-xs font-medium mb-1.5">
+                        <span>Evening (18‑21h)</span>
+                        <span className="text-brand-purple">
+                            {percent(evening).toFixed(1)}%
+                        </span>
+                    </div>
+                    {bar(percent(evening))}
+                </li>
+                <li role="listitem">
+                    <div className="flex justify-between text-xs font-medium mb-1.5">
+                        <span>Night (22‑5h)</span>
+                        <span className="text-brand-purple">
+                            {percent(night).toFixed(1)}%
+                        </span>
+                    </div>
+                    {bar(percent(night))}
+                </li>
+            </ul>
         </div>
     )
 }

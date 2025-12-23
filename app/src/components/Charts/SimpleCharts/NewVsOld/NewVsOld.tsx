@@ -26,18 +26,22 @@ export const NewVsOld: FC<Props> = ({ data }) => {
             </div>
 
             <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold text-brand-purple">
-                        {newPct.toFixed(0)}%
+                <div role="list" className="flex-1 text-center contents">
+                    <div role="listitem" className="flex-1 text-center">
+                        <div className="text-2xl font-bold text-brand-purple">
+                            {newPct.toFixed(0)}%
+                        </div>
+                        <div>Découvertes</div>
                     </div>
-                    <div>Découvertes</div>
-                </div>
-                <div className="text-2xl">|</div>
-                <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold text-brand-blue">
-                        {oldPct.toFixed(0)}%
+                    <div className="text-2xl" role="separator">
+                        |
                     </div>
-                    <div>Favorites</div>
+                    <div role="listitem" className="flex-1 text-center">
+                        <div className="text-2xl font-bold text-brand-blue">
+                            {oldPct.toFixed(0)}%
+                        </div>
+                        <div>Favorites</div>
+                    </div>
                 </div>
             </div>
 

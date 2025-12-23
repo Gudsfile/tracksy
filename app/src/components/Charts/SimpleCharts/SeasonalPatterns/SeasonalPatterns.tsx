@@ -31,9 +31,9 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
                 </span>
             </div>
 
-            <div className="space-y-3">
+            <ul className="space-y-3" role="list">
                 {seasons.map((season) => (
-                    <div key={season.name}>
+                    <li key={season.name} role="listitem">
                         <div className="flex justify-between text-xs mb-1">
                             <span>{season.name}</span>
                             <span>{percent(season.value).toFixed(1)}%</span>
@@ -44,9 +44,9 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
                                 style={{ width: `${percent(season.value)}%` }}
                             ></div>
                         </div>
-                    </div>
+                    </li>
                 ))}
-            </div>
+            </ul>
         </div>
     )
 }
