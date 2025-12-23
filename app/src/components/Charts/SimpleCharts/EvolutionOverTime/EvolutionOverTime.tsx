@@ -49,26 +49,35 @@ export const EvolutionOverTime: FC<Props> = ({ data, year }) => {
                 <span>{Math.max(...data.map((d) => d.year))}</span>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                <div className="flex justify-between items-center">
+            <ul
+                className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
+                role="list"
+            >
+                <li
+                    className="flex justify-between items-center"
+                    role="listitem"
+                >
                     <span className="text-sm text-gray-600 dark:text-gray-400">
                         Total streams
                     </span>
                     <span className="font-bold">
                         {totalStreams.toLocaleString()}
                     </span>
-                </div>
+                </li>
                 {currentYearData && (
-                    <div className="flex justify-between items-center mt-1">
+                    <li
+                        className="flex justify-between items-center mt-1"
+                        role="listitem"
+                    >
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                             This year
                         </span>
                         <span className="font-bold text-brand-purple dark:text-brand-purple">
                             {currentYearData.streams.toLocaleString()}
                         </span>
-                    </div>
+                    </li>
                 )}
-            </div>
+            </ul>
         </div>
     )
 }

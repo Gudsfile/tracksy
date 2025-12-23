@@ -49,25 +49,31 @@ export const RepeatBehavior: FC<Props> = ({ data }) => {
                     </div>
                 </div>
 
-                <div className="mb-1">
-                    <div className="flex justify-between items-center text-sm">
+                <ul className="mb-1" role="list">
+                    <li
+                        className="flex justify-between items-center text-sm"
+                        role="listitem"
+                    >
                         <span className="text-gray-600 dark:text-gray-400">
                             Repeated sequences
                         </span>
                         <span className="font-bold">
                             {total_repeat_sequences}
                         </span>
-                    </div>
+                    </li>
 
-                    <div className="flex justify-between items-center text-sm">
+                    <li
+                        className="flex justify-between items-center text-sm"
+                        role="listitem"
+                    >
                         <span className="text-gray-600 dark:text-gray-400">
                             Repeat average
                         </span>
                         <span className="font-bold">
                             {avg_repeat_length.toFixed(1)} times
                         </span>
-                    </div>
-                </div>
+                    </li>
+                </ul>
             </div>
         </div>
     )

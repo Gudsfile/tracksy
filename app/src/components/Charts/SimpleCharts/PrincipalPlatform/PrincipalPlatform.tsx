@@ -25,9 +25,9 @@ export const PrincipalPlatform: FC<Props> = ({ data }) => {
                 </div>
             </div>
 
-            <div className="space-y-3">
+            <ul className="space-y-3" role="list">
                 {data.map((platform) => (
-                    <div key={platform.platform}>
+                    <li key={platform.platform} role="listitem">
                         <div className="flex justify-between text-xs mb-1">
                             <span className="font-medium">
                                 {platform.platform}
@@ -43,9 +43,9 @@ export const PrincipalPlatform: FC<Props> = ({ data }) => {
                                 style={{ width: `${platform.pct}%` }}
                             ></div>
                         </div>
-                    </div>
+                    </li>
                 ))}
-            </div>
+            </ul>
         </div>
     )
 }
