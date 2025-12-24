@@ -25,8 +25,8 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Share of listening time for your top artists
             </div>
-            <div className="space-y-3">
-                <div>
+            <ul className="space-y-3" role="list">
+                <li role="listitem">
                     <div className="flex justify-between text-xs font-medium mb-1.5">
                         <span>Top 5</span>
                         <span className="text-brand-blue">
@@ -34,8 +34,8 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
                         </span>
                     </div>
                     {bar(top5_pct)}
-                </div>
-                <div>
+                </li>
+                <li role="listitem">
                     <div className="flex justify-between text-xs font-medium mb-1.5">
                         <span>Top 10</span>
                         <span className="text-brand-blue">
@@ -43,8 +43,8 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
                         </span>
                     </div>
                     {bar(top10_pct)}
-                </div>
-                <div>
+                </li>
+                <li role="listitem">
                     <div className="flex justify-between text-xs font-medium mb-1.5">
                         <span>Top 20</span>
                         <span className="text-brand-blue">
@@ -52,8 +52,8 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
                         </span>
                     </div>
                     {bar(top20_pct)}
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
     )
 }

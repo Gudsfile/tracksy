@@ -7,7 +7,9 @@ on:
   workflow_dispatch:
 
 permissions:
+  checks: write
   contents: read
+  actions: read
 
 jobs:
   app:
@@ -55,3 +57,10 @@ jobs:
           entryPoint: ./app
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+  e2e-tests:
+    needs: app
+    uses: ./.github/workflows/e2e.yml
+    with:
+      url: "https://tracksy-app.web.app"
+    secrets: inherit

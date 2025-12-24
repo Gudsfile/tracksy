@@ -16,8 +16,10 @@ export function Results() {
                     }`}
                 />
 
-                <div className="relative flex gap-1">
+                <div className="relative flex gap-1" role="tablist">
                     <button
+                        role="tab"
+                        aria-selected={activeTab === 'simple'}
                         onClick={() => setActiveTab('simple')}
                         className={`relative z-10 flex-1 px-6 py-3 text-base font-semibold rounded-xl transition-all duration-300 ${
                             activeTab === 'simple'
@@ -28,6 +30,8 @@ export function Results() {
                         ✨ Simple View
                     </button>
                     <button
+                        role="tab"
+                        aria-selected={activeTab === 'detailed'}
                         onClick={() => setActiveTab('detailed')}
                         className={`relative z-10 flex-1 px-6 py-3 text-base font-semibold rounded-xl transition-all duration-300 ${
                             activeTab === 'detailed'
