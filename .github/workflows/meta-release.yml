@@ -1,0 +1,139 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Semantic version bump"
+        required: false
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+        default: auto
+
+# One release at a time
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # The entire history is required to generate the CHANGELOG.md file
+          fetch-depth: 0
+
+      - name: Install Moon
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: false
+
+      - name: Setup toolchains
+        run: moon setup
+
+      - name: Determine bump from commits (auto)
+        id: cliff-bump
+        if: ${{ github.event.inputs.bump == 'auto' }}
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff-changelog.toml
+          args: --bump --unreleased --output /dev/null
+
+      - name: Resolve bump strategy
+        id: bump
+        run: |
+          INPUT="${{ github.event.inputs.bump }}"
+
+          if [[ "$INPUT" != "auto" ]]; then
+            echo "strategy=$INPUT" >> $GITHUB_OUTPUT
+            echo "Using manual bump: $INPUT"
+            exit 0
+          fi
+
+          CURRENT=$(node -p "require('./app/package.json').version")
+          NEXT="${{ steps.cliff-bump.outputs.version }}"
+
+          echo "Current version: $CURRENT"
+          echo "Next version:    $NEXT"
+
+          IFS=. read -r c1 c2 c3 <<< "$CURRENT"
+          IFS=. read -r n1 n2 n3 <<< "$NEXT"
+
+          if [[ "$n1" -gt "$c1" ]]; then
+            STRATEGY=major
+          elif [[ "$n2" -gt "$c2" ]]; then
+            STRATEGY=minor
+          else
+            STRATEGY=patch
+          fi
+
+          echo "strategy=$STRATEGY" >> $GITHUB_OUTPUT
+          echo "Detected bump strategy: $STRATEGY"
+
+      - name: Bump version
+        run: moon run :bump-version
+        env:
+          BUMP_STRATEGY: ${{ steps.bump.outputs.strategy }}
+
+      - name: Read new version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./app/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Generate CHANGELOG.md
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff-changelog.toml
+          args: --tag ${{ steps.version.outputs.tag }} --bump --output CHANGELOG.md
+
+      - name: Update SECURITY.md
+        run: |
+          MAJOR_MINOR=$(echo "${{ steps.version.outputs.version }}" | cut -d. -f1,2)
+          sed -i "s/[0-9]\+\.[0-9]\+\./${MAJOR_MINOR}./g" SECURITY.md
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit release changes
+        run: |
+          git add .
+          git commit -m "chore(release): ${{ steps.version.outputs.tag }}"
+
+      - name: Create git tag
+        run: |
+          git tag ${{ steps.version.outputs.tag }}
+
+      - name: Push changes
+        run: |
+          git push origin HEAD
+          git push origin ${{ steps.version.outputs.tag }}
+
+      - name: Generate release notes
+        id: release-notes
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff-release-notes.toml
+          args: --latest --strip all
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --title "Release ${{ steps.version.outputs.tag }}" \
+            --notes "${{ steps.release-notes.outputs.content }}" \
+            --latest

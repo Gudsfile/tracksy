@@ -1,0 +1,24 @@
+tasks:
+  bump-version:
+    description: "Bump version of subprojects"
+    command: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+
+        echo "▶ Bumping version using strategy: $BUMP_STRATEGY"
+
+        if [[ -f "package.json" ]]; then
+          echo "• JS: package.json"
+          pnpm version "$BUMP_STRATEGY" --no-git-tag-version
+        fi
+
+        if [[ -f "pyproject.toml" ]]; then
+          echo "• Python: pyproject.toml"
+          uv version --bump "$BUMP_STRATEGY"
+        fi
+
+        echo "✔ Version bump completed"
+    env:
+      BUMP_STRATEGY: $BUMP_STRATEGY
