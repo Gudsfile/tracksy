@@ -15,6 +15,8 @@ export default defineConfig({
     vite: {
         plugins: [
             // https://github.com/nika-begiashvili/libarchivejs/blob/0989c1a6db20d030d793b1763e20d880068091bd/examples/esbuild/build.mjs#L14
+            // @ts-ignore
+            // Could be removed when Astro will upgrade its Vite dependency version 7.x
             viteStaticCopy({
                 targets: [
                     {
