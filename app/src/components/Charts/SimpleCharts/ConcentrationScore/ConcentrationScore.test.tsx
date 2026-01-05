@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ConcentrationScore } from './ConcentrationScore'
 
@@ -17,5 +17,18 @@ describe('ConcentrationScore Component', () => {
         screen.getByText('25.0%')
         screen.getByText('40.0%')
         screen.getByText('60.0%')
+    })
+
+    it('renders nothing when no data', async () => {
+        render(
+            <ConcentrationScore
+                data={{
+                    top5_pct: null,
+                    top10_pct: null,
+                    top20_pct: null,
+                }}
+            />
+        )
+        expect(screen.queryByText('📊 Concentration Score')).toBeNull()
     })
 })

@@ -1,9 +1,9 @@
 import { TABLE } from '../../../../db/queries/constants'
 
 export type ConcentrationResult = {
-    top5_pct: number
-    top10_pct: number
-    top20_pct: number
+    top5_pct: number | null
+    top10_pct: number | null
+    top20_pct: number | null
 }
 
 export function queryConcentrationScore(year: number): string {
