@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { RepeatBehavior } from './RepeatBehavior'
 import { type RepeatResult } from './query'
@@ -19,5 +19,19 @@ describe('RepeatBehavior Component', () => {
         screen.getByText('5 times in a row 🎸')
         screen.getByText('15')
         screen.getByText('3.5 times')
+    })
+
+    it('renders nothing when no data', async () => {
+        render(
+            <RepeatBehavior
+                data={{
+                    total_repeat_sequences: 0,
+                    max_consecutive: null,
+                    most_repeated_track: null,
+                    avg_repeat_length: null,
+                }}
+            />
+        )
+        expect(screen.queryByText('🔁 Repeat Behavior')).toBeNull()
     })
 })
