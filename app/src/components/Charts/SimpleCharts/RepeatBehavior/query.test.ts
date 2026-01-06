@@ -115,4 +115,16 @@ describe('RepeatBehavior Query', () => {
             'repeated_4_times_consecutively_track'
         )
     })
+
+    it('should return empty metrics', async () => {
+        const rows = await testQuery(conn, queryRepeatBehavior(2025))
+
+        expect(rows.length).toBe(1)
+        const row = rows[0]
+
+        expect(row.total_repeat_sequences).toBe(0)
+        expect(row.max_consecutive).toBe(0)
+        expect(row.avg_repeat_length).toBe(0)
+        expect(row.most_repeated_track).toBe('')
+    })
 })

@@ -1,9 +1,9 @@
 import { TABLE } from '../../../../db/queries/constants'
 
 export type ConcentrationResult = {
-    top5_pct: number | null
-    top10_pct: number | null
-    top20_pct: number | null
+    top5_pct: number
+    top10_pct: number
+    top20_pct: number
 }
 
 export function queryConcentrationScore(year: number): string {
@@ -28,8 +28,8 @@ export function queryConcentrationScore(year: number): string {
       SELECT COUNT(*) AS total FROM ${TABLE} WHERE YEAR(ts::DATE) = ${year}
     )
     SELECT
-      (SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 5)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100 AS top5_pct,
-      (SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 10)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100 AS top10_pct,
-      (SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 20)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100 AS top20_pct
+      COALESCE((SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 5)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100, 0) AS top5_pct,
+      COALESCE((SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 10)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100, 0) AS top10_pct,
+      COALESCE((SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 20)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100, 0) AS top20_pct
   `
 }
