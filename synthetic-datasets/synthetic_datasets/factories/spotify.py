@@ -21,12 +21,13 @@ class SpotifyFactory:
         ReasonStartEnum.BACK_BUTTON,
         ReasonStartEnum.CLICK_ROW,
     ]
-    skip_chance_trend = np.linspace(0.15, 0.30, 6)
 
     def __init__(self, num_records: int):
         self.faker = Faker()
         self.now = datetime.now()
         self.start_year = 2020
+        self.skip_chance_trend = np.linspace(0.15, 0.30, self.now.year - self.start_year + 1)
+
         num_artists = max(int(num_records * 0.2), 1)
         num_albums = max(int(num_records * 0.3), 1)
         num_tracks = max(int(num_records * 0.5), 1)
