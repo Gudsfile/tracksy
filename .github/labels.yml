@@ -68,7 +68,3 @@
 
 - name: "hacktoberfest"
   color: "000000"
-
-- name: "preview"
-  color: "171f2b"
-  description: "Deploy the app preview"
