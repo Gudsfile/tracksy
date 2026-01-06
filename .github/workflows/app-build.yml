@@ -4,7 +4,8 @@ on:
   pull_request:
     paths:
       - "app/**"
-      - ".github/workflows/app-deploy-preview.yml"
+      - ".github/workflows/app-build.yml"
+      - ".moon/toolchains.yml"
 
 permissions:
   contents: read
