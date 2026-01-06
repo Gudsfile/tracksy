@@ -43,7 +43,7 @@ jobs:
           GIT_LFS_SKIP_SMUDGE: 1
         run: |
           git clone --depth 1 https://${{ vars.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/datasets/tracksy-app/synthetic-datasets .tmp/synthetic-datasets
-          rsync -a synthetic-datasets/datasets/ .tmp/synthetic-datasets/
+          rsync -a synthetic-datasets/datasets .tmp/synthetic-datasets/
 
       - name: Commit datasets
         run: |
