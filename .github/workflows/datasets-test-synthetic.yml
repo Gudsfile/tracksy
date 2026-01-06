@@ -3,6 +3,10 @@ name: Audit datasets generator
 on:
   push:
     branches: ["main"]
+    paths:
+      - "synthetic-datasets/**"
+      - ".github/workflows/datasets-test-synthetic.yml"
+      - ".moon/toolchains.yml"
   pull_request:
     branches: ["main"]
     paths:

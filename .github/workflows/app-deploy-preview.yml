@@ -7,6 +7,10 @@ on:
       - reopened
       - synchronize
       - closed
+    paths:
+      - "app/**"
+      - ".github/workflows/app-deploy-preview.yml"
+      - ".moon/toolchains.yml"
   workflow_dispatch:
 
 permissions:
