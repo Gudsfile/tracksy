@@ -28,11 +28,9 @@ export function SimpleView() {
             const results =
                 await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
             if (results.length === 0) return
-            setMinYear(new Date(results[0].min_datetime).getFullYear() || 2006)
-            setMaxYear(
-                new Date(results[0].max_datetime).getFullYear() ||
-                    new Date().getFullYear()
-            )
+            setMinYear(new Date(Number(results[0].min_datetime)).getFullYear())
+            setMaxYear(new Date(Number(results[0].max_datetime)).getFullYear())
+            setYear(new Date(Number(results[0].max_datetime)).getFullYear())
         }
         initDataSummarize()
     }, [])
