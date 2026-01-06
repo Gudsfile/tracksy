@@ -87,4 +87,15 @@ describe('ConcentrationScore Query', () => {
         expect(row.top10_pct).toBe(68.18181818181817)
         expect(row.top20_pct).toBe(90.9090909090909)
     })
+
+    it('should return empty metrics', async () => {
+        const rows = await testQuery(conn, queryConcentrationScore(2023))
+
+        expect(rows.length).toBe(1)
+        const row = rows[0]
+
+        expect(row.top5_pct).toBe(0)
+        expect(row.top10_pct).toBe(0)
+        expect(row.top20_pct).toBe(0)
+    })
 })

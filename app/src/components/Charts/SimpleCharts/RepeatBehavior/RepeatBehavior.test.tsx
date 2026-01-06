@@ -21,17 +21,20 @@ describe('RepeatBehavior Component', () => {
         screen.getByText('3.5 times')
     })
 
-    it('renders nothing when no data', async () => {
-        render(
-            <RepeatBehavior
-                data={{
-                    total_repeat_sequences: 0,
-                    max_consecutive: null,
-                    most_repeated_track: null,
-                    avg_repeat_length: null,
-                }}
-            />
-        )
-        expect(screen.queryByText('🔁 Repeat Behavior')).toBeNull()
-    })
+    it.each([0, 1, 100])(
+        'renders nothing when there is no repeat sequences no matter the values of other fields: %s',
+        (dummy_value) => {
+            render(
+                <RepeatBehavior
+                    data={{
+                        total_repeat_sequences: 0,
+                        max_consecutive: dummy_value,
+                        most_repeated_track: dummy_value.toString(),
+                        avg_repeat_length: dummy_value,
+                    }}
+                />
+            )
+            expect(screen.queryByText('🔁 Repeat Behavior')).toBeNull()
+        }
+    )
 })

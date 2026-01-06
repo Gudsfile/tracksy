@@ -2,9 +2,9 @@ import { TABLE } from '../../../../db/queries/constants'
 
 export type RepeatResult = {
     total_repeat_sequences: number
-    max_consecutive: number | null
-    most_repeated_track: string | null
-    avg_repeat_length: number | null
+    max_consecutive: number
+    most_repeated_track: string
+    avg_repeat_length: number
 }
 
 export function queryRepeatBehavior(year: number): string {
@@ -45,9 +45,9 @@ export function queryRepeatBehavior(year: number): string {
     )
     SELECT
       COUNT(*)::DOUBLE AS total_repeat_sequences,
-      MAX(repeat_count)::DOUBLE AS max_consecutive,
-      (SELECT master_metadata_track_name FROM group_sizes ORDER BY repeat_count DESC LIMIT 1) AS most_repeated_track,
-      AVG(repeat_count)::DOUBLE AS avg_repeat_length
+      COALESCE(MAX(repeat_count)::DOUBLE, 0) AS max_consecutive,
+      COALESCE((SELECT master_metadata_track_name FROM group_sizes ORDER BY repeat_count DESC LIMIT 1), '') AS most_repeated_track,
+      COALESCE(AVG(repeat_count)::DOUBLE, 0) AS avg_repeat_length
     FROM group_sizes
   `
 }
