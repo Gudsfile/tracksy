@@ -46,10 +46,13 @@ moon setup  # Downloads Node.js, Python, and dependencies
 
 ## Testing Instructions
 
+### App testing
+
 - Run `moon run app:test` to run all tests for the app
 - Run `moon run app:test-coverage` for coverage report
 - Use `moon run app:test-watch` for watch mode during development
-- Focus on specific test: `pnpm vitest run -t "<test name>"`
+- Focus on specific test: `moon run app:test -- -t "<test name>"`
+- Focus on specific test file: `moon run app:test -- <file path : src/component.test.ts>`
 - All tests must pass before committing
 - **IMPORTANT:** Use `vi.spyOn()` instead of `vi.mock()` for mocking (ESLint enforced)
 
@@ -64,6 +67,20 @@ moon setup  # Downloads Node.js, Python, and dependencies
 
 - Add or update tests for any code changes, even if not explicitly requested
 - Fix all type errors and lint issues before submitting
+
+#### Astro Testing
+
+As Astro outputs raw HTML, it is possible to write end-to-end tests using the output of the build step. Any end-to-end tests written previously might work out-of-the-box if you have been able to match the markup of your CRA site. Testing libraries such as Jest and React Testing Library can be imported and used in Astro to test your React components.
+
+See Astro’s [testing guide](https://docs.astro.build/en/guides/testing/) for more.
+
+
+### End-to-End Testing
+
+Tracksy e2e is an end-to-end testing suite built with Playwright.
+
+Refer to [E2E README](e2e/README.md) and [Playwright documentation](https://playwright.dev/docs/intro) for more information.
+
 
 ## CI/CD
 
@@ -94,16 +111,20 @@ docs: update setup instructions
 1. Create feature branch from `main`: `git checkout -b feat/your-feature-name`
 2. Make focused, atomic commits following conventions above
 3. Before submitting, rebase on latest main:
+
    ```bash
    git fetch origin
    git rebase origin/main
    ```
+
 4. Run quality checks:
+
    ```bash
    moon run app:lint
    moon run app:test
    moon run app:format-check
    ```
+
 5. All tests must pass before merging
 6. Use **rebase and merge** strategy (enforced)
 7. Squash related commits representing single logical changes
