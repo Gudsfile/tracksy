@@ -1,6 +1,6 @@
 // FIXME: download the dataset from hugging face and use it instead of the zip file https://github.com/Gudsfile/tracksy/issues/242
 
-import { test, expect } from "@playwright/test";
+import { test, expect, chromium } from "@playwright/test";
 import * as path from "path";
 
 test("has title and can upload dataset", async ({ page }) => {
@@ -142,4 +142,73 @@ test("has title and can upload dataset", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByText("Monday").first()).toBeVisible();
   await expect(page.getByText("13 streams")).toBeVisible();
+});
+
+test("lighthouse performance check", async ({ browserName }) => {
+  // Lighthouse only supports Chromium
+  test.skip(browserName !== "chromium", "Lighthouse only supports Chromium");
+
+  const port = 9222;
+  const browser = await chromium.launch({
+    args: [`--remote-debugging-port=${port}`],
+  });
+
+  try {
+    const page = await browser.newPage();
+    const baseURL = process.env.URL || "http://localhost:4321";
+    const testPath = process.env.TEST_PATH || "/tracksy";
+    const url = testPath.startsWith("http")
+      ? testPath
+      : new URL(testPath, baseURL).toString();
+
+    await page.goto(url);
+
+    const { default: lighthouse } = await import("lighthouse");
+    const { default: desktopConfig } =
+      await import("lighthouse/core/config/desktop-config.js");
+
+    const options = {
+      logLevel: "info",
+      output: "json",
+      onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
+      port,
+    };
+
+    // @ts-ignore
+    const runnerResult = await lighthouse(url, options, desktopConfig);
+
+    if (!runnerResult) throw new Error("Lighthouse failed to run");
+
+    const report = runnerResult.report;
+    const lhr = runnerResult.lhr;
+
+    const fs = await import("fs");
+    const path = await import("path");
+    const reportDir = "playwright-report";
+    if (!fs.existsSync(reportDir)) {
+      fs.mkdirSync(reportDir, { recursive: true });
+    }
+    fs.writeFileSync(
+      path.join(reportDir, `lighthouse-report-${Date.now()}.json`),
+      report as string,
+    );
+
+    const thresholds = {
+      performance: 54,
+      accessibility: 98,
+      "best-practices": 100,
+      seo: 90,
+    };
+
+    for (const [category, threshold] of Object.entries(thresholds)) {
+      const score = (lhr.categories[category].score || 0) * 100;
+      console.log(`${category}: ${score}`);
+      expect(
+        score,
+        `${category} score should be >= ${threshold}`,
+      ).toBeGreaterThanOrEqual(threshold);
+    }
+  } finally {
+    await browser.close();
+  }
 });
