@@ -4,12 +4,12 @@ type: "application"
 tasks:
   test:
     command: "playwright test"
-  test-dev:
+  run-dev:
     command: "playwright test"
     local: true
     deps:
       - "app:dev"
-  test-ui:
+  run-ui:
     command: "playwright test --ui"
     local: true
     deps:
