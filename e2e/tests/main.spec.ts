@@ -3,7 +3,9 @@
 import { test, expect, chromium } from "@playwright/test";
 import * as path from "path";
 
-test("has title and can upload dataset", async ({ page }) => {
+test("Go to application, upload dataset and visualize simple view", async ({
+  page,
+}) => {
   await page.goto(process.env.TEST_PATH || "/tracksy");
 
   // Expect a title "to contain" a substring.
