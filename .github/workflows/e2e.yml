@@ -38,6 +38,9 @@ jobs:
       - name: Install Playwright Browsers
         run: moon run e2e:install-browsers
 
+      - name: Check tests
+        run: moon run e2e:test-coverage
+
       - name: Run Playwright tests
         run: moon run --updateCache e2e:run
         env:
