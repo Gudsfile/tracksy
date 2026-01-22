@@ -2,7 +2,7 @@ language: "javascript"
 type: "application"
 
 tasks:
-  test:
+  run:
     command: "playwright test"
   run-dev:
     command: "playwright test"
@@ -14,6 +14,13 @@ tasks:
     local: true
     deps:
       - "app:dev"
+  test:
+    command: "vitest run"
+  test-coverage:
+    command: "vitest run --coverage"
+  test-watch:
+    command: "vitest"
+    preset: "watcher"
   codegen:
     command: "playwright codegen"
     local: true
