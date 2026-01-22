@@ -3,10 +3,12 @@
 import { test, expect, chromium } from "@playwright/test";
 import * as path from "path";
 
+import { getTestPath } from "../helpers/getTestPath";
+
 test("Go to application, upload dataset and visualize simple view", async ({
   page,
 }) => {
-  await page.goto(process.env.TEST_PATH || "/tracksy");
+  await page.goto(getTestPath());
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/Tracksy/);
