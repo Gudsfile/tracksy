@@ -1,6 +1,5 @@
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
-import { isAllowedFileContentType } from '../../utils/isAllowedFileContentType'
-import { isSpotifyFilename } from '../../utils/isSpotifyFilename'
+import { isAllowedFileContentType } from '../../streamProvider'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { openArchive } from '../../utils/openArchive'
 
@@ -33,7 +32,13 @@ export function useFileUpload({
      * @throws {Error} If one or more files have an unsupported content type.
      */
     const controlUploadedFiles = (files: FileList) => {
-        const allowedFiles = Array.from(files).filter(isAllowedFileContentType)
+        const isAllowedFileContentTypeOrIsZipArchive = (file: File) => {
+            return isAllowedFileContentType(file) || isZipArchive(file)
+        }
+
+        const allowedFiles = Array.from(files).filter(
+            isAllowedFileContentTypeOrIsZipArchive
+        )
 
         if (allowedFiles.length !== files.length) {
             throw new Error(
@@ -55,21 +60,13 @@ export function useFileUpload({
         const extractedFiles: Record<string, File | Record<string, File>> =
             await archive.extractFiles()
 
-        const filteredFiles = Object.keys(extractedFiles)
-            .filter((key) => !HIDDEN_FILE_PREFIX.includes(key))
-            .flatMap((key) => {
-                const fileOrFiles = extractedFiles[key]
-                if (fileOrFiles instanceof File) {
-                    return isAllowedFileContentType(fileOrFiles) &&
-                        isSpotifyFilename(fileOrFiles)
-                        ? [fileOrFiles]
-                        : []
-                }
-                return Object.values(fileOrFiles).filter(
-                    (file: File) =>
-                        isAllowedFileContentType(file) &&
-                        isSpotifyFilename(file)
-                )
+        const filteredFiles = Object.entries(extractedFiles)
+            .filter(
+                ([key]) =>
+                    !HIDDEN_FILE_PREFIX.some((prefix) => key.startsWith(prefix))
+            )
+            .flatMap(([, value]) => {
+                return value instanceof File ? [value] : Object.values(value)
             })
 
         if (filteredFiles.length === 0) {
