@@ -35,7 +35,7 @@ jobs:
 
       - name: Wait for CI checks (for approved updates)
         if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        uses: lewagon/wait-on-check-action@v1.4.1
+        uses: lewagon/wait-on-check-action@v1.5.0
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           running-workflow-name: "Auto-approve and merge Dependabot PRs"
