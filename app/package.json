@@ -39,5 +39,10 @@
     },
     "engines": {
         "node": ">=24 <25"
+    },
+    "pnpm": {
+        "overrides": {
+            "lodash": "^4.17.23"
+        }
     }
 }
