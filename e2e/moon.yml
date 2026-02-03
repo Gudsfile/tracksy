@@ -1,31 +1,35 @@
-language: "javascript"
-type: "application"
+language: 'javascript'
+type: 'application'
 
 tasks:
-  run:
-    command: "playwright test"
-  run-dev:
-    command: "playwright test"
-    local: true
-    deps:
-      - "app:dev"
-  run-ui:
-    command: "playwright test --ui"
-    local: true
-    deps:
-      - "app:dev"
-  test:
-    command: "vitest run"
-  test-coverage:
-    command: "vitest run --coverage"
-  test-watch:
-    command: "vitest"
-    preset: "watcher"
-  codegen:
-    command: "playwright codegen"
-    local: true
-  show-report:
-    command: "playwright show-report"
-    local: true
-  install-browsers:
-    command: "playwright install --with-deps"
+    run:
+        command: 'playwright test'
+    run-dev:
+        command: 'playwright test'
+        local: true
+        deps:
+            - 'app:dev'
+    run-ui:
+        command: 'playwright test --ui'
+        local: true
+        deps:
+            - 'app:dev'
+    test:
+        command: 'vitest run'
+    test-coverage:
+        command: 'vitest run --coverage'
+    test-watch:
+        command: 'vitest'
+        preset: 'watcher'
+    format:
+        command: 'prettier --write .'
+    format-check:
+        command: 'prettier --check .'
+    codegen:
+        command: 'playwright codegen'
+        local: true
+    show-report:
+        command: 'playwright show-report'
+        local: true
+    install-browsers:
+        command: 'playwright install --with-deps'
