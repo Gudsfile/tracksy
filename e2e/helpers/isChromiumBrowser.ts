@@ -1,3 +1,3 @@
 export function isChromiumBrowser(browserName: string) {
-  return browserName === "chromium";
+    return browserName === 'chromium'
 }
