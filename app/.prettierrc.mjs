@@ -1,11 +1,9 @@
 /** @type {import("prettier").Config} */
 
-export default {
-    trailingComma: 'es5',
-    tabWidth: 4,
-    semi: false,
-    singleQuote: true,
+import base from '../base.prettier.mjs'
 
+export default {
+    ...base,
     plugins: ['prettier-plugin-astro'],
     overrides: [
         {
