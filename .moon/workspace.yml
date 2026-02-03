@@ -8,10 +8,9 @@ projects:
   e2e: "e2e"
 vcs:
   manager: "git"
-  defaultBranch: "main"
+  syncHooks: true
   hooks:
+    # HACK: unset GIT_INDEX_FILE is needed to prevent git from locking the index file during a commit before running the moon tasks. This forces moon to use the standard repository index, which prevents the conflict.
     pre-commit:
-      - "moon app:format-check"
-      - "moon app:typecheck"
-      - "moon synthetic-datasets:typecheck"
-      - "moon synthetic-datasets:format-check"
+      - "unset GIT_INDEX_FILE; moon run :format-check"
+      - "unset GIT_INDEX_FILE; moon run :typecheck"
