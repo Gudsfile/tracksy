@@ -1,17 +1,75 @@
 // FIXME: download the dataset from hugging face and use it instead of the zip file https://github.com/Gudsfile/tracksy/issues/242
 
-import { test, expect, chromium } from "@playwright/test";
+import { test, expect, chromium, Page } from "@playwright/test";
 import * as path from "path";
 
 import { getTestPath } from "../helpers/getTestPath";
+import { config } from "../ligthhouse.config";
+import { runLighthouseStep } from "../helpers/runLighthouseStep";
+import { isChromiumBrowser } from "../helpers/isChromiumBrowser";
+import { computeJourneyScore } from "../helpers/computeJourneyScore";
+
+const STEP_WEIGHTS = {
+  landing: 0.25,
+  afterUpload: 0.45, // heaviest: users rage here
+  simpleViewRendered: 0.3,
+};
+
+test("Go to application, upload dataset and visualize simple view on Chromium with Lighthouse", async ({
+  browserName,
+}) => {
+  if (isChromiumBrowser(browserName)) {
+    const browser = await chromium.launch({
+      args: [`--remote-debugging-port=${config.port}`],
+      headless: true,
+    });
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    const stepsScores = await tracksyUserJourney(page, runLighthouseStep);
+
+    const globalScore = computeJourneyScore<keyof typeof STEP_WEIGHTS>(
+      stepsScores,
+      STEP_WEIGHTS,
+    );
+
+    console.log({ globalScore });
+
+    await browser.close();
+  }
+});
 
 test("Go to application, upload dataset and visualize simple view", async ({
   page,
+  browserName,
 }) => {
+  if (!isChromiumBrowser(browserName)) {
+    await tracksyUserJourney(page);
+  }
+});
+
+async function tracksyUserJourney(
+  page: Page,
+  execLighthouse?: typeof runLighthouseStep,
+) {
+  let stepsScores: Record<
+    keyof typeof STEP_WEIGHTS,
+    Awaited<ReturnType<typeof runLighthouseStep>> | undefined
+  > = {
+    landing: undefined,
+    afterUpload: undefined,
+    simpleViewRendered: undefined,
+  };
+
   await page.goto(getTestPath());
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/Tracksy/);
+
+  // 🧪 Measure initial load
+  const landingPageScores = await execLighthouse?.("Landing page", page.url());
+  stepsScores.landing = landingPageScores;
 
   // Expect anchor under h1 with text "Tracksy" to be visible
   await expect(
@@ -29,6 +87,14 @@ test("Go to application, upload dataset and visualize simple view", async ({
   const simpleViewTab = page.getByRole("tab", { name: /Simple View/ });
   await expect(simpleViewTab).toBeVisible();
 
+  // 🧪 Measure post-upload state
+  const afterUploadScores = await execLighthouse?.(
+    "After dataset upload",
+    page.url(),
+  );
+
+  stepsScores.afterUpload = afterUploadScores;
+
   // Assert it is active (selected)
   await expect(simpleViewTab).toHaveAttribute("aria-selected", "true");
 
@@ -38,6 +104,14 @@ test("Go to application, upload dataset and visualize simple view", async ({
       name: /Concentration Score/,
     }),
   ).toBeVisible();
+
+  // 🧪 Measure visualization state
+  const simpleViewRenderedScores = await execLighthouse?.(
+    "Simple View rendered",
+    page.url(),
+  );
+
+  stepsScores.simpleViewRendered = simpleViewRenderedScores;
 
   await expect(
     page.getByRole("listitem").filter({ hasText: "Top 5" }),
@@ -146,73 +220,6 @@ test("Go to application, upload dataset and visualize simple view", async ({
   ).toBeVisible();
   await expect(page.getByText("Monday").first()).toBeVisible();
   await expect(page.getByText("13 streams")).toBeVisible();
-});
 
-test("lighthouse performance check", async ({ browserName }) => {
-  // Lighthouse only supports Chromium
-  test.skip(browserName !== "chromium", "Lighthouse only supports Chromium");
-
-  const port = 9222;
-  const browser = await chromium.launch({
-    args: [`--remote-debugging-port=${port}`],
-  });
-
-  try {
-    const page = await browser.newPage();
-    const baseURL = process.env.URL || "http://localhost:4321";
-    const testPath = process.env.TEST_PATH || "/tracksy";
-    const url = testPath.startsWith("http")
-      ? testPath
-      : new URL(testPath, baseURL).toString();
-
-    await page.goto(url);
-
-    const { default: lighthouse } = await import("lighthouse");
-    const { default: desktopConfig } =
-      await import("lighthouse/core/config/desktop-config.js");
-
-    const options = {
-      logLevel: "info",
-      output: "json",
-      onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
-      port,
-    };
-
-    // @ts-ignore
-    const runnerResult = await lighthouse(url, options, desktopConfig);
-
-    if (!runnerResult) throw new Error("Lighthouse failed to run");
-
-    const report = runnerResult.report;
-    const lhr = runnerResult.lhr;
-
-    const fs = await import("fs");
-    const path = await import("path");
-    const reportDir = "playwright-report";
-    if (!fs.existsSync(reportDir)) {
-      fs.mkdirSync(reportDir, { recursive: true });
-    }
-    fs.writeFileSync(
-      path.join(reportDir, `lighthouse-report-${Date.now()}.json`),
-      report as string,
-    );
-
-    const thresholds = {
-      performance: 54,
-      accessibility: 98,
-      "best-practices": 100,
-      seo: 90,
-    };
-
-    for (const [category, threshold] of Object.entries(thresholds)) {
-      const score = (lhr.categories[category].score || 0) * 100;
-      console.log(`${category}: ${score}`);
-      expect(
-        score,
-        `${category} score should be >= ${threshold}`,
-      ).toBeGreaterThanOrEqual(threshold);
-    }
-  } finally {
-    await browser.close();
-  }
-});
+  return stepsScores;
+}
