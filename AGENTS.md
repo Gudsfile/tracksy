@@ -29,6 +29,7 @@ moon setup  # Downloads Node.js, Python, and dependencies
 - Use `moon run app:dev` to start the web app dev server
 - Use `moon run blog:dev` to start the blog dev server
 - Use `moon run synthetic-datasets:generate -- 100` to generate 100 test records
+- Use `moon run synthetic-datasets:generate -- --help` to show help for generating test records
 - Run `moon run :test` to run all tests across the monorepo
 - Check `app/moon.yml`, `blog/moon.yml`, and `synthetic-datasets/moon.yml` for available tasks
 - The project uses TypeScript strict mode, ESLint, and Prettier

@@ -27,3 +27,11 @@ More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#developmen
 │   └── # generator code
 └── pyproject.toml
 ```
+
+## 📚 Help
+
+View available options:
+
+```bash
+moon run synthetic-datasets:generate -- --help
+```
