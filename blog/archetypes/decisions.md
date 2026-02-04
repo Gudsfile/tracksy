@@ -1,6 +1,11 @@
+---
+date: {{ time.Now.Format "2006-01-02" }}
+draft: true
+title: {{ replace .File.ContentBaseName `-` ` ` | title }}
+---
+<!-- title: short title, representative of solved problem and found solution -->
+<!-- ADR are markdown files deployed on Tracksy's blog  we need to enrich them with metadata -->
 <!-- This is a copy-paste from https://github.com/adr/madr/blob/develop/template/adr-template-minimal.md -->
-
-# {short title, representative of solved problem and found solution}
 
 ## Context and Problem Statement
 
