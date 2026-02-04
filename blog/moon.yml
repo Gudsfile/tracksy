@@ -6,6 +6,10 @@ tasks:
     command: "go run github.com/gohugoio/hugo@v0.152.0 server --minify -D -E -F"
     local: true
 
+  new-post:
+    command: "go run github.com/gohugoio/hugo@v0.152.0 new"
+    local: true
+
   build:
     command: "go run github.com/gohugoio/hugo@v0.152.0 --minify"
     inputs:
