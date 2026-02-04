@@ -4,16 +4,20 @@ type: "application"
 tasks:
   test:
     command: "playwright test"
+    deps:
+      - "synthetic-datasets:generate-e2e"
   test-dev:
     command: "playwright test"
     local: true
     deps:
       - "app:dev"
+      - "synthetic-datasets:generate-e2e"
   test-ui:
     command: "playwright test --ui"
     local: true
     deps:
       - "app:dev"
+      - "synthetic-datasets:generate-e2e"
   codegen:
     command: "playwright codegen"
     local: true
