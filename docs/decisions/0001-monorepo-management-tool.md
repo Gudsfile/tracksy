@@ -1,4 +1,7 @@
-# Tooling for Monorepo Management
+---
+date: 2025-12-17
+title: "Tooling for Monorepo Management"
+---
 
 ## Context and Problem Statement
 
