@@ -5,6 +5,9 @@ type: "application"
 tasks:
   generate:
     command: "uv run generate"
+  generate-e2e:
+    command: "uv run generate 1000 --seed 653265 --reference-date 2026-01-15T01:02:03 -o ../e2e/datasets"
+    description: "Generate predictable dataset of 1000 records for e2e tests with fixed seed"
   test:
     command: "uv run pytest"
     inputs:

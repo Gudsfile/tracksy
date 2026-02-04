@@ -35,3 +35,19 @@ View available options:
 ```bash
 moon run synthetic-datasets:generate -- --help
 ```
+
+## 🎯 Reproducible Generation
+
+The generator supports seed-based reproducible generation for consistent test results.
+
+Generate with specific seed for reproducibility:
+
+```bash
+moon run synthetic-datasets:generate -- 100 --seed 42
+```
+
+Generate dataset specifically for e2e tests (uses a fixed seed and number of records):
+
+```bash
+moon run synthetic-datasets:generate-e2e
+```

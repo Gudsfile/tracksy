@@ -3,6 +3,7 @@ from ipaddress import IPv4Address
 
 import pytest
 
+from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
 
 
@@ -25,3 +26,8 @@ def streaming_record():
         offline=False,
         incognito_mode=False,
     )
+
+
+@pytest.fixture
+def default_generation_config():
+    return GenerationConfig(seed=42, reference_date=datetime(2026, 2, 8))
