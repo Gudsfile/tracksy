@@ -28,6 +28,14 @@ More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#developmen
 └── pyproject.toml
 ```
 
+## 📚 Help
+
+View available options:
+
+```bash
+moon run synthetic-datasets:generate -- --help
+```
+
 ## 🎯 Reproducible Generation
 
 The generator supports seed-based reproducible generation for consistent test results.
