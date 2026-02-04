@@ -1,3 +1,4 @@
+import calendar
 import random
 import string
 from datetime import datetime, timedelta
@@ -22,9 +23,19 @@ class SpotifyFactory:
         ReasonStartEnum.CLICK_ROW,
     ]
 
-    def __init__(self, num_records: int):
+    def __init__(self, num_records: int, seed: int | None = None):
+        """Initialize SpotifyFactory with optional seed for predictable generation."""
+        if seed is not None:
+            random.seed(seed)
+            np.random.seed(seed)
+            Faker.seed(seed)
+
         self.faker = Faker()
-        self.now = datetime.now()
+        self.now = (
+            datetime.strptime("2026-01-15 01:02:03.456789", "%Y-%m-%d %H:%M:%S.%f")
+            if seed is not None
+            else datetime.now()
+        )
         self.start_year = 2020
         self.skip_chance_trend = np.linspace(0.15, 0.30, self.now.year - self.start_year + 1)
 
@@ -107,32 +118,34 @@ class SpotifyFactory:
         return weighted_tracks_by_year
 
     def _get_random_datetime_for_year(self, year: int) -> datetime:
-        while True:
-            if year < self.now.year:
-                months = range(1, 13)
-                weights = self.month_weights
-            else:
-                valid_months = range(1, self.now.month + 1)
-                valid_weights = self.month_weights[: self.now.month]
-                weights = np.array(valid_weights) / sum(valid_weights)
-                months = valid_months
+        if year < self.now.year:
+            months = np.arange(1, 13)
+            month_weights = np.array(self.month_weights)
+        else:
+            months = np.arange(1, self.now.month + 1)
+            month_weights = np.array(self.month_weights[: self.now.month])
 
-            month = np.random.choice(months, p=weights)
+        month_weights = month_weights / month_weights.sum()
+        month = np.random.choice(months, p=month_weights)
 
-            day = random.randint(1, 28)
-            hour = np.random.choice(range(24), p=rotate(self.hour_weights, random.randint(0, 12)))
-            minute = random.randint(0, 59)
-            second = random.randint(0, 59)
+        max_day = calendar.monthrange(year, month)[1]
+        day = random.randint(1, max_day)
 
-            gen_date = datetime(year, month, day, hour, minute, second)
+        hour_weights = np.array(self.hour_weights)
+        hour_weights = hour_weights / hour_weights.sum()
+        hour = np.random.choice(range(24), p=hour_weights)
 
-            if gen_date <= self.now:
-                return gen_date
+        minute = random.randint(0, 59)
+        second = random.randint(0, 59)
 
-            gen_date = self.faker.date_time_between(start_date="-1y", end_date="now")
-            if gen_date <= self.now:
-                return gen_date
-            print(f"Warning getting a random datetime for year once again: rejected_date: `{gen_date}`")
+        candidate = datetime(year, month, day, hour, minute, second)
+
+        if candidate > self.now:
+            start = datetime(year, 1, 1)
+            delta_seconds = int((self.now - start).total_seconds())
+            return start + timedelta(seconds=random.randint(0, delta_seconds))
+
+        return candidate
 
     def _create_one_streaming_record(self, ts: datetime) -> Streaming:
         year_index = ts.year - self.start_year

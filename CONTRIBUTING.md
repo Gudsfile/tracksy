@@ -156,6 +156,7 @@ Run tasks across the entire monorepo or for specific projects.
 
     ```bash
     moon run synthetic-datasets:generate  # Generate new datasets
+    moon run synthetic-datasets:generate-e2e  # Generate predictable dataset for e2e tests
     moon run synthetic-datasets:test      # Run python tests
     ```
 
