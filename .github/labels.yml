@@ -30,6 +30,10 @@
   color: "078e0a"
   description: "Pull requests that update a dependency file"
 
+- name: "e2e"
+  color: "8d43aa"
+  description: "Concerns the E2E tests"
+
 - name: "documentation"
   color: "0075ca"
   description: "Improvements or additions to documentation"
