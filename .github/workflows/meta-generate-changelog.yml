@@ -1,0 +1,70 @@
+name: Generate Changelog
+
+on:
+  push:
+    branches: ["main"]
+
+# One changelog generation at a time
+concurrency:
+  group: changelog
+  cancel-in-progress: true
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    # Prevent infinite loop: skip if this push was created by this workflow's own release commit
+    if: "!contains(github.event.head_commit.message, 'chore(release): v')"
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # The entire history is required to generate the CHANGELOG
+          fetch-depth: 0
+
+      - name: Setup Moon
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+          auto-setup: true
+          cache: true
+
+      - name: Determine next version
+        id: next-version
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff.toml
+          args: --bump --unreleased --output /dev/null
+
+      - name: Set project versions
+        run: moon run :set-version -- ${{ steps.next-version.outputs.version }}
+
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/cliff.toml
+          args: --tag v${{ steps.next-version.outputs.version }} --output CHANGELOG.md
+
+      - name: Update SECURITY.md
+        run: |
+          VERSION="${{ steps.next-version.outputs.version }}"
+          MAJOR_MINOR=$(echo "$VERSION" | cut -d. -f1,2)
+          sed -i "s/[0-9]\+\.[0-9]\+\./${MAJOR_MINOR}./g" SECURITY.md
+
+      - name: Commit changelog updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git add .
+          git commit -m "chore(release): v${{ steps.next-version.outputs.version }}"
+          git push origin HEAD
