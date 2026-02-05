@@ -6,7 +6,7 @@ enableCodeCopy = true
 firebase = { }
 fathomAnalytics = { }
 verification = { }
-defaultFeaturedImage = "tracky-blog.png"
+defaultFeaturedImage = "tracksy-blog.png"
 highlightCurrentMenuArea = true
 smartTOC = true
 
