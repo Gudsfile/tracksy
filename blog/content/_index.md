@@ -1,5 +1,5 @@
 ---
-title: "Welcome to Tracky's blog 🎉"
+title: "Welcome to Tracksy's blog 🎉"
 description: "This is a demo of adding content to the homepage."
 ---
 
