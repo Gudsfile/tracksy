@@ -67,6 +67,16 @@ body = """
         {% endif -%}
     {% endfor -%}
 {% endfor -%}
+
+{%- if github.contributors | length > 0 %}
+### 👥 Contributors
+
+Thank you to all the contributors who made this release possible:
+
+{% for contributor in github.contributors %}
+- [@{{ contributor.username }}](https://github.com/{{ contributor.username }})
+{% endfor %}
+{%- endif %}
 """
 
 footer = """
