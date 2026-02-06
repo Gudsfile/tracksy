@@ -16,7 +16,7 @@ export function App() {
                     <div className="max-w-4xl w-full mx-auto py-12">
                         <h1 className="text-4xl md:text-5xl font-bold text-center mb-8 animate-fade-in">
                             <a
-                                href="/"
+                                href={`${import.meta.env.BASE_URL}`}
                                 className="bg-gradient-brand bg-clip-text text-transparent hover:opacity-80 transition-opacity drop-shadow-sm"
                             >
                                 Tracksy
