@@ -11,7 +11,7 @@ def spotify(num_records: int, output_dir: Path, seed: int | None):
     all_streamings = factory.create_streaming_history()
 
     writer = SpotifyWriter(output_dir=output_dir)
-    writer.write(all_streamings)
+    writer.write(all_streamings, bool(seed))
 
 
 def min_int(min_value):
