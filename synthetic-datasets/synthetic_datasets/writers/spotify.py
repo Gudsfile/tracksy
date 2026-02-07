@@ -1,7 +1,7 @@
 import json
-from os.path import basename
+from datetime import datetime
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from tqdm import tqdm
 
@@ -10,13 +10,14 @@ from ..models.spotify import Streaming
 
 class SpotifyWriter:
     max_chunk_size: int = 20000
-    chunked_zip_file_name_template: str = "Streaming_History_Audio_2006-2025_{num_records}.json"
+    chunked_zip_file_name_template: str = "Streaming_History_Audio_2006-{reference_year}_{num_records}.json"
     chunked_zip_folder: str = "Spotify Extended Streaming History"
 
-    def __init__(self, output_dir: Path) -> None:
+    def __init__(self, output_dir: Path, reference_date: datetime) -> None:
         folder = output_dir / "spotify"
         self.json_path_template: str = str(folder) + "/streamings_{num_records}.json"
         self.zip_path_template: str = str(folder) + "/streamings_{num_records}.zip"
+        self.reference_date = reference_date
 
     def write(self, records):
         json_path = Path(self.json_path_template.format(num_records=str(len(records))))
@@ -28,14 +29,16 @@ class SpotifyWriter:
         files_for_chunked_zip = {}
         for i in range(0, len(records), chunk_size):
             chunk = records[i : i + chunk_size]
-            filename = self.chunked_zip_file_name_template.replace("{num_records}", str(i // chunk_size + 1))
+            filename = self.chunked_zip_file_name_template
+            filename = filename.replace("{num_records}", str(i // chunk_size + 1))
+            filename = filename.replace("{reference_year}", str(self.reference_date.year))
             files_for_chunked_zip[filename] = chunk
 
         zip_path = Path(self.zip_path_template.format(num_records=str(len(records))))
         print(
             f"Write `zip` file: status: `starting`, path: `{zip_path.absolute()}`, count_files: `{len(files_for_chunked_zip)}`"
         )
-        write_zip(zip_path, files_for_chunked_zip, self.chunked_zip_folder)
+        write_zip(zip_path, files_for_chunked_zip, self.chunked_zip_folder, self.reference_date)
         print(f"Write `zip` file: status: `success`, path: `{zip_path.absolute()}`")
 
 
@@ -48,22 +51,22 @@ def write_json(path: Path, streamings: list[Streaming]):
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f, indent=4, sort_keys=True)
 
 
-def write_zip(path: Path, files_to_add: dict[str, list[Streaming]], base_zipped_folder: str | None = None):
-    temp_dir = path.parent / "temp_json_files"
-    temp_dir.mkdir(parents=True, exist_ok=True)
+def write_zip(path: Path, files_to_add: dict[str, list[Streaming]], base_zipped_folder: str, date: datetime):
+    path.parent.mkdir(parents=True, exist_ok=True)
 
-    with ZipFile(path, "w", ZIP_DEFLATED) as myzip:
-        for filename, streamings in tqdm(files_to_add.items(), desc="🗜️ Zipping files", unit=" file"):
-            temp_file_path = temp_dir / filename
+    sorted_files = sorted(files_to_add.items())
 
-            write_json(temp_file_path, streamings)
-            myzip.write(
-                temp_file_path,
-                Path(base_zipped_folder) / basename(temp_file_path) if base_zipped_folder else basename(temp_file_path),
-            )
-            temp_file_path.unlink()
+    with ZipFile(path, "w", ZIP_DEFLATED, compresslevel=6) as myzip:
+        for filename, streamings in tqdm(sorted_files, desc="🗜️ Zipping files", unit=" file"):
+            data = [streaming.model_dump(mode="json") for streaming in streamings]
+            json_content = json.dumps(data, indent=4, sort_keys=True)
 
-    temp_dir.rmdir()
+            archive_name = str(Path(base_zipped_folder) / filename)
+            zip_info = ZipInfo(archive_name)
+            zip_info.compress_type = ZIP_DEFLATED
+            zip_info.date_time = (date.year, date.month, date.day, date.hour, date.minute, date.second)
+
+            myzip.writestr(zip_info, json_content)

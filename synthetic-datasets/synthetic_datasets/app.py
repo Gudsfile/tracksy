@@ -12,7 +12,7 @@ def spotify(num_records: int, output_dir: Path, config: GenerationConfig):
     factory = SpotifyFactory(num_records, config=config)
     all_streamings = factory.create_streaming_history()
 
-    writer = SpotifyWriter(output_dir=output_dir)
+    writer = SpotifyWriter(output_dir=output_dir, reference_date=config.reference_date)
     writer.write(all_streamings)
 
 
