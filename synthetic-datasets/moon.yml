@@ -24,3 +24,9 @@ tasks:
     command: "uv run ty check"
     inputs:
       - "**/*.py"
+  bump-version:
+    command: "uv version --bump"
+    description: "Bump package version. Requires bump strategy (major, minor, patch)."
+  set-version:
+    command: "uv version"
+    description: "Set package to specific version. Requires new version number."
