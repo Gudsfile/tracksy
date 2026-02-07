@@ -1,0 +1,14 @@
+{
+  "name": "tracksy",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {},
+  "engines": {
+    "node": "~24"
+  },
+  "pnpm": {
+    "overrides": {
+      "lodash": "^4.17.23"
+    }
+  }
+}

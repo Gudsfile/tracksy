@@ -1,0 +1,7 @@
+node_modules/
+dist/
+pnpm-lock.yaml
+package.json
+test-results/
+playwright-report/
+playwright/.cache/

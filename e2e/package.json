@@ -5,7 +5,11 @@
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@types/node": "^24.10.4",
-    "typescript": "^5.9.3"
+    "@vitest/coverage-v8": "^4.0.17",
+    "lighthouse": "^13.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17",
+    "prettier": "^3.8.1"
   },
   "engines": {
     "node": ">=24 <25"

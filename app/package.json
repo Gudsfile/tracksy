@@ -36,13 +36,5 @@
         "prettier-plugin-astro": "^0.14.1",
         "vite-plugin-static-copy": "^3.2.0",
         "vitest": "^3.2.4"
-    },
-    "engines": {
-        "node": ">=24 <25"
-    },
-    "pnpm": {
-        "overrides": {
-            "lodash": "^4.17.23"
-        }
     }
 }

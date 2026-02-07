@@ -30,16 +30,18 @@ jobs:
       - name: Install moon
         uses: moonrepo/setup-toolchain@v0
         with:
-          auto-install: false
-
-      - name: Setup toolchains
-        run: moon setup
+          auto-install: true
+          auto-setup: true
+          cache: true
 
       - name: Install Playwright Browsers
         run: moon run e2e:install-browsers
 
+      - name: Check tests
+        run: moon run e2e:test-coverage
+
       - name: Run Playwright tests
-        run: moon run --updateCache e2e:test
+        run: moon run --updateCache e2e:run
         env:
           URL: ${{ inputs.baseUrl }}
           TEST_PATH: ${{ inputs.testPath }}
