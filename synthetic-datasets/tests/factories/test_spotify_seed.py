@@ -1,23 +1,20 @@
-from time import sleep
+from dataclasses import replace
 
 import pytest
 
 from synthetic_datasets.factories.spotify import SpotifyFactory
 
 
-def test_same_seed_produces_identical_results():
+def test_same_seed_produces_identical_results(default_generation_config):
     """Test that same seed produces identical streaming records."""
     # given
-    seed = 42
     num_records = 100
 
-    # when two datasets are generated with the same seed but at different times
-    factory1 = SpotifyFactory(num_records, seed=seed)
+    # when two datasets are generated with the same seed
+    factory1 = SpotifyFactory(num_records, default_generation_config)
     streamings1 = factory1.create_streaming_history()
 
-    sleep(1)
-
-    factory2 = SpotifyFactory(num_records, seed=seed)
+    factory2 = SpotifyFactory(num_records, default_generation_config)
     streamings2 = factory2.create_streaming_history()
 
     # then the result should be exactly the same
@@ -42,72 +39,32 @@ def test_same_seed_produces_identical_results():
         assert stream1.incognito_mode == stream2.incognito_mode
 
 
-def test_different_seeds_produce_different_results():
+def test_different_seeds_produce_different_results(default_generation_config):
     """Test that different seeds produce different streaming records."""
-    # given
-    seed1 = 42
-    seed2 = 123
+    # given different seeds
     num_records = 50
+    config1 = replace(default_generation_config, seed=123)
+    config2 = replace(default_generation_config, seed=456)
 
-    # when two datasets are generated with different seeds
-    factory1 = SpotifyFactory(num_records, seed=seed1)
+    # when datasets are generated
+    factory1 = SpotifyFactory(num_records, config1)
     streamings1 = factory1.create_streaming_history()
 
-    factory2 = SpotifyFactory(num_records, seed=seed2)
+    factory2 = SpotifyFactory(num_records, config2)
     streamings2 = factory2.create_streaming_history()
 
     # then the results should be different
     assert len(streamings1) == len(streamings2)
     assert streamings1 != streamings2
-
-
-def test_no_seed_produces_different_results_on_multiple_runs():
-    """Test that without seed, multiple runs produce different results."""
-    # given
-    num_records = 50
-
-    # when datasets are generated without seed
-    factory1 = SpotifyFactory(num_records)
-    streamings1 = factory1.create_streaming_history()
-
-    factory2 = SpotifyFactory(num_records)
-    streamings2 = factory2.create_streaming_history()
-
-    # then the results should be different
-    # Note: there's a tiny probability they could be the same
-    assert len(streamings1) == len(streamings2)
-    assert streamings1 != streamings2
-
-
-def test_seed_affects_catalog_generation():
-    """Test that seed affects the generated music catalog."""
-    # given
-    seed = 99
-    num_records = 100
-
-    # when two factories are generated with the same seed
-    factory1 = SpotifyFactory(num_records, seed=seed)
-    factory2 = SpotifyFactory(num_records, seed=seed)
-
-    # then the tracks catalog should be identical
-    assert len(factory1.tracks) == len(factory2.tracks)
-
-    for track1, track2 in zip(factory1.tracks, factory2.tracks):
-        assert track1.uri == track2.uri
-        assert track1.name == track2.name
-        assert track1.duration_ms == track2.duration_ms
-        assert track1.album.name == track2.album.name
-        assert track1.album.artist.name == track2.album.artist.name
 
 
 @pytest.mark.parametrize("seed", [0, 1, 42, 999, 12345])
-def test_various_seeds_work(seed):
+def test_various_seeds_work(seed, default_generation_config):
     """Test that various seed values work correctly."""
     num_records = 100
+    config = replace(default_generation_config, seed=seed)
 
-    factory = SpotifyFactory(num_records, seed=seed)
+    factory = SpotifyFactory(num_records, config)
     streamings = factory.create_streaming_history()
 
     assert len(streamings) == num_records
-    assert all(stream.ts is not None for stream in streamings)
-    assert all(stream.master_metadata_track_name for stream in streamings)

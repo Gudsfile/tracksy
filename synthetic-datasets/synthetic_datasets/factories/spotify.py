@@ -7,6 +7,7 @@ import numpy as np
 from faker import Faker
 from tqdm import tqdm
 
+from ..config import GenerationConfig
 from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Streaming, Track
 
 
@@ -23,19 +24,15 @@ class SpotifyFactory:
         ReasonStartEnum.CLICK_ROW,
     ]
 
-    def __init__(self, num_records: int, seed: int | None = None):
-        """Initialize SpotifyFactory with optional seed for predictable generation."""
-        if seed is not None:
-            random.seed(seed)
-            np.random.seed(seed)
-            Faker.seed(seed)
+    def __init__(self, num_records: int, config: GenerationConfig):
+        self.config = config
+
+        random.seed(self.config.seed)
+        np.random.seed(self.config.seed)
+        Faker.seed(self.config.seed)
 
         self.faker = Faker()
-        self.now = (
-            datetime.strptime("2026-01-15 01:02:03.456789", "%Y-%m-%d %H:%M:%S.%f")
-            if seed is not None
-            else datetime.now()
-        )
+        self.now = self.config.reference_date
         self.start_year = 2020
         self.skip_chance_trend = np.linspace(0.15, 0.30, self.now.year - self.start_year + 1)
 
