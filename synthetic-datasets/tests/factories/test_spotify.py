@@ -5,9 +5,9 @@ from synthetic_datasets.models.spotify import Streaming
 
 
 @pytest.mark.parametrize("num_records", range(0, 100, 3))
-def test_create_streaming_history(num_records):
+def test_create_streaming_history(num_records, default_generation_config):
     # given
-    factory = SpotifyFactory(num_records=num_records)
+    factory = SpotifyFactory(num_records=num_records, config=default_generation_config)
     # when
     streamings = factory.create_streaming_history()
     # then
