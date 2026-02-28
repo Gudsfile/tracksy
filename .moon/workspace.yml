@@ -14,3 +14,4 @@ vcs:
   defaultBranch: main
   client: git
 versionConstraint: ">=2.0.3,<=3.0.0"
+telemetry: false
