@@ -1,28 +1,27 @@
-language: "javascript"
-type: "application"
-
+language: javascript
 tasks:
   test:
-    command: "playwright test"
+    command: playwright test
     deps:
-      - "synthetic-datasets:generate-e2e"
+      - synthetic-datasets:generate-e2e
   test-dev:
-    command: "playwright test"
-    local: true
+    command: playwright test
     deps:
-      - "app:dev"
-      - "synthetic-datasets:generate-e2e"
+      - app:dev
+      - synthetic-datasets:generate-e2e
+    preset: server
   test-ui:
-    command: "playwright test --ui"
-    local: true
+    command: playwright test --ui
     deps:
-      - "app:dev"
-      - "synthetic-datasets:generate-e2e"
+      - app:dev
+      - synthetic-datasets:generate-e2e
+    preset: server
   codegen:
-    command: "playwright codegen"
-    local: true
+    command: playwright codegen
+    preset: server
   show-report:
-    command: "playwright show-report"
-    local: true
+    command: playwright show-report
+    preset: server
   install-browsers:
-    command: "playwright install --with-deps"
+    command: playwright install --with-deps
+layer: application

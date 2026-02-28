@@ -1,31 +1,27 @@
-language: "go"
-type: "application"
-
+language: go
 tasks:
   dev:
-    command: "go run github.com/gohugoio/hugo@v0.152.0 server --minify -D -E -F"
-    local: true
-
+    command: go run github.com/gohugoio/hugo@v0.152.0 server --minify -D -E -F
+    preset: server
   new-post:
-    command: "go run github.com/gohugoio/hugo@v0.152.0 new"
-    local: true
-
+    command: go run github.com/gohugoio/hugo@v0.152.0 new
+    preset: server
   build:
-    command: "go run github.com/gohugoio/hugo@v0.152.0 --minify"
+    command: go run github.com/gohugoio/hugo@v0.152.0 --minify
     inputs:
-      - "archetypes/**/*"
-      - "assets/**/*"
-      - "config/**/*"
-      - "content/**/*"
-      - "static/**/*"
-      - "themes/**/*"
-      - "hugo.toml"
-      - "config/**/*"
+      - archetypes/**/*
+      - assets/**/*
+      - config/**/*
+      - content/**/*
+      - static/**/*
+      - themes/**/*
+      - hugo.toml
+      - config/**/*
     outputs:
-      - "public/**/*"
+      - public/**/*
     env:
       HUGO_ENVIRONMENT: production
       HUGO_ENV: production
-
   clean:
-    command: "rm -rf public"
+    command: rm -rf public
+layer: application

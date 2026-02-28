@@ -39,7 +39,7 @@ jobs:
         run: moon run e2e:install-browsers
 
       - name: Run Playwright tests
-        run: moon run --updateCache e2e:test
+        run: moon run --force e2e:test
         env:
           URL: ${{ inputs.baseUrl }}
           TEST_PATH: ${{ inputs.testPath }}
