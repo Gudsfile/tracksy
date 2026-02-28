@@ -1,17 +1,15 @@
-# https://moonrepo.dev/docs/config/workspace
-$schema: "./cache/schemas/workspace.json"
-
+$schema: ./cache/schemas/workspace.json
 projects:
-  app: "app"
-  synthetic-datasets: "synthetic-datasets"
-  blog: "blog"
-  e2e: "e2e"
+  app: app
+  synthetic-datasets: synthetic-datasets
+  blog: blog
+  e2e: e2e
 vcs:
-  manager: "git"
-  defaultBranch: "main"
   hooks:
     pre-commit:
-      - "moon app:format-check"
-      - "moon app:typecheck"
-      - "moon synthetic-datasets:typecheck"
-      - "moon synthetic-datasets:format-check"
+      - moon app:format-check
+      - moon app:typecheck
+      - moon synthetic-datasets:typecheck
+      - moon synthetic-datasets:format-check
+  defaultBranch: main
+  client: git

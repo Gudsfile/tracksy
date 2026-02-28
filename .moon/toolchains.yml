@@ -1,0 +1,13 @@
+$schema: https://moonrepo.dev/schemas/toolchain.json
+go:
+  version: 1.25.0
+node:
+  version: "24"
+javascript:
+  packageManager: pnpm
+pnpm:
+  version: "9"
+unstable_python:
+  version: "3.12"
+unstable_uv:
+  version: "0.9"
