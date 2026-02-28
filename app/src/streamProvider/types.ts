@@ -8,7 +8,7 @@ export interface StreamRecord {
     /**
      * Unique track identifier (URI format).
      */
-    spotify_track_uri: string
+    track_uri: string
 
     /**
      * Track name

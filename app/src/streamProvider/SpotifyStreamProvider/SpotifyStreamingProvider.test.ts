@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { SpotifyStreamProvider } from './SpotifyStreamProvider'
+import type { SpotifyRawStreamRecord } from './types'
+import { StreamRecord } from '../types'
 
 /**
  * We use this mock function due to JSDOM not supporting full File API : https://developer.mozilla.org/en-US/docs/Web/API/Blob/text
@@ -96,8 +98,8 @@ describe('SpotifyStreamProvider', () => {
     })
 
     describe('transform', () => {
-        it('should pass through Spotify data unchanged', () => {
-            const rawData = [
+        it('should map spotify_track_uri to track_uri and keep the rest unchanged', () => {
+            const rawData: SpotifyRawStreamRecord[] = [
                 {
                     spotify_track_uri: 'spotify:track:123',
                     master_metadata_track_name: 'Song 1',
@@ -115,7 +117,27 @@ describe('SpotifyStreamProvider', () => {
             ]
 
             const result = provider.transform(rawData)
-            expect(result).toEqual(rawData)
+
+            const expected: StreamRecord[] = [
+                {
+                    track_uri: 'spotify:track:123',
+                    master_metadata_track_name: 'Song 1',
+                    master_metadata_album_artist_name: 'Artist 1',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                },
+                {
+                    track_uri: 'spotify:track:456',
+                    master_metadata_track_name: 'Song 2',
+                    master_metadata_album_artist_name: 'Artist 2',
+                    ts: '2024-01-01T12:30:00Z',
+                    ms_played: 240000,
+                },
+            ]
+
+            expect(result[0].track_uri).toBeDefined()
+            expect(result[0].spotify_track_uri).toBeUndefined()
+            expect(result).toEqual(expected)
         })
     })
 
@@ -161,8 +183,16 @@ describe('SpotifyStreamProvider', () => {
 
             const result = await provider.processFile(file)
 
+            const expected = {
+                track_uri: 'spotify:track:123',
+                master_metadata_track_name: 'Song',
+                master_metadata_album_artist_name: 'Artist',
+                ts: '2024-01-01T12:00:00Z',
+                ms_played: 180000,
+            }
+
             expect(result).toHaveLength(1)
-            expect(result[0]).toEqual(validRecord)
+            expect(result[0]).toEqual(expected)
         })
 
         it('should return empty array for file with no valid records', async () => {

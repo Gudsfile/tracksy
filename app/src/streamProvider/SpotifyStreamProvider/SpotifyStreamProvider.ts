@@ -1,10 +1,11 @@
 import { StreamProvider } from '../StreamProvider'
 import type { StreamRecord } from '../types'
+import type { SpotifyRawStreamRecord } from './types'
 
 /**
  * Spotify streaming history adapter.
  */
-export class SpotifyStreamProvider extends StreamProvider {
+export class SpotifyStreamProvider extends StreamProvider<SpotifyRawStreamRecord> {
     name = 'spotify'
     displayName = 'Spotify'
     filePattern = /^Streaming_History_Audio_\d{4}(-\d{4})?(_\d+)?\.json$/i
@@ -16,7 +17,7 @@ export class SpotifyStreamProvider extends StreamProvider {
      * @param file - Spotify streaming history JSON file
      * @returns Promise resolving to raw streaming data
      */
-    async readFile(file: File): Promise<unknown[]> {
+    async readFile(file: File): Promise<SpotifyRawStreamRecord[]> {
         const text = await file.text()
         const rawData = JSON.parse(text)
 
@@ -35,7 +36,12 @@ export class SpotifyStreamProvider extends StreamProvider {
      * @param rawData - Raw Spotify streaming data
      * @returns Array of stream records in canonical format
      */
-    transform(rawData: unknown[]): StreamRecord[] {
-        return rawData as StreamRecord[]
+    transform(rawData: SpotifyRawStreamRecord[]): StreamRecord[] {
+        const data = rawData.map(({ spotify_track_uri, ...rest }) => ({
+            ...rest,
+            track_uri: spotify_track_uri,
+        }))
+
+        return data as StreamRecord[]
     }
 }
