@@ -1,4 +1,15 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Welcome to Tracksy's blog 🎉 on Tracksy's Blog</title><link>https://Gudsfile.github.io/tracksy/blog/</link><description>Recent content in Welcome to Tracksy's blog 🎉 on Tracksy's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>© 2026 Tracksy team</copyright><lastBuildDate>Wed, 17 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://Gudsfile.github.io/tracksy/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Tooling for Monorepo Management</title><link>https://Gudsfile.github.io/tracksy/blog/decisions/monorepo-management-tool/</link><pubDate>Wed, 17 Dec 2025 00:00:00 +0000</pubDate><guid>https://Gudsfile.github.io/tracksy/blog/decisions/monorepo-management-tool/</guid><description>&lt;h2 class="relative group"&gt;Context and Problem Statement
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Welcome to Tracksy's blog 🎉 on Tracksy's Blog</title><link>https://Gudsfile.github.io/tracksy/blog/</link><description>Recent content in Welcome to Tracksy's blog 🎉 on Tracksy's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>© 2026 Tracksy team</copyright><lastBuildDate>Wed, 04 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://Gudsfile.github.io/tracksy/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Reproducible E2E Datasets</title><link>https://Gudsfile.github.io/tracksy/blog/decisions/reproductable-e2e-datasets/</link><pubDate>Wed, 04 Feb 2026 00:00:00 +0000</pubDate><guid>https://Gudsfile.github.io/tracksy/blog/decisions/reproductable-e2e-datasets/</guid><description>&lt;h2 class="relative group"&gt;Context and Problem Statement
+ &lt;div id="context-and-problem-statement" class="anchor"&gt;&lt;/div&gt;
+ 
+ &lt;span
+ class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"&gt;
+ &lt;a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#context-and-problem-statement" aria-label="Anchor"&gt;#&lt;/a&gt;
+ &lt;/span&gt;
+ 
+&lt;/h2&gt;
+&lt;p&gt;We have introduced end-to-end tests to ensure application stability and reliability.
+E2E tests rely on static datasets generated at one moment.
+This may cause issues as the models need to evolve (as streaming providers evolve on their side).&lt;/p&gt;</description></item><item><title>Tooling for Monorepo Management</title><link>https://Gudsfile.github.io/tracksy/blog/decisions/monorepo-management-tool/</link><pubDate>Wed, 17 Dec 2025 00:00:00 +0000</pubDate><guid>https://Gudsfile.github.io/tracksy/blog/decisions/monorepo-management-tool/</guid><description>&lt;h2 class="relative group"&gt;Context and Problem Statement
  &lt;div id="context-and-problem-statement" class="anchor"&gt;&lt;/div&gt;
  
  &lt;span
