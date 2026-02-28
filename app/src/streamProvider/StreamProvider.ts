@@ -7,8 +7,10 @@ import { isValidStreamRecord, isLongEnoughStream } from './validation'
  * Each provider must implement this interface to transform
  * their specific data format into the canonical StreamRecord
  * format.
+ *
+ * @typeParam TRawData - The raw data type from the provider's export file
  */
-export abstract class StreamProvider {
+export abstract class StreamProvider<TRawData = unknown> {
     abstract readonly name: string
 
     abstract readonly filePattern: RegExp
@@ -33,7 +35,7 @@ export abstract class StreamProvider {
      * @param file - File to read
      * @returns Promise resolving to raw data array
      */
-    abstract readFile(file: File): Promise<unknown[]>
+    abstract readFile(file: File): Promise<TRawData[]>
 
     /**
      * Transform provider-specific raw data into canonical StreamRecord format
@@ -41,7 +43,7 @@ export abstract class StreamProvider {
      * @param rawData - Raw data from provider's export file
      * @returns Array of normalized stream records
      */
-    abstract transform(rawData: unknown[]): StreamRecord[]
+    abstract transform(rawData: TRawData[]): StreamRecord[]
 
     /**
      * Validate stream records and filter out invalid ones

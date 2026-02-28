@@ -11,20 +11,20 @@ export function queryRepeatBehavior(year: number): string {
     return `
     WITH ordered_streams AS (
       SELECT
-        spotify_track_uri,
+        track_uri,
         master_metadata_track_name,
         ts,
-        LAG(spotify_track_uri) OVER (ORDER BY ts) AS prev_track
+        LAG(track_uri) OVER (ORDER BY ts) AS prev_track
       FROM ${TABLE}
-      WHERE spotify_track_uri IS NOT NULL
+      WHERE track_uri IS NOT NULL
       AND YEAR(ts::DATE) = ${year}
     ),
     repeat_groups AS (
       SELECT
-        spotify_track_uri,
+        track_uri,
         master_metadata_track_name,
         ts,
-        CASE WHEN spotify_track_uri = prev_track THEN 0 ELSE 1 END AS is_new_group
+        CASE WHEN track_uri = prev_track THEN 0 ELSE 1 END AS is_new_group
       FROM ordered_streams
     ),
     group_ids AS (
@@ -36,11 +36,11 @@ export function queryRepeatBehavior(year: number): string {
     group_sizes AS (
       SELECT
         group_id,
-        spotify_track_uri,
+        track_uri,
         master_metadata_track_name,
         COUNT(*) AS repeat_count
       FROM group_ids
-      GROUP BY group_id, spotify_track_uri, master_metadata_track_name
+      GROUP BY group_id, track_uri, master_metadata_track_name
       HAVING COUNT(*) > 1
     )
     SELECT

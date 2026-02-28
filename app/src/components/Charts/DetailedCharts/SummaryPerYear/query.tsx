@@ -5,9 +5,9 @@ export function summarizePerYearQuery(year: number | undefined) {
 WITH ranked_streams AS (
   SELECT
     YEAR(ts::DATETIME)::INT AS year,
-    ROW_NUMBER() OVER (PARTITION BY spotify_track_uri ORDER BY ts::DATETIME) AS rank_all_time,
-    ROW_NUMBER() OVER (PARTITION BY spotify_track_uri, YEAR(ts::DATETIME) ORDER BY ts::DATETIME) AS rank_per_year,
-    MIN(YEAR(ts::DATETIME)::INT) OVER (PARTITION BY spotify_track_uri) as first_year
+    ROW_NUMBER() OVER (PARTITION BY track_uri ORDER BY ts::DATETIME) AS rank_all_time,
+    ROW_NUMBER() OVER (PARTITION BY track_uri, YEAR(ts::DATETIME) ORDER BY ts::DATETIME) AS rank_per_year,
+    MIN(YEAR(ts::DATETIME)::INT) OVER (PARTITION BY track_uri) as first_year
   FROM ${TABLE}
 )
 UNPIVOT (

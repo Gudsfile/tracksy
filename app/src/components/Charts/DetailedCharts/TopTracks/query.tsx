@@ -9,7 +9,7 @@ SELECT
   SUM(ms_played)::DOUBLE AS ms_played
 FROM ${TABLE}
 ${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
-GROUP BY spotify_track_uri, master_metadata_track_name, master_metadata_album_artist_name
+GROUP BY track_uri, master_metadata_track_name, master_metadata_album_artist_name
 ORDER BY count_streams DESC, ms_played DESC
 LIMIT 10
 `

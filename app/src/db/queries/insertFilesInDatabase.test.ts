@@ -122,7 +122,7 @@ describe('insertFilesInDatabase', () => {
             const connectionMock = mockDB()
             const supportedContent = [
                 {
-                    spotify_track_uri: 'spotify:track:123',
+                    track_uri: 'spotify:track:123',
                     master_metadata_track_name: 'Test Song',
                     master_metadata_album_artist_name: 'Test Artist',
                     ts: '2024-01-01T12:00:00Z',
@@ -158,7 +158,7 @@ describe('insertFilesInDatabase', () => {
 
             const dataFile1 = [
                 {
-                    spotify_track_uri: 'spotify:track:123',
+                    track_uri: 'spotify:track:123',
                     master_metadata_track_name: 'Song 1',
                     master_metadata_album_artist_name: 'Artist 1',
                     ts: '2024-01-01T12:00:00Z',
@@ -167,7 +167,7 @@ describe('insertFilesInDatabase', () => {
             ]
             const dataFile2 = [
                 {
-                    spotify_track_uri: 'spotify:track:456',
+                    track_uri: 'spotify:track:456',
                     master_metadata_track_name: 'Song 2',
                     master_metadata_album_artist_name: 'Artist 2',
                     ts: '2024-01-02T12:00:00Z',
@@ -214,7 +214,7 @@ describe('insertFilesInDatabase', () => {
             const connectionMock = mockDB()
             const detectProviderSpy = vi.spyOn(adapters, 'detectProvider')
 
-            const spotifyData: StreamRecord[] = [
+            const spotifyData = [
                 {
                     spotify_track_uri: 'spotify:track:123',
                     master_metadata_track_name: 'Test Song',

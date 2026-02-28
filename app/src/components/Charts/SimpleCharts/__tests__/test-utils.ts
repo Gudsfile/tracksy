@@ -3,7 +3,7 @@ import { TABLE } from '../../../../db/queries/constants'
 
 export type TestStreamEntry = {
     ts?: string
-    spotify_track_uri?: string
+    track_uri?: string
     master_metadata_track_name?: string
     master_metadata_album_artist_name?: string
     ms_played?: number
@@ -22,7 +22,7 @@ export async function createTestTable(
     await conn.run(`
         CREATE OR REPLACE TABLE ${TABLE} (
             ts VARCHAR,
-            spotify_track_uri TEXT,
+            track_uri TEXT,
             master_metadata_track_name TEXT,
             master_metadata_album_artist_name TEXT,
             ms_played INTEGER,
@@ -37,8 +37,7 @@ export async function createTestTable(
         if (entry.ts) appender.appendVarchar(entry.ts)
         else appender.appendNull()
 
-        if (entry.spotify_track_uri)
-            appender.appendVarchar(entry.spotify_track_uri)
+        if (entry.track_uri) appender.appendVarchar(entry.track_uri)
         else appender.appendNull()
 
         if (entry.master_metadata_track_name)

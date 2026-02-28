@@ -13,7 +13,7 @@ export function isValidStreamRecord(
 }
 
 function isMusicStream(record: Partial<StreamRecord>): boolean {
-    return typeof record.spotify_track_uri === 'string'
+    return typeof record.track_uri === 'string'
 }
 
 export function isLongEnoughStream(record: StreamRecord): boolean {

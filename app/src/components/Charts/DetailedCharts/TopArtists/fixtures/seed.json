@@ -1,28 +1,28 @@
 [
     {
         "ts": "2006-10-13T22:15:32Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
         "ms_played": 11
     },
     {
         "ts": "2006-04-20T10:47:56Z",
-        "spotify_track_uri": "uri_2",
+        "track_uri": "uri_2",
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_b",
         "ms_played": 22
     },
     {
         "ts": "2006-01-17T04:41:23Z",
-        "spotify_track_uri": "uri_3",
+        "track_uri": "uri_3",
         "master_metadata_track_name": "track_b",
         "master_metadata_album_artist_name": "artist_a",
         "ms_played": 33
     },
     {
         "ts": "2006-10-27T06:35:17Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
@@ -30,7 +30,7 @@
     },
     {
         "ts": "2006-06-01T04:18:22Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
@@ -38,7 +38,7 @@
     },
     {
         "ts": "2006-12-09T06:46:46Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
@@ -46,7 +46,7 @@
     },
     {
         "ts": "2025-10-13T22:15:32Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
@@ -54,21 +54,21 @@
     },
     {
         "ts": "2025-04-20T10:47:56Z",
-        "spotify_track_uri": "uri_2",
+        "track_uri": "uri_2",
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_b",
         "ms_played": 22
     },
     {
         "ts": "2025-01-17T04:41:23Z",
-        "spotify_track_uri": "uri_3",
+        "track_uri": "uri_3",
         "master_metadata_track_name": "track_b",
         "master_metadata_album_artist_name": "artist_a",
         "ms_played": 33
     },
     {
         "ts": "2025-10-27T06:35:17Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
@@ -76,7 +76,7 @@
     },
     {
         "ts": "2025-06-01T04:18:22Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",
@@ -84,7 +84,7 @@
     },
     {
         "ts": "2025-12-09T06:46:46Z",
-        "spotify_track_uri": "uri_1",
+        "track_uri": "uri_1",
 
         "master_metadata_track_name": "track_a",
         "master_metadata_album_artist_name": "artist_a",

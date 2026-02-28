@@ -2,46 +2,46 @@
     {
         "ts": "2020-01-01T00:00:00Z",
         "master_metadata_album_artist_name": "Artist A",
-        "spotify_track_uri": "spotify:track:1"
+        "track_uri": "spotify:track:1"
     },
     {
         "ts": "2020-01-02T00:00:00Z",
         "master_metadata_album_artist_name": "Artist A",
-        "spotify_track_uri": "spotify:track:1"
+        "track_uri": "spotify:track:1"
     },
     {
         "ts": "2020-01-02T00:00:00Z",
         "master_metadata_album_artist_name": "Artist A",
-        "spotify_track_uri": "spotify:track:1"
+        "track_uri": "spotify:track:1"
     },
     {
         "ts": "2020-01-03T00:00:00Z",
         "master_metadata_album_artist_name": "Artist B",
-        "spotify_track_uri": "spotify:track:2"
+        "track_uri": "spotify:track:2"
     },
     {
         "ts": "2020-01-03T00:00:00Z",
         "master_metadata_album_artist_name": "Artist B",
-        "spotify_track_uri": "spotify:track:2"
+        "track_uri": "spotify:track:2"
     },
     {
         "ts": "2020-01-01T00:00:00Z",
         "master_metadata_album_artist_name": "Artist C",
-        "spotify_track_uri": "spotify:track:3"
+        "track_uri": "spotify:track:3"
     },
     {
         "ts": "2021-01-01T00:00:00Z",
         "master_metadata_album_artist_name": "Artist B",
-        "spotify_track_uri": "spotify:track:2"
+        "track_uri": "spotify:track:2"
     },
     {
         "ts": "2021-01-02T00:00:00Z",
         "master_metadata_album_artist_name": "Artist B",
-        "spotify_track_uri": "spotify:track:2"
+        "track_uri": "spotify:track:2"
     },
     {
         "ts": "2021-01-03T00:00:00Z",
         "master_metadata_album_artist_name": "Artist A",
-        "spotify_track_uri": "spotify:track:1"
+        "track_uri": "spotify:track:1"
     }
 ]
