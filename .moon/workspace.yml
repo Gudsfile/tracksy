@@ -13,3 +13,4 @@ vcs:
       - moon synthetic-datasets:format-check
   defaultBranch: main
   client: git
+versionConstraint: ">=2.0.3,<=3.0.0"
