@@ -33,7 +33,7 @@ describe('queryDBAsJSON', () => {
             artist: string
             streams: number
         }
-        const query = 'SELECT artist, streams FROM spotitable'
+        const query = 'SELECT artist, streams FROM music_streams'
         const result = await queryDBAsJSON<ArtistStreams>(query)
 
         expect(mockConnection.query).toHaveBeenCalledWith(query)
