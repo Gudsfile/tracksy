@@ -66,11 +66,15 @@ export function SimpleView() {
                 </div>
                 <SeasonalPatterns year={year} />
                 <NewVsOld year={year} />
+                <div className="md:col-span-2">
                     <ReplayFriends year={year} />
+                </div>
                 <SkipRate year={year} />
                 <RepeatBehavior year={year} />
                 <PrincipalPlatform year={year} />
-                <FavoriteWeekday year={year} />
+                <div className="md:col-span-3">
+                    <FavoriteWeekday year={year} />
+                </div>
             </div>
         </>
     )
