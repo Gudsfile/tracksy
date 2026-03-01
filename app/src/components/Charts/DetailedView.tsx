@@ -47,17 +47,19 @@ export function DetailedView() {
             </div>
             {summarize && (
                 <>
-                    <RangeSlider
-                        value={year}
-                        onChange={setYear}
-                        min={new Date(
-                            Number(summarize.min_datetime)
-                        ).getFullYear()}
-                        max={new Date(
-                            Number(summarize.max_datetime)
-                        ).getFullYear()}
-                        step={1}
-                    />
+                    <div className="sticky top-2 z-50">
+                        <RangeSlider
+                            value={year}
+                            onChange={setYear}
+                            min={new Date(
+                                Number(summarize.min_datetime)
+                            ).getFullYear()}
+                            max={new Date(
+                                Number(summarize.max_datetime)
+                            ).getFullYear()}
+                            step={1}
+                        />
+                    </div>
                     <StreamPerMonth
                         year={year}
                         maxValue={summarize.max_monthly_duration}
