@@ -6,7 +6,7 @@ const MAX_HISTORY = 20
 
 export function DuckDBShell() {
     const [query, setQuery] = useState(
-        'SELECT 42 AS answer;\n-- tips: use `show tables` to… show tables'
+        'SELECT 42 AS answer;\n-- tips: use `describe music_streams` to show available columns\n-- tips: use `show tables` to… show tables'
     )
     const [results, setResults] = useState<
         { columns: string[]; rows: string[][]; totalRows: number } | undefined

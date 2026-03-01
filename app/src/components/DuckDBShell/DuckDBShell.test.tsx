@@ -23,7 +23,7 @@ describe('DuckDBShell', () => {
         screen.getByText('⌨️ DuckDB Shell')
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement
         expect(textarea.value).toBe(
-            'SELECT 42 AS answer;\n-- tips: use `show tables` to… show tables'
+            'SELECT 42 AS answer;\n-- tips: use `describe music_streams` to show available columns\n-- tips: use `show tables` to… show tables'
         )
         screen.getByRole('button', { name: /Run query/i })
     })
@@ -159,7 +159,7 @@ describe('DuckDBShell', () => {
         // Check that history section appears
         screen.getByText('Query history (max 20)')
         screen.getByRole('button', {
-            name: /^SELECT 42 AS answer;\n-- tips: use `show tables` to… show tables$/i,
+            name: /^SELECT 42 AS answer;\n-- tips: use `describe music_streams` to show available col…$/i,
         })
     })
 
@@ -212,7 +212,7 @@ describe('DuckDBShell', () => {
 
         // Query should be restored
         expect(textarea.value).toBe(
-            'SELECT 42 AS answer;\n-- tips: use `show tables` to… show tables'
+            'SELECT 42 AS answer;\n-- tips: use `describe music_streams` to show available columns\n-- tips: use `show tables` to… show tables'
         )
     })
 
