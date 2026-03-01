@@ -32,7 +32,7 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
                 <div>
                     <div className="text-2xl font-bold">{favorite.name}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {favorite.value.toLocaleString()} streams
+                        {favorite.value?.toLocaleString()} streams
                     </div>
                 </div>
                 <div className="text-4xl">{favorite.emoji}</div>
