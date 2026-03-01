@@ -6,6 +6,7 @@ export type TestStreamEntry = {
     track_uri?: string
     master_metadata_track_name?: string
     master_metadata_album_artist_name?: string
+    master_metadata_album_album_name?: string
     ms_played?: number
     reason_end?: string
     platform?: string
@@ -25,6 +26,7 @@ export async function createTestTable(
             track_uri TEXT,
             master_metadata_track_name TEXT,
             master_metadata_album_artist_name TEXT,
+            master_metadata_album_album_name TEXT,
             ms_played INTEGER,
             reason_end TEXT,
             platform TEXT
@@ -46,6 +48,10 @@ export async function createTestTable(
 
         if (entry.master_metadata_album_artist_name)
             appender.appendVarchar(entry.master_metadata_album_artist_name)
+        else appender.appendNull()
+
+        if (entry.master_metadata_album_album_name)
+            appender.appendVarchar(entry.master_metadata_album_album_name)
         else appender.appendNull()
 
         if (entry.ms_played) appender.appendInteger(entry.ms_played)

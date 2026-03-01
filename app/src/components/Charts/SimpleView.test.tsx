@@ -50,6 +50,18 @@ import {
     type FavoriteWeekdayResult,
     queryFavoriteWeekday,
 } from './SimpleCharts/FavoriteWeekday/query'
+import {
+    type TopTracksResult,
+    queryTopTracks,
+} from './SimpleCharts/TopTracks/query'
+import {
+    type TopArtistsResult,
+    queryTopArtists,
+} from './SimpleCharts/TopArtists/query'
+import {
+    type TopAlbumsResult,
+    queryTopAlbums,
+} from './SimpleCharts/TopAlbums/query'
 
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
@@ -57,6 +69,32 @@ const summarizedDataMock: SummarizeDataQueryResult[] = [
         max_datetime: '1734134400000',
         max_monthly_duration: 39959692,
         min_datetime: '1577836800000',
+    },
+]
+
+const topTracksMock: TopTracksResult[] = [
+    {
+        track_name: 'Track 1',
+        artist_name: 'Artist 1',
+        count_streams: 1000,
+        ms_played: 1000,
+    },
+]
+
+const topArtistsMock: TopArtistsResult[] = [
+    {
+        artist_name: 'Artist 1',
+        count_streams: 1000,
+        ms_played: 1000,
+    },
+]
+
+const topAlbumsMock: TopAlbumsResult[] = [
+    {
+        album_name: 'Album 1',
+        artist_name: 'Artist 1',
+        count_streams: 1000,
+        ms_played: 1000,
     },
 ]
 
@@ -156,6 +194,12 @@ const favoriteWeekdayMock: FavoriteWeekdayResult[] = [
 it('renders all SimpleView', async () => {
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
+        if (query === queryTopTracks(2024))
+            return Promise.resolve(topTracksMock)
+        if (query === queryTopArtists(2024))
+            return Promise.resolve(topArtistsMock)
+        if (query === queryTopAlbums(2024))
+            return Promise.resolve(topAlbumsMock)
         if (query === queryConcentrationScore(2024))
             return Promise.resolve(concentrationMock)
         if (query === queryDiversityScore(2024))
@@ -191,6 +235,9 @@ it('renders all SimpleView', async () => {
     })
 
     // TODO: test funfact rendering
+    await screen.findByRole('heading', { name: '🎵 Top Tracks' })
+    await screen.findByRole('heading', { name: '🎤 Top Artists' })
+    await screen.findByRole('heading', { name: '💿 Top Albums' })
     await screen.findByRole('heading', { name: '📊 Concentration Score' })
     await screen.findByRole('heading', { name: '🎨 Loyalty vs Discovery' })
     await screen.findByRole('heading', { name: '⏰ Listening Rhythm' })
