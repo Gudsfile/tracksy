@@ -39,6 +39,11 @@ import {
     streamPerDayOfWeekQueryByYear,
 } from './DetailedCharts/StreamPerDayOfWeek/query'
 
+import {
+    type ArtistDiscoveryQueryResult,
+    queryArtistDiscovery,
+} from './DetailedCharts/ArtistDiscovery/query'
+
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
         max_count_hourly_stream: 1234,
@@ -337,6 +342,21 @@ const streamPerDayOfWeekResultMock: StreamPerDayOfWeekQueryResult[] = [
     },
 ]
 
+const artistDiscoveryResultMock: ArtistDiscoveryQueryResult[] = [
+    {
+        year: 2023,
+        new_artists: 50,
+        cumulative_artists: 50,
+        avg_listens_per_artist: 25.5,
+    },
+    {
+        year: 2024,
+        new_artists: 30,
+        cumulative_artists: 80,
+        avg_listens_per_artist: 18.3,
+    },
+]
+
 it('renders all Charts', async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -352,6 +372,8 @@ it('renders all Charts', async () => {
             return Promise.resolve(topTracksResultMock)
         if (query === queryTopArtistsByYear(2024))
             return Promise.resolve(topArtistsResultMock)
+        if (query === queryArtistDiscovery())
+            return Promise.resolve(artistDiscoveryResultMock)
         if (query === queryTop10Evolution())
             return Promise.resolve(top10EvolutionResultMock)
         if (query === streamPerDayOfWeekQueryByYear(2024))
