@@ -30,7 +30,7 @@ export function RangeSlider({
 
     return (
         <div className="w-full relative space-y-4 my-8 px-2">
-            <div className="relative">
+            <div className="relative backdrop-blur-md px-4 py-4 rounded-2xl transition-all duration-300">
                 {/* Year badge */}
                 <div
                     className="absolute -top-12 px-4 py-2 text-base font-bold text-white bg-gradient-brand rounded-xl shadow-glow transition-all duration-300"

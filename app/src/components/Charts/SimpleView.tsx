@@ -37,17 +37,19 @@ export function SimpleView() {
 
     return (
         <>
-            <div className="mt-4">
+            <div className="mt-4 mb-6">
                 <FunFacts />
             </div>
 
-            <RangeSlider
-                value={year}
-                min={minYear}
-                max={maxYear}
-                step={1}
-                onChange={setYear}
-            />
+            <div className="sticky top-2 z-50">
+                <RangeSlider
+                    value={year}
+                    min={minYear}
+                    max={maxYear}
+                    step={1}
+                    onChange={setYear}
+                />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <ConcentrationScore year={year} />
