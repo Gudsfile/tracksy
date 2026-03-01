@@ -74,65 +74,75 @@ export function RangeSlider({
     })
 
     return (
-        <div className="w-full relative space-y-4 my-8 px-2">
-            <div
-                className="relative backdrop-blur-md px-4 py-4 rounded-2xl transition-all duration-300"
-                ref={sliderRef}
-            >
-                {/* Barre active */}
-                <div
-                    className="w-full h-2 rounded-full"
-                    style={{
-                        left: `0`,
-                        right: `0`,
-                        background: `linear-gradient(to right,
-                      rgb(229, 231, 235) 0%,
-                      rgb(229, 231, 235) ${getPercent(localValue[0])}%,
-                      rgba(139, 92, 246, 0.8) ${getPercent(localValue[0])}%,
-                      rgba(59, 130, 246, 0.8) ${getPercent(localValue[1])}%,
-                      rgb(229, 231, 235) ${getPercent(localValue[1])}%,
-                      rgb(229, 231, 235) 100%)`,
-                    }}
-                />
-
-                {/* Thumb min */}
-                <div
-                    onMouseDown={() => setDragging(0)}
-                    onTouchStart={() => setDragging(0)}
-                    className="absolute w-5 h-5 rounded-full -translate-y-1/2 cursor-pointer shadow"
-                    style={{
-                        left: `${getPercent(localValue[0])}%`,
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        background: `linear-gradient(to right,
-                              rgb(139, 92, 246) 0%,
-                              rgb(59, 130, 246) 100%`,
-                    }}
-                />
-
-                {/* Thumb max */}
-                <div
-                    onMouseDown={() => setDragging(1)}
-                    onTouchStart={() => setDragging(1)}
-                    className="absolute w-5 h-5 rounded-full -translate-y-1/2 cursor-pointer shadow"
-                    style={{
-                        left: `${getPercent(localValue[1])}%`,
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        background: `linear-gradient(to right,rgb(139, 92, 246) 0%,rgb(59, 130, 246) 100%`,
-                    }}
-                />
-            </div>
+        <div
+            className="relative backdrop-blur-md px-4 py-4 rounded-2xl transition-all duration-300"
+            ref={sliderRef}
+            style={{ userSelect: 'none', touchAction: 'none' }}
+        >
+            <div className="relative backdrop-blur-md px-4 py-4 rounded-2xl transition-all duration-300" />
 
             {/* Min/Max labels */}
-            <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
+            <div
+                className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400 mt-4"
+                style={{ userSelect: 'none' }} // empêche la sélection
+            >
                 <span className="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded-lg">
-                    {localValue[0]}
+                    {min}
                 </span>
                 <span className="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded-lg">
-                    {localValue[1]}
+                    {max}
                 </span>
             </div>
+            {/* Barre active avec dégradé */}
+            <div
+                className="absolute h-2 rounded-full top-1/2 -translate-y-1/2"
+                style={{
+                    left: 0,
+                    right: 0,
+                    pointerEvents: 'none',
+                    background: `linear-gradient(to right,
+                     rgb(229, 231, 235) 0%,
+                     rgb(229, 231, 235) ${getPercent(localValue[0])}%,
+                     rgba(139, 92, 246, 0.8) ${getPercent(localValue[0])}%,
+                     rgba(59, 130, 246, 0.8) ${getPercent(localValue[1])}%,
+                     rgb(229, 231, 235) ${getPercent(localValue[1])}%,
+                     rgb(229, 231, 235) 100%)`,
+                }}
+            />
+
+            {/* Rond gauche */}
+            <div
+                onMouseDown={() => setDragging(0)}
+                onTouchStart={() => setDragging(0)}
+                className="absolute w-5 h-5 rounded-full cursor-pointer shadow border border-gray-500"
+                style={{
+                    left: `${getPercent(localValue[0])}%`,
+                    top: '50%',
+                    zIndex: 10,
+                    userSelect: 'none',
+                    touchAction: 'none',
+                    transform: 'translate(-50%, -50%)',
+                    background:
+                        'radial-gradient(circle at center, rgba(139,92,246,1), rgba(59,130,246,1) 100%)',
+                }}
+            />
+
+            {/* Rond droit */}
+            <div
+                onMouseDown={() => setDragging(1)}
+                onTouchStart={() => setDragging(1)}
+                className="absolute w-5 h-5 rounded-full cursor-pointer shadow border border-gray-500"
+                style={{
+                    left: `${getPercent(localValue[1])}%`,
+                    top: '50%',
+                    zIndex: 10,
+                    userSelect: 'none',
+                    touchAction: 'none',
+                    transform: 'translate(-50%, -50%)',
+                    background:
+                        'radial-gradient(circle at center, rgba(139,92,246,1), rgba(59,130,246,1) 100%)',
+                }}
+            />
         </div>
     )
 }
