@@ -22,7 +22,10 @@ import {
 import { useState, useEffect } from 'react'
 
 export function SimpleView() {
-    const [year, setYear] = useState(new Date().getFullYear())
+    const [yearRange, setYearRange] = useState<[number, number]>([
+        2006,
+        new Date().getFullYear(),
+    ])
     const [minYear, setMinYear] = useState(2006)
     const [maxYear, setMaxYear] = useState(new Date().getFullYear())
 
@@ -31,12 +34,16 @@ export function SimpleView() {
             const results =
                 await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
             if (results.length === 0) return
-            setMinYear(new Date(Number(results[0].min_datetime)).getFullYear())
-            setMaxYear(new Date(Number(results[0].max_datetime)).getFullYear())
-            setYear(new Date(Number(results[0].max_datetime)).getFullYear())
+            const min = new Date(Number(results[0].min_datetime)).getFullYear()
+            const max = new Date(Number(results[0].max_datetime)).getFullYear()
+            setMinYear(min)
+            setMaxYear(max)
+            setYearRange([min, max])
         }
         initDataSummarize()
     }, [])
+
+    const year = yearRange[1]
 
     return (
         <>
@@ -46,11 +53,11 @@ export function SimpleView() {
 
             <div className="sticky top-2 z-50">
                 <RangeSlider
-                    value={year}
+                    value={yearRange}
                     min={minYear}
                     max={maxYear}
                     step={1}
-                    onChange={setYear}
+                    onChange={setYearRange}
                 />
             </div>
 

@@ -23,7 +23,7 @@ import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function DetailedView() {
-    const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
+    const [yearRange, setYearRange] = useState<[number, number]>([2006, new Date().getFullYear()])
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined
     >()
@@ -38,9 +38,14 @@ export function DetailedView() {
     }, [])
 
     useEffect(() => {
-        if (summarize)
-            setYear(new Date(Number(summarize.max_datetime)).getFullYear())
+        if (summarize) {
+            const min = new Date(Number(summarize.min_datetime)).getFullYear()
+            const max = new Date(Number(summarize.max_datetime)).getFullYear()
+            setYearRange([min, max])
+        }
     }, [summarize])
+
+    const year = yearRange[1]
 
     return (
         <>
@@ -53,8 +58,8 @@ export function DetailedView() {
                 <>
                     <div className="sticky top-2 z-50">
                         <RangeSlider
-                            value={year}
-                            onChange={setYear}
+                            value={yearRange}
+                            onChange={setYearRange}
                             min={new Date(
                                 Number(summarize.min_datetime)
                             ).getFullYear()}
