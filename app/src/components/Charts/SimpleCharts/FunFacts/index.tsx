@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import {
     queryAfternoonFavorite,
     queryEveningFavorite,
@@ -51,26 +51,32 @@ const QUERY_FUNCTIONS = [
 export function FunFacts() {
     const [fact, setFact] = useState<FunFactResult | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const seenFactsRef = useRef<Set<string>>(new Set())
 
     const loadRandomFact = useCallback(async () => {
         setIsLoading(true)
         try {
-            for (let i = 0; i < 3; i++) {
-                const randomQuery =
-                    QUERY_FUNCTIONS[
-                        Math.floor(Math.random() * QUERY_FUNCTIONS.length)
-                    ]
-                const result = await queryDBAsJSON<FunFactResult>(randomQuery())
+            if (seenFactsRef.current.size === QUERY_FUNCTIONS.length) {
+                seenFactsRef.current.clear()
+            }
 
-                if (result && result.length > 0) {
-                    if (
-                        fact &&
-                        result[0].factType === fact.factType &&
-                        QUERY_FUNCTIONS.length > 1
-                    ) {
-                        continue
-                    }
-                    setFact(result[0])
+            const unseenQueries = QUERY_FUNCTIONS.filter(
+                (q) => !seenFactsRef.current.has(q.name)
+            )
+            const availableQueries =
+                unseenQueries.length > 0 ? unseenQueries : QUERY_FUNCTIONS
+
+            const shuffled = [...availableQueries].sort(
+                () => Math.random() - 0.5
+            )
+
+            for (const queryFn of shuffled) {
+                const [result] =
+                    (await queryDBAsJSON<FunFactResult>(queryFn())) || []
+
+                if (result) {
+                    setFact(result)
+                    seenFactsRef.current.add(queryFn.name)
                     break
                 }
             }
@@ -79,7 +85,7 @@ export function FunFacts() {
         } finally {
             setIsLoading(false)
         }
-    }, [fact])
+    }, [])
 
     useEffect(() => {
         loadRandomFact()
