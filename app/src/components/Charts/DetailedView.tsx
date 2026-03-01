@@ -13,6 +13,7 @@ import {
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { TopTracks } from './DetailedCharts/TopTracks'
 import { TopArtists } from './DetailedCharts/TopArtists'
+import { TopAlbums } from './DetailedCharts/TopAlbums'
 import { Streaks } from './DetailedCharts/Streaks'
 import { Top10Evolution } from './DetailedCharts/Top10Evolution'
 import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
@@ -71,6 +72,7 @@ export function DetailedView() {
                     <SummaryPerYear year={year} />
                     <TopTracks year={year} />
                     <TopArtists year={year} />
+                    <TopAlbums year={year} />
                 </>
             )}
 

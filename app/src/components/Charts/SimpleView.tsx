@@ -10,6 +10,9 @@ import { FunFacts } from './SimpleCharts/FunFacts'
 import { PrincipalPlatform } from './SimpleCharts/PrincipalPlatform'
 import { DiversityScore } from './SimpleCharts/DiversityScore'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
+import { TopArtist } from './SimpleCharts/TopArtist'
+import { TopAlbum } from './SimpleCharts/TopAlbum'
+import { TopTrack } from './SimpleCharts/TopTrack'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import {
@@ -52,6 +55,9 @@ export function SimpleView() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <TopTrack year={year} />
+                <TopArtist year={year} />
+                <TopAlbum year={year} />
                 <ConcentrationScore year={year} />
                 <DiversityScore year={year} />
                 <ListeningRhythm year={year} />
