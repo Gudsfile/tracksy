@@ -8,7 +8,7 @@ import { SkipRate } from './SimpleCharts/SkipRate'
 import { RepeatBehavior } from './SimpleCharts/RepeatBehavior'
 import { FunFacts } from './SimpleCharts/FunFacts'
 import { PrincipalPlatform } from './SimpleCharts/PrincipalPlatform'
-import { DiversityScore } from './SimpleCharts/DiversityScore'
+import { ReplayFriends } from './SimpleCharts/ReplayFriends'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
 import { TopArtist } from './SimpleCharts/TopArtist'
 import { TopAlbum } from './SimpleCharts/TopAlbum'
@@ -59,7 +59,6 @@ export function SimpleView() {
                 <TopArtist year={year} />
                 <TopAlbum year={year} />
                 <ConcentrationScore year={year} />
-                <DiversityScore year={year} />
                 <ListeningRhythm year={year} />
                 <Regularity year={year} />
                 <div className="md:col-span-2">
@@ -67,6 +66,7 @@ export function SimpleView() {
                 </div>
                 <SeasonalPatterns year={year} />
                 <NewVsOld year={year} />
+                    <ReplayFriends year={year} />
                 <SkipRate year={year} />
                 <RepeatBehavior year={year} />
                 <PrincipalPlatform year={year} />
