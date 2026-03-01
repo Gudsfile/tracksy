@@ -6,7 +6,7 @@ export function classifySkipRate(percentage: number): {
     if (percentage < 50) {
         return {
             classification: 'Impatient',
-            emoji: '⏭️',
+            emoji: '🏃',
             message: 'You skip often!',
         }
     } else if (percentage > 75) {
@@ -19,7 +19,7 @@ export function classifySkipRate(percentage: number): {
 
     return {
         classification: 'Normal',
-        emoji: '😐',
+        emoji: '⚖️',
         message: 'You have an equilibrated listening.',
     }
 }

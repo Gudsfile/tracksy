@@ -16,16 +16,14 @@ export const SkipRate: FC<Props> = ({ data }) => {
     return (
         <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
             <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                ⏭️ Listening Patience
+                ⏭️ Skip Mood
             </h3>
 
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <div className="text-2xl font-bold">
-                        {complete_pct.toFixed(1)}%
-                    </div>
+                    <div className="text-2xl font-bold">{classification}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Full listens
+                        {complete_pct.toFixed(1)}% are full listens
                     </div>
                 </div>
                 <div className="text-4xl">{emoji}</div>
@@ -51,7 +49,7 @@ export const SkipRate: FC<Props> = ({ data }) => {
             </ul>
 
             <div className="text-sm text-center font-medium text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-slate-700/50 p-2 rounded-lg">
-                {classification} : {message}
+                {message}
             </div>
         </div>
     )
