@@ -66,6 +66,7 @@ describe('SpotifyStreamProvider', () => {
                     spotify_track_uri: 'spotify:track:123',
                     master_metadata_track_name: 'Song',
                     master_metadata_album_artist_name: 'Artist',
+                    master_metadata_album_album_name: 'Album',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
                 },
@@ -104,6 +105,7 @@ describe('SpotifyStreamProvider', () => {
                     spotify_track_uri: 'spotify:track:123',
                     master_metadata_track_name: 'Song 1',
                     master_metadata_album_artist_name: 'Artist 1',
+                    master_metadata_album_album_name: 'Album 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
                 },
@@ -111,6 +113,7 @@ describe('SpotifyStreamProvider', () => {
                     spotify_track_uri: 'spotify:track:456',
                     master_metadata_track_name: 'Song 2',
                     master_metadata_album_artist_name: 'Artist 2',
+                    master_metadata_album_album_name: 'Album 2',
                     ts: '2024-01-01T12:30:00Z',
                     ms_played: 240000,
                 },
@@ -123,6 +126,7 @@ describe('SpotifyStreamProvider', () => {
                     track_uri: 'spotify:track:123',
                     track_name: 'Song 1',
                     artist_name: 'Artist 1',
+                    album_name: 'Album 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
                 },
@@ -130,13 +134,13 @@ describe('SpotifyStreamProvider', () => {
                     track_uri: 'spotify:track:456',
                     track_name: 'Song 2',
                     artist_name: 'Artist 2',
+                    album_name: 'Album 2',
                     ts: '2024-01-01T12:30:00Z',
                     ms_played: 240000,
                 },
             ]
 
             expect(result[0].track_uri).toBeDefined()
-            expect(result[0].spotify_track_uri).toBeUndefined()
             expect(result).toEqual(expected)
         })
     })
@@ -147,6 +151,7 @@ describe('SpotifyStreamProvider', () => {
                 spotify_track_uri: 'spotify:track:123',
                 master_metadata_track_name: 'Song',
                 master_metadata_album_artist_name: 'Artist',
+                master_metadata_album_album_name: 'Album',
                 ts: '2024-01-01T12:00:00Z',
                 ms_played: 180000,
             }
@@ -155,6 +160,7 @@ describe('SpotifyStreamProvider', () => {
                 {
                     spotify_track_uri: null, // Invalid - podcast
                     master_metadata_track_name: 'Podcast Episode',
+                    master_metadata_album_album_name: 'dummy',
                     ts: '2024-01-01T13:00:00Z',
                     ms_played: 3600000,
                 },
@@ -162,6 +168,7 @@ describe('SpotifyStreamProvider', () => {
                     spotify_track_uri: 'spotify:track:456',
                     master_metadata_track_name: 'Short Song',
                     master_metadata_album_artist_name: 'Artist',
+                    master_metadata_album_album_name: 'dummy',
                     ts: '2024-01-01T14:00:00Z',
                     ms_played: 29000, // Too short (< 30s)
                 },
@@ -169,6 +176,7 @@ describe('SpotifyStreamProvider', () => {
                     spotify_track_uri: 'spotify:track:789',
                     master_metadata_track_name: 'No Artist',
                     // Missing master_metadata_album_artist_name
+                    master_metadata_album_album_name: 'dummy',
                     ts: '2024-01-01T15:00:00Z',
                     ms_played: 180000,
                 },
@@ -187,6 +195,7 @@ describe('SpotifyStreamProvider', () => {
                 track_uri: 'spotify:track:123',
                 track_name: 'Song',
                 artist_name: 'Artist',
+                album_name: 'Album',
                 ts: '2024-01-01T12:00:00Z',
                 ms_played: 180000,
             }

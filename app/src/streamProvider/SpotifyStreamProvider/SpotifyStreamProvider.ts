@@ -42,12 +42,14 @@ export class SpotifyStreamProvider extends StreamProvider<SpotifyRawStreamRecord
                 spotify_track_uri,
                 master_metadata_track_name,
                 master_metadata_album_artist_name,
+                master_metadata_album_album_name,
                 ...rest
             }) => ({
                 ...rest,
                 track_uri: spotify_track_uri,
                 track_name: master_metadata_track_name,
                 artist_name: master_metadata_album_artist_name,
+                album_name: master_metadata_album_album_name,
             })
         )
 

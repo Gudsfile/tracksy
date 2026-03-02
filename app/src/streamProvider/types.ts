@@ -21,6 +21,11 @@ export interface StreamRecord {
     artist_name: string // TODO: allow list of artists
 
     /**
+     * Album name
+     */
+    album_name: string
+
+    /**
      * Timestamp of the stream in ISO 8601 format
      */
     ts: string
