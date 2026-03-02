@@ -7,8 +7,8 @@ export function isValidStreamRecord(
         isMusicStream(record) &&
         typeof record.ts === 'string' &&
         typeof record.ms_played === 'number' &&
-        typeof record.master_metadata_track_name === 'string' &&
-        typeof record.master_metadata_album_artist_name === 'string'
+        typeof record.track_name === 'string' &&
+        typeof record.artist_name === 'string'
     )
 }
 

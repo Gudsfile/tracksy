@@ -1,5 +1,5 @@
 /**
- * Generic stream record interface based on Spotify schema.
+ * Generic stream record interface.
  * This serves as the canonical data model for all providers.
  *
  * Future providers will map their data to this structure.
@@ -13,12 +13,12 @@ export interface StreamRecord {
     /**
      * Track name
      */
-    master_metadata_track_name: string
+    track_name: string
 
     /**
-     * Artist name (album artist for Spotify)
+     * Artist name
      */
-    master_metadata_album_artist_name: string // TODO: allow list of artists
+    artist_name: string // TODO: allow list of artists
 
     /**
      * Timestamp of the stream in ISO 8601 format
@@ -30,8 +30,5 @@ export interface StreamRecord {
      */
     ms_played: number
 
-    /**
-     * Allow additional provider-specific fields
-     */
     [key: string]: unknown
 }

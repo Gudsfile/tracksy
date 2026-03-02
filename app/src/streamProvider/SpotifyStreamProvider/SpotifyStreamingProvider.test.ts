@@ -98,7 +98,7 @@ describe('SpotifyStreamProvider', () => {
     })
 
     describe('transform', () => {
-        it('should map spotify_track_uri to track_uri and keep the rest unchanged', () => {
+        it('should map SpotifyRawStreamRecord to StreamRecord', () => {
             const rawData: SpotifyRawStreamRecord[] = [
                 {
                     spotify_track_uri: 'spotify:track:123',
@@ -121,15 +121,15 @@ describe('SpotifyStreamProvider', () => {
             const expected: StreamRecord[] = [
                 {
                     track_uri: 'spotify:track:123',
-                    master_metadata_track_name: 'Song 1',
-                    master_metadata_album_artist_name: 'Artist 1',
+                    track_name: 'Song 1',
+                    artist_name: 'Artist 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
                 },
                 {
                     track_uri: 'spotify:track:456',
-                    master_metadata_track_name: 'Song 2',
-                    master_metadata_album_artist_name: 'Artist 2',
+                    track_name: 'Song 2',
+                    artist_name: 'Artist 2',
                     ts: '2024-01-01T12:30:00Z',
                     ms_played: 240000,
                 },
@@ -183,10 +183,10 @@ describe('SpotifyStreamProvider', () => {
 
             const result = await provider.processFile(file)
 
-            const expected = {
+            const expected: StreamRecord = {
                 track_uri: 'spotify:track:123',
-                master_metadata_track_name: 'Song',
-                master_metadata_album_artist_name: 'Artist',
+                track_name: 'Song',
+                artist_name: 'Artist',
                 ts: '2024-01-01T12:00:00Z',
                 ms_played: 180000,
             }

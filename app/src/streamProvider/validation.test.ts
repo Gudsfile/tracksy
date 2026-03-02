@@ -6,8 +6,8 @@ describe('Validation', () => {
     const validRecord: StreamRecord = {
         ts: '2024-01-01T00:00:00Z',
         ms_played: 30000,
-        master_metadata_track_name: 'Track Name',
-        master_metadata_album_artist_name: 'Artist Name',
+        track_name: 'Track Name',
+        artist_name: 'Artist Name',
         track_uri: 'spotify:track:1234567890',
     }
 
@@ -20,8 +20,8 @@ describe('Validation', () => {
         it.each([
             ['without ts', { ...validRecord, ts: undefined }],
             ['without ms_played', { ...validRecord, ms_played: undefined }],
-            ['without master_metadata_track_name', { ...validRecord, master_metadata_track_name: undefined }],
-            ['without master_metadata_album_artist_name', { ...validRecord, master_metadata_album_artist_name: undefined }],
+            ['without track_name', { ...validRecord, track_name: undefined }],
+            ['without artist_name', { ...validRecord, artist_name: undefined }],
             ['without track_uri', { ...validRecord, track_uri: undefined }],
         ])('should invalidate stream record %s', (_description, record) => {
             expect(isValidStreamRecord(record)).toBe(false)

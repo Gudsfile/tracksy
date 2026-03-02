@@ -11,23 +11,23 @@ export function queryNewVsOld(year: number): string {
     return `
     WITH artist_first_listen AS (
       SELECT
-        master_metadata_album_artist_name,
+        artist_name,
         MIN(YEAR(ts::DATE)) AS first_year
       FROM ${TABLE}
-      WHERE master_metadata_album_artist_name IS NOT NULL
-      GROUP BY master_metadata_album_artist_name
+      WHERE artist_name IS NOT NULL
+      GROUP BY artist_name
     ),
     streams_classified AS (
       SELECT
-        master_metadata_album_artist_name AS artist,
-        CASE 
+        artist_name AS artist,
+        CASE
           WHEN first_year = ${year} THEN 'new'
           ELSE 'old'
         END AS category
       FROM ${TABLE}
-      JOIN artist_first_listen USING(master_metadata_album_artist_name)
+      JOIN artist_first_listen USING(artist_name)
       WHERE YEAR(ts::DATE) = ${year}
-        AND master_metadata_album_artist_name IS NOT NULL
+        AND artist_name IS NOT NULL
     )
     SELECT
       COUNT(*) FILTER (WHERE category = 'new')::DOUBLE AS new_artists_streams,

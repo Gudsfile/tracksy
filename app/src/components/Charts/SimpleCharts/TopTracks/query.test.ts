@@ -17,45 +17,29 @@ const anotherDate = `${testYear - 1}-01-01`
 
 const createStream = (overrides = {}) => ({
     ts: testDate,
-    master_metadata_track_name: 'track1',
-    master_metadata_album_artist_name: 'artist1',
+    track_name: 'track1',
+    artist_name: 'artist1',
     ms_played: 1,
     ...overrides,
 })
 
 const testData: TestStreamEntry[] = [
-    ...Array.from({ length: 10 }, () =>
-        createStream({ master_metadata_track_name: 'track2' })
-    ),
-    ...Array.from({ length: 8 }, () =>
-        createStream({ master_metadata_track_name: 'track3' })
-    ),
-    ...Array.from({ length: 6 }, () =>
-        createStream({ master_metadata_track_name: 'track4' })
-    ),
+    ...Array.from({ length: 10 }, () => createStream({ track_name: 'track2' })),
+    ...Array.from({ length: 8 }, () => createStream({ track_name: 'track3' })),
+    ...Array.from({ length: 6 }, () => createStream({ track_name: 'track4' })),
     // Should be first in the top 5 tracks
-    ...Array.from({ length: 12 }, () =>
-        createStream({ master_metadata_track_name: 'track1' })
-    ),
-    ...Array.from({ length: 4 }, () =>
-        createStream({ master_metadata_track_name: 'track5' })
-    ),
+    ...Array.from({ length: 12 }, () => createStream({ track_name: 'track1' })),
+    ...Array.from({ length: 4 }, () => createStream({ track_name: 'track5' })),
     // Should be ignored because it is out of the top 5 tracks
-    ...Array.from({ length: 2 }, () =>
-        createStream({ master_metadata_track_name: 'track6' })
-    ),
+    ...Array.from({ length: 2 }, () => createStream({ track_name: 'track6' })),
     // Should be ignored because of another year
     ...Array.from({ length: 10 }, () =>
-        createStream({ master_metadata_track_name: 'track4', ts: anotherDate })
+        createStream({ track_name: 'track4', ts: anotherDate })
     ),
     // Should be ignored because track field is null
-    ...Array.from({ length: 100 }, () =>
-        createStream({ master_metadata_track_name: null })
-    ),
+    ...Array.from({ length: 100 }, () => createStream({ track_name: null })),
     // Should be ignored because artist field is null
-    ...Array.from({ length: 100 }, () =>
-        createStream({ master_metadata_album_artist_name: null })
-    ),
+    ...Array.from({ length: 100 }, () => createStream({ artist_name: null })),
 ]
 
 describe('TopTracks Query', () => {

@@ -12,12 +12,12 @@ import type { DuckDBConnection } from '@duckdb/node-api'
 let conn: DuckDBConnection
 
 const testData: TestStreamEntry[] = [
-    { ts: '2025-01-01', master_metadata_album_artist_name: 'new_artist' },
-    { ts: '2025-01-01', master_metadata_album_artist_name: 'old_artist' },
-    { ts: '2022-01-02', master_metadata_album_artist_name: 'old_artist' },
-    { ts: '2022-01-02', master_metadata_album_artist_name: 'old_artist' },
+    { ts: '2025-01-01', artist_name: 'new_artist' },
+    { ts: '2025-01-01', artist_name: 'old_artist' },
+    { ts: '2022-01-02', artist_name: 'old_artist' },
+    { ts: '2022-01-02', artist_name: 'old_artist' },
     // Future data should not be taken into account
-    { ts: '2026-01-01', master_metadata_album_artist_name: 'future_artist' },
+    { ts: '2026-01-01', artist_name: 'future_artist' },
 ]
 
 describe('NewVsOld Query', () => {

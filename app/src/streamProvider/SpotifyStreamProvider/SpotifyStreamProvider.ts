@@ -37,10 +37,19 @@ export class SpotifyStreamProvider extends StreamProvider<SpotifyRawStreamRecord
      * @returns Array of stream records in canonical format
      */
     transform(rawData: SpotifyRawStreamRecord[]): StreamRecord[] {
-        const data = rawData.map(({ spotify_track_uri, ...rest }) => ({
-            ...rest,
-            track_uri: spotify_track_uri,
-        }))
+        const data = rawData.map(
+            ({
+                spotify_track_uri,
+                master_metadata_track_name,
+                master_metadata_album_artist_name,
+                ...rest
+            }) => ({
+                ...rest,
+                track_uri: spotify_track_uri,
+                track_name: master_metadata_track_name,
+                artist_name: master_metadata_album_artist_name,
+            })
+        )
 
         return data as StreamRecord[]
     }

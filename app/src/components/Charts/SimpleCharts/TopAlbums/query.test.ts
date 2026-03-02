@@ -17,8 +17,8 @@ const anotherDate = `${testYear - 1}-01-01`
 
 const createStream = (overrides = {}) => ({
     ts: testDate,
-    master_metadata_track_name: 'track1',
-    master_metadata_album_artist_name: 'artist1',
+    track_name: 'track1',
+    artist_name: 'artist1',
     master_metadata_album_album_name: 'album1',
     ms_played: 1,
     ...overrides,
@@ -31,7 +31,7 @@ const testData: TestStreamEntry[] = [
     ...Array.from({ length: 8 }, () =>
         createStream({
             master_metadata_album_album_name: 'album3',
-            master_metadata_album_artist_name: 'artist3',
+            artist_name: 'artist3',
         })
     ),
     ...Array.from({ length: 6 }, () =>
@@ -44,7 +44,7 @@ const testData: TestStreamEntry[] = [
     ...Array.from({ length: 6 }, () =>
         createStream({
             master_metadata_album_album_name: 'album1',
-            master_metadata_track_name: 'track2',
+            track_name: 'track2',
         })
     ),
     ...Array.from({ length: 4 }, () =>
@@ -54,7 +54,7 @@ const testData: TestStreamEntry[] = [
     ...Array.from({ length: 1 }, () =>
         createStream({
             master_metadata_album_album_name: 'album5',
-            master_metadata_album_artist_name: 'artist5',
+            artist_name: 'artist5',
         })
     ),
     // Should be ignored because it is out of the top 5 albums
@@ -73,9 +73,7 @@ const testData: TestStreamEntry[] = [
         createStream({ master_metadata_album_album_name: null })
     ),
     // Should be ignored because artist field is null
-    ...Array.from({ length: 100 }, () =>
-        createStream({ master_metadata_album_artist_name: null })
-    ),
+    ...Array.from({ length: 100 }, () => createStream({ artist_name: null })),
 ]
 
 describe('TopAlbums Query', () => {

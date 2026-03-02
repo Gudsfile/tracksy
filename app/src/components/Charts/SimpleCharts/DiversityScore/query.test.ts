@@ -15,12 +15,12 @@ const testYear = 2025
 const testDate = `${testYear}-01-01`
 const anotherDate = `${testYear - 1}-01-01`
 const testData: TestStreamEntry[] = [
-    { ts: testDate, master_metadata_album_artist_name: 'artist1' },
-    { ts: testDate, master_metadata_album_artist_name: 'artist2' },
-    { ts: testDate, master_metadata_album_artist_name: 'artist1' },
-    { ts: testDate, master_metadata_album_artist_name: 'artist2' },
-    { ts: testDate, master_metadata_album_artist_name: 'artist3' },
-    { ts: anotherDate, master_metadata_album_artist_name: 'artist1' },
+    { ts: testDate, artist_name: 'artist1' },
+    { ts: testDate, artist_name: 'artist2' },
+    { ts: testDate, artist_name: 'artist1' },
+    { ts: testDate, artist_name: 'artist2' },
+    { ts: testDate, artist_name: 'artist3' },
+    { ts: anotherDate, artist_name: 'artist1' },
 ]
 
 describe('DiversityScore Query', () => {

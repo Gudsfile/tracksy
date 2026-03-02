@@ -123,8 +123,8 @@ describe('insertFilesInDatabase', () => {
             const supportedContent = [
                 {
                     track_uri: 'spotify:track:123',
-                    master_metadata_track_name: 'Test Song',
-                    master_metadata_album_artist_name: 'Test Artist',
+                    track_name: 'Test Song',
+                    artist_name: 'Test Artist',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
                 },
@@ -159,8 +159,8 @@ describe('insertFilesInDatabase', () => {
             const dataFile1 = [
                 {
                     track_uri: 'spotify:track:123',
-                    master_metadata_track_name: 'Song 1',
-                    master_metadata_album_artist_name: 'Artist 1',
+                    track_name: 'Song 1',
+                    artist_name: 'Artist 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
                 },
@@ -168,8 +168,8 @@ describe('insertFilesInDatabase', () => {
             const dataFile2 = [
                 {
                     track_uri: 'spotify:track:456',
-                    master_metadata_track_name: 'Song 2',
-                    master_metadata_album_artist_name: 'Artist 2',
+                    track_name: 'Song 2',
+                    artist_name: 'Artist 2',
                     ts: '2024-01-02T12:00:00Z',
                     ms_played: 240000,
                 },

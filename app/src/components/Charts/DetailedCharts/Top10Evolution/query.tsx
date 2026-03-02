@@ -5,10 +5,10 @@ export function queryTop10Evolution() {
 WITH artist_yearly_play_counts AS (
     SELECT
         YEAR(ts::DATETIME)::INT AS year,
-        master_metadata_album_artist_name AS artist,
+        artist_name AS artist,
         COUNT(*)::INT AS play_count
     FROM ${TABLE}
-    WHERE master_metadata_album_artist_name IS NOT NULL
+    WHERE artist_name IS NOT NULL
     GROUP BY year, artist
 ),
 artist_total_play_counts AS (
