@@ -45,51 +45,51 @@ describe('FunFacts queries', () => {
         const testData: TestStreamEntry[] = [
             {
                 ts: '2024-02-07T06:00:00',
-                master_metadata_album_artist_name: 'top_morning_artist',
+                artist_name: 'top_morning_artist',
             },
             {
                 ts: '2024-02-07T07:00:00',
-                master_metadata_album_artist_name: 'top_morning_artist',
+                artist_name: 'top_morning_artist',
             },
             {
                 ts: '2024-02-07T08:00:00',
-                master_metadata_album_artist_name: 'morning_artist',
+                artist_name: 'morning_artist',
             },
             {
                 ts: '2024-02-07T12:00:00',
-                master_metadata_album_artist_name: 'top_afternoon_artist',
+                artist_name: 'top_afternoon_artist',
             },
             {
                 ts: '2024-02-07T13:00:00',
-                master_metadata_album_artist_name: 'afternoon_artist',
+                artist_name: 'afternoon_artist',
             },
             {
                 ts: '2024-02-07T14:00:00',
-                master_metadata_album_artist_name: 'top_afternoon_artist',
+                artist_name: 'top_afternoon_artist',
             },
             {
                 ts: '2024-02-07T18:00:00',
-                master_metadata_album_artist_name: 'evening_artist',
+                artist_name: 'evening_artist',
             },
             {
                 ts: '2024-02-07T19:00:00',
-                master_metadata_album_artist_name: 'top_evening_artist',
+                artist_name: 'top_evening_artist',
             },
             {
                 ts: '2024-02-07T20:00:00',
-                master_metadata_album_artist_name: 'top_evening_artist',
+                artist_name: 'top_evening_artist',
             },
             {
                 ts: '2024-02-07T00:00:00',
-                master_metadata_album_artist_name: 'top_night_artist',
+                artist_name: 'top_night_artist',
             },
             {
                 ts: '2024-02-07T01:00:00',
-                master_metadata_album_artist_name: 'night_artist',
+                artist_name: 'night_artist',
             },
             {
                 ts: '2024-02-07T02:00:00',
-                master_metadata_album_artist_name: 'top_night_artist',
+                artist_name: 'top_night_artist',
             },
         ]
 
@@ -148,23 +148,23 @@ describe('FunFacts queries', () => {
         const testData: TestStreamEntry[] = [
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'consecutive_stream_artist',
+                artist_name: 'consecutive_stream_artist',
             },
             {
                 ts: '2024-01-02',
-                master_metadata_album_artist_name: 'consecutive_stream_artist',
+                artist_name: 'consecutive_stream_artist',
             },
             {
                 ts: '2024-01-03',
-                master_metadata_album_artist_name: 'consecutive_stream_artist',
+                artist_name: 'consecutive_stream_artist',
             },
             {
                 ts: '2024-01-04',
-                master_metadata_album_artist_name: 'middle_stream_artist',
+                artist_name: 'middle_stream_artist',
             },
             {
                 ts: '2024-01-05',
-                master_metadata_album_artist_name: 'consecutive_stream_artist',
+                artist_name: 'consecutive_stream_artist',
             },
         ]
 
@@ -187,8 +187,8 @@ describe('FunFacts queries', () => {
     describe('One hit wonder queries', () => {
         const testData: TestStreamEntry[] = [
             {
-                master_metadata_album_artist_name: 'one_hit_wonder_artist',
-                master_metadata_track_name: 'hit_track',
+                artist_name: 'one_hit_wonder_artist',
+                track_name: 'hit_track',
             },
         ]
 
@@ -215,28 +215,28 @@ describe('FunFacts queries', () => {
             // Week
             {
                 ts: '2025-12-01',
-                master_metadata_album_artist_name: 'week_artist',
+                artist_name: 'week_artist',
             },
             {
                 ts: '2025-12-02',
-                master_metadata_album_artist_name: 'week_artist',
+                artist_name: 'week_artist',
             },
             {
                 ts: '2025-12-03',
-                master_metadata_album_artist_name: 'weekend_artist',
+                artist_name: 'weekend_artist',
             },
             // Week-end
             {
                 ts: '2025-12-07',
-                master_metadata_album_artist_name: 'week_artist',
+                artist_name: 'week_artist',
             },
             {
                 ts: '2025-12-07',
-                master_metadata_album_artist_name: 'weekend_artist',
+                artist_name: 'weekend_artist',
             },
             {
                 ts: '2025-12-07',
-                master_metadata_album_artist_name: 'weekend_artist',
+                artist_name: 'weekend_artist',
             },
         ]
 
@@ -259,35 +259,35 @@ describe('FunFacts queries', () => {
     describe('Absolute loyalty queries', () => {
         const testData: TestStreamEntry[] = [
             {
-                master_metadata_album_artist_name: 'loyal_artist',
+                artist_name: 'loyal_artist',
                 reason_end: 'trackdone',
             },
             {
-                master_metadata_album_artist_name: 'loyal_artist',
+                artist_name: 'loyal_artist',
                 reason_end: 'trackdone',
             },
             {
-                master_metadata_album_artist_name: 'loyal_artist',
+                artist_name: 'loyal_artist',
                 reason_end: 'trackdone',
             },
             {
-                master_metadata_album_artist_name: 'loyal_artist',
+                artist_name: 'loyal_artist',
                 reason_end: 'clickrow',
             },
             {
-                master_metadata_album_artist_name: 'artist1',
+                artist_name: 'artist1',
                 reason_end: 'fwdbtn',
             },
             {
-                master_metadata_album_artist_name: 'artist1',
+                artist_name: 'artist1',
                 reason_end: 'trackdone',
             },
             {
-                master_metadata_album_artist_name: 'artist1',
+                artist_name: 'artist1',
                 reason_end: 'trackdone',
             },
             {
-                master_metadata_album_artist_name: 'artist1',
+                artist_name: 'artist1',
                 reason_end: 'clickrow',
             },
         ]
@@ -312,23 +312,23 @@ describe('FunFacts queries', () => {
         const testData: TestStreamEntry[] = [
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'nostalgic_artist',
+                artist_name: 'nostalgic_artist',
             },
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'nostalgic_artist',
+                artist_name: 'nostalgic_artist',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'nostalgic_artist',
+                artist_name: 'nostalgic_artist',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'artist1',
+                artist_name: 'artist1',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'artist2',
+                artist_name: 'artist2',
             },
         ]
 
@@ -353,11 +353,11 @@ describe('FunFacts queries', () => {
     describe('Variety day queries', () => {
         const testData: TestStreamEntry[] = [
             // One day
-            { ts: '2024-01-01', master_metadata_album_artist_name: 'artist1' },
-            { ts: '2024-01-01', master_metadata_album_artist_name: 'artist2' },
-            { ts: '2024-01-01', master_metadata_album_artist_name: 'artist3' },
+            { ts: '2024-01-01', artist_name: 'artist1' },
+            { ts: '2024-01-01', artist_name: 'artist2' },
+            { ts: '2024-01-01', artist_name: 'artist3' },
             // Another day
-            { ts: '2024-01-02', master_metadata_album_artist_name: 'artist1' },
+            { ts: '2024-01-02', artist_name: 'artist1' },
         ]
 
         beforeEach(async () => {
@@ -404,34 +404,34 @@ describe('FunFacts queries', () => {
             // Recent streams
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'current_hit',
+                artist_name: 'artist1',
+                track_name: 'current_hit',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'current_hit',
+                artist_name: 'artist1',
+                track_name: 'current_hit',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'track1',
+                artist_name: 'artist1',
+                track_name: 'track1',
             },
             // Old streams
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'track1',
+                artist_name: 'artist1',
+                track_name: 'track1',
             },
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'track1',
+                artist_name: 'artist1',
+                track_name: 'track1',
             },
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'current_hit',
+                artist_name: 'artist1',
+                track_name: 'current_hit',
             },
         ]
 
@@ -456,20 +456,20 @@ describe('FunFacts queries', () => {
             // Recent streams
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'recent_discovery_artist',
+                artist_name: 'recent_discovery_artist',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'already_discovered_artist',
+                artist_name: 'already_discovered_artist',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'already_discovered_artist',
+                artist_name: 'already_discovered_artist',
             },
             // Old streams
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'already_discovered_artist',
+                artist_name: 'already_discovered_artist',
             },
         ]
 
@@ -518,20 +518,20 @@ describe('FunFacts queries', () => {
         const testData: TestStreamEntry[] = [
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'subscribed_artist',
+                artist_name: 'subscribed_artist',
             },
             {
                 ts: '2024-02-01',
-                master_metadata_album_artist_name: 'subscribed_artist',
+                artist_name: 'subscribed_artist',
             },
             {
                 ts: '2024-03-01',
-                master_metadata_album_artist_name: 'subscribed_artist',
+                artist_name: 'subscribed_artist',
             },
-            { ts: '2024-04-01', master_metadata_album_artist_name: 'artist1' },
-            { ts: '2024-05-01', master_metadata_album_artist_name: 'artist1' },
-            { ts: '2024-05-02', master_metadata_album_artist_name: 'artist1' },
-            { ts: '2024-05-03', master_metadata_album_artist_name: 'artist1' },
+            { ts: '2024-04-01', artist_name: 'artist1' },
+            { ts: '2024-05-01', artist_name: 'artist1' },
+            { ts: '2024-05-02', artist_name: 'artist1' },
+            { ts: '2024-05-03', artist_name: 'artist1' },
         ]
 
         beforeEach(async () => {
@@ -554,19 +554,19 @@ describe('FunFacts queries', () => {
         const testData: TestStreamEntry[] = [
             {
                 ts: '2006-01-01',
-                master_metadata_album_artist_name: 'first_artist',
+                artist_name: 'first_artist',
             },
             {
                 ts: '2008-01-01',
-                master_metadata_album_artist_name: 'second_artist',
+                artist_name: 'second_artist',
             },
             {
                 ts: '2018-01-01',
-                master_metadata_album_artist_name: 'second_artist',
+                artist_name: 'second_artist',
             },
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'first_artist',
+                artist_name: 'first_artist',
             },
         ]
 
@@ -630,24 +630,24 @@ describe('FunFacts queries', () => {
             // Old streams
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'forgotten_artist',
+                artist_name: 'forgotten_artist',
             },
             {
                 ts: '2024-01-01',
-                master_metadata_album_artist_name: 'old_artist',
+                artist_name: 'old_artist',
             },
             // Recent streams
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'old_artist',
+                artist_name: 'old_artist',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'new_artist',
+                artist_name: 'new_artist',
             },
             {
                 ts: '2025-01-01',
-                master_metadata_album_artist_name: 'new_artist',
+                artist_name: 'new_artist',
             },
         ]
 
@@ -672,12 +672,12 @@ describe('FunFacts queries', () => {
     describe('Track proposition queries', () => {
         const testData: TestStreamEntry[] = [
             {
-                master_metadata_album_artist_name: 'artist1',
-                master_metadata_track_name: 'track1',
+                artist_name: 'artist1',
+                track_name: 'track1',
             },
             {
-                master_metadata_album_artist_name: 'artist2',
-                master_metadata_track_name: 'track2',
+                artist_name: 'artist2',
+                track_name: 'track2',
             },
         ]
 

@@ -4,8 +4,8 @@ import { TABLE } from '../../../../db/queries/constants'
 export type TestStreamEntry = {
     ts?: string
     track_uri?: string
-    master_metadata_track_name?: string
-    master_metadata_album_artist_name?: string
+    track_name?: string
+    artist_name?: string
     master_metadata_album_album_name?: string
     ms_played?: number
     reason_end?: string
@@ -24,8 +24,8 @@ export async function createTestTable(
         CREATE OR REPLACE TABLE ${TABLE} (
             ts VARCHAR,
             track_uri TEXT,
-            master_metadata_track_name TEXT,
-            master_metadata_album_artist_name TEXT,
+            track_name TEXT,
+            artist_name TEXT,
             master_metadata_album_album_name TEXT,
             ms_played INTEGER,
             reason_end TEXT,
@@ -42,12 +42,10 @@ export async function createTestTable(
         if (entry.track_uri) appender.appendVarchar(entry.track_uri)
         else appender.appendNull()
 
-        if (entry.master_metadata_track_name)
-            appender.appendVarchar(entry.master_metadata_track_name)
+        if (entry.track_name) appender.appendVarchar(entry.track_name)
         else appender.appendNull()
 
-        if (entry.master_metadata_album_artist_name)
-            appender.appendVarchar(entry.master_metadata_album_artist_name)
+        if (entry.artist_name) appender.appendVarchar(entry.artist_name)
         else appender.appendNull()
 
         if (entry.master_metadata_album_album_name)

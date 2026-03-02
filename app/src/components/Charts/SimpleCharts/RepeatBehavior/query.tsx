@@ -12,7 +12,7 @@ export function queryRepeatBehavior(year: number): string {
     WITH ordered_streams AS (
       SELECT
         track_uri,
-        master_metadata_track_name,
+        track_name,
         ts,
         LAG(track_uri) OVER (ORDER BY ts) AS prev_track
       FROM ${TABLE}
@@ -22,7 +22,7 @@ export function queryRepeatBehavior(year: number): string {
     repeat_groups AS (
       SELECT
         track_uri,
-        master_metadata_track_name,
+        track_name,
         ts,
         CASE WHEN track_uri = prev_track THEN 0 ELSE 1 END AS is_new_group
       FROM ordered_streams
@@ -37,16 +37,16 @@ export function queryRepeatBehavior(year: number): string {
       SELECT
         group_id,
         track_uri,
-        master_metadata_track_name,
+        track_name,
         COUNT(*) AS repeat_count
       FROM group_ids
-      GROUP BY group_id, track_uri, master_metadata_track_name
+      GROUP BY group_id, track_uri, track_name
       HAVING COUNT(*) > 1
     )
     SELECT
       COUNT(*)::DOUBLE AS total_repeat_sequences,
       COALESCE(MAX(repeat_count)::DOUBLE, 0) AS max_consecutive,
-      COALESCE((SELECT master_metadata_track_name FROM group_sizes ORDER BY repeat_count DESC LIMIT 1), '') AS most_repeated_track,
+      COALESCE((SELECT track_name FROM group_sizes ORDER BY repeat_count DESC LIMIT 1), '') AS most_repeated_track,
       COALESCE(AVG(repeat_count)::DOUBLE, 0) AS avg_repeat_length
     FROM group_sizes
   `

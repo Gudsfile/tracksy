@@ -10,12 +10,12 @@ export function queryConcentrationScore(year: number): string {
     return `
     WITH artist_streams AS (
       SELECT
-        master_metadata_album_artist_name AS artist,
+        artist_name AS artist,
         COUNT(*) AS stream_count
       FROM ${TABLE}
-      WHERE master_metadata_album_artist_name IS NOT NULL
+      WHERE artist_name IS NOT NULL
       AND YEAR(ts::DATE) = ${year}
-      GROUP BY master_metadata_album_artist_name
+      GROUP BY artist_name
     ),
     ranked_artists AS (
       SELECT
