@@ -8,6 +8,7 @@ describe('Validation', () => {
         ms_played: 30000,
         track_name: 'Track Name',
         artist_name: 'Artist Name',
+        album_name: 'Album Name',
         track_uri: 'spotify:track:1234567890',
     }
 
@@ -22,6 +23,7 @@ describe('Validation', () => {
             ['without ms_played', { ...validRecord, ms_played: undefined }],
             ['without track_name', { ...validRecord, track_name: undefined }],
             ['without artist_name', { ...validRecord, artist_name: undefined }],
+            ['without album_name', { ...validRecord, album_name: undefined }],
             ['without track_uri', { ...validRecord, track_uri: undefined }],
         ])('should invalidate stream record %s', (_description, record) => {
             expect(isValidStreamRecord(record)).toBe(false)

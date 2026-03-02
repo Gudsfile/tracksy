@@ -19,59 +19,47 @@ const createStream = (overrides = {}) => ({
     ts: testDate,
     track_name: 'track1',
     artist_name: 'artist1',
-    master_metadata_album_album_name: 'album1',
+    album_name: 'album1',
     ms_played: 1,
     ...overrides,
 })
 
 const testData: TestStreamEntry[] = [
-    ...Array.from({ length: 10 }, () =>
-        createStream({ master_metadata_album_album_name: 'album2' })
-    ),
+    ...Array.from({ length: 10 }, () => createStream({ album_name: 'album2' })),
     ...Array.from({ length: 8 }, () =>
         createStream({
-            master_metadata_album_album_name: 'album3',
+            album_name: 'album3',
             artist_name: 'artist3',
         })
     ),
-    ...Array.from({ length: 6 }, () =>
-        createStream({ master_metadata_album_album_name: 'album4' })
-    ),
+    ...Array.from({ length: 6 }, () => createStream({ album_name: 'album4' })),
     // Should be first in the top 5 albums
-    ...Array.from({ length: 6 }, () =>
-        createStream({ master_metadata_album_album_name: 'album1' })
-    ),
+    ...Array.from({ length: 6 }, () => createStream({ album_name: 'album1' })),
     ...Array.from({ length: 6 }, () =>
         createStream({
-            master_metadata_album_album_name: 'album1',
+            album_name: 'album1',
             track_name: 'track2',
         })
     ),
-    ...Array.from({ length: 4 }, () =>
-        createStream({ master_metadata_album_album_name: 'album5' })
-    ),
+    ...Array.from({ length: 4 }, () => createStream({ album_name: 'album5' })),
     // Should not be aggregated with the album5 of the artist1
     ...Array.from({ length: 1 }, () =>
         createStream({
-            master_metadata_album_album_name: 'album5',
+            album_name: 'album5',
             artist_name: 'artist5',
         })
     ),
     // Should be ignored because it is out of the top 5 albums
-    ...Array.from({ length: 2 }, () =>
-        createStream({ master_metadata_album_album_name: 'album6' })
-    ),
+    ...Array.from({ length: 2 }, () => createStream({ album_name: 'album6' })),
     // Should be ignored because of another year
     ...Array.from({ length: 5 }, () =>
         createStream({
-            master_metadata_album_album_name: 'album7',
+            album_name: 'album7',
             ts: anotherDate,
         })
     ),
     // Should be ignored because album field is null
-    ...Array.from({ length: 100 }, () =>
-        createStream({ master_metadata_album_album_name: null })
-    ),
+    ...Array.from({ length: 100 }, () => createStream({ album_name: null })),
     // Should be ignored because artist field is null
     ...Array.from({ length: 100 }, () => createStream({ artist_name: null })),
 ]

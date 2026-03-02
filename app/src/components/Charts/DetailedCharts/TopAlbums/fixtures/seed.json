@@ -3,21 +3,21 @@
         "ts": "2006-10-13T22:15:32Z",
         "track_uri": "uri_1",
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
         "ts": "2006-04-20T10:47:56Z",
         "track_uri": "uri_2",
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_b",
+        "album_name": "album_b",
         "ms_played": 22
     },
     {
         "ts": "2006-01-17T04:41:23Z",
         "track_uri": "uri_3",
         "track_name": "track_b",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 33
     },
     {
@@ -25,7 +25,7 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
@@ -33,7 +33,7 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
@@ -41,7 +41,7 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
@@ -49,21 +49,21 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
         "ts": "2025-04-20T10:47:56Z",
         "track_uri": "uri_2",
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_b",
+        "album_name": "album_b",
         "ms_played": 22
     },
     {
         "ts": "2025-01-17T04:41:23Z",
         "track_uri": "uri_3",
         "track_name": "track_b",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 33
     },
     {
@@ -71,7 +71,7 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
@@ -79,7 +79,7 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     },
     {
@@ -87,7 +87,7 @@
         "track_uri": "uri_1",
 
         "track_name": "track_a",
-        "master_metadata_album_album_name": "album_a",
+        "album_name": "album_a",
         "ms_played": 11
     }
 ]

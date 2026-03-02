@@ -19,4 +19,7 @@ export async function insertUrlInDatabase(jsonUrl: URL) {
     await conn.query(
         `ALTER TABLE ${TABLE} RENAME COLUMN master_metadata_album_artist_name TO artist_name`
     )
+    await conn.query(
+        `ALTER TABLE ${TABLE} RENAME COLUMN master_metadata_album_album_name TO album_name`
+    )
 }
