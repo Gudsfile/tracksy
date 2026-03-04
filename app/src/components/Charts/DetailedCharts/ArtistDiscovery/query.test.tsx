@@ -8,7 +8,7 @@ const seedPath =
 
 let conn: DuckDBConnection
 
-describe.only('ArtistDiscovery Query', () => {
+describe('ArtistDiscovery Query', () => {
     beforeAll(async () => {
         conn = await DuckDBConnection.create()
     })
@@ -23,7 +23,7 @@ describe.only('ArtistDiscovery Query', () => {
         )
     })
 
-    it.only('should return one row per year with correct discovery metrics', async () => {
+    it('should return one row per year with correct discovery metrics', async () => {
         const result = await conn.runAndReadAll(queryArtistDiscovery())
         const rows = result
             .getRowObjects()
