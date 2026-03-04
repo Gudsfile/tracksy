@@ -3,6 +3,7 @@ import { TABLE } from '../../../../db/queries/constants'
 export type FunFactResult = {
     factType: string
     mainText: string
+    secondText?: string
     value: number | string
     unit?: string
     context?: string
@@ -556,3 +557,65 @@ export function queryTrackProposition(): string {
     USING SAMPLE 1
   `
 }
+
+export function queryCozyAlbum(): string {
+    return `
+    WITH max_date AS (
+        SELECT MAX(ts::DATE) AS last_date
+        FROM ${TABLE}
+    ),
+    sunday_album_listening AS (
+      SELECT
+          album_name,
+          artist_name,
+          SUM(ms_played) AS total_ms_played
+      FROM ${TABLE}, max_date
+      WHERE (DAYOFWEEK(ts::DATE) = 0 OR (DAYOFWEEK(ts::DATE) = 1 AND HOUR(ts::DATETIME) <= 4))
+        AND ts::DATE >= max_date.last_date - INTERVAL 1 YEARS
+      GROUP BY album_name, artist_name
+      HAVING COUNT(DISTINCT track_name) >= 7
+      ORDER BY total_ms_played DESC
+      LIMIT 1
+    )
+    SELECT
+      'cozy_album' AS factType,
+      album_name AS mainText,
+      artist_name AS secondText,
+      'the album that wraps your Sundays in musical coziness' AS context
+    FROM sunday_album_listening
+
+    UNION ALL
+
+    SELECT
+      'cozy_album' AS factType,
+      null AS mainText,
+      'This fun fact is unfortunately unavailable' AS secondText,
+      'feel like listening to an album today?' AS context
+    WHERE NOT EXISTS (SELECT 1 FROM sunday_album_listening)
+    ;
+  `
+}
+
+export const QUERY_FUNCTIONS = [
+    queryAfternoonFavorite,
+    queryEveningFavorite,
+    queryNightFavorite,
+    queryMorningFavorite,
+    queryMarathon,
+    queryOneHitWonder,
+    queryWeekendFavorite,
+    queryAbsoluteLoyalty,
+    queryNostalgicReturn,
+    queryVarietyDay,
+    queryBingeListener,
+    queryCurrentObsession,
+    queryFirstArtist,
+    queryRecentDiscovery,
+    queryPeakHour,
+    querySubscribedArtist,
+    queryMusicalAnniversary,
+    queryUnbeatableStreak,
+    queryForgottenArtist,
+    queryTrackProposition,
+    queryCozyAlbum,
+]

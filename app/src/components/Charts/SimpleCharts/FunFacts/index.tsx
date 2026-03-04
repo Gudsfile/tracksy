@@ -1,52 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import {
-    queryAfternoonFavorite,
-    queryEveningFavorite,
-    queryNightFavorite,
-    queryMorningFavorite,
-    queryMarathon,
-    queryOneHitWonder,
-    queryWeekendFavorite,
-    queryAbsoluteLoyalty,
-    queryNostalgicReturn,
-    queryVarietyDay,
-    queryBingeListener,
-    queryCurrentObsession,
-    queryRecentDiscovery,
-    queryPeakHour,
-    querySubscribedArtist,
-    queryMusicalAnniversary,
-    queryFirstArtist,
-    queryUnbeatableStreak,
-    queryForgottenArtist,
-    queryTrackProposition,
-    type FunFactResult,
-} from './queries'
+import { QUERY_FUNCTIONS, type FunFactResult } from './queries'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { FunFacts as FunFactsView } from './FunFacts'
-
-const QUERY_FUNCTIONS = [
-    queryAfternoonFavorite,
-    queryEveningFavorite,
-    queryNightFavorite,
-    queryMorningFavorite,
-    queryMarathon,
-    queryOneHitWonder,
-    queryWeekendFavorite,
-    queryAbsoluteLoyalty,
-    queryNostalgicReturn,
-    queryVarietyDay,
-    queryBingeListener,
-    queryCurrentObsession,
-    queryFirstArtist,
-    queryRecentDiscovery,
-    queryPeakHour,
-    querySubscribedArtist,
-    queryMusicalAnniversary,
-    queryUnbeatableStreak,
-    queryForgottenArtist,
-    queryTrackProposition,
-]
 
 export function FunFacts() {
     const [fact, setFact] = useState<FunFactResult | null>(null)
