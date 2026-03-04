@@ -66,6 +66,8 @@ const factConfig = (type: string) => {
             return { title: '🦖 The Very First', emoji: '1️⃣' }
         case 'track_proposition':
             return { title: '🔮 Listening Proposition', emoji: '🐙' }
+        case 'cozy_album':
+            return { title: '💿 Cozy Album', emoji: '☁️' }
 
         default:
             return { title: '🎲 Fun Fact', emoji: '🎲' }
@@ -73,7 +75,7 @@ const factConfig = (type: string) => {
 }
 
 export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
-    const { factType, mainText, value, unit, context } = fact
+    const { factType, mainText, secondText, value, unit, context } = fact
     const { title, emoji } = factConfig(factType)
 
     const valueDisplayed =
@@ -111,11 +113,14 @@ export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
                     </div>
 
                     <div className="text-lg text-gray-600 dark:text-gray-300">
+                        {secondText}{' '}
+                        {secondText && valueDisplayed ? '(' : undefined}
                         <span className="font-bold text-blue-600 dark:text-blue-400">
                             {valueDisplayed}
                             {unit === '%' ? unit : undefined}
                         </span>{' '}
                         {unit !== '%' ? unit : undefined}
+                        {secondText && valueDisplayed ? ')' : undefined}
                     </div>
 
                     {context && (

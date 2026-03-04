@@ -6,6 +6,33 @@ import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 import { FunFactResult } from './queries'
 
+const allFactTitles = [
+    '🌅 Musical Breakfast',
+    '☀️ Afternoon Boost',
+    '🌆 Calm Return',
+    '🌙 Musical Insomnia',
+    '🌙 Night Champion',
+    '🎉 Weekend Vibes',
+    '⏰ Peak Hour',
+    '📅 Favorite Day',
+    '❤️ Absolute Loyalty',
+    '🎸 Monthly Subscription',
+    '🕰️ Nostalgic Return',
+    '🕰️ Forgotten Artist',
+    '🎧 Binge Listener',
+    '🔥 Unbeatable Streak',
+    '🌈 Variety Day',
+    '⭐ One-Hit Wonder',
+    '🏃 Marathon',
+    '🎵 Recent Discovery',
+    '🔁 Current Obsession',
+    '🎉 Musical Anniversary',
+    '🦖 The Very First',
+    '🔮 Listening Proposition',
+    '🫂 Most Comforting Album',
+    '🎲 Fun Fact',
+]
+
 describe('FunFacts Component', () => {
     beforeEach(() => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
@@ -29,32 +56,7 @@ describe('FunFacts Component', () => {
 
         await waitFor(
             () => {
-                const titles = [
-                    '🌅 Musical Breakfast',
-                    '☀️ Afternoon Boost',
-                    '🌆 Calm Return',
-                    '🌙 Musical Insomnia',
-                    '🌙 Night Champion',
-                    '🎉 Weekend Vibes',
-                    '⏰ Peak Hour',
-                    '📅 Favorite Day',
-                    '❤️ Absolute Loyalty',
-                    '🎸 Monthly Subscription',
-                    '🕰️ Nostalgic Return',
-                    '🕰️ Forgotten Artist',
-                    '🎧 Binge Listener',
-                    '🔥 Unbeatable Streak',
-                    '🌈 Variety Day',
-                    '⭐ One-Hit Wonder',
-                    '🏃 Marathon',
-                    '🎵 Recent Discovery',
-                    '🔁 Current Obsession',
-                    '🎉 Musical Anniversary',
-                    '🦖 The Very First',
-                    '🔮 Listening Proposition',
-                    '🎲 Fun Fact',
-                ]
-                const hasTitle = titles.some((title) => {
+                const hasTitle = allFactTitles.some((title) => {
                     try {
                         screen.getByText(title)
                         return true
