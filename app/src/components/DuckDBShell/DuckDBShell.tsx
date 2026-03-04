@@ -66,7 +66,7 @@ export function DuckDBShell() {
                     placeholder="Write your SQL query here…"
                     onChange={(e) => setQuery(e.target.value)}
                     rows={4}
-                    className="bg-gray-200 dark:bg-slate-700/50 rounded-lg text-sm font-mono w-full"
+                    className="bg-gray-200 dark:bg-slate-700/50 rounded-lg text-sm font-mono w-full resize-y"
                 />
 
                 <div className="grid grid-cols-3">
