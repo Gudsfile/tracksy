@@ -74,11 +74,15 @@ export function FunFacts() {
                 const [result] =
                     (await queryDBAsJSON<FunFactResult>(queryFn())) || []
 
+                seenFactsRef.current.add(queryFn.name)
                 if (result) {
                     setFact(result)
-                    seenFactsRef.current.add(queryFn.name)
                     break
                 }
+                console.warn(
+                    'An empty result is returned by a fun fact:',
+                    queryFn.name
+                )
             }
         } catch (error) {
             console.error('Error loading fun fact:', error)
