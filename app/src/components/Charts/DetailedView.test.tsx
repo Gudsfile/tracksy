@@ -42,6 +42,10 @@ import {
     type Top10AlbumsEvolutionQueryResult,
     queryTop10AlbumsEvolution,
 } from './DetailedCharts/Top10AlbumsEvolution/query'
+import {
+    type Top10TracksEvolutionQueryResult,
+    queryTop10TracksEvolution,
+} from './DetailedCharts/Top10TracksEvolution/query'
 
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
@@ -343,6 +347,16 @@ const top10AlbumsEvolutionResultMock: Top10AlbumsEvolutionQueryResult[] = [
     },
 ]
 
+const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
+    {
+        year: 2024,
+        track: 'Richard Redyns',
+        artist: 'Richard Snyder',
+        rank: 1,
+        play_count: 100,
+    },
+]
+
 const streamPerDayOfWeekResultMock: StreamPerDayOfWeekQueryResult[] = [
     {
         dayOfWeek: 1,
@@ -387,6 +401,8 @@ it('renders all Charts', async () => {
             return Promise.resolve(top10EvolutionResultMock)
         if (query === queryTop10AlbumsEvolution())
             return Promise.resolve(top10AlbumsEvolutionResultMock)
+        if (query === queryTop10TracksEvolution())
+            return Promise.resolve(top10TracksEvolutionResultMock)
         if (query === streamPerDayOfWeekQueryByYear(2024))
             return Promise.resolve(streamPerDayOfWeekResultMock)
     })
