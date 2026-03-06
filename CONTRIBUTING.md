@@ -2,6 +2,12 @@
 
 Thank you for your interest in contributing to Tracksy!
 
+> [!NOTE]
+> If you have contributed to this project, you are welcome to add yourself to the contributors list using the [bot](https://allcontributors.org).
+>
+> Sometimes contributions may be missed or made in the past before the list was updated. If you believe you should be listed, feel free to add yourself or open an issue/PR to request being added.
+> We aim to recognize everyone’s work, but we also understand that some people may prefer not to appear in the list. If you would like to be added (or removed), just let us know.
+
 ## Getting Started
 
 Before you start contributing, please take a moment to read through this guide to understand our development workflow and conventions.

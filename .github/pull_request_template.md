@@ -1,5 +1,6 @@
 ## 1️⃣ First
 - [ ] I have read the [CONTRIBUTION.md](https://github.com/Gudsfile/tracksy/blob/main/CONTRIBUTING.md).
+- [ ] **OPTIONAL** I agree to be added as a contributor in the README.md by the all-contributors bot.
 
 ## 🔇 Problem
 
