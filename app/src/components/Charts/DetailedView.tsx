@@ -17,6 +17,7 @@ import { TopAlbums } from './DetailedCharts/TopAlbums'
 import { Streaks } from './DetailedCharts/Streaks'
 import { Top10Evolution } from './DetailedCharts/Top10Evolution'
 import { Top10AlbumsEvolution } from './DetailedCharts/Top10AlbumsEvolution'
+import { Top10TracksEvolution } from './DetailedCharts/Top10TracksEvolution'
 import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
@@ -94,6 +95,7 @@ export function DetailedView() {
                 <Streaks />
                 <Top10Evolution />
                 <Top10AlbumsEvolution />
+                <Top10TracksEvolution />
                 <StreamPerDayOfWeek year={year} />
             </section>
             <DuckDBShell />

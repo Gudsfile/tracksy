@@ -1,0 +1,32 @@
+[
+    {
+        "ts": "2020-01-01T00:00:00Z",
+        "artist_name": "artist_a",
+        "track_name": "track_1"
+    },
+    {
+        "ts": "2020-01-01T00:00:00Z",
+        "artist_name": "artist_a",
+        "track_name": "track_2"
+    },
+    {
+        "ts": "2020-01-01T00:00:00Z",
+        "artist_name": "artist_a",
+        "track_name": "track_2"
+    },
+    {
+        "ts": "2020-01-01T00:00:00Z",
+        "artist_name": "artist_b",
+        "track_name": "track_1"
+    },
+    {
+        "ts": "2020-01-01T00:00:00Z",
+        "artist_name": "artist_b",
+        "track_name": "track_1"
+    },
+    {
+        "ts": "2020-01-01T00:00:00Z",
+        "artist_name": "artist_b",
+        "track_name": "track_1"
+    }
+]
