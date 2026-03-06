@@ -81,3 +81,14 @@ See our [issues](https://github.com/Gudsfile/tracksy/issues).
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or a pull request (don't forget to consult our [CONTRIBUTING.md](CONTRIBUTING.md)).
+
+If you would like to be added to or removed from this list, feel free to open an issue or a PR.
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
