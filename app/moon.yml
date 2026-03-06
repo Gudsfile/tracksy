@@ -24,4 +24,6 @@ tasks:
         command: pnpm audit --prod
     typecheck:
         command: tsc --noEmit
+    pnpm-update:
+        command: pnpm update
 layer: application
