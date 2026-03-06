@@ -8,14 +8,13 @@ const HIDDEN_FILE_PREFIX = ['__MACOSX']
 /**
  * Custom hook for handling file uploads with validation and processing.
  *
- * @param {Object} params - The parameters for the hook.
- * @param {Function} [params.onSuccess] - Callback function to be called with validated files when the file control is successful.
- * @param {Function} params.onFail - Callback function to be called when the file upload fails.
+ * @param params - The parameters for the hook.
+ * @param params.onSuccess - Callback function to be called with validated files when the file control is successful.
+ * @param params.onFail - Callback function to be called when the file upload fails.
  *
- * @returns {Object} An object containing the `uploadFiles` function.
- * @returns {Function} returns.uploadFiles - Function to handle the file upload process.
+ * @returns An object containing the `uploadFiles` function.
  *
- * @throws {Error} If one or more files have an unsupported content type.
+ * @throws If one or more files have an unsupported content type.
  */
 export function useFileUpload({
     onSuccess,
@@ -79,8 +78,8 @@ export function useFileUpload({
     /**
      * Asynchronously uploads files and processes them accordingly.
      *
-     * @param {FileList} files - The list of files to be uploaded.
-     * @returns {Promise<void>} A promise that resolves when the files have been successfully uploaded and processed.
+     * @param files - The list of files to be uploaded.
+     * @returns A promise that resolves when the files have been successfully uploaded and processed.
      *
      * @throws Will throw an error if there is an issue during the file upload or processing.
      *
