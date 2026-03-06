@@ -11,9 +11,9 @@ import {
     queryConcentrationScore,
 } from './SimpleCharts/ConcentrationScore/query'
 import {
-    type DiversityResult,
-    queryDiversityScore,
-} from './SimpleCharts/DiversityScore/query'
+    type ArtistLoyaltyResult,
+    queryArtistLoyalty,
+} from './SimpleCharts/ArtistLoyalty/query'
 import {
     type ListeningRhythmResult,
     queryListeningRhythm,
@@ -106,11 +106,36 @@ const concentrationMock: ConcentrationResult[] = [
     },
 ]
 
-const diversityMock: DiversityResult[] = [
+const artistReplayMock: ArtistLoyaltyResult[] = [
     {
-        unique_artists: 10,
-        total_streams: 100,
-        avg_streams_per_artist: 10,
+        stream_bin: '1',
+        artist_count: 50,
+        streams_in_bin: 50,
+        share_of_total_streams: 0.1,
+    },
+    {
+        stream_bin: '2-10',
+        artist_count: 30,
+        streams_in_bin: 150,
+        share_of_total_streams: 0.15,
+    },
+    {
+        stream_bin: '11-100',
+        artist_count: 20,
+        streams_in_bin: 500,
+        share_of_total_streams: 0.25,
+    },
+    {
+        stream_bin: '101-1000',
+        artist_count: 10,
+        streams_in_bin: 600,
+        share_of_total_streams: 0.3,
+    },
+    {
+        stream_bin: '1000+',
+        artist_count: 5,
+        streams_in_bin: 700,
+        share_of_total_streams: 0.2,
     },
 ]
 
@@ -202,8 +227,8 @@ it('renders all SimpleView', async () => {
             return Promise.resolve(topAlbumsMock)
         if (query === queryConcentrationScore(2024))
             return Promise.resolve(concentrationMock)
-        if (query === queryDiversityScore(2024))
-            return Promise.resolve(diversityMock)
+        if (query === queryArtistLoyalty(2024))
+            return Promise.resolve(artistReplayMock)
         if (query === queryListeningRhythm(2024))
             return Promise.resolve(listeningRhythmMock)
         if (query === queryRegularity(2024))
@@ -239,7 +264,7 @@ it('renders all SimpleView', async () => {
     await screen.findByRole('heading', { name: '🎤 Top Artists' })
     await screen.findByRole('heading', { name: '💿 Top Albums' })
     await screen.findByRole('heading', { name: '📊 Concentration Score' })
-    await screen.findByRole('heading', { name: '🎨 Loyalty vs Discovery' })
+    await screen.findByRole('heading', { name: '🤝 Artist Loyalty' })
     await screen.findByRole('heading', { name: '⏰ Listening Rhythm' })
     await screen.findByRole('heading', { name: '📅 Listening Regularity' })
     await screen.findByRole('heading', { name: '📈 Evolution' })
