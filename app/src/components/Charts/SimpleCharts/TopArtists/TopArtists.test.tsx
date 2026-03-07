@@ -13,7 +13,7 @@ describe('TopArtists Component', () => {
 
         render(<TopArtists data={data} />)
 
-        screen.getByRole('heading', { name: /🎤 Top Artists/ })
+        screen.getByRole('heading', { name: /🎤Top Artists/ })
 
         const items = screen.getAllByRole('listitem')
         expect(items).toHaveLength(numberOfTracks)
