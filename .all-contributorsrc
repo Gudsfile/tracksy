@@ -16,6 +16,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "noancloarec",
+      "name": "noancloarec",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15016365?v=4",
+      "profile": "https://github.com/noancloarec",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "commitType": "docs",
