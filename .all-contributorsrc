@@ -3,7 +3,21 @@
   "projectOwner": "Gudsfile",
   "repoType": "github",
   "commitConvention": "angular",
-  "files": ["README.md"],
+  "files": [
+    "README.md"
+  ],
   "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
-  "contributors": []
+  "contributors": [
+    {
+      "login": "Tarektouati",
+      "name": "Tarek Touati",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19335073?v=4",
+      "profile": "https://github.com/Tarektouati",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "commitType": "docs",
+  "contributorsPerLine": 7
 }
