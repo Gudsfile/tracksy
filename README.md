@@ -91,6 +91,7 @@ If you would like to be added to or removed from this list, feel free to open an
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Tarektouati"><img src="https://avatars.githubusercontent.com/u/19335073?v=4" width="100px;" alt=""/><br /><sub><b>Tarek Touati</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/noancloarec"><img src="https://avatars.githubusercontent.com/u/15016365?v=4" width="100px;" alt=""/><br /><sub><b>noancloarec</b></sub></a></td>
     </tr>
   </tbody>
 </table>
