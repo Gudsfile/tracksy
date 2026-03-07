@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import type { ConcentrationResult } from './query'
+import { ChartCard } from '../../../ChartCard/ChartCard'
 
 type Props = {
     data: ConcentrationResult
@@ -18,10 +19,7 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
     )
 
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                🔥 Focus Mode
-            </h3>
+        <ChartCard title="Focus Mode" emoji="🔥">
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Share of listening time for your top artists
             </div>
@@ -54,6 +52,6 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
                     {bar(top20_pct)}
                 </li>
             </ul>
-        </div>
+        </ChartCard>
     )
 }

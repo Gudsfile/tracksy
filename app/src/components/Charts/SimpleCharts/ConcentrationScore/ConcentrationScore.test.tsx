@@ -9,7 +9,7 @@ describe('ConcentrationScore Component', () => {
     ])('renders correctly with data (%s)', (data) => {
         render(<ConcentrationScore data={data} />)
 
-        screen.getByText('📊 Concentration Score')
+        screen.getByRole('heading', { name: /Focus Mode/ })
 
         screen.getByText(`${data.top5_pct}.0%`)
         screen.getByText(`${data.top10_pct}.0%`)

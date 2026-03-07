@@ -263,7 +263,7 @@ it('renders all SimpleView', async () => {
     await screen.findByRole('heading', { name: '🎵 Top Tracks' })
     await screen.findByRole('heading', { name: '🎤 Top Artists' })
     await screen.findByRole('heading', { name: '💿 Top Albums' })
-    await screen.findByRole('heading', { name: '📊 Concentration Score' })
+    await screen.findByRole('heading', { name: '🔥 Focus Mode' })
     await screen.findByRole('heading', { name: '🤝 Artist Loyalty' })
     await screen.findByRole('heading', { name: '⏰ Listening Rhythm' })
     await screen.findByRole('heading', { name: '📅 Listening Regularity' })
