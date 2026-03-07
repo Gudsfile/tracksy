@@ -3,7 +3,21 @@
   "projectOwner": "Gudsfile",
   "repoType": "github",
   "commitConvention": "angular",
-  "files": ["README.md"],
+  "files": [
+    "README.md"
+  ],
   "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
-  "contributors": []
+  "contributors": [
+    {
+      "login": "bengeois",
+      "name": "Benjamin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20949060?v=4",
+      "profile": "https://www.bbourgeois.dev",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "commitType": "docs",
+  "contributorsPerLine": 7
 }
