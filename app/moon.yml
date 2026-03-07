@@ -26,4 +26,6 @@ tasks:
         command: tsc --noEmit
     pnpm-update:
         command: pnpm update
+    pnpm-install:
+        command: pnpm install
 layer: application

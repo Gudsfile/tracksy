@@ -22,9 +22,12 @@ import {
 import { useState, useEffect } from 'react'
 
 export function SimpleView() {
-    const [year, setYear] = useState(new Date().getFullYear())
     const [minYear, setMinYear] = useState(2006)
     const [maxYear, setMaxYear] = useState(new Date().getFullYear())
+    const [range, setRange] = useState({
+        start: 2006,
+        end: new Date().getFullYear(),
+    })
 
     useEffect(() => {
         const initDataSummarize = async () => {
@@ -33,7 +36,10 @@ export function SimpleView() {
             if (results.length === 0) return
             setMinYear(new Date(Number(results[0].min_datetime)).getFullYear())
             setMaxYear(new Date(Number(results[0].max_datetime)).getFullYear())
-            setYear(new Date(Number(results[0].max_datetime)).getFullYear())
+            setRange({
+                start: new Date(Number(results[0].min_datetime)).getFullYear(),
+                end: new Date(Number(results[0].max_datetime)).getFullYear(),
+            })
         }
         initDataSummarize()
     }, [])
@@ -46,31 +52,31 @@ export function SimpleView() {
 
             <div className="sticky top-2 z-50">
                 <RangeSlider
-                    value={year}
+                    range={[range.start, range.end]}
                     min={minYear}
                     max={maxYear}
+                    onRangeChange={setRange}
                     step={1}
-                    onChange={setYear}
                 />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <TopTracks year={year} />
-                <TopArtists year={year} />
-                <TopAlbums year={year} />
-                <ConcentrationScore year={year} />
-                <ListeningRhythm year={year} />
-                <Regularity year={year} />
+                <TopTracks year={range.end} />
+                <TopArtists year={range.end} />
+                <TopAlbums year={range.end} />
+                <ConcentrationScore year={range.end} />
+                <ListeningRhythm year={range.end} />
+                <Regularity year={range.end} />
                 <div className="md:col-span-2">
-                    <EvolutionOverTime year={year} />
+                    <EvolutionOverTime year={range.end} />
                 </div>
-                <SeasonalPatterns year={year} />
-                <NewVsOld year={year} />
-                <ArtistLoyalty year={year} />
-                <SkipRate year={year} />
-                <RepeatBehavior year={year} />
-                <PrincipalPlatform year={year} />
-                <FavoriteWeekday year={year} />
+                <SeasonalPatterns year={range.end} />
+                <NewVsOld year={range.end} />
+                <ArtistLoyalty year={range.end} />
+                <SkipRate year={range.end} />
+                <RepeatBehavior year={range.end} />
+                <PrincipalPlatform year={range.end} />
+                <FavoriteWeekday year={range.end} />
             </div>
         </>
     )
