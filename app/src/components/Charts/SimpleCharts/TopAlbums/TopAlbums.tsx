@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import type { TopAlbumsResult } from './query'
 import { memo } from 'react'
+import { ChartCard } from '../../../ChartCard/ChartCard'
 
 type Props = {
     data: TopAlbumsResult[]
@@ -10,10 +11,7 @@ const rankEmojis = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣']
 
 export const TopAlbums: FC<Props> = memo(function TopAlbums({ data }) {
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                💿 Top Albums
-            </h3>
+        <ChartCard title="Top Albums" emoji="💿">
             <ul className="space-y-2" role="list">
                 {data.map((album, index) => (
                     <li
@@ -41,6 +39,6 @@ export const TopAlbums: FC<Props> = memo(function TopAlbums({ data }) {
                     </li>
                 ))}
             </ul>
-        </div>
+        </ChartCard>
     )
 })

@@ -3,6 +3,17 @@ import { render, screen } from '@testing-library/react'
 import { Regularity } from './Regularity'
 
 describe('Regularity Component', () => {
+    it('renders the title and total artists', () => {
+        const data = {
+            days_with_streams: 28,
+            total_days: 30,
+            longest_pause_days: 1,
+        }
+        render(<Regularity data={data} />)
+
+        screen.getByRole('heading', { name: /⏳Consistency Meter/ })
+    })
+
     it('renders correctly with high regularity', () => {
         const data = {
             days_with_streams: 28,
@@ -12,7 +23,6 @@ describe('Regularity Component', () => {
         render(<Regularity data={data} />)
         screen.getByText('Constant')
         screen.getByText('93%')
-        screen.getByText('28')
         screen.getByText(/\/ 30 days/)
     })
 

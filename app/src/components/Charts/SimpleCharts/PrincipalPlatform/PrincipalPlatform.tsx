@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import type { PlatformResult } from './query'
+import { ChartCard } from '../../../ChartCard/ChartCard'
 
 type Props = {
     data: PlatformResult[]
@@ -11,14 +12,7 @@ export const PrincipalPlatform: FC<Props> = ({ data }) => {
     const topPlatform = data[0]
 
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
-            <h3
-                className="text-lg font-semibold mb-3 flex items-center gap-2"
-                title="Where the magic happened."
-            >
-                📱 Your Sound Machine
-            </h3>
-
+        <ChartCard title="Your Sound Machine" emoji="📱">
             <div className="mb-4">
                 <div className="text-2xl font-bold text-brand-purple">
                     {topPlatform.platform}
@@ -48,6 +42,6 @@ export const PrincipalPlatform: FC<Props> = ({ data }) => {
                     </li>
                 ))}
             </ul>
-        </div>
+        </ChartCard>
     )
 }

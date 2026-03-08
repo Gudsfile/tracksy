@@ -13,9 +13,9 @@ describe('NewVsOld Component', () => {
 
         render(<NewVsOld data={data} />)
 
-        screen.getByText('🆕 New vs Old')
+        screen.getByRole('heading', { name: /🆕Fresh vs Familiar/ })
         screen.getByText('30%')
         screen.getByText('70%')
-        screen.getByText('5')
+        screen.getByText(/5 new artists discovered/)
     })
 })

@@ -14,10 +14,10 @@ describe('RepeatBehavior Component', () => {
 
         render(<RepeatBehavior data={data} />)
 
-        screen.getByText('🔁 Repeat Behavior')
+        screen.getByRole('heading', { name: /🔁Replay Energy/ })
         screen.getByText('"track_name"')
         screen.getByText('5 times in a row 🎸')
-        screen.getByText('15')
+        screen.getByText(/15 repeated sequences/)
         screen.getByText('3.5 times')
     })
 
@@ -34,7 +34,9 @@ describe('RepeatBehavior Component', () => {
                     }}
                 />
             )
-            expect(screen.queryByText('🔁 Repeat Behavior')).toBeNull()
+            expect(
+                screen.queryByRole('heading', { name: /🔁Replay Energy/ })
+            ).toBeNull()
         }
     )
 })

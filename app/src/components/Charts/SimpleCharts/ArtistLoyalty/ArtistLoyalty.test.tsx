@@ -47,7 +47,7 @@ describe('ArtistLoyalty Component', () => {
         const data = createMockData([])
         render(<ArtistLoyalty data={data} />)
 
-        screen.getByText('🤝 Artist Loyalty')
+        screen.getByRole('heading', { name: /🤝Artist Loyalty/ })
         screen.getByText(/115 artists/)
     })
 

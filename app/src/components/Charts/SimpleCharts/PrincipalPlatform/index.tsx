@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { queryPrincipalPlatform, PlatformResult } from './query'
 import { PrincipalPlatform as PrincipalPlatformView } from './PrincipalPlatform'
 
 export function PrincipalPlatform({ year }: { year: number }) {
-    const [data, setData] = useState<PlatformResult[]>([])
+    const { data } = useDBQueryMany<PlatformResult>({
+        query: queryPrincipalPlatform(year),
+        year,
+    })
 
-    useEffect(() => {
-        const fetch = async () => {
-            const sql = queryPrincipalPlatform(year)
-            const result = await queryDBAsJSON<PlatformResult>(sql)
-            setData(result)
-        }
-        fetch()
-    }, [year])
-
-    if (data.length === 0) return null
+    if (!data?.length) return null
     return <PrincipalPlatformView data={data} />
 }

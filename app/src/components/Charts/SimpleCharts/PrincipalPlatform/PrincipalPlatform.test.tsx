@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { PrincipalPlatform } from './PrincipalPlatform'
 
@@ -12,13 +12,13 @@ describe('PrincipalPlatform Component', () => {
 
         render(<PrincipalPlatform data={data} />)
 
-        screen.getByText('📱 Listening Devices')
-
-        screen.getAllByText('iOS')
-        screen.getAllByText('100 (50.0%)')
-        screen.getAllByText('Android')
-        screen.getAllByText('60 (30.0%)')
-        screen.getAllByText('Web')
-        screen.getAllByText('40 (20.0%)')
+        screen.getByRole('heading', { name: /📱Your Sound Machine/ })
+        expect(screen.getAllByText('iOS')).toHaveLength(2)
+        screen.getByText(/100 streams/)
+        screen.getByText('50.0%')
+        screen.getByText('Android')
+        screen.getByText('30.0%')
+        screen.getByText('Web')
+        screen.getByText('20.0%')
     })
 })

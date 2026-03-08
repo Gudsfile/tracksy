@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { queryFavoriteWeekday, FavoriteWeekdayResult } from './query'
 import { FavoriteWeekday as FavoriteWeekdayView } from './FavoriteWeekday'
 
 export function FavoriteWeekday({ year }: { year: number }) {
-    const [data, setData] = useState<FavoriteWeekdayResult[]>([])
+    const { data } = useDBQueryMany<FavoriteWeekdayResult>({
+        query: queryFavoriteWeekday(year),
+        year,
+    })
 
-    useEffect(() => {
-        const fetch = async () => {
-            const sql = queryFavoriteWeekday(year)
-            const result = await queryDBAsJSON<FavoriteWeekdayResult>(sql)
-            setData(result)
-        }
-        fetch()
-    }, [year])
-
-    if (data.length === 0) return null
+    if (!data?.length) return null
     return <FavoriteWeekdayView data={data} />
 }

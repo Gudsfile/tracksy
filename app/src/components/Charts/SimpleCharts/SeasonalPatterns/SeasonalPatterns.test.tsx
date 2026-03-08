@@ -1,4 +1,4 @@
-import { describe, it, vi } from 'vitest'
+import { describe, it, vi, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { SeasonalPatterns } from './SeasonalPatterns'
 import * as db from '../../../../db/queries/queryDB'
@@ -17,15 +17,16 @@ describe('SeasonalPatterns Component', () => {
 
         render(<SeasonalPatterns data={mockData} />)
 
-        screen.getByText('🌺 Seasonal patterns')
-
-        screen.getByText('Winter ❄️')
+        screen.getByRole('heading', { name: /🌺Seasonal Mood/ })
+        screen.getByText('🍂')
+        screen.getByText('40 streams')
+        screen.getByText('Winter')
         screen.getByText('10.0%')
-        screen.getByText('Spring 🌸')
+        screen.getByText('Spring')
         screen.getByText('20.0%')
-        screen.getByText('Summer ☀️')
+        screen.getByText('Summer')
         screen.getByText('30.0%')
-        screen.getByText('Fall 🍂')
+        expect(screen.getAllByText('Fall')).toHaveLength(2)
         screen.getByText('40.0%')
     })
 })
