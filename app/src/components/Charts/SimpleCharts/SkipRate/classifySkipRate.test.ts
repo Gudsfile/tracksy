@@ -6,7 +6,7 @@ describe('classifySkipRate', () => {
         const result = classifySkipRate(40)
 
         expect(result.classification).toBe('Impatient')
-        expect(result.emoji).toBe('⏭️')
+        expect(result.emoji).toBe('🏃')
         expect(result.message).toBe('You skip often!')
     })
 
@@ -22,7 +22,7 @@ describe('classifySkipRate', () => {
         const result = classifySkipRate(55)
 
         expect(result.classification).toBe('Normal')
-        expect(result.emoji).toBe('😐')
+        expect(result.emoji).toBe('⚖️')
         expect(result.message).toBe('You have an equilibrated listening.')
     })
 })

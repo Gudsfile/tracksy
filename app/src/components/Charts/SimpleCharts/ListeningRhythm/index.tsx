@@ -1,19 +1,12 @@
-import { useEffect, useState } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
 import { queryListeningRhythm, ListeningRhythmResult } from './query'
 import { ListeningRhythm as ListeningRhythmView } from './ListeningRhythm'
 
 export function ListeningRhythm({ year }: { year: number }) {
-    const [data, setData] = useState<ListeningRhythmResult | null>(null)
-
-    useEffect(() => {
-        const fetch = async () => {
-            const sql = queryListeningRhythm(year)
-            const result = await queryDBAsJSON<ListeningRhythmResult>(sql)
-            if (result && result.length > 0) setData(result[0])
-        }
-        fetch()
-    }, [year])
+    const { data } = useDBQueryFirst<ListeningRhythmResult>({
+        query: queryListeningRhythm(year),
+        year,
+    })
 
     if (!data) return null
     return <ListeningRhythmView data={data} />

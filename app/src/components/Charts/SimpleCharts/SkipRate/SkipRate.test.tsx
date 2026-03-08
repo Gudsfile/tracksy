@@ -8,8 +8,8 @@ describe('SkipRate Component', () => {
 
         render(<SkipRate data={data} />)
 
-        screen.getByText('⏭️ Listening Patience')
-        screen.getByText('80.0%')
+        screen.getByRole('heading', { name: /⏭️Skip Mood/ })
+        screen.getByText('80.0% are full listens')
         screen.getByText('Skippped (20)')
         screen.getByText('Completed (80)')
         screen.getByText(/Patient/)

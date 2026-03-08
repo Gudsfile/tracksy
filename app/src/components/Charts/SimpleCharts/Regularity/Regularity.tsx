@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import type { RegularityResult } from './query'
 import { classifyRegularity } from './classifyRegularity'
+import { ChartCard } from '../../../ChartCard/ChartCard'
 
 type Props = {
     data: RegularityResult
@@ -20,14 +21,11 @@ export const Regularity: FC<Props> = ({ data }) => {
     const offset = circumference - (regularity_pct / 100) * circumference
 
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in flex flex-col h-full relative">
-            <h3
-                className="text-lg font-semibold mb-3 flex items-center gap-2"
-                title="How steady were you?"
-            >
-                ⏳ Consistency Meter
-            </h3>
-
+        <ChartCard
+            title="Consistency Meter"
+            emoji="⏳"
+            className="flex flex-col h-full relative"
+        >
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <div className="text-2xl font-bold">{label}</div>
@@ -45,7 +43,6 @@ export const Regularity: FC<Props> = ({ data }) => {
                         height={size}
                         className="transform -rotate-90"
                     >
-                        {/* Background circle */}
                         <circle
                             cx={size / 2}
                             cy={size / 2}
@@ -55,7 +52,6 @@ export const Regularity: FC<Props> = ({ data }) => {
                             strokeWidth={strokeWidth}
                             className="text-gray-200 dark:text-gray-700"
                         />
-                        {/* Progress circle */}
                         <circle
                             cx={size / 2}
                             cy={size / 2}
@@ -68,7 +64,6 @@ export const Regularity: FC<Props> = ({ data }) => {
                             className={`${strokeColor} transition-all duration-500`}
                         />
                     </svg>
-                    {/* Center content */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <div className="text-2xl mb-1">{emoji}</div>
                         <div className={`text-xl font-bold ${color}`}>
@@ -84,6 +79,6 @@ export const Regularity: FC<Props> = ({ data }) => {
                     {longest_pause_days}d
                 </span>
             </div>
-        </div>
+        </ChartCard>
     )
 }

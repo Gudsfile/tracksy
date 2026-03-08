@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import type { EvolutionResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
+import { ChartCard } from '../../../ChartCard/ChartCard'
 
 type Props = {
     data: EvolutionResult[]
@@ -16,13 +17,11 @@ export const EvolutionOverTime: FC<Props> = ({ data, year }) => {
     const startYear = Math.min(...data.map((d) => d.year))
 
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in flex flex-col justify-between h-full">
-            <h3
-                className="text-lg font-semibold mb-3 flex items-center gap-2"
-                title="Your journey through the year"
-            >
-                📈 Soundtrack Growth
-            </h3>
+        <ChartCard
+            title="Soundtrack Growth"
+            emoji="📈"
+            className="flex flex-col justify-between h-full"
+        >
             <div className="flex items-end gap-1 h-24 mt-4 mb-2">
                 {data.map((d) => {
                     const height = (d.streams / maxStreams) * 100
@@ -81,6 +80,6 @@ export const EvolutionOverTime: FC<Props> = ({ data, year }) => {
                     </li>
                 )}
             </ul>
-        </div>
+        </ChartCard>
     )
 }

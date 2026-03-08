@@ -1,9 +1,11 @@
 import type { FC } from 'react'
 import type { ArtistLoyaltyResult } from './query'
+import { ChartCard } from '../../../ChartCard/ChartCard'
 
 type Props = {
     data: ArtistLoyaltyResult[]
 }
+
 const BIN_CONFIG: Record<
     string,
     { label: string; color: string; textColor: string }
@@ -76,11 +78,7 @@ export const ArtistLoyalty: FC<Props> = ({ data }) => {
     const classification = getClassification()
 
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                🤝 Artist Loyalty
-            </h3>
-
+        <ChartCard title="Artist Loyalty" emoji="🤝">
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <div className="text-2xl font-bold">
@@ -129,6 +127,6 @@ export const ArtistLoyalty: FC<Props> = ({ data }) => {
                     )
                 })}
             </div>
-        </div>
+        </ChartCard>
     )
 }
