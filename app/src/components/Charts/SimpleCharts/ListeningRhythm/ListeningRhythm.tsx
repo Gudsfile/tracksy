@@ -10,65 +10,35 @@ export const ListeningRhythm: FC<Props> = ({ data }) => {
     const { morning, afternoon, evening, night, total } = data
     const percent = (count: number) => (total ? (count / total) * 100 : 0)
 
-    const dominant = Math.max(morning, afternoon, evening, night)
-    const emoji =
-        morning == dominant
-            ? '🥣'
-            : afternoon == dominant
-              ? '🧃'
-              : evening == dominant
-                ? '🫒'
-                : '🫐'
+    const periods = [
+        { label: 'Morning', value: morning, emoji: '🥣', time: '6‑11h' },
+        { label: 'Afternoon', value: afternoon, emoji: '🧃', time: '12‑17h' },
+        { label: 'Evening', value: evening, emoji: '🫒', time: '18‑21h' },
+        { label: 'Night', value: night, emoji: '🫐', time: '22‑5h' },
+    ]
 
-    const label =
-        morning == dominant
-            ? 'Morning'
-            : afternoon == dominant
-              ? 'Afternoon'
-              : evening == dominant
-                ? 'Evening'
-                : 'Night'
+    const favorite = periods.reduce((prev, current) =>
+        prev.value > current.value ? prev : current
+    )
 
     return (
         <ChartCard title="Daily Vibes" emoji="⏰">
             <ChartHero
-                label={label}
-                sublabel={`${dominant.toLocaleString()} streams`}
-                emoji={emoji}
+                label={favorite.label}
+                sublabel={`${favorite.value?.toLocaleString()} streams`}
+                emoji={favorite.emoji}
             />
-            <ul className="space-y-2" role="list">
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Morning (6‑11h)"
-                        value={`${percent(morning).toFixed(1)}%`}
-                        pct={percent(morning)}
-                        barColor="bg-brand-purple"
-                    />
-                </li>
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Afternoon (12‑17h)"
-                        value={`${percent(afternoon).toFixed(1)}%`}
-                        pct={percent(afternoon)}
-                        barColor="bg-brand-purple"
-                    />
-                </li>
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Evening (18‑21h)"
-                        value={`${percent(evening).toFixed(1)}%`}
-                        pct={percent(evening)}
-                        barColor="bg-brand-purple"
-                    />
-                </li>
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Night (22‑5h)"
-                        value={`${percent(night).toFixed(1)}%`}
-                        pct={percent(night)}
-                        barColor="bg-brand-purple"
-                    />
-                </li>
+            <ul className="space-y-3" role="list">
+                {periods.map((period) => (
+                    <li key={period.label} role="listitem">
+                        <LabeledProgressBar
+                            label={`${period.label} (${period.time})`}
+                            value={`${percent(period.value).toFixed(1)}%`}
+                            pct={percent(period.value)}
+                            barColor="bg-brand-purple"
+                        />
+                    </li>
+                ))}
             </ul>
         </ChartCard>
     )

@@ -9,39 +9,29 @@ type Props = {
 export const ConcentrationScore: FC<Props> = ({ data }) => {
     const { top5_pct, top10_pct, top20_pct } = data
 
+    const scores = [
+        { label: 'Top 5', value: top5_pct },
+        { label: 'Top 10', value: top10_pct },
+        { label: 'Top 20', value: top20_pct },
+    ]
+
     return (
         <ChartCard title="Focus Mode" emoji="🔥">
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Share of listening time for your top artists
             </div>
             <ul className="space-y-3" role="list">
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Top 5"
-                        value={`${top5_pct.toFixed(1)}%`}
-                        valueColor="text-brand-blue"
-                        pct={top5_pct}
-                        barColor="bg-brand-blue"
-                    />
-                </li>
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Top 10"
-                        value={`${top10_pct.toFixed(1)}%`}
-                        valueColor="text-brand-blue"
-                        pct={top10_pct}
-                        barColor="bg-brand-blue"
-                    />
-                </li>
-                <li role="listitem">
-                    <LabeledProgressBar
-                        label="Top 20"
-                        value={`${top20_pct.toFixed(1)}%`}
-                        valueColor="text-brand-blue"
-                        pct={top20_pct}
-                        barColor="bg-brand-blue"
-                    />
-                </li>
+                {scores.map((score) => (
+                    <li key={score.label} role="listitem">
+                        <LabeledProgressBar
+                            label={score.label}
+                            value={`${score.value.toFixed(1)}%`}
+                            valueColor="text-brand-blue"
+                            pct={score.value}
+                            barColor="bg-brand-blue"
+                        />
+                    </li>
+                ))}
             </ul>
         </ChartCard>
     )
