@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { RepeatResult } from './query'
 import { classifyRepeatBehavior } from './classifyRepeatBehavior'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, ChartHero } from '../shared'
 
 type Props = {
     data: RepeatResult
@@ -23,15 +23,11 @@ export const RepeatBehavior: FC<Props> = ({ data }) => {
 
     return (
         <ChartCard title="Replay Energy" emoji="🔁">
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <div className="text-2xl font-bold">{classification}</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">
-                        {total_repeat_sequences} repeated sequences
-                    </div>
-                </div>
-                <div className="text-4xl">{emoji}</div>
-            </div>
+            <ChartHero
+                label={classification}
+                sublabel={`${total_repeat_sequences} repeated sequences`}
+                emoji={emoji}
+            />
 
             <div className="space-y-3">
                 <div className="bg-gray-200 dark:bg-slate-700/50 p-3 rounded-lg">

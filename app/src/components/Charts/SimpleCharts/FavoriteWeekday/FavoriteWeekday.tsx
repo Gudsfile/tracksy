@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { FavoriteWeekdayResult } from './query'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, ChartHero } from '../shared'
 
 type Props = {
     data: FavoriteWeekdayResult[]
@@ -27,15 +27,11 @@ export const FavoriteWeekday: FC<Props> = ({ data }) => {
 
     return (
         <ChartCard title="Your Power Day" emoji="📅">
-            <div className="mb-4">
-                <div className="text-2xl font-bold text-orange-400">
-                    {favoriteDay.day_name}
-                </div>
-
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {favoriteDay.stream_count.toLocaleString()} streams
-                </div>
-            </div>
+            <ChartHero
+                label={favoriteDay.day_name}
+                sublabel={`${favoriteDay.stream_count.toLocaleString()} streams`}
+                labelColor="text-orange-400"
+            />
 
             <div className="grid grid-cols-7 gap-1">
                 {data.map((day) => {

@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { RegularityResult } from './query'
 import { classifyRegularity } from './classifyRegularity'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, ChartHero } from '../shared'
 
 type Props = {
     data: RegularityResult
@@ -26,15 +26,11 @@ export const Regularity: FC<Props> = ({ data }) => {
             emoji="⏳"
             className="flex flex-col h-full relative"
         >
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <div className="text-2xl font-bold">{label}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {days_with_streams} / {total_days} days
-                    </div>
-                </div>
-                <div className="text-4xl">{emoji}</div>
-            </div>
+            <ChartHero
+                label={label}
+                sublabel={`${days_with_streams} / ${total_days} days`}
+                emoji={emoji}
+            />
 
             <div className="flex-1 flex items-center justify-center mb-4">
                 <div className="relative">

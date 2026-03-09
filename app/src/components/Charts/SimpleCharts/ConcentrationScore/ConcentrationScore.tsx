@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { ConcentrationResult } from './query'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, LabeledProgressBar } from '../shared'
 
 type Props = {
     data: ConcentrationResult
@@ -9,15 +9,6 @@ type Props = {
 export const ConcentrationScore: FC<Props> = ({ data }) => {
     const { top5_pct, top10_pct, top20_pct } = data
 
-    const bar = (pct: number) => (
-        <div className="w-full bg-gray-200 dark:bg-slate-700/50 rounded-full h-3 mb-1 overflow-hidden">
-            <div
-                className="bg-brand-blue h-3 rounded"
-                style={{ width: `${Math.min(Math.max(pct, 0), 100)}%` }}
-            ></div>
-        </div>
-    )
-
     return (
         <ChartCard title="Focus Mode" emoji="🔥">
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -25,31 +16,31 @@ export const ConcentrationScore: FC<Props> = ({ data }) => {
             </div>
             <ul className="space-y-3" role="list">
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Top 5</span>
-                        <span className="text-brand-blue">
-                            {top5_pct.toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(top5_pct)}
+                    <LabeledProgressBar
+                        label="Top 5"
+                        value={`${top5_pct.toFixed(1)}%`}
+                        valueColor="text-brand-blue"
+                        pct={top5_pct}
+                        barColor="bg-brand-blue"
+                    />
                 </li>
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Top 10</span>
-                        <span className="text-brand-blue">
-                            {top10_pct.toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(top10_pct)}
+                    <LabeledProgressBar
+                        label="Top 10"
+                        value={`${top10_pct.toFixed(1)}%`}
+                        valueColor="text-brand-blue"
+                        pct={top10_pct}
+                        barColor="bg-brand-blue"
+                    />
                 </li>
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Top 20</span>
-                        <span className="text-brand-blue">
-                            {top20_pct.toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(top20_pct)}
+                    <LabeledProgressBar
+                        label="Top 20"
+                        value={`${top20_pct.toFixed(1)}%`}
+                        valueColor="text-brand-blue"
+                        pct={top20_pct}
+                        barColor="bg-brand-blue"
+                    />
                 </li>
             </ul>
         </ChartCard>
