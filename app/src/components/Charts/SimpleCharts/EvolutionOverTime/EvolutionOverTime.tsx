@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { EvolutionResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard } from '../shared'
 
 type Props = {
     data: EvolutionResult[]

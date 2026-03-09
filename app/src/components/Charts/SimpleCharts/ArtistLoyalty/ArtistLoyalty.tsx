@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { ArtistLoyaltyResult } from './query'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, ChartHero } from '../shared'
 
 type Props = {
     data: ArtistLoyaltyResult[]
@@ -79,17 +79,11 @@ export const ArtistLoyalty: FC<Props> = ({ data }) => {
 
     return (
         <ChartCard title="Artist Loyalty" emoji="🤝">
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <div className="text-2xl font-bold">
-                        {classification.label}
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {totalArtists.toLocaleString()} artists
-                    </div>
-                </div>
-                <div className="text-4xl">{classification.emoji}</div>
-            </div>
+            <ChartHero
+                label={classification.label}
+                sublabel={`${totalArtists.toLocaleString()} artists`}
+                emoji={classification.emoji}
+            />
 
             <div className="space-y-2">
                 {BIN_ORDER.map((binKey) => {

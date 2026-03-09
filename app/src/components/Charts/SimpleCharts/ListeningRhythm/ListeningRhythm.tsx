@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { ListeningRhythmResult } from './query'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, ChartHero, LabeledProgressBar } from '../shared'
 
 type Props = {
     data: ListeningRhythmResult
@@ -9,15 +9,6 @@ type Props = {
 export const ListeningRhythm: FC<Props> = ({ data }) => {
     const { morning, afternoon, evening, night, total } = data
     const percent = (count: number) => (total ? (count / total) * 100 : 0)
-
-    const bar = (pct: number) => (
-        <div className="w-full bg-gray-200 dark:bg-slate-700/50 rounded-full h-2 mb-1 overflow-hidden">
-            <div
-                className="bg-brand-purple h-2 rounded-full"
-                style={{ width: `${Math.min(Math.max(pct, 0), 100)}%` }}
-            ></div>
-        </div>
-    )
 
     const dominant = Math.max(morning, afternoon, evening, night)
     const emoji =
@@ -40,51 +31,43 @@ export const ListeningRhythm: FC<Props> = ({ data }) => {
 
     return (
         <ChartCard title="Daily Vibes" emoji="⏰">
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <div className="text-2xl font-bold">{label}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {dominant.toLocaleString()} streams
-                    </div>
-                </div>
-                <div className="text-4xl">{emoji}</div>
-            </div>
+            <ChartHero
+                label={label}
+                sublabel={`${dominant.toLocaleString()} streams`}
+                emoji={emoji}
+            />
             <ul className="space-y-2" role="list">
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Morning (6‑11h)</span>
-                        <span className="text-brand-purple">
-                            {percent(morning).toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(percent(morning))}
+                    <LabeledProgressBar
+                        label="Morning (6‑11h)"
+                        value={`${percent(morning).toFixed(1)}%`}
+                        pct={percent(morning)}
+                        barColor="bg-brand-purple"
+                    />
                 </li>
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Afternoon (12‑17h)</span>
-                        <span className="text-brand-purple">
-                            {percent(afternoon).toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(percent(afternoon))}
+                    <LabeledProgressBar
+                        label="Afternoon (12‑17h)"
+                        value={`${percent(afternoon).toFixed(1)}%`}
+                        pct={percent(afternoon)}
+                        barColor="bg-brand-purple"
+                    />
                 </li>
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Evening (18‑21h)</span>
-                        <span className="text-brand-purple">
-                            {percent(evening).toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(percent(evening))}
+                    <LabeledProgressBar
+                        label="Evening (18‑21h)"
+                        value={`${percent(evening).toFixed(1)}%`}
+                        pct={percent(evening)}
+                        barColor="bg-brand-purple"
+                    />
                 </li>
                 <li role="listitem">
-                    <div className="flex justify-between text-xs font-medium mb-1.5">
-                        <span>Night (22‑5h)</span>
-                        <span className="text-brand-purple">
-                            {percent(night).toFixed(1)}%
-                        </span>
-                    </div>
-                    {bar(percent(night))}
+                    <LabeledProgressBar
+                        label="Night (22‑5h)"
+                        value={`${percent(night).toFixed(1)}%`}
+                        pct={percent(night)}
+                        barColor="bg-brand-purple"
+                    />
                 </li>
             </ul>
         </ChartCard>

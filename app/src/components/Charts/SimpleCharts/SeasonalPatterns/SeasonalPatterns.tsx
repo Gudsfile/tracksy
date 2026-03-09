@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import type { SeasonalResult } from './query'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartHero, LabeledProgressBar } from '../shared'
 
 type Props = {
     data: SeasonalResult
@@ -23,29 +24,21 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
 
     return (
         <ChartCard title="Seasonal Mood" emoji="🌺">
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <div className="text-2xl font-bold">{favorite.name}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {favorite.value?.toLocaleString()} streams
-                    </div>
-                </div>
-                <div className="text-4xl">{favorite.emoji}</div>
-            </div>
-
+            <ChartHero
+                label={favorite.name}
+                sublabel={`${favorite.value?.toLocaleString()} streams`}
+                emoji={favorite.emoji}
+            />
             <ul className="space-y-3" role="list">
                 {seasons.map((season) => (
                     <li key={season.name} role="listitem">
-                        <div className="flex justify-between text-xs mb-1">
-                            <span>{season.name}</span>
-                            <span>{percent(season.value).toFixed(1)}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-slate-700/50 rounded-full h-2">
-                            <div
-                                className={`${season.color} h-2 rounded-full`}
-                                style={{ width: `${percent(season.value)}%` }}
-                            ></div>
-                        </div>
+                        <LabeledProgressBar
+                            label={season.name}
+                            value={`${percent(season.value).toFixed(1)}%`}
+                            valueColor="text-gray-600 dark:text-gray-400"
+                            pct={percent(season.value)}
+                            barColor={season.color}
+                        />
                     </li>
                 ))}
             </ul>

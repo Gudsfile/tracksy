@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { NewVsOldResult } from './query'
-import { ChartCard } from '../../../ChartCard/ChartCard'
+import { ChartCard, ChartHero, InsightCard } from '../shared'
 
 type Props = {
     data: NewVsOldResult
@@ -26,13 +26,7 @@ export const NewVsOld: FC<Props> = ({ data }) => {
 
     return (
         <ChartCard title="Fresh vs Familiar" emoji="🆕">
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <div className="text-2xl font-bold">{top}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400"></div>
-                </div>
-                <div className="text-4xl"></div>
-            </div>
+            <ChartHero label={top} />
 
             <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                 <div role="list" className="flex-1 text-center contents">
@@ -65,10 +59,10 @@ export const NewVsOld: FC<Props> = ({ data }) => {
                 ></div>
             </div>
 
-            <div className="text-sm text-center font-medium text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-slate-700/50 p-2 rounded-lg">
+            <InsightCard>
                 {new_artists_count.toLocaleString()} new artists discovered this
                 year!
-            </div>
+            </InsightCard>
         </ChartCard>
     )
 }
