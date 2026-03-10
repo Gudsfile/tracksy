@@ -29,75 +29,102 @@ test("has title and can upload dataset", async ({ page }) => {
   await page.getByRole("slider").fill("2025");
   await expect(page.getByText("2025")).toHaveCount(2);
 
-  /* Concentration Score Card */
-  await expect(
-    page.getByRole("heading", {
-      name: /Concentration Score/,
-    })
-  ).toBeVisible();
+  /* Top Tracks Card */
+  const topTracksCard = page.locator(".group").filter({
+    has: page.getByRole("heading", { name: /Top Tracks/ }),
+  });
+  await expect(topTracksCard).toBeVisible();
 
+  await expect(topTracksCard.getByRole("listitem").filter({ hasText: "Property Simply Break" })).toBeVisible();
+  await expect(topTracksCard.getByRole("listitem").filter({ hasText: "Property Simply Break" })).toContainText("🥇");
+  await expect(topTracksCard.getByRole("listitem").filter({ hasText: "Property Simply Break" })).toContainText("Property Simply Break Could");
+  await expect(topTracksCard.getByRole("listitem").filter({ hasText: "Property Simply Break" })).toContainText("Norma Roberts");
+  await expect(topTracksCard.getByRole("listitem").filter({ hasText: "Property Simply Break" })).toContainText("15");
+
+  /* Top Artists Card */
+  const topArtistsCard = page.locator(".group").filter({
+    has: page.getByRole("heading", { name: /Top Artists/ }),
+  });
+  await expect(topArtistsCard).toBeVisible();
+  await expect(topArtistsCard.getByRole("listitem").filter({ hasText: "Jeffrey Mathis" })).toBeVisible();
+  await expect(topArtistsCard.getByRole("listitem").filter({ hasText: "Jeffrey Mathis" })).toContainText("🥈");
+  await expect(topArtistsCard.getByRole("listitem").filter({ hasText: "Jeffrey Mathis" })).toContainText("21m");
+  await expect(topArtistsCard.getByRole("listitem").filter({ hasText: "Jeffrey Mathis" })).toContainText("8");
+
+  /* Top Albums Card */
+  const topAlbumsCard = page.locator(".group").filter({
+    has: page.getByRole("heading", { name: /Top Albums/ }),
+  });
+  await expect(topAlbumsCard).toBeVisible();
+  await expect(topAlbumsCard.getByRole("listitem").filter({ hasText: "Hand Growth After" })).toBeVisible();
+  await expect(topAlbumsCard.getByRole("listitem").filter({ hasText: "Hand Growth After" })).toContainText("5️⃣");
+  await expect(topAlbumsCard.getByRole("listitem").filter({ hasText: "Hand Growth After" })).toContainText("Kayla Richardson");
+  await expect(topAlbumsCard.getByRole("listitem").filter({ hasText: "Hand Growth After" })).toContainText("4");
+
+  /* Focus Mode Card */
+  await expect(page.getByRole("heading", { name: /Focus Mode/ })).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Top 5" })).toContainText("25.0%");
-
   await expect(page.getByRole("listitem").filter({ hasText: "Top 10" })).toContainText("37.8%");
-
   await expect(page.getByRole("listitem").filter({ hasText: "Top 20" })).toContainText("55.8%");
 
-  /* Loyalty vs Discovery Card */
+  /* Artist Loyalty Card */
   const loyaltyCard = page.locator(".group").filter({
-    has: page.getByRole("heading", { name: /Loyalty vs Discovery/ }),
+    has: page.getByRole("heading", { name: /Artist Loyalty/ }),
   });
   await expect(loyaltyCard).toBeVisible();
+  await expect(loyaltyCard.getByText("Explorer")).toBeVisible();
+  await expect(loyaltyCard.getByText("1 stream26%")).toBeVisible();
+  await expect(loyaltyCard.getByText("2-10 streams63%")).toBeVisible();
+  await expect(loyaltyCard.getByText("11-100 streams11%")).toBeVisible();
+  await expect(loyaltyCard.getByText("101-1000 streams0%")).toBeVisible();
+  await expect(loyaltyCard.getByText("1000+ streams0%")).toBeVisible();
 
-  // Check Loyalty contents
-  await expect(loyaltyCard.getByText("Explorer").first()).toBeVisible();
-  await expect(loyaltyCard.getByRole("listitem").filter({ hasText: "Artists" })).toContainText("79");
-  await expect(loyaltyCard.getByRole("listitem").filter({ hasText: "Streams" })).toContainText("172");
-
-  /* Listening Rhythm Card */
-  await expect(page.getByRole("heading", { name: /Listening Rhythm/ })).toBeVisible();
+  /* Daily Vibes Card */
+  await expect(page.getByRole("heading", { name: /Daily Vibes/ })).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Morning" })).toContainText("39.5%");
   await expect(page.getByRole("listitem").filter({ hasText: "Night" })).toContainText("14.0%");
 
-  /* Listening Regularity Card */
-  await expect(page.getByRole("heading", { name: /Listening Regularity/ })).toBeVisible();
-  await expect(page.getByText("Regular", { exact: true })).toBeVisible();
+  /* Consistency Meter Card */
+  await expect(page.getByRole("heading", { name: /Consistency Meter/ })).toBeVisible();
+  await expect(page.getByText("Occasional", { exact: true })).toBeVisible();
   await expect(page.getByText("134 / 365 days")).toBeVisible();
   await expect(page.getByText("37%")).toBeVisible();
 
-  /* Evolution Card */
-  await expect(page.getByRole("heading", { name: /Evolution/ })).toBeVisible();
+  /* Soundtrack Growth */
+  await expect(page.getByRole("heading", { name: /Soundtrack Growth/ })).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Total streams" })).toContainText("746");
   await expect(page.getByRole("listitem").filter({ hasText: "This year" })).toContainText("172");
 
-  /* Seasonal patterns Card */
-  await expect(page.getByRole("heading", { name: /Seasonal patterns/ })).toBeVisible();
-  await expect(page.getByText("Your favorite season: Fall")).toBeVisible();
-  // We can also check the list item for Fall
+  /* Seasonal Mood Card */
+  await expect(page.getByRole("heading", { name: /Seasonal Mood/ })).toBeVisible();
+  await expect(page.getByText('Fall54 streams🍂')).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Winter" })).toContainText("23.3%");
   await expect(page.getByRole("listitem").filter({ hasText: "Summer" })).toContainText("17.4%");
 
-  /* New vs Old Card */
-  await expect(page.getByRole("heading", { name: /New vs Old/ })).toBeVisible();
+  /* Fresh vs Familiar Card */
+  await expect(page.getByRole("heading", { name: /Fresh vs Familiar/ })).toBeVisible();
   await expect(page.getByText("9 new artists discovered this year!")).toBeVisible();
-  await expect(page.getByRole("listitem").filter({ hasText: "Découvertes" })).toContainText("11%");
+  await expect(page.getByRole("listitem").filter({ hasText: "Discoveries" })).toContainText("11%");
 
-  /* Listening Patience Card */
-  await expect(page.getByRole("heading", { name: /Listening Patience/ })).toBeVisible();
+  /* Skip Mood Card */
+  await expect(page.getByRole("heading", { name: /Skip Mood/ })).toBeVisible();
   await expect(page.getByText("100.0%")).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Completed" })).toContainText("172");
 
-  /* Repeat Behavior Card */
-  await expect(page.getByRole("heading", { name: /Repeat Behavior/ })).toBeVisible();
+  /* Replay Energy Card */
+  await expect(page.getByRole("heading", { name: /Replay Energy/ })).toBeVisible();
   await expect(page.getByText("Variated")).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Repeat average" })).toContainText("2.0 times");
 
-  /* Listening Devices Card */
-  await expect(page.getByRole("heading", { name: /Listening Devices/ })).toBeVisible();
-  await expect(page.getByText("Main platform")).toBeVisible();
+  /* Your Sound Machine Card */
+  await expect(page.getByRole("heading", { name: /Your Sound Machine/ })).toBeVisible();
+  await expect(page.getByText("Windows")).toHaveCount(2);
+  await expect(page.getByText('70 streams')).toBeVisible();
   await expect(page.getByRole("listitem").filter({ hasText: "Windows" })).toContainText("40.7%");
+  await expect(page.getByRole("listitem").filter({ hasText: "Others" })).toContainText("59.3%");
 
-  /* Favorite Weekday Card */
-  await expect(page.getByRole("heading", { name: /Favorite Weekday/ })).toBeVisible();
+  /* Your Power Day Card */
+  await expect(page.getByRole("heading", { name: /Your Power Day/ })).toBeVisible();
   await expect(page.getByText("Tuesday").first()).toBeVisible();
   await expect(page.getByText("31 streams")).toBeVisible();
 });
