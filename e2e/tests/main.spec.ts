@@ -25,9 +25,9 @@ test("has title and can upload dataset", async ({ page }) => {
   await expect(simpleViewTab).toHaveAttribute("aria-selected", "true");
 
   // Select 2025 on slider
-  await expect(page.getByText("2025")).toHaveCount(1);
+  await expect(page.getByText("2025", { exact: true })).toHaveCount(0);
   await page.getByRole("slider").fill("2025");
-  await expect(page.getByText("2025")).toHaveCount(2);
+  await expect(page.getByText("2025", { exact: true })).toHaveCount(1);
 
   /* Top Tracks Card */
   const topTracksCard = page.locator(".group").filter({
