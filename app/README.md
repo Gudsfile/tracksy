@@ -34,6 +34,8 @@ As an Astro project, you'll see the following folders and files:
 │   ├── components/
 │   │   └── # reusable UI elements written in Astro/React/Vue/Svelte/Preact
 │   │         # see below for details of specific Tracksy components
+│   ├── db/
+│   │   └── # DuckDB setup, initialization, and query logic
 │   ├── layouts/
 │   │   └── # common structure such as header and footer for multiple pages
 │   └── pages/
@@ -57,48 +59,102 @@ The `TracksyWrapper` component is the main orchestrator for Tracksy's UI state t
 ```mermaid
 stateDiagram-v2
   [*] --> Nothing:Mount
-  Nothing --> Dropzone_and_DemoButton:DB initialized
-  Dropzone_and_DemoButton --> Spinner:File uploaded
-  Dropzone_and_DemoButton --> Dropzone_RangeSlider_and_Charts:Button clicked
-  Spinner --> Dropzone_RangeSlider_and_Charts:Data inserted
-  Dropzone_RangeSlider_and_Charts --> Spinner:File uploaded
+  Nothing --> Dropzone_and_Buttons:DB initialized
+  Dropzone_and_Buttons --> Spinner:File uploaded
+  Dropzone_and_Buttons --> Dropzone_Buttons_and_Results:Demo button clicked
+  Spinner --> Dropzone_Buttons_and_Results:Data inserted
+  Dropzone_Buttons_and_Results --> Spinner:File uploaded
+  Dropzone_Buttons_and_Results --> Dropzone_Buttons_and_Results:Demo button clicked
 
   Nothing:Nothing
-  Dropzone_and_DemoButton:Dropzone_and_DemoButton
+  Dropzone_and_Buttons:Dropzone_and_Buttons
   Spinner:Spinner
-  Dropzone_RangeSlider_and_Charts:Dropzone_RangeSlider_and_Charts
+  Dropzone_Buttons_and_Results:Dropzone_Buttons_and_Results
 
 Nothing:Renders nothing
-Dropzone_and_DemoButton:Shows the file dropzone and the demo button
+Dropzone_and_Buttons:Shows the file dropzone, HowToButton, and DemoButton
 Spinner:Shows a spinner while processing
-Dropzone_RangeSlider_and_Charts:Shows the charts and the dropzone for further uploads
+Dropzone_Buttons_and_Results:Shows Results (SimpleView / DetailedView tabs) and the dropzone for further uploads
 ```
 
-### 📊 Charts Component
+> [!NOTE]
+> `ThemeToggle` is rendered as a persistent overlay in `App.tsx` (wraps `TracksyWrapper` with a `ThemeProvider`).
 
-The `Charts` component is responsible for orchestrating and rendering visualizations in the app. It manages how different components interact with each other, such as coordinating between the `RangeSlider` and `StreamPerHour` components. Below is a mermaid diagram that illustrates how the `Charts` works (without the summarize query):
+### 📊 Results Component
+
+The `Results` component renders visualizations in two tabs:
+
+Both views use a `RangeSlider` to filter by year. User interaction (year change) re-renders only the charts within the active view.
+
+- **SimpleView** — a grid of high-level insights (top tracks/artists/albums, listening patterns, fun facts, etc.)
+- **DetailedView** — deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`) and an interactive `DuckDBShell`
+
+Each view is responsible for orchestrating and rendering visualizations. It manages how different components interact with each other, such as coordinating between the RangeSlider and insights components. Below is a mermaid diagram that illustrates how the SimpleView works (without the summarize query):
 
 ```mermaid
 sequenceDiagram
-  actor SummaryPerYear
-  actor StreamPerMonth
-  actor Charts as Charts (Main Component)
-  actor StreamPerHour
-  actor RangeSlider
+  actor User
+  participant SimpleView as SimpleView (state: selectedYear)
+  participant RangeSlider
+  participant TopTracks
+  participant FavoriteWeekday
+  participant OtherCharts
+  participant FunFacts
 
-  Charts ->> SummaryPerYear: render with default year
-  Charts ->> StreamPerHour: render with default year
-  Charts ->> RangeSlider: render with default year
-  Charts ->> StreamPerMonth: render with default year
-  RangeSlider ->> Charts: year=2006
-  Charts ->> StreamPerHour: render with year=2006
-  Charts ->> StreamPerMonth: render with year=2006
-  Charts ->> SummaryPerYear: render with year=2006
-  RangeSlider ->> Charts: year=2007
-  Charts ->> StreamPerHour: render with year=2007
-  Charts ->> StreamPerMonth: render with year=2007
-  Charts ->> SummaryPerYear: render with year=2007
+  %% Initial page load
+  User ->> SimpleView: Open page
+  activate SimpleView
+  SimpleView -->> RangeSlider: render(defaultYear)
+  SimpleView -->> TopTracks: render(defaultYear)
+  SimpleView -->> FavoriteWeekday: render(defaultYear)
+  SimpleView -->> FunFacts: render()
+  deactivate SimpleView
+
+  %% User changes year
+  User ->> RangeSlider: selectYear(2006)
+  RangeSlider ->> SimpleView: onYearChange(2006)
+  activate SimpleView
+  SimpleView ->> SimpleView: update selectedYear
+  SimpleView -->> TopTracks: render(2006)
+  SimpleView -->> FavoriteWeekday: render(2006)
+  SimpleView -->> OtherCharts: render(2006)
+  deactivate SimpleView
+
+  %% FunFacts internal update
+  User ->> FunFacts: click "New Fact"
+  activate FunFacts
+  FunFacts ->> FunFacts: fetch/generate new fact
+  FunFacts ->> FunFacts: update internal state
+  deactivate FunFacts
 ```
+
+### 🗃️ SimpleCharts Component Convention
+
+Each chart in `SimpleView` lives in `src/components/Charts/SimpleCharts/<ComponentName>/` and follows a consistent file layout:
+
+```text
+TopArtists/
+├── index.tsx              # Data-fetching container (useDBQueryMany / useDBQueryFirst → passes data down)
+├── TopArtists.tsx         # Presentation component (pure render, no DB logic)
+├── query.ts               # DuckDB query function + result TypeScript type
+├── classifyTopArtists.ts  # (optional) pure classification/scoring helper
+└── *.test.ts(x)           # Unit tests for each file above
+```
+
+The separation between `index.tsx` (data) and `<Component>.tsx` (display) makes each chart independently testable without a database.
+
+### 🧩 Shared UI Primitives
+
+Reusable display components are in `src/components/Charts/SimpleCharts/shared/` and exported via its `index.ts`:
+
+| Component            | Purpose                                                |
+|----------------------|--------------------------------------------------------|
+| `ChartCard`          | Wrapper card with title, emoji                         |
+| `ChartHero`          | Prominent metric display with label and optional emoji |
+| `RankedList`         | Ranked list with medal emojis                          |
+| `ProgressBar`        | Simple percentage bar                                  |
+| `LabeledProgressBar` | Progress bar with label and value                      |
+| `InsightCard`        | Highlighted text block for insights                    |
 
 ## ➕ Optional extras
 
