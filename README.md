@@ -47,7 +47,7 @@ You can skip this step using pre-generated datasets through the demo button on t
 
 ### 🚀 Upload your data
 
-Go to [Tracksy](https://tracksy-app.web.app) and upload your file or use the demo button.
+Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file or use the demo button.
 
 No data is sent to us, it stays with you!
 
