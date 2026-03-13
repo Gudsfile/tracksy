@@ -13,28 +13,11 @@
 
 🚧 Currently only works with Spotify streaming data.
 
-## Project Structure
-
-Inside of this project, you'll see the following folders and files:
-
-```text
-/
-├── app/
-└── synthetic-datasets/
-```
-
-`app/` is the front end. It's an Astro project using DuckDB for data storage. This means that your uploaded data stays with you, client-side.
-We don't want to help you understand your data without knowing your data.
-For developers or curious, take a look at [`app/README.md`](app/#tracksy-app) for more details on development.
-
-`synthetic-datasets/` is use to generate datasets to test the Tracksy application.
-For developers or curious, take a look at [`synthetic-datasets/README.md`](synthetic-datasets/) for more details on development.
-
 ## Usage
 
 ### ⬇️ Download your data
 
-You can skip this step using pre-generated datasets through the demo button on the home page.
+**You can skip this step** using pre-generated datasets through the demo button on the home page.
 
 **Or use your own Spotify data:**
 
@@ -65,15 +48,35 @@ The project is currently under development. We plan to add visualizations as wel
 We also intend to support other data sources (Deezer, Funkwhale, etc.).
 See our [issues](https://github.com/Gudsfile/tracksy/issues).
 
+## Project Structure
+
+Inside of this project, you'll see the following folders and files:
+
+```text
+/
+├── app/
+├── blog/
+├── e2e/
+└── synthetic-datasets/
+```
+
+- `app/` is the front end. It's an Astro project using DuckDB WASM for data storage. This means that your uploaded data stays with you, client-side.
+  We don't want to help you understand your data without knowing your data.
+  For developers or curious, take a look at [`app/README.md`](app/) for more details on development.
+- `blog/` is a static blog built with Hugo.
+  See [`blog/README.md`](blog/) for more details.
+- `e2e/` is an end-to-end testing suite built with Playwright.
+  See [`e2e/README.md`](e2e/) for more details.
+- `synthetic-datasets/` is used to generate datasets to test the Tracksy application.
+  For developers or curious, take a look at [`synthetic-datasets/README.md`](synthetic-datasets/) for more details on development.
+
 ## Installation
 
  ```bash
  moon setup
-
+```
+```bash
  moon run app:dev
- moon run synthetic-datasets:generate -- 100
- moon run blog:dev
- moon run e2e:test
  ```
 
  More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)

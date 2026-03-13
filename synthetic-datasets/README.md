@@ -15,7 +15,7 @@ moon run synthetic-datasets:generate -- 100
 
 Find generated datasets in the `datasets` folder.
 
-More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
+More details in [CONTRIBUTING.md development section](../CONTRIBUTING.md#development)
 
 ## 🚀 Project Structure
 

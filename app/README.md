@@ -13,7 +13,7 @@ moon run app:dev
 
 Go to [`http://localhost:4321/`](http://localhost:4321/) and upload your downloaded file.
 
-More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
+More details in [CONTRIBUTING.md development section](../CONTRIBUTING.md#development)
 
 ### 🎵 Spotify API Configuration
 
