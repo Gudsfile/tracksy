@@ -1,5 +1,5 @@
 import * as Plot from '@observablehq/plot'
-import { StreamPerMonthQueryResult } from './query'
+import type { StreamPerMonthQueryResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
 import { formatMonthYear } from '../../../../utils/formatMonthYear'
 import * as d3 from 'd3'

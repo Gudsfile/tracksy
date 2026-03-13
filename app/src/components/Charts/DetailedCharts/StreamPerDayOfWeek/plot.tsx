@@ -1,5 +1,5 @@
 import * as Plot from '@observablehq/plot'
-import { StreamPerDayOfWeekQueryResult } from './query'
+import type { StreamPerDayOfWeekQueryResult } from './query'
 
 export function buildPlot(
     data: StreamPerDayOfWeekQueryResult[],

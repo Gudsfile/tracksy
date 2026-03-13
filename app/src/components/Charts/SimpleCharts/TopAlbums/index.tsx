@@ -1,5 +1,5 @@
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
-import { queryTopAlbums, TopAlbumsResult } from './query'
+import { queryTopAlbums, type TopAlbumsResult } from './query'
 import { TopAlbums as TopAlbumsView } from './TopAlbums'
 
 export function TopAlbums({ year }: { year: number }) {

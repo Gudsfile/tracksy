@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { queryTop10TracksEvolution } from './query'
-import { DuckDBConnection, DuckDBValue } from '@duckdb/node-api'
+import { DuckDBConnection, type DuckDBValue } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
 const seedPath =
     'src/components/Charts/DetailedCharts/Top10TracksEvolution/fixtures/seed.json'

@@ -1,5 +1,5 @@
 import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
-import { queryNewVsOld, NewVsOldResult } from './query'
+import { queryNewVsOld, type NewVsOldResult } from './query'
 import { NewVsOld as NewVsOldView } from './NewVsOld'
 
 export function NewVsOld({ year }: { year: number }) {

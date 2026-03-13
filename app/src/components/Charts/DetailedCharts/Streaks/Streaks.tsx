@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as Plot from '@observablehq/plot'
 import dayjs from 'dayjs'
-import { StreaksQueryResult } from './query'
+import type { StreaksQueryResult } from './query'
 
 interface Props {
     data: StreaksQueryResult[]

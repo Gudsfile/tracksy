@@ -1,4 +1,4 @@
-import { StreamRecord } from './types'
+import type { StreamRecord } from './types'
 
 export function isValidStreamRecord(
     record: Partial<StreamRecord>

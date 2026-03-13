@@ -1,5 +1,5 @@
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
-import { queryArtistLoyalty, ArtistLoyaltyResult } from './query'
+import { queryArtistLoyalty, type ArtistLoyaltyResult } from './query'
 import { ArtistLoyalty as ArtistLoyaltyView } from './ArtistLoyalty'
 
 export function ArtistLoyalty({ year }: { year: number }) {

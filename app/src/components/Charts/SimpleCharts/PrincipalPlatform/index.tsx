@@ -1,5 +1,5 @@
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
-import { queryPrincipalPlatform, PlatformResult } from './query'
+import { queryPrincipalPlatform, type PlatformResult } from './query'
 import { PrincipalPlatform as PrincipalPlatformView } from './PrincipalPlatform'
 
 export function PrincipalPlatform({ year }: { year: number }) {

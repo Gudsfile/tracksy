@@ -3,7 +3,7 @@
     "compilerOptions": {
         "jsx": "react-jsx",
         "jsxImportSource": "react",
-        "verbatimModuleSyntax": false
+        "verbatimModuleSyntax": true
     },
     "include": [".astro/types.d.ts", "**/*"],
     "exclude": ["node_modules", "dist", "public", "**/*.test.tsx"]

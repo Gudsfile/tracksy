@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { ArtistLoyaltyResult, queryArtistLoyalty } from './query'
+import { type ArtistLoyaltyResult, queryArtistLoyalty } from './query'
 import {
     createTestConnection,
     closeTestConnection,

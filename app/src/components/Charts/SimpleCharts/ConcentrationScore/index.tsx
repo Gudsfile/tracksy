@@ -1,5 +1,5 @@
 import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
-import { queryConcentrationScore, ConcentrationResult } from './query'
+import { queryConcentrationScore, type ConcentrationResult } from './query'
 import { ConcentrationScore as ConcentrationScoreView } from './ConcentrationScore'
 
 export function ConcentrationScore({ year }: { year: number }) {

@@ -1,4 +1,4 @@
-import { DuckdbApp, setupDuckdb } from './setupDB'
+import { type DuckdbApp, setupDuckdb } from './setupDB'
 
 declare global {
     interface Window {

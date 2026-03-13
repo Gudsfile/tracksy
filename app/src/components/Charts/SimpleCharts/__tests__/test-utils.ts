@@ -1,4 +1,4 @@
-import { DuckDBConnection, Json } from '@duckdb/node-api'
+import { DuckDBConnection, type Json } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
 
 export type TestStreamEntry = {

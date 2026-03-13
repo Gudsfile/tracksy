@@ -1,5 +1,5 @@
 import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
-import { queryRegularity, RegularityResult } from './query'
+import { queryRegularity, type RegularityResult } from './query'
 import { Regularity as RegularityView } from './Regularity'
 
 export function Regularity({ year }: { year: number }) {
