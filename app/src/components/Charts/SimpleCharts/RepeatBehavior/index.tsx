@@ -1,5 +1,5 @@
 import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
-import { queryRepeatBehavior, RepeatResult } from './query'
+import { queryRepeatBehavior, type RepeatResult } from './query'
 import { RepeatBehavior as RepeatBehaviorView } from './RepeatBehavior'
 
 export function RepeatBehavior({ year }: { year: number }) {

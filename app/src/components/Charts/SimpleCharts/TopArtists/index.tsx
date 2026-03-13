@@ -1,5 +1,5 @@
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
-import { queryTopArtists, TopArtistsResult } from './query'
+import { queryTopArtists, type TopArtistsResult } from './query'
 import { TopArtists as TopArtistsView } from './TopArtists'
 
 export function TopArtists({ year }: { year: number }) {

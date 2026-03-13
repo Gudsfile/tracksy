@@ -1,5 +1,5 @@
 import * as Plot from '@observablehq/plot'
-import { TopTracksQueryResult } from './query'
+import type { TopTracksQueryResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
 
 export function buildPlot(

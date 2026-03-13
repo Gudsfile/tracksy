@@ -16,7 +16,7 @@ import { TopTracks } from './SimpleCharts/TopTracks'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import {
-    SummarizeDataQueryResult,
+    type SummarizeDataQueryResult,
     summarizeQuery,
 } from './Summarize/summarizeQuery'
 import { useState, useEffect } from 'react'

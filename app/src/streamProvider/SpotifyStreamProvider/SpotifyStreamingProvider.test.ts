@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { SpotifyStreamProvider } from './SpotifyStreamProvider'
 import type { SpotifyRawStreamRecord } from './types'
-import { StreamRecord } from '../types'
+import { type StreamRecord } from '../types'
 
 /**
  * We use this mock function due to JSDOM not supporting full File API : https://developer.mozilla.org/en-US/docs/Web/API/Blob/text

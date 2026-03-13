@@ -1,5 +1,5 @@
 import * as Plot from '@observablehq/plot'
-import { SummaryPerYearQueryResult } from './query'
+import type { SummaryPerYearQueryResult } from './query'
 
 export function buildPlot(
     data: SummaryPerYearQueryResult[]

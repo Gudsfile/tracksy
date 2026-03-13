@@ -1,5 +1,5 @@
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
-import { queryTopTracks, TopTracksResult } from './query'
+import { queryTopTracks, type TopTracksResult } from './query'
 import { TopTracks as TopTracksView } from './TopTracks'
 
 export function TopTracks({ year }: { year: number }) {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { isValidStreamRecord, isLongEnoughStream } from './validation'
-import { StreamRecord } from './types'
+import { type StreamRecord } from './types'
 
 describe('Validation', () => {
     const validRecord: StreamRecord = {

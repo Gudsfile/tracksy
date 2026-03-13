@@ -1,5 +1,5 @@
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
-import { queryEvolutionOverTime, EvolutionResult } from './query'
+import { queryEvolutionOverTime, type EvolutionResult } from './query'
 import { EvolutionOverTime as EvolutionOverTimeView } from './EvolutionOverTime'
 
 export function EvolutionOverTime({ year }: { year: number }) {

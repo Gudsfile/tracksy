@@ -1,5 +1,5 @@
 import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
-import { queryListeningRhythm, ListeningRhythmResult } from './query'
+import { queryListeningRhythm, type ListeningRhythmResult } from './query'
 import { ListeningRhythm as ListeningRhythmView } from './ListeningRhythm'
 
 export function ListeningRhythm({ year }: { year: number }) {

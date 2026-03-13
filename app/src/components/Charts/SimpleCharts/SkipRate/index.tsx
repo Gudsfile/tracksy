@@ -1,5 +1,5 @@
 import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
-import { querySkipRate, SkipRateResult } from './query'
+import { querySkipRate, type SkipRateResult } from './query'
 import { SkipRate as SkipRateView } from './SkipRate'
 
 export function SkipRate({ year }: { year: number }) {
