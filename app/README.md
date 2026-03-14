@@ -148,7 +148,7 @@ The separation between `index.tsx` (data) and `<Component>.tsx` (display) makes 
 Reusable display components are in `src/components/Charts/SimpleCharts/shared/` and exported via its `index.ts`:
 
 | Component            | Purpose                                                |
-|----------------------|--------------------------------------------------------|
+| -------------------- | ------------------------------------------------------ |
 | `ChartCard`          | Wrapper card with title, emoji                         |
 | `ChartHero`          | Prominent metric display with label and optional emoji |
 | `RankedList`         | Ranked list with medal emojis                          |
