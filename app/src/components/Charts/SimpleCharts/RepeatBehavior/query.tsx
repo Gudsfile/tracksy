@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryRepeatBehavior from './RepeatBehavior.sql?raw'
 
 export type RepeatResult = {
     total_repeat_sequences: number
@@ -8,46 +9,7 @@ export type RepeatResult = {
 }
 
 export function queryRepeatBehavior(year: number): string {
-    return `
-    WITH ordered_streams AS (
-      SELECT
-        track_uri,
-        track_name,
-        ts,
-        LAG(track_uri) OVER (ORDER BY ts) AS prev_track
-      FROM ${TABLE}
-      WHERE track_uri IS NOT NULL
-      AND YEAR(ts::DATE) = ${year}
-    ),
-    repeat_groups AS (
-      SELECT
-        track_uri,
-        track_name,
-        ts,
-        CASE WHEN track_uri = prev_track THEN 0 ELSE 1 END AS is_new_group
-      FROM ordered_streams
-    ),
-    group_ids AS (
-      SELECT
-        *,
-        SUM(is_new_group) OVER (ORDER BY ts) AS group_id
-      FROM repeat_groups
-    ),
-    group_sizes AS (
-      SELECT
-        group_id,
-        track_uri,
-        track_name,
-        COUNT(*) AS repeat_count
-      FROM group_ids
-      GROUP BY group_id, track_uri, track_name
-      HAVING COUNT(*) > 1
-    )
-    SELECT
-      COUNT(*)::DOUBLE AS total_repeat_sequences,
-      COALESCE(MAX(repeat_count)::DOUBLE, 0) AS max_consecutive,
-      COALESCE((SELECT track_name FROM group_sizes ORDER BY repeat_count DESC LIMIT 1), '') AS most_repeated_track,
-      COALESCE(AVG(repeat_count)::DOUBLE, 0) AS avg_repeat_length
-    FROM group_sizes
-  `
+    return sqlQueryRepeatBehavior
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year}', String(year))
 }
