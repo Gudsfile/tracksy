@@ -1,17 +1,11 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryTopArtistsByYear from './TopArtists.sql?raw'
 
 export function queryTopArtistsByYear(year: number | undefined) {
-    return `
-SELECT
-  artist_name AS artist_name,
-  COUNT(*)::DOUBLE AS count_streams,
-  SUM(ms_played)::DOUBLE AS ms_played
-FROM ${TABLE}
-${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
-GROUP BY artist_name
-ORDER BY count_streams DESC
-LIMIT 10
-`
+    const yearCondition = year ? `YEAR(ts:: DATETIME) = ${year}` : '1=1'
+    return sqlQueryTopArtistsByYear
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
 
 export type TopArtistsQueryResult = {

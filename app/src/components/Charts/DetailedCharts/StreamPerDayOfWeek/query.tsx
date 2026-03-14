@@ -1,20 +1,15 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryStreamPerDayOfWeek from './StreamPerDayOfWeek.sql?raw'
 
 export function streamPerDayOfWeekQueryByYear(year: number | undefined) {
-    return `
-SELECT
-  DAYOFWEEK(ts::DATE)::INTEGER AS dayOfWeek,
-  HOUR(ts::DATETIME)::INTEGER AS hour,
-  COUNT(*)::DOUBLE AS count_streams
-FROM ${TABLE}
-${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
-GROUP BY DAYOFWEEK(ts::DATE), HOUR(ts::DATETIME)
-ORDER BY 1, 2
-`
+    const yearCondition = year ? `YEAR(ts:: DATETIME) = ${year}` : '1=1'
+    return sqlQueryStreamPerDayOfWeek
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
 
 export type StreamPerDayOfWeekQueryResult = {
-    dayOfWeek: number
+    day_of_week: number
     hour: number
     count_streams: number
 }

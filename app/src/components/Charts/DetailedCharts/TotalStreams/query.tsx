@@ -1,12 +1,8 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryTotalStreams from './TotalStreams.sql?raw'
 
 export function queryTotalStreams() {
-    return `
-SELECT
-  COUNT(*)::INTEGER AS count_streams,
-  SUM(ms_played)::DOUBLE AS ms_played
-FROM ${TABLE}
-`
+    return sqlQueryTotalStreams.replaceAll('${table}', TABLE)
 }
 
 export type TotalStreamsQueryResult = {

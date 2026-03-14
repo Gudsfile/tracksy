@@ -10,7 +10,7 @@ describe('StreamPerDayOfWeek Component', () => {
     beforeEach(() => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
-                dayOfWeek: 1,
+                day_of_week: 1,
                 hour: 1,
                 count_streams: 10,
             },

@@ -1,18 +1,11 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryTopTracksByYear from './TopTracks.sql?raw'
 
 export function queryTopTracksByYear(year: number | undefined) {
-    return `
-SELECT
-  track_name AS track_name,
-  artist_name AS artist_name,
-  COUNT(*)::DOUBLE AS count_streams,
-  SUM(ms_played)::DOUBLE AS ms_played
-FROM ${TABLE}
-${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
-GROUP BY track_uri, track_name, artist_name
-ORDER BY count_streams DESC, ms_played DESC
-LIMIT 10
-`
+    const yearCondition = year ? `YEAR(ts:: DATETIME) = ${year}` : '1=1'
+    return sqlQueryTopTracksByYear
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
 
 export type TopTracksQueryResult = {
