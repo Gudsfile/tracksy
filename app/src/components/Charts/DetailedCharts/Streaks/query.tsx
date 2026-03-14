@@ -1,7 +1,8 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryStreaks from './Streaks.sql?raw'
 
 export function queryStreaks() {
-    return `SELECT day, 1 as played from (SELECT DISTINCT ts::DATE::TEXT as day FROM ${TABLE})`
+    return sqlQueryStreaks.replaceAll('${table}', TABLE)
 }
 
 export type StreaksQueryResult = {

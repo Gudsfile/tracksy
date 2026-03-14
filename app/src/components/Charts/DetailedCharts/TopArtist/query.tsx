@@ -1,35 +1,16 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryTopArtist from './TopArtist.sql?raw'
 
 export function queryTopArtistByCount() {
-    return `
-SELECT
-  artist_name AS artist_name,
-  COUNT(*)::DOUBLE AS count_streams,
-  SUM(ms_played)::DOUBLE AS ms_played
-FROM ${TABLE}
-WHERE artist_name IS NOT NULL
-GROUP BY
-  artist_name
-ORDER BY
-  count_streams DESC
-LIMIT 1
-`
+    return sqlQueryTopArtist
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${order_condition}', 'count_streams DESC')
 }
 
 export function queryTopArtistByDuration() {
-    return `
-SELECT
-  artist_name AS artist_name,
-  COUNT(*)::DOUBLE AS count_streams,
-  SUM(ms_played)::DOUBLE AS ms_played
-FROM ${TABLE}
-WHERE artist_name IS NOT NULL
-GROUP BY
-  artist_name
-ORDER BY
-  ms_played DESC
-LIMIT 1
-`
+    return sqlQueryTopArtist
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${order_condition}', 'ms_played DESC')
 }
 
 export type TopArtistQueryResult = {

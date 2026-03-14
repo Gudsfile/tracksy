@@ -32,7 +32,7 @@ export function buildPlot(
         marks: [
             Plot.rect(data, {
                 x: 'hour',
-                y: 'dayOfWeek',
+                y: 'day_of_week',
                 fill: 'count_streams',
                 tip: {
                     format: {
