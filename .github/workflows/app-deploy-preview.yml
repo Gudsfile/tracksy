@@ -44,14 +44,17 @@ jobs:
           fetch-depth: 0
 
       - name: Install moon
+        if: github.event.action != 'closed'
         uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: false
 
       - name: Setup toolchains
+        if: github.event.action != 'closed'
         run: moon setup
 
       - name: Build project
+        if: github.event.action != 'closed' # We don't need the build if we know the preview will be removed
         run: moon run app:build
         env:
           BASE_PATH: /tracksy/pr-preview/pr-${{ github.event.pull_request.number }}
@@ -66,6 +69,7 @@ jobs:
 
   e2e-tests:
     needs: deploy-preview
+    if: github.event.action != 'closed'
     uses: ./.github/workflows/e2e.yml
     with:
       baseUrl: ${{ needs.deploy-preview.outputs.preview-url}}
