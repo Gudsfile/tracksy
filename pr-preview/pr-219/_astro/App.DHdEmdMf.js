@@ -499,46 +499,20 @@ ranked_artists as (
     from artist_streams
 ),
 
-total_streams as (
-    select count(*) as total
-    from {table}
-    where year(ts::date) = {year}
+totals as (
+    select
+        sum(stream_count) as total,
+        sum(stream_count) filter (where rank <= 5) as top5,
+        sum(stream_count) filter (where rank <= 10) as top10,
+        sum(stream_count) filter (where rank <= 20) as top20
+    from ranked_artists
 )
 
 select
-    coalesce(
-        (
-            select sum(stream_count)
-            from ranked_artists
-            where rank <= 5
-        )::double / (
-            select total
-            from total_streams
-        )::double * 100,
-        0
-    ) as top5_pct,
-    coalesce(
-        (
-            select sum(stream_count)
-            from ranked_artists
-            where rank <= 10
-        )::double / (
-            select total
-            from total_streams
-        )::double * 100,
-        0
-    ) as top10_pct,
-    coalesce(
-        (
-            select sum(stream_count)
-            from ranked_artists
-            where rank <= 20
-        )::double / (
-            select total
-            from total_streams
-        )::double * 100,
-        0
-    ) as top20_pct
+    coalesce(top5::double / nullif(total, 0) * 100, 0) as top5_pct,
+    coalesce(top10::double / nullif(total, 0) * 100, 0) as top10_pct,
+    coalesce(top20::double / nullif(total, 0) * 100, 0) as top20_pct
+from totals
 `;function NB(e){return IB.replaceAll("{table}",Y).replaceAll("{year}",String(e))}const Pe=({title:e,emoji:t,children:n,className:r=""})=>m.jsxs("div",{className:`group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in ${r}`,children:[m.jsxs("h3",{className:"text-lg font-semibold mb-3 flex items-center gap-2",children:[t&&m.jsx("span",{children:t}),e]}),n]}),Ir=({label:e,sublabel:t,emoji:n,labelColor:r})=>m.jsxs("div",{className:"flex items-center justify-between mb-4",children:[m.jsxs("div",{children:[m.jsx("div",{className:`text-2xl font-bold ${r}`,children:e}),t&&m.jsx("div",{className:"text-sm text-gray-600 dark:text-gray-400",children:t})]}),n&&m.jsx("div",{className:"text-4xl",children:n})]}),MB=["🥇","🥈","🥉","4️⃣","5️⃣"],f0=({items:e})=>m.jsx("ul",{className:"space-y-2",role:"list",children:e.map((t,n)=>m.jsxs("li",{className:"flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors",role:"listitem",children:[m.jsx("span",{className:"text-xl flex-shrink-0",children:MB[n]}),m.jsxs("div",{className:"flex-1 min-w-0",title:t.primary,children:[m.jsx("div",{className:"font-medium truncate",children:t.primary}),t.secondary&&m.jsx("div",{className:"text-xs text-gray-500 dark:text-gray-400 truncate",children:t.secondary})]}),m.jsx("div",{className:"text-sm font-bold text-brand-purple dark:text-brand-purple flex-shrink-0",children:t.score})]},`${t.primary}-${t.secondary??n}`))}),sE=({pct:e,color:t,height:n="h-2"})=>{const r=Math.min(Math.max(e,0),100);return m.jsx("div",{className:"w-full bg-gray-200 dark:bg-slate-700/50 rounded-full overflow-hidden mb-1.5",children:m.jsx("div",{className:`${t} ${n} rounded-full`,style:{width:`${r}%`}})})},ju=({label:e,value:t,valueColor:n,pct:r,barColor:i})=>m.jsxs("div",{children:[m.jsxs("div",{className:"flex justify-between text-xs font-medium mb-1.5",children:[m.jsx("span",{children:e}),m.jsx("span",{className:n,children:t})]}),m.jsx(sE,{pct:r,color:i})]}),aE=({children:e})=>m.jsx("div",{className:"text-sm text-center font-medium text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-slate-700/50 p-2 rounded-lg",children:e}),OB=({data:e})=>{const{top5_pct:t,top10_pct:n,top20_pct:r}=e,i=[{label:"Top 5",value:t},{label:"Top 10",value:n},{label:"Top 20",value:r}];return m.jsxs(Pe,{title:"Focus Mode",emoji:"🔥",children:[m.jsx("div",{className:"text-sm text-gray-600 dark:text-gray-400 mb-4",children:"Share of listening time for your top artists"}),m.jsx("ul",{className:"space-y-3",role:"list",children:i.map(s=>m.jsx("li",{role:"listitem",children:m.jsx(ju,{label:s.label,value:`${s.value.toFixed(1)}%`,valueColor:"text-brand-blue",pct:s.value,barColor:"bg-brand-blue"})},s.label))})]})};function RB({year:e}){const{data:t}=Fi({query:NB(e),year:e});return t?m.jsx(OB,{data:t}):null}function DB(e){return`
   SELECT
     SUM(CASE WHEN HOUR(ts:: TIMESTAMP) >= 6 AND HOUR(ts:: TIMESTAMP) < 12 THEN 1 ELSE 0 END)::DOUBLE AS morning,
