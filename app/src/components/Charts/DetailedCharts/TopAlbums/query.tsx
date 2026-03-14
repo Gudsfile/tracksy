@@ -1,17 +1,11 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryTopAlbumsByYear from './TopAlbums.sql?raw'
 
 export function queryTopAlbumsByYear(year: number | undefined) {
-    return `
-SELECT
-  album_name AS album_name,
-  COUNT(*)::DOUBLE AS count_streams,
-  SUM(ms_played)::DOUBLE AS ms_played
-FROM ${TABLE}
-${year ? `WHERE YEAR(ts:: DATETIME) = ${year}` : ''}
-GROUP BY album_name
-ORDER BY count_streams DESC
-LIMIT 10
-`
+    const yearCondition = year ? `YEAR(ts:: DATETIME) = ${year}` : '1=1'
+    return sqlQueryTopAlbumsByYear
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
 
 export type TopAlbumsQueryResult = {

@@ -1,23 +1,11 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryStreamPerHour from './StreamPerHour.sql?raw'
 
 export function queryStreamsPerHoursByYear(year: number | undefined) {
-    return `
-SELECT
-    hour::INT AS hour,
-    COALESCE(count_streams, 0)::INT AS count_streams,
-    COALESCE(ms_played, 0)::INT AS ms_played
-FROM (SELECT UNNEST(RANGE(24)) AS hour)
-LEFT JOIN (
-    SELECT
-        HOUR(ts::DATETIME) AS hour,
-        COUNT(*) AS count_streams,
-        SUM(ms_played) AS ms_played
-    FROM ${TABLE}
-    ${year ? `WHERE YEAR(ts::DATETIME) = ${year}` : ''}
-    GROUP BY HOUR(ts::DATETIME)
-) USING(hour)
-ORDER BY hour
-`
+    const yearCondition = year ? `YEAR(ts::DATETIME) = ${year}` : '1=1'
+    return sqlQueryStreamPerHour
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
 
 export type StreamPerHourQueryResult = {
