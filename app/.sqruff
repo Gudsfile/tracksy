@@ -1,0 +1,44 @@
+# default: https://github.com/quarylabs/sqruff/blob/main/crates/lib/src/core/default_config.cfg
+[sqruff]
+dialect = duckdb
+templater = placeholder
+rules = all
+# ST07: Found USING statement. Expected only ON statements.
+# RF02: Unqualified reference <reference> found in select with more than one referenced table/view.
+#       Too many warnings; to be corrected in separate PR
+#       https://github.com/Gudsfile/tracksy/issues/294
+# RF04: Keywords should not be used as identifiers
+#       Too many warnings; to be corrected in separate PR
+#       https://github.com/Gudsfile/tracksy/issues/293
+exclude_rules = ST07, RF02, RF04
+warn_unused_ignores = True
+max_line_length = 80
+
+[sqruff:indentation]
+indented_using_on = False
+indented_on_contents = False
+indented_then_contents = False
+
+[sqruff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqruff:rules:capitalisation.identifiers]
+extended_capitalisation_policy = lower
+
+[sqruff:rules:capitalisation.functions]
+extended_capitalisation_policy = lower
+
+[sqruff:rules:capitalisation.literals]
+capitalisation_policy = lower
+
+[sqruff:rules:capitalisation.types]
+extended_capitalisation_policy = lower
+
+#[sqruff:rules:convention.casting_style]
+#preferred_type_casting_style = shorthand
+
+[sqruff:rules:convention.not_equal]
+preferred_not_equal_style = c_style
+
+[sqruff:templater:placeholder]
+param_style = dollar

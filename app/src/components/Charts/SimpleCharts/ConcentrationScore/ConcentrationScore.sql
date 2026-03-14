@@ -1,23 +1,33 @@
-WITH artist_streams AS (
-  SELECT
-    artist_name AS artist,
-    COUNT(*) AS stream_count
-  FROM {table}
-  WHERE artist_name IS NOT NULL
-  AND YEAR(ts::DATE) = {year}
-  GROUP BY artist_name
+with artist_streams as (
+    select
+        artist_name as artist,
+        count(*) as stream_count
+    from ${table}
+    where
+        artist_name is not null
+        and year(ts::date) = ${year}
+    group by artist_name
 ),
-ranked_artists AS (
-  SELECT
-    artist,
-    stream_count,
-    ROW_NUMBER() OVER (ORDER BY stream_count DESC) AS rank
-  FROM artist_streams
+
+ranked_artists as (
+    select
+        artist,
+        stream_count,
+        row_number() over (order by stream_count desc) as rank
+    from artist_streams
 ),
-total_streams AS (
-  SELECT COUNT(*) AS total FROM {table} WHERE YEAR(ts::DATE) = {year}
+
+totals as (
+    select
+        sum(stream_count) as total,
+        sum(stream_count) filter (where rank <= 5) as top5,
+        sum(stream_count) filter (where rank <= 10) as top10,
+        sum(stream_count) filter (where rank <= 20) as top20
+    from ranked_artists
 )
-SELECT
-    COALESCE((SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 5)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100, 0) AS top5_pct,
-    COALESCE((SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 10)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100, 0) AS top10_pct,
-    COALESCE((SELECT SUM(stream_count) FROM ranked_artists WHERE rank <= 20)::DOUBLE / (SELECT total FROM total_streams)::DOUBLE * 100, 0) AS top20_pct
+
+select
+    coalesce(top5::double / nullif(total, 0) * 100, 0) as top5_pct,
+    coalesce(top10::double / nullif(total, 0) * 100, 0) as top10_pct,
+    coalesce(top20::double / nullif(total, 0) * 100, 0) as top20_pct
+from totals
