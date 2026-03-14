@@ -172,6 +172,7 @@ Run tasks across the entire monorepo or for specific projects.
     ```bash
     moon run blog:dev    # Start dev server
     moon run blog:build  # Build for production
+    moon run blog:new-post -- decisions/<slug>.md  # Create a new ADR
     ```
 
 - **E2E (`e2e`)**:
@@ -191,3 +192,21 @@ Run tasks across the entire monorepo or for specific projects.
 
 > [!NOTE]
 > commands `moon run e2e:test-ui` and `moon run e2e:test-dev` starts the application dev server (moon run app:dev) first then runs the tests.
+
+## Architecture Decision Records (ADRs)
+
+Significant technical decisions are documented as ADRs in `blog/content/decisions/`. These records capture the context, options considered, and rationale behind choices so future contributors understand *why* the project is built the way it is.
+
+To create a new ADR:
+
+```bash
+moon run blog:new-post -- decisions/<slug>.md
+```
+
+For example:
+
+```bash
+moon run blog:new-post -- decisions/sql-formatting-tooling.md
+```
+
+This creates a new file at `blog/content/decisions/<slug>.md` with the Hugo frontmatter pre-filled. Edit the file to add the decision context, considered options, and outcome. Follow the structure of existing ADRs as a template.

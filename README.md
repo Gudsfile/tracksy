@@ -64,6 +64,7 @@ Inside of this project, you'll see the following folders and files:
   We don't want to help you understand your data without knowing your data.
   For developers or curious, take a look at [`app/README.md`](app/) for more details on development.
 - `blog/` is a static blog built with Hugo.
+  Technical decisions are documented as ADRs in the [decisions](blog/content/decisions/) folder.
   See [`blog/README.md`](blog/) for more details.
 - `e2e/` is an end-to-end testing suite built with Playwright.
   See [`e2e/README.md`](e2e/) for more details.
