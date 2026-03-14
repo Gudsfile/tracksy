@@ -75,8 +75,8 @@ const factConfig = (type: string) => {
 }
 
 export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
-    const { factType, mainText, secondText, value, unit, context } = fact
-    const { title, emoji } = factConfig(factType)
+    const { fact_type, main_text, second_text, value, unit, context } = fact
+    const { title, emoji } = factConfig(fact_type)
 
     const valueDisplayed =
         typeof value === 'number' ? value.toLocaleString() : value
@@ -109,18 +109,18 @@ export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
                     </div>
 
                     <div className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 break-words text-balance">
-                        {mainText}
+                        {main_text}
                     </div>
 
                     <div className="text-lg text-gray-600 dark:text-gray-300">
-                        {secondText}{' '}
-                        {secondText && valueDisplayed ? '(' : undefined}
+                        {second_text}{' '}
+                        {second_text && valueDisplayed ? '(' : undefined}
                         <span className="font-bold text-blue-600 dark:text-blue-400">
                             {valueDisplayed}
                             {unit === '%' ? unit : undefined}
                         </span>{' '}
                         {unit !== '%' ? unit : undefined}
-                        {secondText && valueDisplayed ? ')' : undefined}
+                        {second_text && valueDisplayed ? ')' : undefined}
                     </div>
 
                     {context && (
