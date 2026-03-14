@@ -37,8 +37,8 @@ describe('FunFacts Component', () => {
     beforeEach(() => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
-                factType: 'marathon',
-                mainText: 'Test Artist',
+                fact_type: 'marathon',
+                main_text: 'Test Artist',
                 value: 42,
                 unit: 'streams',
                 context: '2024-01-15',
