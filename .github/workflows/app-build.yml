@@ -40,6 +40,9 @@ jobs:
       - name: Check Lint
         run: moon run app:lint
 
+      - name: Check SQL Lint
+        run: moon run app:lint-sql
+
       - name: Check test
         run: moon run app:test-coverage
 
