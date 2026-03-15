@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQuerySkipRate from './SkipRate.sql?raw'
 
 export type SkipRateResult = {
     complete_listens: number
@@ -6,11 +7,7 @@ export type SkipRateResult = {
 }
 
 export function querySkipRate(year: number): string {
-    return `
-  SELECT
-    COUNT(*) FILTER (WHERE reason_end = 'trackdone')::DOUBLE AS complete_listens,
-    COUNT(*) FILTER (WHERE reason_end IN ('fwdbtn', 'click-row', 'clickrow'))::DOUBLE AS skipped_listens
-  FROM ${TABLE}
-  WHERE YEAR(ts::DATE) = ${year}
-  `
+    return sqlQuerySkipRate
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year}', String(year))
 }
