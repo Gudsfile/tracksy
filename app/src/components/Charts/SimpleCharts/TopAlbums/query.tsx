@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryTopAlbums from './TopAlbums.sql?raw'
 
 export type TopAlbumsResult = {
     album_name: string
@@ -8,18 +9,7 @@ export type TopAlbumsResult = {
 }
 
 export function queryTopAlbums(year: number): string {
-    return `
-    SELECT
-      album_name AS album_name,
-      artist_name AS artist_name,
-      COUNT(*)::DOUBLE AS count_streams,
-      SUM(ms_played)::DOUBLE AS ms_played
-    FROM ${TABLE}
-    WHERE album_name IS NOT NULL
-      AND artist_name IS NOT NULL
-      AND YEAR(ts::DATE) = ${year}
-    GROUP BY album_name, artist_name
-    ORDER BY count_streams DESC
-    LIMIT 5
-    `
+    return sqlQueryTopAlbums
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year}', String(year))
 }
