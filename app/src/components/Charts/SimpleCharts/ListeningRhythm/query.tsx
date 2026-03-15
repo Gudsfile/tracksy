@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQueryListeningRhythm from './ListeningRhythm.sql?raw'
 
 export type ListeningRhythmResult = {
     morning: number
@@ -9,14 +10,7 @@ export type ListeningRhythmResult = {
 }
 
 export function queryListeningRhythm(year: number): string {
-    return `
-  SELECT
-    SUM(CASE WHEN HOUR(ts:: TIMESTAMP) >= 6 AND HOUR(ts:: TIMESTAMP) < 12 THEN 1 ELSE 0 END)::DOUBLE AS morning,
-    SUM(CASE WHEN HOUR(ts:: TIMESTAMP) >= 12 AND HOUR(ts:: TIMESTAMP) < 18 THEN 1 ELSE 0 END)::DOUBLE AS afternoon,
-    SUM(CASE WHEN HOUR(ts:: TIMESTAMP) >= 18 AND HOUR(ts:: TIMESTAMP) < 22 THEN 1 ELSE 0 END)::DOUBLE AS evening,
-    SUM(CASE WHEN HOUR(ts:: TIMESTAMP) >= 22 OR HOUR(ts:: TIMESTAMP) < 6 THEN 1 ELSE 0 END)::DOUBLE AS night,
-    COUNT(*)::DOUBLE AS total
-  FROM ${TABLE}
-  WHERE YEAR(ts::DATE) = ${year}
-  `
+    return sqlQueryListeningRhythm
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year}', String(year))
 }
