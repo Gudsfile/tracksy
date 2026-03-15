@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import sqlQuerySeasonalPatterns from './SeasonalPatterns.sql?raw'
 
 export type SeasonalResult = {
     winter: number
@@ -9,14 +10,7 @@ export type SeasonalResult = {
 }
 
 export function querySeasonalPatterns(year: number): string {
-    return `
-    SELECT
-      SUM(CASE WHEN MONTH(ts::DATE) IN (12, 1, 2) THEN 1 ELSE 0 END)::DOUBLE AS winter,
-      SUM(CASE WHEN MONTH(ts::DATE) IN (3, 4, 5) THEN 1 ELSE 0 END)::DOUBLE AS spring,
-      SUM(CASE WHEN MONTH(ts::DATE) IN (6, 7, 8) THEN 1 ELSE 0 END)::DOUBLE AS summer,
-      SUM(CASE WHEN MONTH(ts::DATE) IN (9, 10, 11) THEN 1 ELSE 0 END)::DOUBLE AS fall,
-      COUNT(*)::DOUBLE AS total
-    FROM ${TABLE}
-    WHERE YEAR(ts::DATE) = ${year}
-  `
+    return sqlQuerySeasonalPatterns
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year}', String(year))
 }
