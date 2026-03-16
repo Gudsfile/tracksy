@@ -1,6 +1,5 @@
 ---
 date: 2026-03-14
-draft: true
 title: "SQL Formatting Tooling for App Queries"
 ---
 
