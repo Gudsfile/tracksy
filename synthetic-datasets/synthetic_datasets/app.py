@@ -4,7 +4,9 @@ from datetime import datetime
 from pathlib import Path
 
 from synthetic_datasets.config import GenerationConfig
+from synthetic_datasets.factories.deezer import DeezerFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
+from synthetic_datasets.writers.deezer import DeezerWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
@@ -13,6 +15,14 @@ def spotify(num_records: int, output_dir: Path, config: GenerationConfig):
     all_streamings = factory.create_streaming_history()
 
     writer = SpotifyWriter(output_dir=output_dir, reference_date=config.reference_date)
+    writer.write(all_streamings)
+
+
+def deezer(num_records: int, output_dir: Path, config: GenerationConfig):
+    factory = DeezerFactory(num_records, config=config)
+    all_streamings = factory.create_streaming_history()
+
+    writer = DeezerWriter(output_dir=output_dir, reference_date=config.reference_date)
     writer.write(all_streamings)
 
 
@@ -50,6 +60,12 @@ Examples:
         type=lambda s: datetime.fromisoformat(s),
         help="Overwrite reference date for generation in ISO format (optional, e.g., 2026-02-08 or 2026-02-08T14:30:00)",
     )
+    parser.add_argument(
+        "--provider",
+        choices=["spotify", "deezer"],
+        default="spotify",
+        help="Streaming provider to generate data for (default: spotify)",
+    )
     args = parser.parse_args()
 
     start_data_generation = time.time()
@@ -57,7 +73,10 @@ Examples:
     config = GenerationConfig.create(seed=args.seed, reference_date=args.reference_date)
     config.log_config()
 
-    spotify(args.num_records, args.output_dir, config)
+    if args.provider == "deezer":
+        deezer(args.num_records, args.output_dir, config)
+    else:
+        spotify(args.num_records, args.output_dir, config)
     print("--- %s seconds ---" % (time.time() - start_data_generation))
 
 
