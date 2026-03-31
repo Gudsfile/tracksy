@@ -31,10 +31,12 @@ export function Dropzone({
                     htmlFor="fileInput"
                     className="text-sm cursor-pointer text-center"
                 >
-                    Drag and drop or click to upload your Spotify data files
+                    Drag and drop or click to upload your music streaming data
+                    files
                     <br />
-                    Only <strong>ZIP archive</strong> or a{' '}
-                    <strong>JSON file</strong> are accepted
+                    Only <strong>ZIP archive</strong>, a{' '}
+                    <strong>JSON file</strong>, or an <strong>XLSX file</strong>{' '}
+                    are accepted
                 </label>
             </div>
         </div>
