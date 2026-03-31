@@ -39,9 +39,10 @@ def write_xlsx(path: Path, streamings: list[DeezerStreaming]) -> None:
     wb.remove(wb.active)
     ws = wb.create_sheet(SHEET_NAME)
 
-    # Suppress embedded timestamps for deterministic output
-    wb.properties.created = None
-    wb.properties.modified = None
+    # Use a fixed timestamp for deterministic output (openpyxl embeds creation time otherwise)
+    _epoch = datetime(1970, 1, 1)
+    wb.properties.created = _epoch
+    wb.properties.modified = _epoch
 
     ws.append(COLUMNS)
 
