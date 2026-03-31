@@ -1,8 +1,12 @@
+import { DeezerStreamProvider } from './DeezerStreamProvider/DeezerStreamProvider'
 import type { StreamProvider } from './StreamProvider'
 import { SpotifyStreamProvider } from './SpotifyStreamProvider/SpotifyStreamProvider'
 
 // Registry of all available provider adapters
-const STREAM_PROVIDERS: StreamProvider[] = [new SpotifyStreamProvider()]
+const STREAM_PROVIDERS: StreamProvider[] = [
+    new SpotifyStreamProvider(),
+    new DeezerStreamProvider(),
+]
 
 export const STREAM_PROVIDERS_CONTENT_TYPES = STREAM_PROVIDERS.map(
     (provider) => provider.fileContentType

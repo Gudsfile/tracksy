@@ -1,0 +1,1 @@
+export { DeezerStreamProvider } from './DeezerStreamProvider'
