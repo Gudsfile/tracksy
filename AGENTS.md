@@ -11,7 +11,7 @@ Tracksy is a privacy-first music streaming data visualization tool. Monorepo man
 **Tech Stack:**
 
 - **App:** Astro, React, TypeScript, TailwindCSS, DuckDB WASM, Vitest
-- **Synthetic Datasets:** Python, Faker, Pandas, NumPy, Pydantic, pytest, Ruff, ty
+- **Synthetic Datasets:** Python, Faker, NumPy, openpyxl, Pydantic, pytest, Ruff, ty
 - **Blog:** Gohugo
 
 **Privacy:** All data processing happens client-side in the browser.
@@ -28,7 +28,8 @@ moon setup  # Downloads Node.js, Python, and dependencies
 
 - Use `moon run app:dev` to start the web app dev server
 - Use `moon run blog:dev` to start the blog dev server
-- Use `moon run synthetic-datasets:generate -- 100` to generate 100 test records
+- Use `moon run synthetic-datasets:generate -- 100` to generate 100 Spotify test records
+- Use `moon run synthetic-datasets:generate -- 100 --provider deezer` to generate 100 Deezer test records
 - Use `moon run synthetic-datasets:generate -- 100 --seed 42` to generate 100 test records with a specific seed
 - Use `moon run synthetic-datasets:generate -- --help` to show help for generating test records
 - Run `moon run :test` to run all tests across the monorepo
@@ -133,12 +134,16 @@ docs: update setup instructions
 
 ## Architecture Notes
 
-- **Data Flow:** User uploads Spotify JSON → Client-side processing with `libarchive.js` → DuckDB WASM → Observable Plot/D3.js visualization
+- **Data Flow:** User uploads streaming data file → `StreamProvider` detects format and parses → DuckDB WASM → Observable Plot/D3.js visualization
+  - Spotify: ZIP or JSON (`Streaming_History_Audio_*.json`)
+  - Deezer: XLSX (`deezer-data_\d{10}.xlsx`), sheet `10_listeningHistory`, parsed via DuckDB Excel extension
+- **StreamProvider pattern:** `app/src/streamProvider/` — extensible adapter pattern for multi-source support. Each provider implements `filePattern`, `readFile()`, and `transform()` to produce canonical `StreamRecord` objects. Register new providers in `index.ts`.
 - **Key Directories:**
   - `app/src/components/`: React and Astro components
   - `app/src/pages/`: Astro page routes
   - `app/src/db/`: DuckDB queries and database logic
-  - `synthetic-datasets/`: Python test data generation
+  - `app/src/streamProvider/`: Provider adapters (Spotify, Deezer)
+  - `synthetic-datasets/`: Python test data generation (supports `--provider spotify|deezer`)
 
 ## Environment Variables
 
