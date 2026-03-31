@@ -7,7 +7,7 @@ from ${table}
 where
     album_name is not null
     and artist_name is not null
-    and year(ts::date) = ${year}
+    and ${year_condition}
 group by album_name, artist_name
 order by count_streams desc
 limit 5

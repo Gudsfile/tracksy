@@ -5,7 +5,7 @@ with artist_streams as (
     from ${table}
     where
         artist_name is not null
-        and year(ts::date) = ${year}
+        and ${year_condition}
     group by artist_name
 ),
 

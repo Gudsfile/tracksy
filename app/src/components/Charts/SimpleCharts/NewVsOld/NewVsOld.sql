@@ -11,13 +11,13 @@ streams_classified as (
     select
         artist_name as artist,
         case
-            when first_year = ${year} then 'new'
+            when first_year = ${year_for_new} then 'new'
             else 'old'
         end as category
     from ${table}
     inner join artist_first_listen using (artist_name)
     where
-        year(ts::date) = ${year}
+        ${year_condition}
         and artist_name is not null
 )
 

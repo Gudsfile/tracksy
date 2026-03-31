@@ -9,8 +9,10 @@ export type SeasonalResult = {
     total: number
 }
 
-export function querySeasonalPatterns(year: number): string {
+export function querySeasonalPatterns(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
     return sqlQuerySeasonalPatterns
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
 }

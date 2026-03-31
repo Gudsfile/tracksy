@@ -53,4 +53,16 @@ describe('FavoriteWeekday Query', () => {
         const totalPct = rows.reduce((sum, row) => sum + (row.pct as number), 0)
         expect(totalPct).toBe(100)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryFavoriteWeekday(undefined))
+        // 2024-12-01 is a Sunday, so total streams increases from 8 to 9
+        const total = rows.reduce(
+            (sum, row) => sum + (row.stream_count as number),
+            0
+        )
+        expect(total).toBe(9)
+        const totalPct = rows.reduce((sum, row) => sum + (row.pct as number), 0)
+        expect(totalPct).toBe(100)
+    })
 })

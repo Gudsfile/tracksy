@@ -127,4 +127,11 @@ describe('RepeatBehavior Query', () => {
         expect(row.avg_repeat_length).toBe(0)
         expect(row.most_repeated_track).toBe('')
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryRepeatBehavior(undefined))
+        // 2018 unselected_year_track (2 consecutive) is now included
+        expect(rows.length).toBe(1)
+        expect(rows[0].total_repeat_sequences).toBeGreaterThan(0)
+    })
 })

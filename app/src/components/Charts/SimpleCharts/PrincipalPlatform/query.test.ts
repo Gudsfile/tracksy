@@ -48,4 +48,13 @@ describe('PrincipalPlatform Query', () => {
         const totalPct = rows.reduce((sum, row) => sum + (row.pct as number), 0)
         expect(totalPct).toBe(100)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryPrincipalPlatform(undefined))
+        // anotherYear android stream is now included (total = 6)
+        const android = rows.find((r) => r.platform === 'Android OS')
+        expect(android?.stream_count).toBe(2)
+        const totalPct = rows.reduce((sum, row) => sum + (row.pct as number), 0)
+        expect(totalPct).toBe(100)
+    })
 })

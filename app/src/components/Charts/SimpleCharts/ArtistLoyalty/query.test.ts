@@ -129,4 +129,14 @@ describe('ArtistLoyalty Query', () => {
         expect(rows2024[0].stream_bin).toBe('1')
         expect(rows2024[0].artist_count).toBe(1)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = (await testQuery(
+            conn,
+            queryArtistLoyalty(undefined)
+        )) as unknown as ArtistLoyaltyResult[]
+
+        expect(rows.length).toBe(5)
+        expect(rows[0].artist_count).toBe(2)
+    })
 })

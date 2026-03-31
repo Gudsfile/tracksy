@@ -7,8 +7,10 @@ export type TopArtistsResult = {
     ms_played: number
 }
 
-export function queryTopArtists(year: number): string {
+export function queryTopArtists(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
     return sqlQueryTopArtists
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
 }

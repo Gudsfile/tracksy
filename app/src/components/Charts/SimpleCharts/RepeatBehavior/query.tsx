@@ -8,8 +8,10 @@ export type RepeatResult = {
     avg_repeat_length: number
 }
 
-export function queryRepeatBehavior(year: number): string {
+export function queryRepeatBehavior(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
     return sqlQueryRepeatBehavior
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
 }

@@ -6,8 +6,10 @@ export type SkipRateResult = {
     skipped_listens: number
 }
 
-export function querySkipRate(year: number): string {
+export function querySkipRate(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
     return sqlQuerySkipRate
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
 }

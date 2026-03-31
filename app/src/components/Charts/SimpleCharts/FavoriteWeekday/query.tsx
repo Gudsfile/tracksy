@@ -7,8 +7,10 @@ export type FavoriteWeekdayResult = {
     pct: number
 }
 
-export function queryFavoriteWeekday(year: number): string {
+export function queryFavoriteWeekday(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
     return sqlQueryFavoriteWeekday
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
 }

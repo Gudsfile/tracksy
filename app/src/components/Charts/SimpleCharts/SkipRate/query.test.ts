@@ -44,4 +44,12 @@ describe('SkipRate Query', () => {
         expect(row.complete_listens).toBe(3)
         expect(row.skipped_listens).toBe(1)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, querySkipRate(undefined))
+        // anotherYear trackdone stream is now included
+        expect(rows.length).toBe(1)
+        expect(rows[0].complete_listens).toBe(4)
+        expect(rows[0].skipped_listens).toBe(1)
+    })
 })

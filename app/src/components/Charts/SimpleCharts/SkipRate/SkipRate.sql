@@ -6,4 +6,4 @@ select
         where reason_end in ('fwdbtn', 'click-row', 'clickrow')
     )::double as skipped_listens
 from ${table}
-where year(ts::date) = ${year}
+where ${year_condition}

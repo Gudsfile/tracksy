@@ -2,7 +2,7 @@ import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
 import { queryNewVsOld, type NewVsOldResult } from './query'
 import { NewVsOld as NewVsOldView } from './NewVsOld'
 
-export function NewVsOld({ year }: { year: number }) {
+export function NewVsOld({ year }: { year: number | undefined }) {
     const { data } = useDBQueryFirst<NewVsOldResult>({
         query: queryNewVsOld(year),
         year,

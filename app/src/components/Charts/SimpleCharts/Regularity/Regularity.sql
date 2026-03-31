@@ -12,7 +12,7 @@ max_date as (
 selected_tracks as (
     select *
     from ${table}
-    where year(ts::date) = ${year}
+    where ${year_condition}
 ),
 
 date_range as (

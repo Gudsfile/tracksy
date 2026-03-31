@@ -98,4 +98,14 @@ describe('ConcentrationScore Query', () => {
         expect(row.top10_pct).toBe(0)
         expect(row.top20_pct).toBe(0)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryConcentrationScore(undefined))
+        // artist24 now has 2 streams (testDate + anotherYear), total streams increase
+        expect(rows.length).toBe(1)
+        const row = rows[0]
+        expect(row.top5_pct).toBeGreaterThan(0)
+        expect(row.top10_pct).toBeGreaterThanOrEqual(row.top5_pct as number)
+        expect(row.top20_pct).toBeGreaterThanOrEqual(row.top10_pct as number)
+    })
 })

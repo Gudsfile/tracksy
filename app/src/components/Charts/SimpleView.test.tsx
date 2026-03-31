@@ -254,7 +254,7 @@ it('renders all SimpleView', async () => {
     const slider = (await screen.findByRole('slider')) as HTMLInputElement
 
     await waitFor(() => {
-        expect(slider.getAttribute('min')).toBe('2020')
+        expect(slider.getAttribute('min')).toBe('2019') // 2020 - 1 for the 'all' point
         expect(slider.getAttribute('max')).toBe('2024')
         expect(slider.getAttribute('value')).toBe('2024')
     })
