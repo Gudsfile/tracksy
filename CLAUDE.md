@@ -28,6 +28,7 @@ moon setup  # Downloads Node.js, Python, and dependencies
 
 - Use `moon run app:dev` to start the web app dev server
 - Use `moon run blog:dev` to start the blog dev server
+- Use `moon run :changelog` to generate/update the changelog from git history
 - Use `moon run synthetic-datasets:generate -- 100` to generate 100 Spotify test records
 - Use `moon run synthetic-datasets:generate -- 100 --provider deezer` to generate 100 Deezer test records
 - Use `moon run synthetic-datasets:generate -- 100 --seed 42` to generate 100 test records with a specific seed
@@ -108,6 +109,20 @@ feat(charts): add streaming trends visualization
 fix(upload): resolve file parsing timeout
 docs: update setup instructions
 ```
+
+## Changelog
+
+The project uses automated changelog generation based on Conventional Commits:
+
+- Run `moon run :changelog` to generate/update `CHANGELOG.md` from git history
+- Alternatively, run `pnpm -w run changelog` directly from the workspace root
+- The changelog is automatically organized by commit type (Features, Bug Fixes, etc.)
+- Generate changelog before releases or when documenting changes
+- The generated changelog can be manually edited if needed
+
+**Note:** The quality of the changelog depends on following Conventional Commit conventions.
+
+See the [ADR on changelog automation](blog/content/decisions/automate-changelog-generation.md) for implementation details.
 
 ## PR Instructions
 
