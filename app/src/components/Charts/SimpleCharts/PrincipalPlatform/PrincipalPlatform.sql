@@ -2,7 +2,7 @@ with
 selected_streams as (
     select *
     from ${table}
-    where year(ts::date) = ${year}
+    where ${year_condition}
 ),
 
 normalized_platforms as (

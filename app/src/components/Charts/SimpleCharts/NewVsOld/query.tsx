@@ -8,8 +8,15 @@ export type NewVsOldResult = {
     total: number
 }
 
-export function queryNewVsOld(year: number): string {
+export function queryNewVsOld(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearForNew =
+        year !== undefined
+            ? String(year)
+            : `(select max(year(ts::date)) from ${TABLE})`
     return sqlQueryNewVsOld
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
+        .replaceAll('${year_for_new}', yearForNew)
 }

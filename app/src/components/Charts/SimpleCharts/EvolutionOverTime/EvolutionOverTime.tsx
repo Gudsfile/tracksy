@@ -5,7 +5,7 @@ import { ChartCard } from '../shared'
 
 type Props = {
     data: EvolutionResult[]
-    year: number
+    year: number | undefined
 }
 
 export const EvolutionOverTime: FC<Props> = ({ data, year }) => {

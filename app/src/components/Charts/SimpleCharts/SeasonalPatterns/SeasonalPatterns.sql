@@ -13,4 +13,4 @@ select
     )::double as fall,
     count(*)::double as total
 from ${table}
-where year(ts::date) = ${year}
+where ${year_condition}

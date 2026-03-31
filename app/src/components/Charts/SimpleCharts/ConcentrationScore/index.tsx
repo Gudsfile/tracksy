@@ -2,7 +2,7 @@ import { useDBQueryFirst } from '../../../../hooks/useDBQuery'
 import { queryConcentrationScore, type ConcentrationResult } from './query'
 import { ConcentrationScore as ConcentrationScoreView } from './ConcentrationScore'
 
-export function ConcentrationScore({ year }: { year: number }) {
+export function ConcentrationScore({ year }: { year: number | undefined }) {
     const { data } = useDBQueryFirst<ConcentrationResult>({
         query: queryConcentrationScore(year),
         year,

@@ -7,8 +7,10 @@ export type PlatformResult = {
     pct: number
 }
 
-export function queryPrincipalPlatform(year: number): string {
+export function queryPrincipalPlatform(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
     return sqlQueryPrincipalPlatform
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
 }

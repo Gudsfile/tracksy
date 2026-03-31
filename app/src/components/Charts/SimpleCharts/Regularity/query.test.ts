@@ -111,4 +111,20 @@ describe('Regularity Query', () => {
         expect(row.total_days).toBe(366)
         expect(row.longest_pause_days).toBe(362)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const testData: TestStreamEntry[] = [
+            { ts: '2024-01-01' },
+            { ts: '2024-01-02' },
+            { ts: '2025-01-05' },
+        ]
+        await createTestTable(conn, testData)
+
+        const rows = await testQuery(conn, queryRegularity(undefined))
+
+        expect(rows.length).toBe(1)
+        const row = rows[0]
+        // Full range from 2024-01-01 to 2025-01-05 = 3 listening days
+        expect(row.days_with_streams).toBe(3)
+    })
 })

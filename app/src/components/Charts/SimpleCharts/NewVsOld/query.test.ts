@@ -44,4 +44,11 @@ describe('NewVsOld Query', () => {
         expect(row.old_artists_streams).toBe(1)
         expect(row.total).toBe(1 + 1)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryNewVsOld(undefined))
+        // All years included; "new" = discovered in the latest year (2026)
+        expect(rows.length).toBe(1)
+        expect(rows[0].total).toBe(5)
+    })
 })

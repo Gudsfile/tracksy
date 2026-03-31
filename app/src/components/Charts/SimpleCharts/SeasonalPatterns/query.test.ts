@@ -46,4 +46,12 @@ describe('SeasonalPatterns Query', () => {
         expect(row.fall).toBe(0)
         expect(row.total).toBe(6)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, querySeasonalPatterns(undefined))
+        // 2023-08-01 (summer) is also included, total becomes 7
+        expect(rows.length).toBe(1)
+        expect(rows[0].total).toBe(7)
+        expect(rows[0].summer).toBe(3)
+    })
 })

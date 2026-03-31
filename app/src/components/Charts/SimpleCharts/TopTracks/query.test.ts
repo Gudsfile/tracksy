@@ -91,4 +91,14 @@ describe('TopTracks Query', () => {
             },
         ])
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryTopTracks(undefined))
+        // track4 has 6 in testYear + 10 in anotherDate = 16 total, ranking it first
+        expect(rows).toHaveLength(5)
+        expect(rows[0]).toMatchObject({
+            track_name: 'track4',
+            count_streams: 16,
+        })
+    })
 })

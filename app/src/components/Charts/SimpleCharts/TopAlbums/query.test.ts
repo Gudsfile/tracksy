@@ -77,6 +77,13 @@ describe('TopAlbums Query', () => {
         await createTestTable(conn, testData)
     })
 
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryTopAlbums(undefined))
+        // album7 has 5 streams in anotherDate, making it visible across all years
+        const albumNames = rows.map((r) => r.album_name)
+        expect(albumNames).toContain('album7')
+    })
+
     it('should return top albums ordered by stream count desc', async () => {
         const rows = await testQuery(conn, queryTopAlbums(testYear))
         expect(rows).toHaveLength(5)

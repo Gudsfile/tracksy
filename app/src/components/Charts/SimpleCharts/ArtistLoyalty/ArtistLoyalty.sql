@@ -4,7 +4,7 @@ artist_total as (
         artist_name as artist,
         count(*) as total_streams
     from ${table}
-    where artist_name is not null and year(ts::date) = ${year}
+    where artist_name is not null and ${year_condition}
     group by artist
 ),
 

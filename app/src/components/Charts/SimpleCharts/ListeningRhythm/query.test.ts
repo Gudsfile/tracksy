@@ -47,4 +47,12 @@ describe('ListeningRhythm Query', () => {
         expect(row.night).toBe(3)
         expect(row.total).toBe(7)
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryListeningRhythm(undefined))
+        // 2025-01-01 23:00:00 adds 1 to night, total becomes 8
+        expect(rows.length).toBe(1)
+        expect(rows[0].total).toBe(8)
+        expect(rows[0].night).toBe(4)
+    })
 })

@@ -85,4 +85,12 @@ describe('TopArtists Query', () => {
             { artist_name: 'artist5', count_streams: 4, ms_played: 4 },
         ])
     })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, queryTopArtists(undefined))
+        // artist7 has 5 streams in anotherDate, making it visible across all years
+        expect(rows).toHaveLength(5)
+        const artistNames = rows.map((r) => r.artist_name)
+        expect(artistNames).toContain('artist7')
+    })
 })

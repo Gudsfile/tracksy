@@ -7,9 +7,24 @@ export type RegularityResult = {
     longest_pause_days: number
 }
 
-export function queryRegularity(year: number): string {
-    return sqlQueryRegularity
+export function queryRegularity(year: number | undefined): string {
+    const yearCondition =
+        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    let query = sqlQueryRegularity
         .replaceAll('${table}', TABLE)
-        .replaceAll('${ year}', String(year))
-        .replaceAll('${year}', String(year))
+        .replaceAll('${year_condition}', yearCondition)
+    if (year !== undefined) {
+        query = query.replaceAll('${ year}', String(year))
+    } else {
+        query = query
+            .replaceAll(
+                "'${ year}-12-31'::date",
+                `(select max(ts::date) from ${TABLE})`
+            )
+            .replaceAll(
+                "'${ year}-01-01'::date",
+                `(select min(ts::date) from ${TABLE})`
+            )
+    }
+    return query
 }

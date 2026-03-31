@@ -7,7 +7,7 @@ with ordered_streams as (
     from ${table}
     where
         track_uri is not null
-        and year(ts::date) = ${year}
+        and ${year_condition}
 ),
 
 repeat_groups as (
