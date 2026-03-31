@@ -37,12 +37,15 @@ class DeezerWriter:
 def write_xlsx(path: Path, streamings: list[DeezerStreaming]) -> None:
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
-    ws = wb.create_sheet(SHEET_NAME)
 
     # Use a fixed timestamp for deterministic output (openpyxl embeds creation time otherwise)
     _epoch = datetime(1970, 1, 1)
     wb.properties.created = _epoch
     wb.properties.modified = _epoch
+
+    # Simulate real Deezer export structure: other sheets surround the listening history
+    wb.create_sheet("00_userProfile")
+    ws = wb.create_sheet(SHEET_NAME)
 
     ws.append(COLUMNS)
 
@@ -60,6 +63,8 @@ def write_xlsx(path: Path, streamings: list[DeezerStreaming]) -> None:
                 streaming.serialize_date(streaming.date),
             ]
         )
+
+    wb.create_sheet("20_searchHistory")
 
     path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(path)

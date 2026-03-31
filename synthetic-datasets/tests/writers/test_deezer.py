@@ -16,7 +16,7 @@ def test_write_xlsx(tmp_path, deezer_streaming_record):
     # then
     assert out_file.exists()
     wb = openpyxl.load_workbook(out_file)
-    assert SHEET_NAME in wb.sheetnames
+    assert wb.sheetnames == ["00_userProfile", SHEET_NAME, "20_searchHistory"]
     ws = wb[SHEET_NAME]
     headers = [cell.value for cell in ws[1]]
     assert headers == COLUMNS
