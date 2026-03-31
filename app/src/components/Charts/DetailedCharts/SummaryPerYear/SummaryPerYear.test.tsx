@@ -8,10 +8,10 @@ import { SummaryPerYearQueryResult } from './query'
 import { SummaryPerYear } from '.'
 
 const queryResult = [
-    { year: '2024', count_streams: 10131, type: 'new_unique' },
-    { year: '2024', count_streams: 3861, type: 'new_repeat' },
-    { year: '2024', count_streams: 17932, type: 'old_unique' },
-    { year: '2025', count_streams: 1, type: 'old_repeat' },
+    { year: 2024, count_streams: 10131, type: 'new_unique' },
+    { year: 2024, count_streams: 3861, type: 'new_repeat' },
+    { year: 2024, count_streams: 17932, type: 'old_unique' },
+    { year: 2025, count_streams: 1, type: 'old_repeat' },
 ]
 
 describe('SummaryPerYear Component', () => {
@@ -26,7 +26,7 @@ describe('SummaryPerYear Component', () => {
         } as unknown as Awaited<ReturnType<typeof db.getDB>>)
     })
 
-    it('should render the svg', async () => {
+    it('should render the svg for a specific year', async () => {
         const { container } = render(<SummaryPerYear year={2024} />)
 
         await waitFor(() => {
@@ -37,5 +37,16 @@ describe('SummaryPerYear Component', () => {
         screen.getByText('Repeats')
         screen.getByText('44% New Tracks')
         screen.getByText('56% Old Tracks')
+    })
+
+    it('should render the svg for all time', async () => {
+        const { container } = render(<SummaryPerYear year={undefined} />)
+
+        await waitFor(() => {
+            expect(container.querySelectorAll('svg').length).toBeGreaterThan(0)
+        })
+        screen.getByText('Distribution of streams by year')
+        screen.getByText('First Listen')
+        screen.getByText('Repeats')
     })
 })

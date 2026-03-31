@@ -7,7 +7,7 @@ import { Common } from '../Common'
 import { useCallback } from 'react'
 
 interface StreamPerDayOfWeekProps {
-    year: number
+    year: number | undefined
 }
 
 export function StreamPerDayOfWeek({ year }: StreamPerDayOfWeekProps) {

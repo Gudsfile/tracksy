@@ -4,7 +4,7 @@ import { Common } from '../Common'
 import { useCallback } from 'react'
 
 interface TopTracksProps {
-    year: number
+    year: number | undefined
 }
 
 export function TopTracks({ year }: TopTracksProps) {

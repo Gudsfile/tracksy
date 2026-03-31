@@ -7,15 +7,15 @@ import { Common } from '../Common'
 import { useCallback } from 'react'
 
 interface StreamPerHourProps {
-    year: number
+    year: number | undefined
     maxValue: number
 }
 
 export function StreamPerHour({ year, maxValue }: StreamPerHourProps) {
     const plotBuilder = useCallback(
         (data: StreamPerHourQueryResult[], isDark: boolean | undefined) =>
-            buildPlot(data, maxValue, isDark),
-        [maxValue]
+            buildPlot(data, year ? maxValue : undefined, isDark),
+        [maxValue, year]
     )
 
     return (

@@ -7,7 +7,7 @@ import { Common } from '../Common'
 import { useCallback } from 'react'
 
 interface StreamPerMonthProps {
-    year: number
+    year: number | undefined
     maxValue: number
 }
 

@@ -3,7 +3,7 @@ import { buildPlot } from './plot'
 import { Common } from '../Common'
 
 interface TopArtistsProps {
-    year: number
+    year: number | undefined
 }
 
 export function TopArtists({ year }: TopArtistsProps) {
