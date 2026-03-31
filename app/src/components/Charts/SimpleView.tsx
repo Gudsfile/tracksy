@@ -22,7 +22,9 @@ import {
 import { useState, useEffect } from 'react'
 
 export function SimpleView() {
-    const [year, setYear] = useState(new Date().getFullYear())
+    const [year, setYear] = useState<number | undefined>(
+        new Date().getFullYear()
+    )
     const [minYear, setMinYear] = useState(2006)
     const [maxYear, setMaxYear] = useState(new Date().getFullYear())
 

@@ -1,8 +1,19 @@
 with all_months as (
     select last_day(month) as ts
     from generate_series(
-        '${ start_date}'::date,
-        '${ end_date}'::date,
+        (
+            select date_trunc('year', min(ts::date))
+            from ${table}
+            where ${year_condition}
+        ),
+        (
+            select
+                date_trunc('year', max(ts::date))
+                + interval '1 year'
+                - interval '1 day'
+            from ${table}
+            where ${year_condition}
+        ),
         interval 1 month
     ) as t (month)
 ),

@@ -1,6 +1,21 @@
 import * as Plot from '@observablehq/plot'
 import type { SummaryPerYearQueryResult } from './query'
 
+const categoryMap: Record<string, { main: string; sub: string }> = {
+    new_unique: { main: 'New Tracks', sub: 'First Listen' },
+    new_repeat: { main: 'New Tracks', sub: 'Repeats' },
+    old_unique: { main: 'Old Tracks', sub: 'First Listen' },
+    old_repeat: { main: 'Old Tracks', sub: 'Repeats' },
+}
+
+function mapCategories(data: SummaryPerYearQueryResult[]) {
+    return data.map((d) => ({
+        ...d,
+        main_category: categoryMap[d.type]?.main || d.type,
+        sub_category: categoryMap[d.type]?.sub || d.type,
+    }))
+}
+
 export function buildPlot(
     data: SummaryPerYearQueryResult[]
 ): ReturnType<typeof Plot.plot> {
@@ -12,18 +27,7 @@ export function buildPlot(
     }
     unit = Math.max(1, 10 ** (String(total).length - 3))
 
-    const categoryMap: Record<string, { main: string; sub: string }> = {
-        new_unique: { main: 'New Tracks', sub: 'First Listen' },
-        new_repeat: { main: 'New Tracks', sub: 'Repeats' },
-        old_unique: { main: 'Old Tracks', sub: 'First Listen' },
-        old_repeat: { main: 'Old Tracks', sub: 'Repeats' },
-    }
-
-    const plotData = data.map((d) => ({
-        ...d,
-        main_category: categoryMap[d.type]?.main || d.type,
-        sub_category: categoryMap[d.type]?.sub || d.type,
-    }))
+    const plotData = mapCategories(data)
 
     const summaryData = Object.values(
         plotData.reduce(
@@ -83,6 +87,33 @@ export function buildPlot(
                 fontSize: 24,
                 fontWeight: 'bold',
             }),
+        ],
+    })
+}
+
+export function buildAllTimePlot(
+    data: SummaryPerYearQueryResult[]
+): ReturnType<typeof Plot.plot> {
+    const plotData = mapCategories(data)
+
+    return Plot.plot({
+        title: 'Distribution of streams by year',
+        x: { tickFormat: 'd', label: 'Year' },
+        y: { grid: true, label: 'Streams' },
+        color: {
+            legend: true,
+            domain: ['First Listen', 'Repeats'],
+        },
+        marks: [
+            Plot.barY(plotData, {
+                x: 'year',
+                y: 'count_streams',
+                fill: 'sub_category',
+                fx: 'main_category',
+                tip: true,
+                sort: { fx: 'y', reduce: 'sum', reverse: true },
+            }),
+            Plot.ruleY([0]),
         ],
     })
 }

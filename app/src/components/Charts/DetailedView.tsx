@@ -23,7 +23,7 @@ import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function DetailedView() {
-    const [year, setYear] = useState(2006) // Spotify was founded on April 23, 2006.
+    const [year, setYear] = useState<number | undefined>(2006) // Spotify was founded on April 23, 2006.
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined
     >()
