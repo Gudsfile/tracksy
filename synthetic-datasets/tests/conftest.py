@@ -4,6 +4,7 @@ from ipaddress import IPv4Address
 import pytest
 
 from synthetic_datasets.config import GenerationConfig
+from synthetic_datasets.models.deezer import DeezerStreaming
 from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
 
 
@@ -25,6 +26,21 @@ def streaming_record():
         skipped=False,
         offline=False,
         incognito_mode=False,
+    )
+
+
+@pytest.fixture
+def deezer_streaming_record():
+    return DeezerStreaming(
+        song_title="Never Gonna Give You Up",
+        artist="Rick Astley",
+        isrc="GBAYE8800243",
+        album_title="Whenever You Need Somebody",
+        ip_address=IPv4Address("127.0.0.1"),
+        listening_time=213,
+        platform_name="web",
+        platform_model="",
+        date=datetime.fromisoformat("2020-08-07T11:48:23"),
     )
 
 
