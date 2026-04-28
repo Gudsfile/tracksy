@@ -242,5 +242,34 @@ describe('SpotifyStreamProvider', () => {
             const result = await provider.processFile(file)
             expect(result).toHaveLength(0)
         })
+
+        it('should preserve extra columns', async () => {
+            const jsonData = [
+                {
+                    spotify_track_uri: 'spotify:track:123',
+                    master_metadata_track_name: 'Song',
+                    master_metadata_album_artist_name: 'Artist',
+                    master_metadata_album_album_name: 'Album',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                    platform: 'Platform',
+                    extra_column: 'should be preserved',
+                },
+            ]
+
+            const file = mockFile(
+                JSON.stringify(jsonData),
+                'Streaming_History_Audio_2024.json',
+                { type: 'application/json' }
+            )
+
+            const result = await provider.processFile(file)
+
+            expect(result).toHaveLength(1)
+            expect(result[0]).toHaveProperty(
+                'extra_column',
+                'should be preserved'
+            )
+        })
     })
 })
