@@ -699,40 +699,24 @@ describe('FunFacts queries', () => {
     })
 
     describe('queryCozyAlbum', () => {
-        const now = new Date()
-        const oneMonthAgo = new Date(now)
-        oneMonthAgo.setMonth(now.getMonth() - 1)
-
-        const lastYear = new Date(now)
-        lastYear.setFullYear(now.getFullYear() - 1)
-
-        const twoYearsAgo = new Date(now)
-        twoYearsAgo.setFullYear(now.getFullYear() - 2)
-
-        const sunday = (base: Date) => {
-            const d = new Date(base)
-            d.setDate(d.getDate() - d.getDay())
-            d.setHours(15, 0, 0, 0)
-            return d
-        }
-
-        const mondayAt = (base: Date, hour: number) => {
-            const d = sunday(base)
-            d.setDate(d.getDate() + 1)
-            d.setHours(hour, 0, 0, 0)
-            return d
-        }
+        // 2025-03-30 is a Sunday, 2025-03-31 is a Monday.
+        // 2023-03-26 is a Sunday, >1 year before RECENT_SUNDAY (window boundary check).
+        const RECENT_SUNDAY = '2025-03-30T15:00:00'
+        const RECENT_MON_2AM = '2025-03-31T02:00:00'
+        const RECENT_MON_3AM = '2025-03-31T03:00:00'
+        const RECENT_MON_6AM = '2025-03-31T06:00:00'
+        const OLD_SUNDAY = '2023-03-26T15:00:00'
 
         describe('FunFactResult content', () => {
             // prettier-ignore
             const testData: TestStreamEntry[] = [
-                { artist_name: 'artist1', track_name: 'track1', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', track_name: 'track2', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', track_name: 'track3', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', track_name: 'track4', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', track_name: 'track5', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', track_name: 'track6', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', track_name: 'track7', album_name: 'album1', ts: sunday(oneMonthAgo).toISOString() },
+                { artist_name: 'artist1', track_name: 'track1', album_name: 'album1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', track_name: 'track2', album_name: 'album1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', track_name: 'track3', album_name: 'album1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', track_name: 'track4', album_name: 'album1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', track_name: 'track5', album_name: 'album1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', track_name: 'track6', album_name: 'album1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', track_name: 'track7', album_name: 'album1', ts: RECENT_SUNDAY },
           ]
 
             it('contains album and artist names', async () => {
@@ -755,22 +739,23 @@ describe('FunFacts queries', () => {
             // prettier-ignore
             const testData: TestStreamEntry[] = [
                 // album1 -> 7 distinct tracks on valid Sunday window (should win)
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't4', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't5', ts: mondayAt(oneMonthAgo, 2).toISOString() },  // Monday 2am (valid)
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't6', ts: mondayAt(oneMonthAgo, 3).toISOString() },  // Monday 3am (valid)
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't7', ts: sunday(oneMonthAgo).toISOString() },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't4', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't5', ts: RECENT_MON_2AM },  // Monday 2am (valid)
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't6', ts: RECENT_MON_3AM },  // Monday 3am (valid)
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't7', ts: RECENT_SUNDAY },
 
-                // album2 -> 7 distinct tracks but Monday 6am (invalid)
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a1', ts: mondayAt(oneMonthAgo, 6).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a2', ts: mondayAt(oneMonthAgo, 6).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a3', ts: mondayAt(oneMonthAgo, 6).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a4', ts: mondayAt(oneMonthAgo, 6).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a5', ts: mondayAt(oneMonthAgo, 6).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a6', ts: mondayAt(oneMonthAgo, 6).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a7', ts: mondayAt(oneMonthAgo, 6).toISOString() },
+                // album2 -> 8 distinct tracks but Monday 6am (invalid)
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a1', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a2', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a3', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a4', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a5', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a6', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a7', ts: RECENT_MON_6AM },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a8', ts: RECENT_MON_6AM },
             ]
 
             it('includes Sunday and Monday before 4am only', async () => {
@@ -784,23 +769,24 @@ describe('FunFacts queries', () => {
         describe('time window rule (last year only)', () => {
             // prettier-ignore
             const testData: TestStreamEntry[] = [
-                // album1 -> 7 distinct tracks BUT 2 years ago
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: sunday(twoYearsAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: sunday(twoYearsAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: sunday(twoYearsAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't4', ts: sunday(twoYearsAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't5', ts: sunday(twoYearsAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't6', ts: sunday(twoYearsAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't7', ts: sunday(twoYearsAgo).toISOString() },
+                // album1 -> 8 distinct tracks BUT 2 years ago
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't4', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't5', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't6', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't7', ts: OLD_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't8', ts: OLD_SUNDAY },
 
                 // album2 -> 7 distinct tracks within last year (should win)
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a2', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a3', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a4', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a5', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a6', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a7', ts: sunday(oneMonthAgo).toISOString() },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a2', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a3', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a4', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a5', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a6', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a7', ts: RECENT_SUNDAY },
             ]
 
             it('ignores listens older than one year', async () => {
@@ -815,22 +801,22 @@ describe('FunFacts queries', () => {
             // prettier-ignore
             const testData: TestStreamEntry[] = [
                 // album1 -> only 6 distinct tracks but many listens
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't4', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't5', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't6', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: sunday(oneMonthAgo).toISOString() },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't4', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't5', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't6', ts: RECENT_SUNDAY },
+                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: RECENT_SUNDAY },
 
                 // album2 -> 7 distinct tracks (should win)
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a2', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a3', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a4', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a5', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a6', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist2', album_name: 'album2', track_name: 'a7', ts: sunday(oneMonthAgo).toISOString() },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a1', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a2', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a3', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a4', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a5', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a6', ts: RECENT_SUNDAY },
+                { artist_name: 'artist2', album_name: 'album2', track_name: 'a7', ts: RECENT_SUNDAY },
             ]
 
             it('requires at least 7 distinct tracks', async () => {
@@ -844,9 +830,9 @@ describe('FunFacts queries', () => {
         describe('no eligible album', () => {
             // prettier-ignore
             const testData: TestStreamEntry[] = [
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: sunday(oneMonthAgo).toISOString() },
-                { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: sunday(oneMonthAgo).toISOString() },
+              { artist_name: 'artist1', album_name: 'album1', track_name: 't1', ts: RECENT_SUNDAY },
+              { artist_name: 'artist1', album_name: 'album1', track_name: 't2', ts: RECENT_SUNDAY },
+              { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: RECENT_SUNDAY },
             ]
 
             it('returns error message if no album satisfies the rules', async () => {
