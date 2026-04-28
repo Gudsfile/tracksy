@@ -128,6 +128,7 @@ describe('insertFilesInDatabase', () => {
                     album_name: 'Test Album',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
+                    platform: 'Test_Platform',
                 },
             ]
             const { provider, processFileSpy } =
@@ -165,6 +166,7 @@ describe('insertFilesInDatabase', () => {
                     album_name: 'Album 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
+                    platform: 'Platform_1',
                 },
             ]
             const dataFile2 = [
@@ -175,6 +177,7 @@ describe('insertFilesInDatabase', () => {
                     album_name: 'Album 2',
                     ts: '2024-01-02T12:00:00Z',
                     ms_played: 240000,
+                    platform: 'Platform_2',
                 },
             ]
             const { provider: provider1, processFileSpy: processFileSpy1 } =

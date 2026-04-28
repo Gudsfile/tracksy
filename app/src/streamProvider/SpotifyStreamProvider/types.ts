@@ -5,4 +5,5 @@ export interface SpotifyRawStreamRecord {
     master_metadata_album_album_name: string
     ts: string
     ms_played: number
+    platform: string
 }

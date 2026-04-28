@@ -35,5 +35,10 @@ export interface StreamRecord {
      */
     ms_played: number
 
+    /**
+     * Platform or device used to play the stream
+     */
+    platform: string
+
     [key: string]: unknown
 }
