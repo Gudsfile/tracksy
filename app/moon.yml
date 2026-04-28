@@ -17,10 +17,10 @@ tasks:
     lint:
         command: eslint "src/**/*.{astro,ts,tsx}"
     lint-fix-sql:
-        script: uvx sqruff fix
+        script: uvx sqruff@0.37.3 fix
         toolchain: unstable_uv
     lint-sql:
-        script: uvx sqruff lint
+        script: uvx sqruff@0.37.3 lint
         toolchain: unstable_uv
     format:
         command: prettier --write .
