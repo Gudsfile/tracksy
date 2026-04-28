@@ -4,7 +4,6 @@ import { coverageConfigDefaults } from 'vitest/config'
 
 const config = getViteConfig({
     // https://docs.astro.build/en/guides/testing/#vitest
-    // @ts-expect-error regarding the types it test doesn't exist, but regarding the documentation it should work fine
     test: {
         environment: 'jsdom',
         setupFiles: './vitest.setupFiles.ts',

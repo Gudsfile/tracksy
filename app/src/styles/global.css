@@ -1,0 +1,71 @@
+@import 'tailwindcss';
+
+/* Dark mode: activated by .dark class on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /* Brand colors */
+    --color-brand-purple: #8b5cf6;
+    --color-brand-blue: #3b82f6;
+    --color-brand-cyan: #06b6d4;
+
+    /* Custom shadows */
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --shadow-glass-lg: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+    --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+    --shadow-glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
+    --shadow-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.3);
+
+    /* Background images */
+    --background-image-gradient-brand: linear-gradient(
+        135deg,
+        #8b5cf6 0%,
+        #3b82f6 50%,
+        #06b6d4 100%
+    );
+    --background-image-gradient-brand-subtle: linear-gradient(
+        135deg,
+        rgba(139, 92, 246, 0.1) 0%,
+        rgba(59, 130, 246, 0.1) 50%,
+        rgba(6, 182, 212, 0.1) 100%
+    );
+
+    /* Backdrop blur */
+    --backdrop-blur-xs: 2px;
+
+    /* Animations */
+    --animate-fade-in: fadeIn 0.5s ease-in-out;
+    --animate-slide-up: slideUp 0.4s ease-out;
+    --animate-scale-in: scaleIn 0.3s ease-out;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+}

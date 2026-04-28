@@ -1,10 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-
-import tailwind from '@astrojs/tailwind'
-
 import react from '@astrojs/react'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,7 +23,8 @@ export default defineConfig({
                     },
                 ],
             }),
+            tailwindcss(),
         ],
     },
-    integrations: [tailwind(), react()],
+    integrations: [...(process.env.VITEST ? [] : [react()])],
 })
