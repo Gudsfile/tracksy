@@ -27,5 +27,6 @@ export async function setupDuckdb(): Promise<DuckdbApp> {
     const db = new duckdb.AsyncDuckDB(logger, worker)
     await db.instantiate(bundle.mainModule, bundle.pthreadWorker)
     const conn = await db.connect()
+    await conn.query('INSTALL excel; LOAD excel;')
     return { db, conn }
 }
