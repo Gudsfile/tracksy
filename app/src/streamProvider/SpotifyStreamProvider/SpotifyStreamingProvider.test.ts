@@ -69,6 +69,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_album_name: 'Album',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
+                    platform: 'Platform',
                 },
             ]
             const file = mockFile(JSON.stringify(jsonData), 'test.json', {
@@ -108,6 +109,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_album_name: 'Album 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
+                    platform: 'Platform 1',
                 },
                 {
                     spotify_track_uri: 'spotify:track:456',
@@ -116,6 +118,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_album_name: 'Album 2',
                     ts: '2024-01-01T12:30:00Z',
                     ms_played: 240000,
+                    platform: 'Platform 2',
                 },
             ]
 
@@ -129,6 +132,7 @@ describe('SpotifyStreamProvider', () => {
                     album_name: 'Album 1',
                     ts: '2024-01-01T12:00:00Z',
                     ms_played: 180000,
+                    platform: 'Platform 1',
                 },
                 {
                     track_uri: 'spotify:track:456',
@@ -137,6 +141,7 @@ describe('SpotifyStreamProvider', () => {
                     album_name: 'Album 2',
                     ts: '2024-01-01T12:30:00Z',
                     ms_played: 240000,
+                    platform: 'Platform 2',
                 },
             ]
 
@@ -154,6 +159,7 @@ describe('SpotifyStreamProvider', () => {
                 master_metadata_album_album_name: 'Album',
                 ts: '2024-01-01T12:00:00Z',
                 ms_played: 180000,
+                platform: 'Platform',
             }
 
             const invalidRecords = [
@@ -163,6 +169,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_album_name: 'dummy',
                     ts: '2024-01-01T13:00:00Z',
                     ms_played: 3600000,
+                    platform: 'Platform',
                 },
                 {
                     spotify_track_uri: 'spotify:track:456',
@@ -171,6 +178,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_album_name: 'dummy',
                     ts: '2024-01-01T14:00:00Z',
                     ms_played: 29000, // Too short (< 30s)
+                    platform: 'Platform',
                 },
                 {
                     spotify_track_uri: 'spotify:track:789',
@@ -179,6 +187,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_album_name: 'dummy',
                     ts: '2024-01-01T15:00:00Z',
                     ms_played: 180000,
+                    platform: 'Platform',
                 },
             ]
 
@@ -198,6 +207,7 @@ describe('SpotifyStreamProvider', () => {
                 album_name: 'Album',
                 ts: '2024-01-01T12:00:00Z',
                 ms_played: 180000,
+                platform: 'Platform',
             }
 
             expect(result).toHaveLength(1)
@@ -211,6 +221,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_track_name: 'Podcast Episode',
                     ts: '2024-01-01T13:00:00Z',
                     ms_played: 3600000,
+                    platform: 'Platform',
                 },
                 {
                     spotify_track_uri: 'spotify:track:456',
@@ -218,6 +229,7 @@ describe('SpotifyStreamProvider', () => {
                     master_metadata_album_artist_name: 'Artist',
                     ts: '2024-01-01T14:00:00Z',
                     ms_played: 15000, // Too short (< 30s)
+                    platform: 'Platform',
                 },
             ]
 

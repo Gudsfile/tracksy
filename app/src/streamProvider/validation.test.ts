@@ -10,6 +10,7 @@ describe('Validation', () => {
         artist_name: 'Artist Name',
         album_name: 'Album Name',
         track_uri: 'spotify:track:1234567890',
+        platform: 'Platform Name',
     }
 
     describe('isValidStreamRecord', () => {
