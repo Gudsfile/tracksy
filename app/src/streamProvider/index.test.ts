@@ -15,6 +15,14 @@ describe('StreamProvider Factory', () => {
             expect(streamProvider?.name).toBe('spotify')
         })
 
+        it('should detect Deezer files', () => {
+            const file = new File([], 'deezer-data_1234567890.xlsx')
+            const streamProvider = detectProvider(file)
+
+            expect(streamProvider).not.toBeUndefined()
+            expect(streamProvider?.name).toBe('deezer')
+        })
+
         it('should return undefined for unknown file formats', () => {
             const file = new File([], 'unknown_format.json')
             const streamProvider = detectProvider(file)
@@ -36,7 +44,10 @@ describe('StreamProvider Factory', () => {
     })
 
     describe('isAllowedFileContentType', () => {
-        it.each(['application/json'])(
+        it.each([
+            'application/json',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])(
             'should return true if the file content type %s is allowed',
             (contentType) => {
                 const file = new File([], 'filename', { type: contentType })
@@ -53,7 +64,6 @@ describe('StreamProvider Factory', () => {
             'application/msword',
             'application/vnd.ms-excel',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ])(
             'should return false if the file content type %s is disallowed',
             (contentType) => {

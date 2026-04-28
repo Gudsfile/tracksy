@@ -11,7 +11,7 @@
 
 🦆 Powered by DuckDB WASM x Astro x React.
 
-🚧 Currently only works with Spotify streaming data.
+🚧 Currently only works with Spotify and Deezer streaming data.
 
 ## Usage
 
@@ -19,14 +19,24 @@
 
 **You can skip this step** using pre-generated datasets through the demo button on the home page.
 
-**Or use your own Spotify data:**
+**Or use your own data:**
 
+Spotify:
 1. Request your Spotify data on [your Spotify account](https://www.spotify.com/account/privacy/)
    - Select "_Extended streaming history_"
    - Click on "_Request data_"
    - **Confirm your request** by clicking on Spotify's confirmation e-mail
-2. 30 days or less later
-3. Open the mail from Spotify and download files
+2. A few days later
+3. Open the mail from Spotify and download the `.zip` file
+
+Deezer:
+1. Request your Deezer data on [your Deezer account](https://www.deezer.com)
+  - Go to your "_Account settings_"
+  - Scroll and click on "_My personal data_"
+  - Click on "_Request my data_"
+  - **Confirm your identity** by enter the code sent by e-mail
+2. A few days later
+3. Open the mail from Deezer and download the `.xlsx` file
 
 ### 🚀 Upload your data
 

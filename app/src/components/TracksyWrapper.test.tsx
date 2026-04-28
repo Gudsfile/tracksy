@@ -49,7 +49,7 @@ it('should render the Dropzone and Buttons when DB is initialized', async () => 
     )
 
     screen.getByLabelText(
-        /Drag and drop or click to upload your Spotify data files/
+        /Drag and drop or click to upload your music streaming data/
     )
     expect(
         screen
