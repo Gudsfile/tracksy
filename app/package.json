@@ -1,7 +1,7 @@
 {
     "name": "app",
     "type": "module",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "dependencies": {
         "@astrojs/check": "^0.9.9",
         "@astrojs/react": "^5.0.4",
