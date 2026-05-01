@@ -116,8 +116,7 @@ export function ArtistDiscoveryPlot({
             marks,
         })
 
-        containerRef.current.innerHTML = ''
-        containerRef.current.append(plot)
+        containerRef.current.replaceChildren(plot)
 
         return () => plot.remove()
     }, [data, mode])
