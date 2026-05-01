@@ -232,7 +232,7 @@ wheels = [
 
 [[package]]
 name = "synthetic-datasets"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "faker" },
@@ -251,18 +251,18 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "faker" },
-    { name = "numpy" },
-    { name = "openpyxl" },
-    { name = "pydantic" },
-    { name = "tqdm" },
+    { name = "faker", specifier = "==40.15.0" },
+    { name = "numpy", specifier = "==2.4.4" },
+    { name = "openpyxl", specifier = "==3.1.5" },
+    { name = "pydantic", specifier = "==2.13.3" },
+    { name = "tqdm", specifier = "==4.67.3" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pytest" },
-    { name = "ruff" },
-    { name = "ty" },
+    { name = "pytest", specifier = "==9.0.3" },
+    { name = "ruff", specifier = "==0.15.12" },
+    { name = "ty", specifier = "==0.0.33" },
 ]
 
 [[package]]
