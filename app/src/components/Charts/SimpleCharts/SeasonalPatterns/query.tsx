@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQuerySeasonalPatterns from './SeasonalPatterns.sql?raw'
 
 export type SeasonalResult = {
@@ -10,8 +11,7 @@ export type SeasonalResult = {
 }
 
 export function querySeasonalPatterns(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQuerySeasonalPatterns
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)

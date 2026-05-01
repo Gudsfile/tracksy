@@ -1,8 +1,9 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamPerMonth from './StreamPerMonth.sql?raw'
 
 export function queryByYear(year: number | undefined) {
-    const yearCondition = year ? `YEAR(ts::DATE) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQueryStreamPerMonth
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)

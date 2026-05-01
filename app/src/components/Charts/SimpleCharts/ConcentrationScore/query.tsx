@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryConcentrationScore from './ConcentrationScore.sql?raw'
 
 export type ConcentrationResult = {
@@ -8,8 +9,7 @@ export type ConcentrationResult = {
 }
 
 export function queryConcentrationScore(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQueryConcentrationScore
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)
