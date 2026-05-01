@@ -1,11 +1,14 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQuerySummaryPerYear from './SummaryPerYear.sql?raw'
 
 export function summarizePerYearQuery(year: number | undefined) {
-    const yearCondition = year ? `ranked_streams.year = ${year}` : '1=1'
     return sqlQuerySummaryPerYear
         .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+        .replaceAll(
+            '${year_condition}',
+            buildYearCondition(year, 'ranked_streams.year')
+        )
 }
 
 export type SummaryPerYearQueryResult = {

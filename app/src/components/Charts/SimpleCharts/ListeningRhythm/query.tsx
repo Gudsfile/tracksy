@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryListeningRhythm from './ListeningRhythm.sql?raw'
 
 export type ListeningRhythmResult = {
@@ -10,8 +11,7 @@ export type ListeningRhythmResult = {
 }
 
 export function queryListeningRhythm(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQueryListeningRhythm
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)

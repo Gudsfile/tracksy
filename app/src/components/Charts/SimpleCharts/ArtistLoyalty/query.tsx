@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryArtistLoyalty from './ArtistLoyalty.sql?raw'
 
 export type ArtistLoyaltyResult = {
@@ -9,8 +10,7 @@ export type ArtistLoyaltyResult = {
 }
 
 export function queryArtistLoyalty(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQueryArtistLoyalty
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)
