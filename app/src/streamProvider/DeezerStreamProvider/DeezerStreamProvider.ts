@@ -25,6 +25,12 @@ export class DeezerStreamProvider extends StreamProvider<DeezerRawStreamRecord> 
             return result
                 .toArray()
                 .map((row) => row.toJSON() as DeezerRawStreamRecord)
+        } catch (error) {
+            throw new Error(
+                `Failed to read Deezer export: sheet "${SHEET_NAME}" not found. ` +
+                    `Make sure the file is a valid Deezer listening history export.`,
+                { cause: error }
+            )
         } finally {
             await db.dropFile(TMP_FILE_NAME)
         }

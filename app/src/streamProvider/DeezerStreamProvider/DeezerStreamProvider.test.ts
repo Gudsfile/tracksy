@@ -191,9 +191,35 @@ describe('DeezerStreamProvider', () => {
             )
 
             await expect(provider.readFile(file)).rejects.toThrow(
-                'sheet not found'
+                '10_listeningHistory'
             )
             expect(mockDB.dropFile).toHaveBeenCalledWith('_deezer_tmp.xlsx')
+        })
+
+        it('should throw a descriptive error when the DuckDB query fails', async () => {
+            const mockConn = {
+                query: vi.fn().mockRejectedValue(new Error('unknown sheet')),
+            }
+            const mockDB = {
+                registerFileBuffer: vi.fn().mockResolvedValue(undefined),
+                dropFile: vi.fn().mockResolvedValue(undefined),
+            }
+
+            const getDB = await import('../../db/getDB')
+            vi.spyOn(getDB, 'getDB').mockResolvedValue({
+                db: mockDB as never,
+                conn: mockConn as never,
+            })
+
+            const file = mockFile(
+                new ArrayBuffer(8),
+                'deezer-data_1234567890.xlsx',
+                { type: XLSX_TYPE }
+            )
+
+            await expect(provider.readFile(file)).rejects.toThrow(
+                'Failed to read Deezer export'
+            )
         })
     })
 
