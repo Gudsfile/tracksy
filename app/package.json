@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "dependencies": {
         "@astrojs/check": "^0.9.8",
-        "@astrojs/react": "^4.4.2",
+        "@astrojs/react": "^5.0.4",
         "@astrojs/tailwind": "^6.0.2",
         "@duckdb/duckdb-wasm": "^1.32.0",
         "@observablehq/plot": "^0.6.17",
