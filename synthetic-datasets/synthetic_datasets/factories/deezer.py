@@ -3,6 +3,7 @@ import random
 import string
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from ipaddress import ip_address
 
 import numpy as np
 from faker import Faker
@@ -66,7 +67,7 @@ class DeezerFactory:
         self.platforms = ["web", "ios", "android", "desktop", "tv"]
 
         print("🛜 Generating IPs...")
-        self.ip_addresses = [self.faker.ipv4() for _ in range(num_ip_addresses)]
+        self.ip_addresses = [ip_address(self.faker.ipv4()) for _ in range(num_ip_addresses)]
 
     def _generate_isrc(self) -> str:
         countries = ["US", "GB", "FR", "DE", "JP", "CA", "AU"]

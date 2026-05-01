@@ -2,6 +2,7 @@ import calendar
 import random
 import string
 from datetime import datetime, timedelta
+from ipaddress import ip_address
 
 import numpy as np
 from faker import Faker
@@ -77,7 +78,7 @@ class SpotifyFactory:
         print("🌏 Generating country codes...")
         self.countries = [self.faker.country_code() for _ in range(0, num_countries)]
         print("🛜 Generatin IPs...")
-        self.ip_addr = [self.faker.ipv4() for _ in range(0, num_ip_addresses)]
+        self.ip_addr = [ip_address(self.faker.ipv4()) for _ in range(0, num_ip_addresses)]
 
     def _generate_catalog(self, num_artists: int, num_albums: int, num_tracks: int) -> list[Track]:
         track_uri_chars = string.ascii_letters + string.digits
