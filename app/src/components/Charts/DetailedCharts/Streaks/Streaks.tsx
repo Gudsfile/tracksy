@@ -66,8 +66,6 @@ export function Streaks({ data }: Props) {
             date: new Date(d.day),
         }))
 
-        ref.current.innerHTML = ''
-
         const plot = Plot.plot({
             width,
             height,
@@ -105,7 +103,7 @@ export function Streaks({ data }: Props) {
             ],
         })
 
-        ref.current.appendChild(plot)
+        ref.current.replaceChildren(plot)
     }, [visibleData])
 
     return (
