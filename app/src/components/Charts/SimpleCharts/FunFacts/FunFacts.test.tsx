@@ -35,15 +35,20 @@ const allFactTitles = [
 
 describe('FunFacts Component', () => {
     beforeEach(() => {
-        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
-            {
-                fact_type: 'marathon',
-                main_text: 'Test Artist',
-                value: 42,
-                unit: 'streams',
-                context: '2024-01-15',
-            },
-        ] as FunFactResult[])
+        vi.spyOn(query, 'queryDBAsJSON').mockImplementation(
+            async (sql: string) => {
+                const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
+                if (!match) return []
+                return [
+                    {
+                        fact_type: match[1],
+                        main_text: `Test ${match[1]}`,
+                        value: 1,
+                        unit: 'streams',
+                    },
+                ] as FunFactResult[]
+            }
+        )
 
         vi.spyOn(db, 'getDB').mockResolvedValue({
             db: vi.fn(),
@@ -86,14 +91,19 @@ describe('FunFacts Component', () => {
             expect(container.textContent).toBeTruthy()
         })
 
-        const button = screen.getByTitle('New fact')
-        fireEvent.click(button)
+        const firstFact = container.textContent
+
+        fireEvent.click(screen.getByTitle('New fact'))
 
         await waitFor(
             () => {
-                expect(container.textContent).toBeTruthy()
+                expect(container.textContent).not.toBe(firstFact)
             },
             { timeout: 2000 }
         )
+
+        const secondFact = container.textContent
+
+        expect(secondFact).not.toBe(firstFact)
     })
 })
