@@ -8,7 +8,7 @@ class DeezerStreaming(BaseModel):
     artist: str
     isrc: str
     album_title: str
-    ip_address: IPvAnyAddress  # ty: ignore[invalid-type-form]
+    ip_address: IPvAnyAddress
     listening_time: int  # todo: seconds?
     platform_name: str
     platform_model: str
