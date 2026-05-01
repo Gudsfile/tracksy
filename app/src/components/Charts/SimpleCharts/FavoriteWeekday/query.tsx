@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryFavoriteWeekday from './FavoriteWeekday.sql?raw'
 
 export type FavoriteWeekdayResult = {
@@ -8,8 +9,7 @@ export type FavoriteWeekdayResult = {
 }
 
 export function queryFavoriteWeekday(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQueryFavoriteWeekday
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)

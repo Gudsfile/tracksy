@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryRegularity from './Regularity.sql?raw'
 
 export type RegularityResult = {
@@ -8,8 +9,7 @@ export type RegularityResult = {
 }
 
 export function queryRegularity(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     let query = sqlQueryRegularity
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)

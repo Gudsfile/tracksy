@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition, buildYearOrLatest } from '../../../../db/queries/buildYearCondition'
 import sqlQueryNewVsOld from './NewVsOld.sql?raw'
 
 export type NewVsOldResult = {
@@ -9,12 +10,8 @@ export type NewVsOldResult = {
 }
 
 export function queryNewVsOld(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
-    const yearForNew =
-        year !== undefined
-            ? String(year)
-            : `(select max(year(ts::date)) from ${TABLE})`
+    const yearCondition = buildYearCondition(year)
+    const yearForNew = buildYearOrLatest(year)
     return sqlQueryNewVsOld
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)

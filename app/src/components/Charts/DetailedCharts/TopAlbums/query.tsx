@@ -1,8 +1,9 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryTopAlbumsByYear from './TopAlbums.sql?raw'
 
 export function queryTopAlbumsByYear(year: number | undefined) {
-    const yearCondition = year ? `YEAR(ts:: DATETIME) = ${year}` : '1=1'
+    const yearCondition = buildYearCondition(year)
     return sqlQueryTopAlbumsByYear
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)
