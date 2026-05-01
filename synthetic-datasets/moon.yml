@@ -24,4 +24,6 @@ tasks:
     command: uv run ty check
     inputs:
       - "**/*.py"
+  uv:
+    command: uv
 layer: application
