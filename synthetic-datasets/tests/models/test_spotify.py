@@ -15,7 +15,7 @@ def test_valid_reason_end(skipped, reason_end, streaming_record):
     data["skipped"] = skipped
     data["reason_end"] = reason_end
     # when
-    streaming = Streaming(**data)  # ty: ignore[missing-argument] # https://github.com/astral-sh/ty/issues/247
+    streaming = Streaming(**data)
     # then
     assert streaming.reason_end == reason_end
 
@@ -33,6 +33,6 @@ def test_invalid_reason_end(skipped, reason_end, error_msg, streaming_record):
     data["reason_end"] = reason_end
     # when
     with pytest.raises(ValueError) as err:
-        Streaming(**data)  # ty: ignore[missing-argument] # https://github.com/astral-sh/ty/issues/247
+        Streaming(**data)
     # then
     assert error_msg.replace("{reason_end}", reason_end.value) in str(err.value)

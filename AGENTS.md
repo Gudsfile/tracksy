@@ -33,6 +33,7 @@ moon setup  # Downloads Node.js, Python, and dependencies
 - Use `moon run synthetic-datasets:generate -- 100 --seed 42` to generate 100 test records with a specific seed
 - Use `moon run synthetic-datasets:generate -- --help` to show help for generating test records
 - Run `moon run :test` to run all tests across the monorepo
+- Use `moon run synthetic-datasets:uv -- <args>` to run uv commands in the synthetic-datasets workspace (e.g. `moon run synthetic-datasets:uv -- add <package>`)
 - Check `app/moon.yml`, `blog/moon.yml`, and `synthetic-datasets/moon.yml` for available tasks
 - The project uses TypeScript strict mode, ESLint, and Prettier
 - Components: `.astro` files for static content, `.tsx` for interactive React components
