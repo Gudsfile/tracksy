@@ -17,9 +17,11 @@ export function StreamPerMonth({ year, maxValue }: StreamPerMonthProps) {
             buildPlot(data, maxValue, isDark),
         [maxValue]
     )
+    const { sql, params } = queryStreamsPerMonthByYear(year)
     return (
         <Common<StreamPerMonthQueryResult>
-            query={queryStreamsPerMonthByYear(year)}
+            query={sql}
+            params={params}
             buildPlot={plotBuilder}
         />
     )

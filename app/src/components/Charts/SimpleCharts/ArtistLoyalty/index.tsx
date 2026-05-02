@@ -3,8 +3,10 @@ import { queryArtistLoyalty, type ArtistLoyaltyResult } from './query'
 import { ArtistLoyalty as ArtistLoyaltyView } from './ArtistLoyalty'
 
 export function ArtistLoyalty({ year }: { year: number | undefined }) {
+    const { sql, params } = queryArtistLoyalty(year)
     const { data } = useDBQueryMany<ArtistLoyaltyResult>({
-        query: queryArtistLoyalty(year),
+        query: sql,
+        params,
         year,
     })
 

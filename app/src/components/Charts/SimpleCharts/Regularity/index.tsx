@@ -3,8 +3,10 @@ import { queryRegularity, type RegularityResult } from './query'
 import { Regularity as RegularityView } from './Regularity'
 
 export function Regularity({ year }: { year: number | undefined }) {
+    const { sql, params } = queryRegularity(year)
     const { data } = useDBQueryFirst<RegularityResult>({
-        query: queryRegularity(year),
+        query: sql,
+        params,
         year,
     })
 

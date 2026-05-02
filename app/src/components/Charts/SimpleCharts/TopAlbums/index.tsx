@@ -3,8 +3,10 @@ import { queryTopAlbums, type TopAlbumsResult } from './query'
 import { TopAlbums as TopAlbumsView } from './TopAlbums'
 
 export function TopAlbums({ year }: { year: number | undefined }) {
+    const { sql, params } = queryTopAlbums(year)
     const { data } = useDBQueryMany<TopAlbumsResult>({
-        query: queryTopAlbums(year),
+        query: sql,
+        params,
         year,
     })
 

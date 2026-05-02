@@ -17,10 +17,11 @@ export function StreamPerHour({ year, maxValue }: StreamPerHourProps) {
             buildPlot(data, year ? maxValue : undefined, isDark),
         [maxValue, year]
     )
-
+    const { sql, params } = queryStreamsPerHoursByYear(year)
     return (
         <Common<StreamPerHourQueryResult>
-            query={queryStreamsPerHoursByYear(year)}
+            query={sql}
+            params={params}
             buildPlot={plotBuilder}
         />
     )

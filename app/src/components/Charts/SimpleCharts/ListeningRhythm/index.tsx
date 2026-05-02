@@ -3,8 +3,10 @@ import { queryListeningRhythm, type ListeningRhythmResult } from './query'
 import { ListeningRhythm as ListeningRhythmView } from './ListeningRhythm'
 
 export function ListeningRhythm({ year }: { year: number | undefined }) {
+    const { sql, params } = queryListeningRhythm(year)
     const { data } = useDBQueryFirst<ListeningRhythmResult>({
-        query: queryListeningRhythm(year),
+        query: sql,
+        params,
         year,
     })
 
