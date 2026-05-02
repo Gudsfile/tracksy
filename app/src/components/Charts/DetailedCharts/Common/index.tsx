@@ -7,11 +7,13 @@ import { ThemeContext } from '../../../../hooks/ThemeContext'
 
 export interface CommonProps<T> {
     query: string
+    params?: unknown[]
     buildPlot: (data: T[], isDark?: boolean) => ReturnType<typeof plot>
 }
 
 export function Common<T extends Record<string, string | number | null>>({
     query,
+    params,
     buildPlot,
 }: CommonProps<T>) {
     const [data, setData] = useState<T[] | undefined>()
@@ -19,13 +21,16 @@ export function Common<T extends Record<string, string | number | null>>({
 
     const containerRef = useRef<HTMLDivElement>(null)
 
+    // Use a stable key for params to avoid re-running on every render
+    // (array identity changes on every render even if values are the same)
+    const paramsKey = JSON.stringify(params ?? [])
     useEffect(() => {
         const getData = async () => {
-            const result = await queryDBAsJSON<T>(query)
+            const result = await queryDBAsJSON<T>(query, params)
             setData(result)
         }
         getData()
-    }, [query])
+    }, [query, paramsKey])
 
     useEffect(() => {
         if (!data) return

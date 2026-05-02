@@ -2,6 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
 import { queryStreamsPerHoursByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
+import { runQueryAndReadAll } from '../../SimpleCharts/__tests__/test-utils'
 
 const seedPath =
     'src/components/Charts/DetailedCharts/StreamPerHour/fixtures/seed.json'
@@ -22,7 +23,8 @@ beforeEach(async () => {
 describe('SummaryPerYear query', () => {
     describe('query with year', () => {
         it('counts the streams of the year per hour', async () => {
-            const result = await conn.runAndReadAll(
+            const result = await runQueryAndReadAll(
+                conn,
                 queryStreamsPerHoursByYear(2006)
             )
             const rows = result.getRowObjects()
@@ -55,7 +57,8 @@ describe('SummaryPerYear query', () => {
         })
 
         it('counts 0 if there is no stream', async () => {
-            const result = await conn.runAndReadAll(
+            const result = await runQueryAndReadAll(
+                conn,
                 queryStreamsPerHoursByYear(2025)
             )
             const rows = result.getRowObjects()
@@ -90,7 +93,8 @@ describe('SummaryPerYear query', () => {
 
     describe('query without year', () => {
         it('counts the streams of all years per hour', async () => {
-            const result = await conn.runAndReadAll(
+            const result = await runQueryAndReadAll(
+                conn,
                 queryStreamsPerHoursByYear(undefined)
             )
             const rows = result.getRowObjects()

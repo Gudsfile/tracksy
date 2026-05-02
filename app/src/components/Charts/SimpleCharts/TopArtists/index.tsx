@@ -3,8 +3,10 @@ import { queryTopArtists, type TopArtistsResult } from './query'
 import { TopArtists as TopArtistsView } from './TopArtists'
 
 export function TopArtists({ year }: { year: number | undefined }) {
+    const { sql, params } = queryTopArtists(year)
     const { data } = useDBQueryMany<TopArtistsResult>({
-        query: queryTopArtists(year),
+        query: sql,
+        params,
         year,
     })
 

@@ -3,8 +3,10 @@ import { querySeasonalPatterns, type SeasonalResult } from './query'
 import { SeasonalPatterns as SeasonalPatternsView } from './SeasonalPatterns'
 
 export function SeasonalPatterns({ year }: { year: number | undefined }) {
+    const { sql, params } = querySeasonalPatterns(year)
     const { data } = useDBQueryFirst<SeasonalResult>({
-        query: querySeasonalPatterns(year),
+        query: sql,
+        params,
         year,
     })
 

@@ -7,9 +7,11 @@ interface TopAlbumsProps {
 }
 
 export function TopAlbums({ year }: TopAlbumsProps) {
+    const { sql, params } = queryTopAlbumsByYear(year)
     return (
         <Common<TopAlbumsQueryResult>
-            query={queryTopAlbumsByYear(year)}
+            query={sql}
+            params={params}
             buildPlot={buildPlot}
         />
     )

@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryRepeatBehavior from './RepeatBehavior.sql?raw'
 
 export type RepeatResult = {
@@ -8,10 +9,12 @@ export type RepeatResult = {
     avg_repeat_length: number
 }
 
-export function queryRepeatBehavior(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
-    return sqlQueryRepeatBehavior
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryRepeatBehavior(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryRepeatBehavior
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

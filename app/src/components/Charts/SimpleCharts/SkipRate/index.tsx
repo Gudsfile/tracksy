@@ -3,8 +3,10 @@ import { querySkipRate, type SkipRateResult } from './query'
 import { SkipRate as SkipRateView } from './SkipRate'
 
 export function SkipRate({ year }: { year: number | undefined }) {
+    const { sql, params } = querySkipRate(year)
     const { data } = useDBQueryFirst<SkipRateResult>({
-        query: querySkipRate(year),
+        query: sql,
+        params,
         year,
     })
 

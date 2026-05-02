@@ -16,9 +16,11 @@ export function StreamPerDayOfWeek({ year }: StreamPerDayOfWeekProps) {
             buildPlot(data, isDark),
         []
     )
+    const { sql, params } = streamPerDayOfWeekQueryByYear(year)
     return (
         <Common<StreamPerDayOfWeekQueryResult>
-            query={streamPerDayOfWeekQueryByYear(year)}
+            query={sql}
+            params={params}
             buildPlot={plotBuilder}
         />
     )

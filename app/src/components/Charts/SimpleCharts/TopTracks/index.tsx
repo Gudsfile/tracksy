@@ -3,8 +3,10 @@ import { queryTopTracks, type TopTracksResult } from './query'
 import { TopTracks as TopTracksView } from './TopTracks'
 
 export function TopTracks({ year }: { year: number | undefined }) {
+    const { sql, params } = queryTopTracks(year)
     const { data } = useDBQueryMany<TopTracksResult>({
-        query: queryTopTracks(year),
+        query: sql,
+        params,
         year,
     })
 

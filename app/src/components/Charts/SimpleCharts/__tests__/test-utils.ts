@@ -1,4 +1,4 @@
-import { DuckDBConnection, type Json } from '@duckdb/node-api'
+import { DuckDBConnection, type DuckDBValue, type Json } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
 
 export type TestStreamEntry = {
@@ -66,12 +66,33 @@ export async function createTestTable(
     appender.closeSync()
 }
 
+export type QueryInput = string | { sql: string; params: unknown[] }
+
 export async function testQuery(
     conn: DuckDBConnection,
-    sql: string
+    query: QueryInput
 ): Promise<Record<string, Json>[]> {
-    const result = await conn.runAndReadAll(sql)
+    if (typeof query === 'string') {
+        const result = await conn.runAndReadAll(query)
+        return result.getRowObjectsJson()
+    }
+    const stmt = await conn.prepare(query.sql)
+    stmt.bind(query.params as DuckDBValue[])
+    const result = await stmt.runAndReadAll()
     return result.getRowObjectsJson()
+}
+
+export async function runQueryAndReadAll(
+    conn: DuckDBConnection,
+    query: QueryInput
+) {
+    if (typeof query === 'string') {
+        return conn.runAndReadAll(query)
+    }
+    return conn.runAndReadAll(
+        query.sql,
+        query.params.length > 0 ? (query.params as DuckDBValue[]) : undefined
+    )
 }
 
 export function closeTestConnection(conn: DuckDBConnection): void {

@@ -1,4 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
+import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryTopTracks from './TopTracks.sql?raw'
 
 export type TopTracksResult = {
@@ -8,10 +9,12 @@ export type TopTracksResult = {
     ms_played: number
 }
 
-export function queryTopTracks(year: number | undefined): string {
-    const yearCondition =
-        year !== undefined ? `year(ts::date) = ${year}` : '1=1'
-    return sqlQueryTopTracks
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryTopTracks(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryTopTracks
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

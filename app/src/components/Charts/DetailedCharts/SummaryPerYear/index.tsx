@@ -12,9 +12,11 @@ export function SummaryPerYear({ year }: SummaryPerYearProps) {
         year !== undefined ? buildPlot : buildAllTimePlot,
         [year]
     )
+    const { sql, params } = summarizePerYearQuery(year)
     return (
         <Common<SummaryPerYearQueryResult>
-            query={summarizePerYearQuery(year)}
+            query={sql}
+            params={params}
             buildPlot={plotBuilder}
         />
     )

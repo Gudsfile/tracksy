@@ -2,6 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
 import { streamPerDayOfWeekQueryByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
+import { runQueryAndReadAll } from '../../SimpleCharts/__tests__/test-utils'
 
 const seedPath =
     'src/components/Charts/DetailedCharts/StreamPerDayOfWeek/fixtures/seed.json'
@@ -21,7 +22,8 @@ beforeEach(async () => {
 
 describe('StreamPerDayOfWeek query', () => {
     it('returns sum of streams per day of week and hour', async () => {
-        const result = await conn.runAndReadAll(
+        const result = await runQueryAndReadAll(
+            conn,
             streamPerDayOfWeekQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
@@ -38,7 +40,8 @@ describe('StreamPerDayOfWeek query', () => {
     })
 
     it('returns sum of streams per day of week and hour for a specific year', async () => {
-        const result = await conn.runAndReadAll(
+        const result = await runQueryAndReadAll(
+            conn,
             streamPerDayOfWeekQueryByYear(2006)
         )
         const rows = result.getRowObjects()

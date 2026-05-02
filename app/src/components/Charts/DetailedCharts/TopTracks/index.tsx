@@ -13,9 +13,11 @@ export function TopTracks({ year }: TopTracksProps) {
             buildPlot(data, isDark),
         []
     )
+    const { sql, params } = queryTopTracksByYear(year)
     return (
         <Common<TopTracksQueryResult>
-            query={queryTopTracksByYear(year)}
+            query={sql}
+            params={params}
             buildPlot={plotBuilder}
         />
     )

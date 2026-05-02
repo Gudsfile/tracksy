@@ -3,8 +3,10 @@ import { queryPrincipalPlatform, type PlatformResult } from './query'
 import { PrincipalPlatform as PrincipalPlatformView } from './PrincipalPlatform'
 
 export function PrincipalPlatform({ year }: { year: number | undefined }) {
+    const { sql, params } = queryPrincipalPlatform(year)
     const { data } = useDBQueryMany<PlatformResult>({
-        query: queryPrincipalPlatform(year),
+        query: sql,
+        params,
         year,
     })
 
