@@ -107,7 +107,7 @@ export function Top10AlbumsEvolutionPlot({
             ],
         })
 
-        containerRef.current.append(plot)
+        containerRef.current.replaceChildren(plot)
 
         return () => plot.remove()
     }, [data])
