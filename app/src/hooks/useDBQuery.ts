@@ -6,6 +6,7 @@ type DBRow = Record<string, DBPrimitive>
 
 type BaseOptions = {
     query: string
+    params?: unknown[]
     year?: number
 }
 
@@ -17,6 +18,7 @@ export type UseDBQueryResult<T> = {
 
 export function useDBQueryMany<T extends DBRow>({
     query,
+    params,
     year,
 }: BaseOptions): UseDBQueryResult<T[]> {
     const [data, setData] = useState<T[] | undefined>(undefined)
@@ -29,7 +31,7 @@ export function useDBQueryMany<T extends DBRow>({
             setError(undefined)
 
             try {
-                const rows = await queryDBAsJSON<T>(query)
+                const rows = await queryDBAsJSON<T>(query, params)
                 setData(rows)
             } catch (e) {
                 setError(e instanceof Error ? e : new Error('Unknown error'))
@@ -46,6 +48,7 @@ export function useDBQueryMany<T extends DBRow>({
 
 export function useDBQueryFirst<T extends DBRow>({
     query,
+    params,
     year,
 }: BaseOptions): UseDBQueryResult<T> {
     const [data, setData] = useState<T | undefined>(undefined)
@@ -58,7 +61,7 @@ export function useDBQueryFirst<T extends DBRow>({
             setError(undefined)
 
             try {
-                const rows = await queryDBAsJSON<T>(query)
+                const rows = await queryDBAsJSON<T>(query, params)
                 setData(rows[0])
             } catch (e) {
                 setError(e instanceof Error ? e : new Error('Unknown error'))
