@@ -10,6 +10,7 @@ import {
 import { DuckDBConnection } from '@duckdb/node-api'
 import { queryStreamsPerMonthByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
+import { runQueryAndReadAll } from '../../SimpleCharts/__tests__/test-utils'
 
 const seedPath =
     'src/components/Charts/DetailedCharts/StreamPerMonth/fixtures/seed.json'
@@ -56,7 +57,8 @@ function generateExpectedMonths(
 
 describe('StreamPerMonth query', () => {
     it('returns listening times by date for all years', async () => {
-        const result = await conn.runAndReadAll(
+        const result = await runQueryAndReadAll(
+            conn,
             queryStreamsPerMonthByYear(undefined)
         )
         const rows = result.getRowObjectsJson()
@@ -74,7 +76,8 @@ describe('StreamPerMonth query', () => {
     })
 
     it('returns listening times by date for a specific year', async () => {
-        const result = await conn.runAndReadAll(
+        const result = await runQueryAndReadAll(
+            conn,
             queryStreamsPerMonthByYear(2006)
         )
         const rows = result.getRowObjectsJson()

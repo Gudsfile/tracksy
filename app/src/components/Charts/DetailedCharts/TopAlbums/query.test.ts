@@ -2,6 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
 import { queryTopAlbumsByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
+import { runQueryAndReadAll } from '../../SimpleCharts/__tests__/test-utils'
 
 const seedPath =
     'src/components/Charts/DetailedCharts/TopAlbums/fixtures/seed.json'
@@ -21,7 +22,10 @@ beforeEach(async () => {
 
 describe('TopAlbums query', () => {
     it('returns the tracks top 10 for all years', async () => {
-        const result = await conn.runAndReadAll(queryTopAlbumsByYear(undefined))
+        const result = await runQueryAndReadAll(
+            conn,
+            queryTopAlbumsByYear(undefined)
+        )
         const rows = result.getRowObjects()
         expect(rows).toEqual([
             {
@@ -38,7 +42,10 @@ describe('TopAlbums query', () => {
     })
 
     it('returns the tracks top 10 for a specific year', async () => {
-        const result = await conn.runAndReadAll(queryTopAlbumsByYear(2006))
+        const result = await runQueryAndReadAll(
+            conn,
+            queryTopAlbumsByYear(2006)
+        )
         const rows = result.getRowObjects()
         expect(rows).toEqual([
             {
