@@ -9,9 +9,12 @@ export type TopTracksResult = {
     ms_played: number
 }
 
-export function queryTopTracks(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryTopTracks
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryTopTracks(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryTopTracks
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

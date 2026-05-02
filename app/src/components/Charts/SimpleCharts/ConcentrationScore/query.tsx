@@ -8,9 +8,12 @@ export type ConcentrationResult = {
     top20_pct: number
 }
 
-export function queryConcentrationScore(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryConcentrationScore
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryConcentrationScore(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryConcentrationScore
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

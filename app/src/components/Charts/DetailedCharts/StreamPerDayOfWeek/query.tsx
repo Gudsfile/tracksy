@@ -3,10 +3,13 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamPerDayOfWeek from './StreamPerDayOfWeek.sql?raw'
 
 export function streamPerDayOfWeekQueryByYear(year: number | undefined) {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryStreamPerDayOfWeek
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryStreamPerDayOfWeek
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }
 
 export type StreamPerDayOfWeekQueryResult = {

@@ -7,9 +7,12 @@ export type SkipRateResult = {
     skipped_listens: number
 }
 
-export function querySkipRate(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQuerySkipRate
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function querySkipRate(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQuerySkipRate
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

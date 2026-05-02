@@ -10,9 +10,12 @@ export type ListeningRhythmResult = {
     total: number
 }
 
-export function queryListeningRhythm(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryListeningRhythm
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryListeningRhythm(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryListeningRhythm
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

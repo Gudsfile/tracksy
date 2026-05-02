@@ -9,9 +9,12 @@ export type ArtistLoyaltyResult = {
     share_of_total_streams: number
 }
 
-export function queryArtistLoyalty(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryArtistLoyalty
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryArtistLoyalty(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryArtistLoyalty
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

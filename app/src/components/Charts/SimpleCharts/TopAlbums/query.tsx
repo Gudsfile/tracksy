@@ -9,9 +9,12 @@ export type TopAlbumsResult = {
     ms_played: number
 }
 
-export function queryTopAlbums(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryTopAlbums
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryTopAlbums(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryTopAlbums
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

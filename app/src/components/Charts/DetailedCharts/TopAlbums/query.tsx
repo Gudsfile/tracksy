@@ -3,10 +3,13 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryTopAlbumsByYear from './TopAlbums.sql?raw'
 
 export function queryTopAlbumsByYear(year: number | undefined) {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryTopAlbumsByYear
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryTopAlbumsByYear
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }
 
 export type TopAlbumsQueryResult = {

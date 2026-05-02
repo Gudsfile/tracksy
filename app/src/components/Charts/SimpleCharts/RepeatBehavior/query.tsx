@@ -9,9 +9,12 @@ export type RepeatResult = {
     avg_repeat_length: number
 }
 
-export function queryRepeatBehavior(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQueryRepeatBehavior
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function queryRepeatBehavior(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQueryRepeatBehavior
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }

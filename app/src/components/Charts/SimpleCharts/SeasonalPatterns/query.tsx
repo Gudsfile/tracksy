@@ -10,9 +10,12 @@ export type SeasonalResult = {
     total: number
 }
 
-export function querySeasonalPatterns(year: number | undefined): string {
-    const yearCondition = buildYearCondition(year)
-    return sqlQuerySeasonalPatterns
-        .replaceAll('${table}', TABLE)
-        .replaceAll('${year_condition}', yearCondition)
+export function querySeasonalPatterns(year: number | undefined) {
+    const { condition, params } = buildYearCondition(year)
+    return {
+        sql: sqlQuerySeasonalPatterns
+            .replaceAll('${table}', TABLE)
+            .replaceAll('${year_condition}', condition),
+        params,
+    }
 }
