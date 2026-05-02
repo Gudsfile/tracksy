@@ -31,7 +31,7 @@ export function Common<T extends Record<string, string | number | null>>({
         if (!data) return
         const element = buildPlot(data, effectiveTheme === 'dark')
         if (containerRef.current) {
-            containerRef.current.appendChild(element)
+            containerRef.current.replaceChildren(element)
         }
         return () => {
             element.remove()
