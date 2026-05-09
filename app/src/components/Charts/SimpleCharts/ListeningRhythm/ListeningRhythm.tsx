@@ -3,11 +3,18 @@ import type { ListeningRhythmResult } from './query'
 import { ChartCard, ChartHero, LabeledProgressBar } from '../shared'
 
 type Props = {
-    data: ListeningRhythmResult
+    data: ListeningRhythmResult | undefined
+    isLoading?: boolean
 }
 
-export const ListeningRhythm: FC<Props> = ({ data }) => {
-    const { morning, afternoon, evening, night, total } = data
+export const ListeningRhythm: FC<Props> = ({ data, isLoading }) => {
+    const {
+        morning = 0,
+        afternoon = 0,
+        evening = 0,
+        night = 0,
+        total = 0,
+    } = data ?? {}
     const percent = (count: number) => (total ? (count / total) * 100 : 0)
 
     const periods = [
@@ -22,7 +29,7 @@ export const ListeningRhythm: FC<Props> = ({ data }) => {
     )
 
     return (
-        <ChartCard title="Daily Vibes" emoji="⏰">
+        <ChartCard title="Daily Vibes" emoji="⏰" isLoading={isLoading}>
             <ChartHero
                 label={favorite.label}
                 sublabel={`${favorite.value?.toLocaleString()} streams`}

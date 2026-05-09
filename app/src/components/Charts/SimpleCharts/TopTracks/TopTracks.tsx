@@ -4,18 +4,22 @@ import { memo } from 'react'
 import { ChartCard, RankedList } from '../shared'
 
 type Props = {
-    data: TopTracksResult[]
+    data: TopTracksResult[] | undefined
+    isLoading?: boolean
 }
 
-export const TopTracks: FC<Props> = memo(function TopTracks({ data }) {
-    const items = data.map((track) => ({
+export const TopTracks: FC<Props> = memo(function TopTracks({
+    data,
+    isLoading,
+}) {
+    const items = (data ?? []).map((track) => ({
         primary: track.track_name,
         secondary: track.artist_name,
         score: track.count_streams.toLocaleString(),
     }))
 
     return (
-        <ChartCard title="Top Tracks" emoji="🎵">
+        <ChartCard title="Top Tracks" emoji="🎵" isLoading={isLoading}>
             <RankedList items={items} />
         </ChartCard>
     )

@@ -3,11 +3,11 @@ import { queryTopAlbums, type TopAlbumsResult } from './query'
 import { TopAlbums as TopAlbumsView } from './TopAlbums'
 
 export function TopAlbums({ year }: { year: number | undefined }) {
-    const { data } = useDBQueryMany<TopAlbumsResult>({
+    const { data, isLoading } = useDBQueryMany<TopAlbumsResult>({
         query: queryTopAlbums(year),
         year,
     })
 
-    if (!data?.length) return null
-    return <TopAlbumsView data={data} />
+    if (!isLoading && !data?.length) return null
+    return <TopAlbumsView data={data} isLoading={isLoading} />
 }

@@ -3,11 +3,11 @@ import { queryNewVsOld, type NewVsOldResult } from './query'
 import { NewVsOld as NewVsOldView } from './NewVsOld'
 
 export function NewVsOld({ year }: { year: number | undefined }) {
-    const { data } = useDBQueryFirst<NewVsOldResult>({
+    const { data, isLoading } = useDBQueryFirst<NewVsOldResult>({
         query: queryNewVsOld(year),
         year,
     })
 
-    if (!data) return null
-    return <NewVsOldView data={data} />
+    if (!isLoading && !data) return null
+    return <NewVsOldView data={data} isLoading={isLoading} />
 }

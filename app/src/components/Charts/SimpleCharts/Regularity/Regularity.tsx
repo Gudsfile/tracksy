@@ -4,11 +4,16 @@ import { classifyRegularity } from './classifyRegularity'
 import { ChartCard, ChartHero } from '../shared'
 
 type Props = {
-    data: RegularityResult
+    data: RegularityResult | undefined
+    isLoading?: boolean
 }
 
-export const Regularity: FC<Props> = ({ data }) => {
-    const { days_with_streams, total_days, longest_pause_days } = data
+export const Regularity: FC<Props> = ({ data, isLoading }) => {
+    const {
+        days_with_streams = 0,
+        total_days = 1,
+        longest_pause_days = 0,
+    } = data ?? {}
 
     const regularity_pct = (days_with_streams / total_days) * 100
     const { label, color, strokeColor, emoji } =
@@ -25,6 +30,7 @@ export const Regularity: FC<Props> = ({ data }) => {
             title="Consistency Meter"
             emoji="⏳"
             className="flex flex-col h-full relative"
+            isLoading={isLoading}
         >
             <ChartHero
                 label={label}

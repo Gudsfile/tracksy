@@ -3,11 +3,11 @@ import { queryRepeatBehavior, type RepeatResult } from './query'
 import { RepeatBehavior as RepeatBehaviorView } from './RepeatBehavior'
 
 export function RepeatBehavior({ year }: { year: number | undefined }) {
-    const { data } = useDBQueryFirst<RepeatResult>({
+    const { data, isLoading } = useDBQueryFirst<RepeatResult>({
         query: queryRepeatBehavior(year),
         year,
     })
 
-    if (!data) return null
-    return <RepeatBehaviorView data={data} />
+    if (!isLoading && (!data || data.total_repeat_sequences === 0)) return null
+    return <RepeatBehaviorView data={data} isLoading={isLoading} />
 }

@@ -20,25 +20,28 @@ import {
     summarizeQuery,
 } from './Summarize/summarizeQuery'
 import { useState, useEffect } from 'react'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 
 export function SimpleView() {
-    const [year, setYear] = useState<number | undefined>(
-        new Date().getFullYear()
-    )
-    const [minYear, setMinYear] = useState(2006)
-    const [maxYear, setMaxYear] = useState(new Date().getFullYear())
+    const [year, setYear] = useState<number | undefined>(undefined)
+    const [summarize, setSummarize] = useState<
+        SummarizeDataQueryResult | undefined
+    >()
+    const debouncedYear = useDebouncedValue(year, 250)
 
     useEffect(() => {
         const initDataSummarize = async () => {
             const results =
                 await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
-            if (results.length === 0) return
-            setMinYear(new Date(Number(results[0].min_datetime)).getFullYear())
-            setMaxYear(new Date(Number(results[0].max_datetime)).getFullYear())
-            setYear(new Date(Number(results[0].max_datetime)).getFullYear())
+            setSummarize(results[0] || undefined)
         }
         initDataSummarize()
     }, [])
+
+    useEffect(() => {
+        if (summarize)
+            setYear(new Date(Number(summarize.max_datetime)).getFullYear())
+    }, [summarize])
 
     return (
         <>
@@ -46,34 +49,42 @@ export function SimpleView() {
                 <FunFacts />
             </div>
 
-            <div className="sticky top-2 z-50">
-                <RangeSlider
-                    value={year}
-                    min={minYear}
-                    max={maxYear}
-                    step={1}
-                    onChange={setYear}
-                />
-            </div>
+            {summarize && (
+                <>
+                    <div className="sticky top-2 z-50">
+                        <RangeSlider
+                            value={year}
+                            min={new Date(
+                                Number(summarize.min_datetime)
+                            ).getFullYear()}
+                            max={new Date(
+                                Number(summarize.max_datetime)
+                            ).getFullYear()}
+                            step={1}
+                            onChange={setYear}
+                        />
+                    </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <TopTracks year={year} />
-                <TopArtists year={year} />
-                <TopAlbums year={year} />
-                <ConcentrationScore year={year} />
-                <ListeningRhythm year={year} />
-                <Regularity year={year} />
-                <div className="md:col-span-2">
-                    <EvolutionOverTime year={year} />
-                </div>
-                <SeasonalPatterns year={year} />
-                <NewVsOld year={year} />
-                <ArtistLoyalty year={year} />
-                <SkipRate year={year} />
-                <RepeatBehavior year={year} />
-                <PrincipalPlatform year={year} />
-                <FavoriteWeekday year={year} />
-            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <TopTracks year={debouncedYear} />
+                        <TopArtists year={debouncedYear} />
+                        <TopAlbums year={debouncedYear} />
+                        <ConcentrationScore year={debouncedYear} />
+                        <ListeningRhythm year={debouncedYear} />
+                        <Regularity year={debouncedYear} />
+                        <div className="md:col-span-2">
+                            <EvolutionOverTime year={debouncedYear} />
+                        </div>
+                        <SeasonalPatterns year={debouncedYear} />
+                        <NewVsOld year={debouncedYear} />
+                        <ArtistLoyalty year={debouncedYear} />
+                        <SkipRate year={debouncedYear} />
+                        <RepeatBehavior year={debouncedYear} />
+                        <PrincipalPlatform year={debouncedYear} />
+                        <FavoriteWeekday year={debouncedYear} />
+                    </div>
+                </>
+            )}
         </>
     )
 }

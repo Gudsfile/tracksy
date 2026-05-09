@@ -203,8 +203,13 @@ const repeatBehaviorMock: RepeatResult[] = [
 const principalPlatformMock: PlatformResult[] = [
     {
         platform: 'platform',
+        stream_count: 10,
+        pct: 70,
+    },
+    {
+        platform: 'platform2',
         stream_count: 1,
-        pct: 10,
+        pct: 30,
     },
 ]
 

@@ -175,4 +175,46 @@ describe('shared behavior', () => {
 
         expect(spy).toHaveBeenCalledTimes(2)
     })
+
+    it('should ignore stale query results when a newer query resolves first', async () => {
+        const staleMock: User[] = [{ id: 1, year: 2024 }]
+        const freshMock: User[] = [{ id: 2, year: 2025 }]
+
+        let resolveStale!: (v: User[]) => void
+        let resolveFresh!: (v: User[]) => void
+
+        const stalePromise = new Promise<User[]>((res) => {
+            resolveStale = res
+        })
+        const freshPromise = new Promise<User[]>((res) => {
+            resolveFresh = res
+        })
+
+        const spy = vi.spyOn(queryDB, 'queryDBAsJSON')
+        spy.mockReturnValueOnce(stalePromise).mockReturnValueOnce(freshPromise)
+
+        const { result, rerender } = renderHook(
+            ({ year }: { year: number }) =>
+                useDBQueryMany<User>({
+                    query: `SELECT * FROM test WHERE year = ${year}`,
+                    year,
+                }),
+            { initialProps: { year: 2024 } }
+        )
+
+        // Trigger second query before first resolves
+        rerender({ year: 2025 })
+
+        // Fresh query resolves first
+        resolveFresh(freshMock)
+        await waitFor(() => {
+            expect(result.current.data).toEqual(freshMock)
+        })
+
+        // Stale query resolves after — should be ignored
+        resolveStale(staleMock)
+        await waitFor(() => {
+            expect(result.current.data).toEqual(freshMock)
+        })
+    })
 })

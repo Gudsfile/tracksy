@@ -3,16 +3,17 @@ import type { NewVsOldResult } from './query'
 import { ChartCard, ChartHero, InsightCard } from '../shared'
 
 type Props = {
-    data: NewVsOldResult
+    data: NewVsOldResult | undefined
+    isLoading?: boolean
 }
 
-export const NewVsOld: FC<Props> = ({ data }) => {
+export const NewVsOld: FC<Props> = ({ data, isLoading }) => {
     const {
-        new_artists_streams,
-        old_artists_streams,
-        new_artists_count,
-        total,
-    } = data
+        new_artists_streams = 0,
+        old_artists_streams = 0,
+        new_artists_count = 0,
+        total = 0,
+    } = data ?? {}
 
     const newPct = total ? (new_artists_streams / total) * 100 : 0
     const oldPct = total ? (old_artists_streams / total) * 100 : 0
@@ -25,7 +26,7 @@ export const NewVsOld: FC<Props> = ({ data }) => {
               : 'Balanced Tast'
 
     return (
-        <ChartCard title="Fresh vs Familiar" emoji="🆕">
+        <ChartCard title="Fresh vs Familiar" emoji="🆕" isLoading={isLoading}>
             <ChartHero label={top} />
 
             <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">

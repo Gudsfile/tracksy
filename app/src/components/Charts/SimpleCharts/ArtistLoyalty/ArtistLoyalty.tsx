@@ -4,49 +4,53 @@ import { ChartCard, ChartHero } from '../shared'
 import { classifyArtistLoyalty } from './classifyArtistLoyalty'
 
 type Props = {
-    data: ArtistLoyaltyResult[]
+    data: ArtistLoyaltyResult[] | undefined
+    isLoading?: boolean
 }
 
-export const ArtistLoyalty: FC<Props> = ({ data }) => {
-    const totalArtists = data.reduce((sum, bin) => sum + bin.artist_count, 0)
+export const ArtistLoyalty: FC<Props> = ({ data, isLoading }) => {
+    const totalArtists = (data ?? []).reduce(
+        (sum, bin) => sum + bin.artist_count,
+        0
+    )
 
-    const classification = classifyArtistLoyalty(data)
+    const classification = classifyArtistLoyalty(data ?? [])
 
     const bins = [
         {
             label: '1 stream',
-            value: data[0]?.share_of_total_streams * 100 || 0,
+            value: (data?.[0]?.share_of_total_streams ?? 0) * 100,
             color: 'bg-teal-400',
             textColor: 'text-teal-700 dark:text-teal-400',
         },
         {
             label: '2-10 streams',
-            value: data[1]?.share_of_total_streams * 100 || 0,
+            value: (data?.[1]?.share_of_total_streams ?? 0) * 100,
             color: 'bg-orange-400',
             textColor: 'text-orange-700 dark:text-orange-400',
         },
         {
             label: '11-100 streams',
-            value: data[2]?.share_of_total_streams * 100 || 0,
+            value: (data?.[2]?.share_of_total_streams ?? 0) * 100,
             color: 'bg-violet-400',
             textColor: 'text-violet-700 dark:text-violet-400',
         },
         {
             label: '101-1000 streams',
-            value: data[3]?.share_of_total_streams * 100 || 0,
+            value: (data?.[3]?.share_of_total_streams ?? 0) * 100,
             color: 'bg-blue-400',
             textColor: 'text-blue-700 dark:text-blue-400',
         },
         {
             label: '1000+ streams',
-            value: data[4]?.share_of_total_streams * 100 || 0,
+            value: (data?.[4]?.share_of_total_streams ?? 0) * 100,
             color: 'bg-rose-500',
             textColor: 'text-rose-700 dark:text-rose-400',
         },
     ]
 
     return (
-        <ChartCard title="Artist Loyalty" emoji="🤝">
+        <ChartCard title="Artist Loyalty" emoji="🤝" isLoading={isLoading}>
             <ChartHero
                 label={classification.label}
                 sublabel={`${totalArtists.toLocaleString()} artists`}
