@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/app"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     labels:
       - "dependencies"
       - "[ app ]"
@@ -21,7 +21,7 @@ updates:
   - package-ecosystem: "uv"
     directory: "/synthetic-datasets"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     labels:
       - "dependencies"
       - "[ synthetic-datasets ]"
@@ -41,7 +41,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     labels:
       - "dependencies"
       - "ci/cd"
