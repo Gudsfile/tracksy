@@ -155,35 +155,3 @@ Reusable display components are in `src/components/Charts/SimpleCharts/shared/` 
 | `ProgressBar`        | Simple percentage bar                                  |
 | `LabeledProgressBar` | Progress bar with label and value                      |
 | `InsightCard`        | Highlighted text block for insights                    |
-
-## ➕ Optional extras
-
-### 🎵 Spotify API Integration
-
-**This step is optional. You can use Tracksy without Spotify integration.**
-
-No features currently use the Spotify connection (we are looking for a solution that reduces the number of API calls and complies with our privacy requirements). However, if you wish to work with this connection, you will need to to configure your Spotify Client ID:
-
-1. **Create a Spotify Developer App**
-    - Go to [https://developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) and log in with your Spotify account
-    - Click **"Create an App"**
-    - Fill in the app name (e.g., "Tracksy Local Dev") and description
-    - Click **"CREATE"**
-
-2. **Configure Redirect URI**
-    - On your app overview page, click **"Edit Settings"**
-    - Add `http://localhost:4321/` to **Redirect URIs**
-    - Click **"SAVE"**
-
-3. **Get Your Client ID**
-    - Copy the **Client ID** displayed on your app overview page
-
-4. **Configure Environment**
-    - Copy `.env.example` to `.env` in the `app/` directory
-    - Update `PUBLIC_SPOTIFY_CLIENT_ID` with your Client ID:
-        ```bash
-        PUBLIC_SPOTIFY_CLIENT_ID=your_actual_client_id_here
-        ```
-
-> [!NOTE]
-> You do NOT need the Client Secret. Tracksy uses the PKCE flow which only requires the Client ID.
