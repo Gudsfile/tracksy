@@ -7,10 +7,10 @@ projects:
 vcs:
   hooks:
     pre-commit:
-      - moon app:format-check
-      - moon app:typecheck
-      - moon synthetic-datasets:typecheck
-      - moon synthetic-datasets:format-check
+      - moon run app:format-check
+      - moon run app:typecheck
+      - moon run synthetic-datasets:typecheck
+      - moon run synthetic-datasets:format-check
   defaultBranch: main
   client: git
 versionConstraint: ">=2.0.3,<=3.0.0"

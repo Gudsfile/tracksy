@@ -140,6 +140,13 @@ To get started, you don't need to install Node.js, Python, or pnpm manually. Moo
     moon setup
     ```
 
+3. **Install the pre-commit hooks**:
+
+  ```bash
+  # This installs the Git hooks defined in .moon/workspace.yml
+  moon sync hooks
+  ```
+
 #### Available Commands
 
 Run tasks across the entire monorepo or for specific projects.
