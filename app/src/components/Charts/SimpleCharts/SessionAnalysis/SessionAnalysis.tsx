@@ -27,6 +27,7 @@ export const SessionAnalysis: FC<Props> = ({ data, isLoading }) => {
             emoji="🎵"
             isLoading={isLoading}
             question="How are my listening sessions structured?"
+            className="h-full"
         >
             {profile && (
                 <ChartHero

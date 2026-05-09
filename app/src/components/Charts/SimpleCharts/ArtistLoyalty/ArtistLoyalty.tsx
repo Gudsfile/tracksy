@@ -55,6 +55,7 @@ export const ArtistLoyalty: FC<Props> = ({ data, isLoading }) => {
             emoji="🤝"
             isLoading={isLoading}
             question="How are my streams distributed by how much I listen to each artist?"
+            className="h-full"
         >
             <ChartHero
                 label={classification.label}

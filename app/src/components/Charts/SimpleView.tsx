@@ -90,12 +90,16 @@ export function SimpleView() {
                         </div>
                         <SeasonalPatterns year={debouncedYear} />
                         <NewVsOld year={debouncedYear} />
-                        <ArtistLoyalty year={debouncedYear} />
+                        <div className="row-span-2">
+                            <ArtistLoyalty year={debouncedYear} />
+                        </div>
                         <SkipRate year={debouncedYear} />
+                        <div className="row-span-2">
+                            <SessionAnalysis year={debouncedYear} />
+                        </div>
                         <RepeatBehavior year={debouncedYear} />
                         <PrincipalPlatform year={debouncedYear} />
                         <FavoriteWeekday year={debouncedYear} />
-                        <SessionAnalysis year={debouncedYear} />
                     </div>
                 </>
             )}
