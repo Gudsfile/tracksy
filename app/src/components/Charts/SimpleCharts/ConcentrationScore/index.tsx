@@ -3,11 +3,11 @@ import { queryConcentrationScore, type ConcentrationResult } from './query'
 import { ConcentrationScore as ConcentrationScoreView } from './ConcentrationScore'
 
 export function ConcentrationScore({ year }: { year: number | undefined }) {
-    const { data } = useDBQueryFirst<ConcentrationResult>({
+    const { data, isLoading } = useDBQueryFirst<ConcentrationResult>({
         query: queryConcentrationScore(year),
         year,
     })
 
-    if (!data) return null
-    return <ConcentrationScoreView data={data} />
+    if (!isLoading && !data) return null
+    return <ConcentrationScoreView data={data} isLoading={isLoading} />
 }

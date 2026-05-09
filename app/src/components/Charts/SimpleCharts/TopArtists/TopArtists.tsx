@@ -5,18 +5,22 @@ import { formatDuration } from '../../../../utils/formatDuration'
 import { ChartCard, RankedList } from '../shared'
 
 type Props = {
-    data: TopArtistsResult[]
+    data: TopArtistsResult[] | undefined
+    isLoading?: boolean
 }
 
-export const TopArtists: FC<Props> = memo(function TopArtists({ data }) {
-    const items = data.map((artist) => ({
+export const TopArtists: FC<Props> = memo(function TopArtists({
+    data,
+    isLoading,
+}) {
+    const items = (data ?? []).map((artist) => ({
         primary: artist.artist_name,
         secondary: formatDuration(artist.ms_played).split(' ')[0],
         score: artist.count_streams.toLocaleString(),
     }))
 
     return (
-        <ChartCard title="Top Artists" emoji="🎤">
+        <ChartCard title="Top Artists" emoji="🎤" isLoading={isLoading}>
             <RankedList items={items} />
         </ChartCard>
     )

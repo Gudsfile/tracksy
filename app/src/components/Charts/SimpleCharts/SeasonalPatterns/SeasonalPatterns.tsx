@@ -4,11 +4,18 @@ import { ChartCard } from '../shared/ChartCard'
 import { ChartHero, LabeledProgressBar } from '../shared'
 
 type Props = {
-    data: SeasonalResult
+    data: SeasonalResult | undefined
+    isLoading?: boolean
 }
 
-export const SeasonalPatterns: FC<Props> = ({ data }) => {
-    const { winter, spring, summer, fall, total } = data
+export const SeasonalPatterns: FC<Props> = ({ data, isLoading }) => {
+    const {
+        winter = 0,
+        spring = 0,
+        summer = 0,
+        fall = 0,
+        total = 0,
+    } = data ?? {}
     const percent = (count: number) => (total ? (count / total) * 100 : 0)
 
     const seasons = [
@@ -23,7 +30,7 @@ export const SeasonalPatterns: FC<Props> = ({ data }) => {
     )
 
     return (
-        <ChartCard title="Seasonal Mood" emoji="🌺">
+        <ChartCard title="Seasonal Mood" emoji="🌺" isLoading={isLoading}>
             <ChartHero
                 label={favorite.name}
                 sublabel={`${favorite.value?.toLocaleString()} streams`}

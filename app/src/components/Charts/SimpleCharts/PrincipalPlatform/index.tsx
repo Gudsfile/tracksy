@@ -3,11 +3,11 @@ import { queryPrincipalPlatform, type PlatformResult } from './query'
 import { PrincipalPlatform as PrincipalPlatformView } from './PrincipalPlatform'
 
 export function PrincipalPlatform({ year }: { year: number | undefined }) {
-    const { data } = useDBQueryMany<PlatformResult>({
+    const { data, isLoading } = useDBQueryMany<PlatformResult>({
         query: queryPrincipalPlatform(year),
         year,
     })
 
-    if (!data?.length) return null
-    return <PrincipalPlatformView data={data} />
+    if (!isLoading && !data?.length) return null
+    return <PrincipalPlatformView data={data} isLoading={isLoading} />
 }

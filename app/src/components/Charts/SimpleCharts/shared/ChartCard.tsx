@@ -5,6 +5,8 @@ export type ChartCardProps = {
     emoji?: string
     children: ReactNode
     className?: string
+    isLoading?: boolean
+    question?: string
 }
 
 export const ChartCard: FC<ChartCardProps> = ({
@@ -12,6 +14,8 @@ export const ChartCard: FC<ChartCardProps> = ({
     emoji,
     children,
     className = '',
+    isLoading = false,
+    question,
 }) => {
     return (
         <div
@@ -21,7 +25,20 @@ export const ChartCard: FC<ChartCardProps> = ({
                 {emoji && <span>{emoji}</span>}
                 {title}
             </h3>
-            {children}
+            {question && (
+                <p className="text-xs italic text-gray-400 dark:text-gray-500 mb-3 -mt-1">
+                    {question}
+                </p>
+            )}
+            {isLoading ? (
+                <div className="space-y-2 animate-pulse">
+                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-full" />
+                    <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-5/6" />
+                </div>
+            ) : (
+                children
+            )}
         </div>
     )
 }

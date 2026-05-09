@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
 
 type DBPrimitive = string | number | null
@@ -22,19 +22,25 @@ export function useDBQueryMany<T extends DBRow>({
     const [data, setData] = useState<T[] | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>(undefined)
+    const requestIdRef = useRef(0)
 
     useEffect(() => {
+        const id = ++requestIdRef.current
+
         const fetchData = async () => {
             setIsLoading(true)
             setError(undefined)
 
             try {
                 const rows = await queryDBAsJSON<T>(query)
-                setData(rows)
+                if (id === requestIdRef.current) setData(rows)
             } catch (e) {
-                setError(e instanceof Error ? e : new Error('Unknown error'))
+                if (id === requestIdRef.current)
+                    setError(
+                        e instanceof Error ? e : new Error('Unknown error')
+                    )
             } finally {
-                setIsLoading(false)
+                if (id === requestIdRef.current) setIsLoading(false)
             }
         }
 
@@ -51,19 +57,25 @@ export function useDBQueryFirst<T extends DBRow>({
     const [data, setData] = useState<T | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>(undefined)
+    const requestIdRef = useRef(0)
 
     useEffect(() => {
+        const id = ++requestIdRef.current
+
         const fetchData = async () => {
             setIsLoading(true)
             setError(undefined)
 
             try {
                 const rows = await queryDBAsJSON<T>(query)
-                setData(rows[0])
+                if (id === requestIdRef.current) setData(rows[0])
             } catch (e) {
-                setError(e instanceof Error ? e : new Error('Unknown error'))
+                if (id === requestIdRef.current)
+                    setError(
+                        e instanceof Error ? e : new Error('Unknown error')
+                    )
             } finally {
-                setIsLoading(false)
+                if (id === requestIdRef.current) setIsLoading(false)
             }
         }
 

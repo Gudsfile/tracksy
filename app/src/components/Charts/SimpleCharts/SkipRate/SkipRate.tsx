@@ -4,18 +4,20 @@ import { classifySkipRate } from './classifySkipRate'
 import { ChartCard, ChartHero, ProgressBar, InsightCard } from '../shared'
 
 type Props = {
-    data: SkipRateResult
+    data: SkipRateResult | undefined
+    isLoading?: boolean
 }
 
-export const SkipRate: FC<Props> = ({ data }) => {
-    const { complete_listens, skipped_listens } = data
+export const SkipRate: FC<Props> = ({ data, isLoading }) => {
+    const { complete_listens = 0, skipped_listens = 0 } = data ?? {}
 
-    const complete_pct =
-        (complete_listens / (complete_listens + skipped_listens)) * 100
+    const complete_pct = data
+        ? (complete_listens / (complete_listens + skipped_listens)) * 100
+        : 0
     const { classification, emoji, message } = classifySkipRate(complete_pct)
 
     return (
-        <ChartCard title="Skip Mood" emoji="⏭️">
+        <ChartCard title="Skip Mood" emoji="⏭️" isLoading={isLoading}>
             <ChartHero
                 label={classification}
                 sublabel={`${complete_pct.toFixed(1)}% are full listens`}

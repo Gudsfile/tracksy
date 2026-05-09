@@ -24,11 +24,11 @@ describe('ChartCard', () => {
     it('should render children', () => {
         render(
             <ChartCard title="Test">
-                <div data-testid="children">Child content</div>
+                <div>Child content</div>
             </ChartCard>
         )
 
-        expect(screen.getByTestId('children')).toBeDefined()
+        expect(screen.getByText('Child content')).toBeDefined()
     })
 
     it('should apply custom className', () => {
@@ -53,5 +53,53 @@ describe('ChartCard', () => {
         expect(classes).toContain('backdrop-blur-md')
         expect(classes).toContain('rounded-2xl')
         expect(classes).toContain('animate-fade-in')
+    })
+
+    it('should render question when provided', () => {
+        render(
+            <ChartCard title="Test" question="What is my top artist?">
+                Content
+            </ChartCard>
+        )
+
+        expect(screen.getByText('What is my top artist?')).toBeDefined()
+    })
+
+    it('should not render question element when not provided', () => {
+        render(<ChartCard title="Test">Content</ChartCard>)
+
+        expect(screen.queryByText(/\?/)).toBeNull()
+    })
+
+    it('should render skeleton and hide children when isLoading is true', () => {
+        render(
+            <ChartCard title="Test" isLoading>
+                <div>Content</div>
+            </ChartCard>
+        )
+
+        expect(screen.queryByText('Content')).toBeNull()
+        expect(document.querySelector('.animate-pulse')).not.toBeNull()
+    })
+
+    it('should render children and no skeleton when isLoading is false', () => {
+        render(
+            <ChartCard title="Test" isLoading={false}>
+                <div>Content</div>
+            </ChartCard>
+        )
+
+        expect(screen.getByText('Content')).toBeDefined()
+        expect(document.querySelector('.animate-pulse')).toBeNull()
+    })
+
+    it('should render question even when isLoading is true', () => {
+        render(
+            <ChartCard title="Test" isLoading question="Loading question?">
+                Content
+            </ChartCard>
+        )
+
+        expect(screen.getByText('Loading question?')).toBeDefined()
     })
 })

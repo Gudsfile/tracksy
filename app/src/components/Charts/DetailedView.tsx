@@ -11,6 +11,7 @@ import {
     type SummarizeDataQueryResult,
 } from './Summarize/summarizeQuery'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { TopTracks } from './DetailedCharts/TopTracks'
 import { TopArtists } from './DetailedCharts/TopArtists'
 import { TopAlbums } from './DetailedCharts/TopAlbums'
@@ -23,10 +24,11 @@ import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function DetailedView() {
-    const [year, setYear] = useState<number | undefined>(2006) // Spotify was founded on April 23, 2006.
+    const [year, setYear] = useState<number | undefined>(2006)
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined
     >()
+    const debouncedYear = useDebouncedValue(year, 250)
 
     useEffect(() => {
         const initDataSummarize = async () => {
@@ -65,18 +67,20 @@ export function DetailedView() {
                         />
                     </div>
                     <StreamPerMonth
-                        year={year}
+                        year={debouncedYear}
                         maxValue={summarize.max_monthly_duration}
                     />
                     <StreamPerHour
-                        year={year}
+                        year={debouncedYear}
                         maxValue={Number(summarize.max_count_hourly_stream)}
                     />
-                    <SummaryPerYear year={year} />
-                    <TopTracks year={year} />
-                    <TopArtists year={year} />
-                    <TopAlbums year={year} />
+                    <SummaryPerYear year={debouncedYear} />
+                    <TopTracks year={debouncedYear} />
+                    <TopArtists year={debouncedYear} />
+                    <TopAlbums year={debouncedYear} />
                     <ArtistDiscovery />
+                    <StreamPerDayOfWeek year={debouncedYear} />
+                    <Top10AlbumsEvolution />
                 </>
             )}
 
@@ -94,9 +98,7 @@ export function DetailedView() {
 
                 <Streaks />
                 <Top10Evolution />
-                <Top10AlbumsEvolution />
                 <Top10TracksEvolution />
-                <StreamPerDayOfWeek year={year} />
             </section>
             <DuckDBShell />
         </>
