@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { TopAlbums } from './TopAlbums'
 
 describe('TopAlbums Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<TopAlbums data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const numberOfTracks = 10
         const data = Array.from({ length: numberOfTracks }, (_, i) => ({
