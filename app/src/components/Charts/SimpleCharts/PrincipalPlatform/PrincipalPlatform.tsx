@@ -1,6 +1,11 @@
 import type { FC } from 'react'
 import type { PlatformResult } from './query'
-import { ChartCard, ChartHero, LabeledProgressBar } from '../shared'
+import {
+    ChartCard,
+    ChartCardEmpty,
+    ChartHero,
+    LabeledProgressBar,
+} from '../shared'
 
 type Props = {
     data: PlatformResult[] | undefined
@@ -15,7 +20,9 @@ export const PrincipalPlatform: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Which platform do I use the most for listening?"
         >
-            {data && (
+            {!data?.length ? (
+                <ChartCardEmpty />
+            ) : (
                 <>
                     <ChartHero
                         label={data[0].platform}
