@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { NewVsOld } from './NewVsOld'
 
 describe('NewVsOld Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<NewVsOld data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const data = {
             new_artists_streams: 30,
