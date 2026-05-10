@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { FavoriteWeekdayResult } from './query'
-import { ChartCard, ChartHero } from '../shared'
+import { ChartCard, ChartCardEmpty, ChartHero } from '../shared'
 
 type Props = {
     data: FavoriteWeekdayResult[] | undefined
@@ -30,18 +30,20 @@ export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Which day of the week do I listen the most?"
         >
-            {data && favoriteDay && (
+            {!data?.length ? (
+                <ChartCardEmpty />
+            ) : (
                 <>
                     <ChartHero
-                        label={favoriteDay.day_name}
-                        sublabel={`${favoriteDay.stream_count.toLocaleString()} streams`}
+                        label={favoriteDay!.day_name}
+                        sublabel={`${favoriteDay!.stream_count.toLocaleString()} streams`}
                         labelColor="text-orange-400"
                     />
 
                     <div className="grid grid-cols-7 gap-1">
                         {data.map((day) => {
                             const isFavorite =
-                                day.day_name === favoriteDay.day_name
+                                day.day_name === favoriteDay!.day_name
                             const heightPct = (day.pct / maxPct) * 100
 
                             return (
