@@ -86,6 +86,12 @@ describe('HourlyStreams', () => {
         expect(container.querySelector('.animate-pulse')).not.toBeNull()
     })
 
+    it('shows peak hour in ChartHero', () => {
+        render(<HourlyStreams data={fixture} isLoading={false} />)
+        screen.getByText('08h')
+        screen.getByText('42 streams')
+    })
+
     it('highlights peak hour wedge with darker teal', () => {
         const { container } = render(
             <HourlyStreams data={fixture} isLoading={false} />
