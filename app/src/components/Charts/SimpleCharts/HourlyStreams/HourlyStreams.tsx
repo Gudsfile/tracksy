@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import type { HourlyStreamsQueryResult } from './query'
-import { ChartCard, ChartHero, ChartTooltip } from '../shared'
+import { ChartCard, ChartCardEmpty, ChartHero, ChartTooltip } from '../shared'
 import { formatDuration } from '../../../../utils/formatDuration'
 import { clockEmoji } from './clockEmojis'
 
@@ -193,9 +193,7 @@ export const HourlyStreams: FC<Props> = ({
                     </svg>
                 </>
             ) : (
-                <p className="text-sm text-gray-400 dark:text-gray-500 italic text-center py-6">
-                    No data for this year
-                </p>
+                <ChartCardEmpty />
             )}
             {tooltip && (
                 <ChartTooltip x={tooltip.x} y={tooltip.y}>
