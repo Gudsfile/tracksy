@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { RepeatResult } from './query'
 import { classifyRepeatBehavior } from './classifyRepeatBehavior'
-import { ChartCard, ChartHero } from '../shared'
+import { ChartCard, ChartCardEmpty, ChartHero } from '../shared'
 
 type Props = {
     data: RepeatResult | undefined
@@ -20,8 +20,6 @@ export const RepeatBehavior: FC<Props> = ({ data, isLoading }) => {
         total_repeat_sequences
     )
 
-    if (!isLoading && total_repeat_sequences === 0) return null
-
     return (
         <ChartCard
             title="Replay Energy"
@@ -29,7 +27,9 @@ export const RepeatBehavior: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Do I replay the same tracks over and over?"
         >
-            {data && (
+            {!data ? (
+                <ChartCardEmpty />
+            ) : (
                 <>
                     <ChartHero
                         label={classification}

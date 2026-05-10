@@ -21,22 +21,8 @@ describe('RepeatBehavior Component', () => {
         screen.getByText('3.5 times')
     })
 
-    it.each([0, 1, 100])(
-        'renders nothing when there is no repeat sequences no matter the values of other fields: %s',
-        (dummy_value) => {
-            render(
-                <RepeatBehavior
-                    data={{
-                        total_repeat_sequences: 0,
-                        max_consecutive: dummy_value,
-                        most_repeated_track: dummy_value.toString(),
-                        avg_repeat_length: dummy_value,
-                    }}
-                />
-            )
-            expect(
-                screen.queryByRole('heading', { name: /🔁Replay Energy/ })
-            ).toBeNull()
-        }
-    )
+    it('renders empty state when data is undefined', () => {
+        render(<RepeatBehavior data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
 })
