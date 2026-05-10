@@ -17,7 +17,12 @@ export const SkipRate: FC<Props> = ({ data, isLoading }) => {
     const { classification, emoji, message } = classifySkipRate(complete_pct)
 
     return (
-        <ChartCard title="Skip Mood" emoji="⏭️" isLoading={isLoading}>
+        <ChartCard
+            title="Skip Mood"
+            emoji="⏭️"
+            isLoading={isLoading}
+            question="Do I skip tracks often?"
+        >
             <ChartHero
                 label={classification}
                 sublabel={`${complete_pct.toFixed(1)}% are full listens`}

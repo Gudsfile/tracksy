@@ -23,6 +23,7 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
             emoji="📈"
             className="flex flex-col justify-between h-full"
             isLoading={isLoading}
+            question="How has my listening evolved over the years?"
         >
             {data && (
                 <>

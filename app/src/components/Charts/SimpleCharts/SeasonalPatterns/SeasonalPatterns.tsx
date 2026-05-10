@@ -30,7 +30,12 @@ export const SeasonalPatterns: FC<Props> = ({ data, isLoading }) => {
     )
 
     return (
-        <ChartCard title="Seasonal Mood" emoji="🌺" isLoading={isLoading}>
+        <ChartCard
+            title="Seasonal Mood"
+            emoji="🌺"
+            isLoading={isLoading}
+            question="Which season do I listen the most?"
+        >
             <ChartHero
                 label={favorite.name}
                 sublabel={`${favorite.value?.toLocaleString()} streams`}

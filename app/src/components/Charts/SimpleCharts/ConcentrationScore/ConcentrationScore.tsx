@@ -17,7 +17,12 @@ export const ConcentrationScore: FC<Props> = ({ data, isLoading }) => {
         : []
 
     return (
-        <ChartCard title="Focus Mode" emoji="🔥" isLoading={isLoading}>
+        <ChartCard
+            title="Focus Mode"
+            emoji="🔥"
+            isLoading={isLoading}
+            question="Is my listening concentrated on just a few artists?"
+        >
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Share of listening time for your top artists
             </div>

@@ -31,6 +31,7 @@ export const Regularity: FC<Props> = ({ data, isLoading }) => {
             emoji="⏳"
             className="flex flex-col h-full relative"
             isLoading={isLoading}
+            question="Do I listen to music regularly?"
         >
             <ChartHero
                 label={label}

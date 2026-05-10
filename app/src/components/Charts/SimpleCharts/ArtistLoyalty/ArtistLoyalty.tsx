@@ -50,7 +50,12 @@ export const ArtistLoyalty: FC<Props> = ({ data, isLoading }) => {
     ]
 
     return (
-        <ChartCard title="Artist Loyalty" emoji="🤝" isLoading={isLoading}>
+        <ChartCard
+            title="Artist Loyalty"
+            emoji="🤝"
+            isLoading={isLoading}
+            question="How are my streams distributed by how much I listen to each artist?"
+        >
             <ChartHero
                 label={classification.label}
                 sublabel={`${totalArtists.toLocaleString()} artists`}

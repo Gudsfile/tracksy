@@ -9,7 +9,12 @@ type Props = {
 
 export const PrincipalPlatform: FC<Props> = ({ data, isLoading }) => {
     return (
-        <ChartCard title="Your Sound Machine" emoji="📱" isLoading={isLoading}>
+        <ChartCard
+            title="Your Sound Machine"
+            emoji="📱"
+            isLoading={isLoading}
+            question="Which platform do I use the most for listening?"
+        >
             {data && (
                 <>
                     <ChartHero

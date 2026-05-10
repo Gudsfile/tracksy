@@ -24,7 +24,12 @@ export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
     const maxPct = data ? Math.max(...data.map((d) => d.pct)) : 0
 
     return (
-        <ChartCard title="Your Power Day" emoji="📅" isLoading={isLoading}>
+        <ChartCard
+            title="Your Power Day"
+            emoji="📅"
+            isLoading={isLoading}
+            question="Which day of the week do I listen the most?"
+        >
             {data && favoriteDay && (
                 <>
                     <ChartHero
