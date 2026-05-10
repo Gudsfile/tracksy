@@ -21,6 +21,7 @@ import { Top10AlbumsEvolution } from './DetailedCharts/Top10AlbumsEvolution'
 import { Top10TracksEvolution } from './DetailedCharts/Top10TracksEvolution'
 import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
+import { CalendarHeatmap } from './DetailedCharts/CalendarHeatmap'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function DetailedView() {
@@ -80,6 +81,7 @@ export function DetailedView() {
                     <TopAlbums year={debouncedYear} />
                     <ArtistDiscovery />
                     <StreamPerDayOfWeek year={debouncedYear} />
+                    <CalendarHeatmap year={debouncedYear} />
                     <Top10AlbumsEvolution />
                 </>
             )}
