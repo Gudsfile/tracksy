@@ -8,6 +8,5 @@ export function ArtistLoyalty({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data?.length) return null
     return <ArtistLoyaltyView data={data} isLoading={isLoading} />
 }

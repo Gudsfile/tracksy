@@ -4,6 +4,11 @@ import { ArtistLoyalty } from './ArtistLoyalty'
 import type { ArtistLoyaltyResult } from './query'
 
 describe('ArtistLoyalty Component', () => {
+    it('renders empty state when data is empty', () => {
+        render(<ArtistLoyalty data={[]} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     const createMockData = (
         overrides: Partial<ArtistLoyaltyResult>[]
     ): ArtistLoyaltyResult[] => {
