@@ -8,6 +8,5 @@ export function SeasonalPatterns({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <SeasonalPatternsView data={data} isLoading={isLoading} />
 }
