@@ -72,6 +72,7 @@ export const HourlyStreams: FC<Props> = ({
             emoji={peakRow ? clockEmoji(peakRow.hour) : '🕐'}
             isLoading={isLoading}
             question="When do you listen to music?"
+            className="h-full w-full"
         >
             {data ? (
                 <>
