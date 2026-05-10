@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import type { HourlyStreamsQueryResult } from './query'
-import { ChartCard, ChartTooltip } from '../shared'
+import { ChartCard, ChartHero, ChartTooltip } from '../shared'
 import { formatDuration } from '../../../../utils/formatDuration'
 
 const CX = 150
@@ -56,12 +56,14 @@ export const HourlyStreams: FC<Props> = ({
             ? Math.max(...data.map((d) => d.count_streams), MIN_VISIBLE_R)
             : 1)
 
-    const peakHour =
+    const peakRow =
         data && data.length > 0
             ? data.reduce((max, row) =>
                   row.count_streams > max.count_streams ? row : max
-              ).hour
-            : -1
+              )
+            : undefined
+
+    const peakHour = peakRow?.hour ?? -1
 
     return (
         <ChartCard
@@ -71,74 +73,29 @@ export const HourlyStreams: FC<Props> = ({
             question="When do you listen to music?"
         >
             {data ? (
-                <svg
-                    viewBox="0 0 300 300"
-                    className="w-full h-auto"
-                    onMouseLeave={() => setTooltip(null)}
-                >
-                    {/* Grid circles */}
-                    {[0.25, 0.5, 0.75, 1].map((frac) => (
-                        <circle
-                            key={frac}
-                            cx={CX}
-                            cy={CY}
-                            r={MAX_R * frac}
-                            fill="none"
-                            className="stroke-gray-200 dark:stroke-slate-600"
-                            strokeWidth={0.5}
+                <>
+                    {peakRow && (
+                        <ChartHero
+                            label={`${String(peakRow.hour).padStart(2, '0')}h`}
+                            sublabel={`${peakRow.count_streams.toLocaleString()} streams`}
+                            labelColor="text-teal-600"
                         />
-                    ))}
-
-                    {/* Wedges */}
-                    {data.map((row) => {
-                        const r =
-                            row.count_streams > 0
-                                ? Math.max(
-                                      MIN_VISIBLE_R,
-                                      (row.count_streams / effective) * MAX_R
-                                  )
-                                : 0
-                        if (r === 0) return null
-                        const isHovered = tooltip?.hour === row.hour
-                        const isPeak = row.hour === peakHour
-                        return (
-                            <path
-                                key={row.hour}
-                                d={wedgePath(row.hour, r, CX, CY)}
-                                className={
-                                    isHovered
-                                        ? 'fill-teal-300 stroke-white dark:stroke-slate-900'
-                                        : isPeak
-                                          ? 'fill-teal-600 stroke-white dark:stroke-slate-900'
-                                          : 'fill-teal-400 stroke-white dark:stroke-slate-900'
-                                }
-                                strokeWidth={0.75}
-                                onMouseEnter={(e) => {
-                                    const rect = (
-                                        e.currentTarget as SVGPathElement
-                                    )
-                                        .closest('svg')!
-                                        .getBoundingClientRect()
-                                    const aCenter =
-                                        ((row.hour + 0.5) / 24) * 2 * Math.PI -
-                                        Math.PI / 2
-                                    const rMid = r / 2
-                                    const svgW = rect.width
-                                    const svgH = rect.height
-                                    setTooltip({
-                                        x:
-                                            rect.left +
-                                            (CX + rMid * Math.cos(aCenter)) *
-                                                (svgW / 300),
-                                        y:
-                                            rect.top +
-                                            (CY + rMid * Math.sin(aCenter)) *
-                                                (svgH / 300),
-                                        hour: row.hour,
-                                        count: row.count_streams,
-                                        ms: row.ms_played,
-                                    })
-                                }}
+                    )}
+                    <svg
+                        viewBox="0 0 300 300"
+                        className="w-full h-auto"
+                        onMouseLeave={() => setTooltip(null)}
+                    >
+                        {/* Grid circles */}
+                        {[0.25, 0.5, 0.75, 1].map((frac) => (
+                            <circle
+                                key={frac}
+                                cx={CX}
+                                cy={CY}
+                                r={MAX_R * frac}
+                                fill="none"
+                                className="stroke-gray-200 dark:stroke-slate-600"
+                                strokeWidth={0.5}
                             />
                         ))}
 
@@ -230,18 +187,9 @@ export const HourlyStreams: FC<Props> = ({
                                     className="fill-gray-400 dark:fill-gray-500"
                                 />
                             )
-                        }
-                        return (
-                            <circle
-                                key={h}
-                                cx={pos.x}
-                                cy={pos.y}
-                                r={1.5}
-                                className="fill-gray-400 dark:fill-gray-500"
-                            />
-                        )
-                    })}
-                </svg>
+                        })}
+                    </svg>
+                </>
             ) : (
                 <p className="text-sm text-gray-400 dark:text-gray-500 italic text-center py-6">
                     No data for this year
