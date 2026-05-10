@@ -29,7 +29,12 @@ export const ListeningRhythm: FC<Props> = ({ data, isLoading }) => {
     )
 
     return (
-        <ChartCard title="Daily Vibes" emoji="⏰" isLoading={isLoading}>
+        <ChartCard
+            title="Daily Vibes"
+            emoji="⏰"
+            isLoading={isLoading}
+            question="What time of day do I listen the most?"
+        >
             <ChartHero
                 label={favorite.label}
                 sublabel={`${favorite.value?.toLocaleString()} streams`}

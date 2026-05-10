@@ -26,7 +26,12 @@ export const NewVsOld: FC<Props> = ({ data, isLoading }) => {
               : 'Balanced Tast'
 
     return (
-        <ChartCard title="Fresh vs Familiar" emoji="🆕" isLoading={isLoading}>
+        <ChartCard
+            title="Fresh vs Familiar"
+            emoji="🆕"
+            isLoading={isLoading}
+            question="Am I discovering new artists?"
+        >
             <ChartHero label={top} />
 
             <div className="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">

@@ -23,7 +23,12 @@ export const RepeatBehavior: FC<Props> = ({ data, isLoading }) => {
     if (!isLoading && total_repeat_sequences === 0) return null
 
     return (
-        <ChartCard title="Replay Energy" emoji="🔁" isLoading={isLoading}>
+        <ChartCard
+            title="Replay Energy"
+            emoji="🔁"
+            isLoading={isLoading}
+            question="Do I replay the same tracks over and over?"
+        >
             {data && (
                 <>
                     <ChartHero
