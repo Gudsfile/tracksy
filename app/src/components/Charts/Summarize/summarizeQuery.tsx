@@ -9,6 +9,5 @@ export const summarizeQuery = sqlQuerySummarize.replaceAll(
 export type SummarizeDataQueryResult = {
     min_datetime: string
     max_datetime: string
-    max_count_hourly_stream: number
     max_monthly_duration: number
 }
