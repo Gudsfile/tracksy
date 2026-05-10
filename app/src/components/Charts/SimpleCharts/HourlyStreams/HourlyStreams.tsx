@@ -56,6 +56,13 @@ export const HourlyStreams: FC<Props> = ({
             ? Math.max(...data.map((d) => d.count_streams), MIN_VISIBLE_R)
             : 1)
 
+    const peakHour =
+        data && data.length > 0
+            ? data.reduce((max, row) =>
+                  row.count_streams > max.count_streams ? row : max
+              ).hour
+            : -1
+
     return (
         <ChartCard
             title="Around the Clock"
@@ -93,6 +100,7 @@ export const HourlyStreams: FC<Props> = ({
                                 : 0
                         if (r === 0) return null
                         const isHovered = tooltip?.hour === row.hour
+                        const isPeak = row.hour === peakHour
                         return (
                             <path
                                 key={row.hour}
@@ -100,7 +108,9 @@ export const HourlyStreams: FC<Props> = ({
                                 className={
                                     isHovered
                                         ? 'fill-teal-300 stroke-white dark:stroke-slate-900'
-                                        : 'fill-teal-400 stroke-white dark:stroke-slate-900'
+                                        : isPeak
+                                          ? 'fill-teal-600 stroke-white dark:stroke-slate-900'
+                                          : 'fill-teal-400 stroke-white dark:stroke-slate-900'
                                 }
                                 strokeWidth={0.75}
                                 onMouseEnter={(e) => {
