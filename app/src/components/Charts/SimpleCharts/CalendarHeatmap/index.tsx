@@ -2,7 +2,7 @@ import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     buildCalendarHeatmapQuery,
     type CalendarHeatmapQueryResult,
-} from '../../DetailedCharts/CalendarHeatmap/query'
+} from './query'
 import { CalendarHeatmap as CalendarHeatmapView } from './CalendarHeatmap'
 
 export function CalendarHeatmap({ year }: { year: number | undefined }) {

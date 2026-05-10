@@ -1,4 +1,6 @@
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
+import sqlQueryCalendarHeatmap from './CalendarHeatmap.sql?raw'
+import { DAILY_STREAM_COUNTS_TABLE } from '../../../../db/queries/constants'
 
 export type CalendarHeatmapQueryResult = {
     day: string
@@ -7,10 +9,7 @@ export type CalendarHeatmapQueryResult = {
 
 export function buildCalendarHeatmapQuery(year: number | undefined): string {
     const yearCondition = buildYearCondition(year, 'year(day)')
-    return `
-        SELECT day::VARCHAR AS day, stream_count::DOUBLE AS stream_count
-        FROM daily_stream_counts
-        WHERE ${yearCondition}
-        ORDER BY day
-    `
+    return sqlQueryCalendarHeatmap
+        .replaceAll('${table}', DAILY_STREAM_COUNTS_TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }

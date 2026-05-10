@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildCells } from './plot'
+import { buildCells } from './buildCells'
 
 describe('buildCells', () => {
     it('generates one cell per calendar day for the given year', () => {

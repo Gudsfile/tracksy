@@ -1,6 +1,6 @@
 import type { FC } from 'react'
-import type { CalendarHeatmapQueryResult } from '../../DetailedCharts/CalendarHeatmap/query'
-import { buildCells } from '../../DetailedCharts/CalendarHeatmap/plot'
+import type { CalendarHeatmapQueryResult } from './query'
+import { buildCells } from './buildCells'
 import { ChartCard } from '../shared'
 
 const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']

@@ -10,6 +10,7 @@ import { FunFacts } from './SimpleCharts/FunFacts'
 import { PrincipalPlatform } from './SimpleCharts/PrincipalPlatform'
 import { ArtistLoyalty } from './SimpleCharts/ArtistLoyalty'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
+import { CalendarHeatmap } from './SimpleCharts/CalendarHeatmap'
 import { TopArtists } from './SimpleCharts/TopArtists'
 import { TopAlbums } from './SimpleCharts/TopAlbums'
 import { TopTracks } from './SimpleCharts/TopTracks'
@@ -66,6 +67,9 @@ export function SimpleView() {
                         <TopTracks year={debouncedYear} />
                         <TopArtists year={debouncedYear} />
                         <TopAlbums year={debouncedYear} />
+                        <div className="md:col-span-3">
+                            <CalendarHeatmap year={debouncedYear} />
+                        </div>
                         <ConcentrationScore year={debouncedYear} />
                         <ListeningRhythm year={debouncedYear} />
                         <Regularity year={debouncedYear} />
