@@ -15,7 +15,7 @@ export function TotalStreams() {
             setData(result)
         }
         getData()
-    }, [queryTotalStreams])
+    }, [])
 
     if (!data) return <></>
 
