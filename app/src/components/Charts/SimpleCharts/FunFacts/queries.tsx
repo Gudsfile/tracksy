@@ -12,7 +12,6 @@ import sqlQueryMusicalAnniversary from './MusicalAnniversary.sql?raw'
 import sqlQueryFirstArtist from './FirstArtist.sql?raw'
 import sqlQueryOneHitWonder from './OneHitWonder.sql?raw'
 import sqlQueryVarietyDay from './VarietyDay.sql?raw'
-import sqlQueryPeakHour from './PeakHour.sql?raw'
 import sqlQueryBingeListener from './BingeListener.sql?raw'
 import sqlQueryCurrentObsession from './CurrentObsession.sql?raw'
 import sqlQueryRecentDiscovery from './RecentDiscovery.sql?raw'
@@ -82,10 +81,6 @@ export function queryVarietyDay(): string {
     return sqlQueryVarietyDay.replaceAll('${table}', TABLE)
 }
 
-export function queryPeakHour(): string {
-    return sqlQueryPeakHour.replaceAll('${table}', TABLE)
-}
-
 export function queryBingeListener(): string {
     return sqlQueryBingeListener.replaceAll('${table}', TABLE)
 }
@@ -129,7 +124,6 @@ export const QUERY_FUNCTIONS = [
     queryCurrentObsession,
     queryFirstArtist,
     queryRecentDiscovery,
-    queryPeakHour,
     querySubscribedArtist,
     queryMusicalAnniversary,
     queryUnbeatableStreak,

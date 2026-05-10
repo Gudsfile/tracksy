@@ -13,7 +13,6 @@ import {
     queryBingeListener,
     queryCurrentObsession,
     queryRecentDiscovery,
-    queryPeakHour,
     querySubscribedArtist,
     queryMusicalAnniversary,
     queryFirstArtist,
@@ -487,31 +486,6 @@ describe('FunFacts queries', () => {
             expect(row.value).toBe(1)
             expect(row.unit).toBe('streams')
             expect(row.context).toBe('discovered during the last 3 months')
-        })
-    })
-
-    describe('Peak hour queries', () => {
-        const testData: TestStreamEntry[] = [
-            { ts: '2024-01-01T10:00:00' },
-            { ts: '2024-01-02T10:00:00' },
-            { ts: '2024-01-03T12:00:00' },
-            { ts: '2024-01-04T13:00:00' },
-            { ts: '2024-01-05T14:00:00' },
-        ]
-
-        beforeEach(async () => {
-            await createTestTable(conn, testData)
-        })
-
-        it('queryPeakHour returns hour with most streams', async () => {
-            const rows = await testQuery(conn, queryPeakHour())
-            expect(rows.length).toBe(1)
-            const row = rows[0]
-            expect(row.fact_type).toBe('peak_hour')
-            expect(row.main_text).toBe('10h')
-            expect(row.value).toBe(40)
-            expect(row.unit).toBe('%')
-            expect(row.context).toBe('of total streams')
         })
     })
 
