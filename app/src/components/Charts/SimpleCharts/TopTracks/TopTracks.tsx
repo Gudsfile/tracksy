@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { TopTracksResult } from './query'
 import { memo } from 'react'
-import { ChartCard, RankedList } from '../shared'
+import { ChartCard, ChartCardEmpty, RankedList } from '../shared'
 
 type Props = {
     data: TopTracksResult[] | undefined
@@ -20,7 +20,7 @@ export const TopTracks: FC<Props> = memo(function TopTracks({
 
     return (
         <ChartCard title="Top Tracks" emoji="🎵" isLoading={isLoading}>
-            <RankedList items={items} />
+            {!data?.length ? <ChartCardEmpty /> : <RankedList items={items} />}
         </ChartCard>
     )
 })

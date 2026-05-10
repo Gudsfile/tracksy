@@ -8,6 +8,5 @@ export function TopTracks({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data?.length) return null
     return <TopTracksView data={data} isLoading={isLoading} />
 }
