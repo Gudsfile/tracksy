@@ -8,6 +8,5 @@ export function RepeatBehavior({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && (!data || data.total_repeat_sequences === 0)) return null
     return <RepeatBehaviorView data={data} isLoading={isLoading} />
 }
