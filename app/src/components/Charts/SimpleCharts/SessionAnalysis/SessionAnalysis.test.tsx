@@ -13,6 +13,11 @@ const baseData = {
 }
 
 describe('SessionAnalysis Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<SessionAnalysis data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders Express profile for short average sessions', () => {
         render(<SessionAnalysis data={baseData} />)
         expect(screen.getByText('Express')).toBeTruthy()
