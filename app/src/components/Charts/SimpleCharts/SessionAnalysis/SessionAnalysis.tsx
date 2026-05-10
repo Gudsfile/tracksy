@@ -31,7 +31,7 @@ export const SessionAnalysis: FC<Props> = ({ data, isLoading }) => {
             {profile && (
                 <ChartHero
                     label={profile.label}
-                    sublabel={`${(data?.session_count ?? 0).toLocaleString()} sessions`}
+                    sublabel={`${data!.session_count.toLocaleString()} sessions`}
                     emoji={profile.emoji}
                     labelColor={profile.color}
                 />
