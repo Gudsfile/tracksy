@@ -53,8 +53,7 @@ export function buildPlot(
             Plot.dot(data, {
                 x: (d: SessionAnalysisDetailedResult) =>
                     new Date(d.session_start),
-                y: (d: SessionAnalysisDetailedResult) =>
-                    new Date(d.session_start).getHours(),
+                y: (d: SessionAnalysisDetailedResult) => d.start_hour,
                 r: (d: SessionAnalysisDetailedResult) => d.duration_ms / 60000,
                 fill: brandPurple,
                 fillOpacity: 0.6,

@@ -78,4 +78,13 @@ describe('SessionAnalysis Detailed Query', () => {
         expect(rows[0].day_of_week).toBe(5)
         expect(rows[1].day_of_week).toBe(3)
     })
+
+    it('should return start_hour computed by DuckDB', async () => {
+        const result = await conn.runAndReadAll(
+            buildSessionAnalysisDetailedQuery(2025)
+        )
+        const rows = result.getRowObjectsJson()
+        expect(rows[0].start_hour).toBe(20)
+        expect(rows[1].start_hour).toBe(21)
+    })
 })

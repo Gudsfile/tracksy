@@ -8,6 +8,7 @@ export type SessionAnalysisDetailedResult = {
     session_start: string
     session_end: string
     day_of_week: number
+    start_hour: number
 }
 
 export function buildSessionAnalysisDetailedQuery(
@@ -21,7 +22,8 @@ export function buildSessionAnalysisDetailedQuery(
             duration_ms::DOUBLE                             AS duration_ms,
             session_start::VARCHAR                          AS session_start,
             session_end::VARCHAR                            AS session_end,
-            dayofweek(session_start::timestamp)::INTEGER    AS day_of_week
+            dayofweek(session_start::timestamp)::INTEGER    AS day_of_week,
+            hour(session_start::timestamp)::INTEGER          AS start_hour
         FROM ${STREAM_SESSIONS_TABLE}
         WHERE ${yearCondition}
         ORDER BY session_start
