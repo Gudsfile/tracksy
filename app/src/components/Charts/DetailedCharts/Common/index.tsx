@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useRef, useContext } from 'react'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
-import { plot } from '@observablehq/plot'
 import { ThemeContext } from '../../../../hooks/ThemeContext'
 
 export interface CommonProps<T> {
     query: string
-    buildPlot: (data: T[], isDark?: boolean) => ReturnType<typeof plot>
+    buildPlot: (data: T[], isDark?: boolean) => Element
 }
 
 export function Common<T extends Record<string, string | number | null>>({
