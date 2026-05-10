@@ -33,15 +33,12 @@ export function SimpleView() {
         const initDataSummarize = async () => {
             const results =
                 await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
-            setSummarize(results[0] || undefined)
+            const s = results[0]
+            setSummarize(s)
+            if (s) setYear(new Date(Number(s.max_datetime)).getFullYear())
         }
         initDataSummarize()
     }, [])
-
-    useEffect(() => {
-        if (summarize)
-            setYear(new Date(Number(summarize.max_datetime)).getFullYear())
-    }, [summarize])
 
     return (
         <>
