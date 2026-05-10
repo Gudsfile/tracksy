@@ -65,7 +65,7 @@ export function buildPlot(
 
     const countByDay = data.reduce<number[]>(
         (acc, d) => {
-            acc[new Date(d.session_start).getDay()]++
+            acc[d.day_of_week]++
             return acc
         },
         [0, 0, 0, 0, 0, 0, 0]

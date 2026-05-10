@@ -67,4 +67,14 @@ describe('SessionAnalysis Detailed Query', () => {
         const starts = rows.map((r) => r.session_start as string)
         expect(starts[0] < starts[1]).toBe(true)
     })
+
+    it('should return day_of_week computed by DuckDB', async () => {
+        const result = await conn.runAndReadAll(
+            buildSessionAnalysisDetailedQuery(2025)
+        )
+        const rows = result.getRowObjectsJson()
+        // 2025-01-10 is a Friday (5), 2025-01-15 is a Wednesday (3)
+        expect(rows[0].day_of_week).toBe(5)
+        expect(rows[1].day_of_week).toBe(3)
+    })
 })
