@@ -279,4 +279,5 @@ it('renders all SimpleView', async () => {
     await screen.findByRole('heading', { name: '🔁Replay Energy' })
     await screen.findByRole('heading', { name: '📱Your Sound Machine' })
     await screen.findByRole('heading', { name: '📅Your Power Day' })
+    await screen.findByRole('heading', { name: '🕐Around the Clock' })
 })
