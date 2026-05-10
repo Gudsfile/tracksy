@@ -8,6 +8,5 @@ export function TopAlbums({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data?.length) return null
     return <TopAlbumsView data={data} isLoading={isLoading} />
 }
