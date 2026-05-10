@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { buildSessionAnalysisDetailedQuery } from './query'
 import { DuckDBConnection } from '@duckdb/node-api'
+import { STREAM_SESSIONS_TABLE } from '../../../../db/queries/constants'
 
 let conn: DuckDBConnection
 
@@ -15,7 +16,7 @@ describe('SessionAnalysis Detailed Query', () => {
 
     beforeEach(async () => {
         await conn.run(`
-            CREATE OR REPLACE TABLE stream_sessions (
+            CREATE OR REPLACE TABLE ${STREAM_SESSIONS_TABLE} (
                 session_id BIGINT,
                 track_count BIGINT,
                 duration_ms BIGINT,
@@ -24,7 +25,7 @@ describe('SessionAnalysis Detailed Query', () => {
             )
         `)
         await conn.run(`
-            INSERT INTO stream_sessions VALUES
+            INSERT INTO ${STREAM_SESSIONS_TABLE} VALUES
             (1, 5, 1800000, '2025-01-10T20:00:00', '2025-01-10T20:30:00'),
             (2, 8, 3600000, '2025-01-15T21:00:00', '2025-01-15T22:00:00'),
             (3, 3,  900000, '2024-06-01T10:00:00', '2024-06-01T10:15:00')
