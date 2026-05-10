@@ -6,5 +6,5 @@ select
     avg(duration_ms) as avg_duration_ms,
     median(track_count) as median_tracks,
     max_by(session_start, duration_ms) as longest_session_date
-from stream_sessions
+from ${table}
 where ${year_condition}
