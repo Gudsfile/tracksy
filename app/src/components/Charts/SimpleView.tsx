@@ -99,9 +99,11 @@ export function SimpleView() {
                             <SessionAnalysis year={debouncedYear} />
                         </div>
                         <RepeatBehavior year={debouncedYear} />
+                        <div className="row-span-3 md:col-span-2">
+                            <HourlyStreams year={debouncedYear} />
+                        </div>
                         <PrincipalPlatform year={debouncedYear} />
                         <FavoriteWeekday year={debouncedYear} />
-                        <HourlyStreams year={debouncedYear} />
                     </div>
                 </>
             )}
