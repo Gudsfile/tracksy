@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { RegularityResult } from './query'
 import { classifyRegularity } from './classifyRegularity'
-import { ChartCard, ChartHero } from '../shared'
+import { ChartCard, ChartCardEmpty, ChartHero } from '../shared'
 
 type Props = {
     data: RegularityResult | undefined
@@ -9,11 +9,9 @@ type Props = {
 }
 
 export const Regularity: FC<Props> = ({ data, isLoading }) => {
-    const {
-        days_with_streams = 0,
-        total_days = 1,
-        longest_pause_days = 0,
-    } = data ?? {}
+    const days_with_streams = data?.days_with_streams ?? 0
+    const total_days = data?.total_days ?? 1
+    const longest_pause_days = data?.longest_pause_days ?? 0
 
     const regularity_pct = (days_with_streams / total_days) * 100
     const { label, color, strokeColor, emoji } =
@@ -33,55 +31,61 @@ export const Regularity: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Do I listen to music regularly?"
         >
-            <ChartHero
-                label={label}
-                sublabel={`${days_with_streams} / ${total_days} days`}
-                emoji={emoji}
-            />
+            {!data ? (
+                <ChartCardEmpty />
+            ) : (
+                <>
+                    <ChartHero
+                        label={label}
+                        sublabel={`${days_with_streams} / ${total_days} days`}
+                        emoji={emoji}
+                    />
 
-            <div className="flex-1 flex items-center justify-center mb-4">
-                <div className="relative">
-                    <svg
-                        width={size}
-                        height={size}
-                        className="transform -rotate-90"
-                    >
-                        <circle
-                            cx={size / 2}
-                            cy={size / 2}
-                            r={radius}
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={strokeWidth}
-                            className="text-gray-200 dark:text-gray-700"
-                        />
-                        <circle
-                            cx={size / 2}
-                            cy={size / 2}
-                            r={radius}
-                            fill="none"
-                            strokeWidth={strokeWidth}
-                            strokeDasharray={circumference}
-                            strokeDashoffset={offset}
-                            strokeLinecap="round"
-                            className={`${strokeColor} transition-all duration-500`}
-                        />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <div className="text-2xl mb-1">{emoji}</div>
-                        <div className={`text-xl font-bold ${color}`}>
-                            {regularity_pct.toFixed(0)}%
+                    <div className="flex-1 flex items-center justify-center mb-4">
+                        <div className="relative">
+                            <svg
+                                width={size}
+                                height={size}
+                                className="transform -rotate-90"
+                            >
+                                <circle
+                                    cx={size / 2}
+                                    cy={size / 2}
+                                    r={radius}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={strokeWidth}
+                                    className="text-gray-200 dark:text-gray-700"
+                                />
+                                <circle
+                                    cx={size / 2}
+                                    cy={size / 2}
+                                    r={radius}
+                                    fill="none"
+                                    strokeWidth={strokeWidth}
+                                    strokeDasharray={circumference}
+                                    strokeDashoffset={offset}
+                                    strokeLinecap="round"
+                                    className={`${strokeColor} transition-all duration-500`}
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <div className="text-2xl mb-1">{emoji}</div>
+                                <div className={`text-xl font-bold ${color}`}>
+                                    {regularity_pct.toFixed(0)}%
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-                Longest pause:{' '}
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                    {longest_pause_days}d
-                </span>
-            </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                        Longest pause:{' '}
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                            {longest_pause_days}d
+                        </span>
+                    </div>
+                </>
+            )}
         </ChartCard>
     )
 }
