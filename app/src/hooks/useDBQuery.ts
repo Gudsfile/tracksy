@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
+import { DATA_LOADED_EVENT } from '../db/dataSignal'
 
 type DBPrimitive = string | number | null
 type DBRow = Record<string, DBPrimitive>
@@ -23,17 +24,32 @@ export function useDBQueryMany<T extends DBRow>({
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>(undefined)
     const requestIdRef = useRef(0)
+    const hasLoadedRef = useRef(false)
+    const [triggerRefetch, setTriggerRefetch] = useState(0)
+
+    useEffect(() => {
+        const handleDataLoaded = () => {
+            hasLoadedRef.current = false
+            setTriggerRefetch((t) => t + 1)
+        }
+        window.addEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+        return () =>
+            window.removeEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+    }, [])
 
     useEffect(() => {
         const id = ++requestIdRef.current
 
         const fetchData = async () => {
-            setIsLoading(true)
+            setIsLoading(!hasLoadedRef.current)
             setError(undefined)
 
             try {
                 const rows = await queryDBAsJSON<T>(query)
-                if (id === requestIdRef.current) setData(rows)
+                if (id === requestIdRef.current) {
+                    setData(rows)
+                    hasLoadedRef.current = true
+                }
             } catch (e) {
                 if (id === requestIdRef.current)
                     setError(
@@ -45,7 +61,7 @@ export function useDBQueryMany<T extends DBRow>({
         }
 
         fetchData()
-    }, [query, year])
+    }, [query, year, triggerRefetch])
 
     return { data, isLoading, error }
 }
@@ -58,17 +74,32 @@ export function useDBQueryFirst<T extends DBRow>({
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>(undefined)
     const requestIdRef = useRef(0)
+    const hasLoadedRef = useRef(false)
+    const [triggerRefetch, setTriggerRefetch] = useState(0)
+
+    useEffect(() => {
+        const handleDataLoaded = () => {
+            hasLoadedRef.current = false
+            setTriggerRefetch((t) => t + 1)
+        }
+        window.addEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+        return () =>
+            window.removeEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+    }, [])
 
     useEffect(() => {
         const id = ++requestIdRef.current
 
         const fetchData = async () => {
-            setIsLoading(true)
+            setIsLoading(!hasLoadedRef.current)
             setError(undefined)
 
             try {
                 const rows = await queryDBAsJSON<T>(query)
-                if (id === requestIdRef.current) setData(rows[0])
+                if (id === requestIdRef.current) {
+                    setData(rows[0])
+                    hasLoadedRef.current = true
+                }
             } catch (e) {
                 if (id === requestIdRef.current)
                     setError(
@@ -80,7 +111,7 @@ export function useDBQueryFirst<T extends DBRow>({
         }
 
         fetchData()
-    }, [query, year])
+    }, [query, year, triggerRefetch])
 
     return { data, isLoading, error }
 }
