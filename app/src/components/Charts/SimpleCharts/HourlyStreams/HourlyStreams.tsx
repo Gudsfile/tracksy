@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { HourlyStreamsQueryResult } from './query'
 import { ChartCard, ChartHero, ChartTooltip } from '../shared'
 import { formatDuration } from '../../../../utils/formatDuration'
+import { clockEmoji } from './clockEmojis'
 
 const CX = 150
 const CY = 150
@@ -68,7 +69,7 @@ export const HourlyStreams: FC<Props> = ({
     return (
         <ChartCard
             title="Around the Clock"
-            emoji="🕐"
+            emoji={peakRow ? clockEmoji(peakRow.hour) : '🕐'}
             isLoading={isLoading}
             question="When do you listen to music?"
         >
