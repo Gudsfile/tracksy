@@ -5,6 +5,7 @@ import { insertFilesInDatabase } from './insertFilesInDatabase'
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
 import * as adapters from '../../streamProvider'
+import * as precompute from '../precompute'
 
 import type { StreamRecord } from '../../streamProvider/types'
 import { TABLE } from './constants'
@@ -67,6 +68,9 @@ describe('insertFilesInDatabase', () => {
             warn: vi.spyOn(console, 'warn').mockImplementation(() => {}),
             error: vi.spyOn(console, 'error').mockImplementation(() => {}),
         }
+        vi.spyOn(precompute, 'precomputeDerivedTables').mockResolvedValue(
+            undefined
+        )
     })
 
     afterEach(() => {
@@ -212,6 +216,41 @@ describe('insertFilesInDatabase', () => {
             expect(consoleSpy.debug).toHaveBeenCalledWith(
                 `Table ${TABLE} created with 2 records.`
             )
+        })
+    })
+
+    describe('precomputation', () => {
+        it('calls precomputeDerivedTables after insertArrowTable', async () => {
+            const connectionMock = mockDB()
+            const { provider } = mockStreamProviderWithSpy([
+                {
+                    track_uri: 'spotify:track:123',
+                    track_name: 'Song',
+                    artist_name: 'Artist',
+                    album_name: 'Album',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                    platform: 'Platform',
+                },
+            ])
+            vi.spyOn(adapters, 'detectProvider').mockReturnValue(provider)
+
+            const filesMock = convertArrayToFileList([
+                mockFile('[]', 'test.json', { type: 'application/json' }),
+            ])
+
+            await insertFilesInDatabase(filesMock)
+
+            const precomputeSpy = vi.mocked(precompute.precomputeDerivedTables)
+            expect(precomputeSpy).toHaveBeenCalledTimes(1)
+            expect(precomputeSpy).toHaveBeenCalledWith(connectionMock)
+
+            const insertCallOrder = (
+                connectionMock.insertArrowTable as ReturnType<typeof vi.fn>
+            ).mock.invocationCallOrder[0]
+            const precomputeCallOrder =
+                precomputeSpy.mock.invocationCallOrder[0]
+            expect(precomputeCallOrder).toBeGreaterThan(insertCallOrder)
         })
     })
 

@@ -1,5 +1,6 @@
 import { getDB } from '../getDB'
 import { TABLE, DROP_TABLE_QUERY } from './constants'
+import { precomputeDerivedTables } from '../precompute'
 
 export async function insertUrlInDatabase(jsonUrl: URL) {
     const { conn } = await getDB()
@@ -22,4 +23,6 @@ export async function insertUrlInDatabase(jsonUrl: URL) {
     await conn.query(
         `ALTER TABLE ${TABLE} RENAME COLUMN master_metadata_album_album_name TO album_name`
     )
+
+    await precomputeDerivedTables(conn)
 }
