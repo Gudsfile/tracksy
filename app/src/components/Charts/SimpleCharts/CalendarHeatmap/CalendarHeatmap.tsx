@@ -69,52 +69,57 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
             isLoading={isLoading}
         >
             {data && (
-                <div className="flex gap-2 overflow-x-auto">
-                    <div className="flex flex-col gap-[3px] pt-0.5 shrink-0">
-                        {DAY_LABELS.map((label, i) => (
-                            <div
-                                key={i}
-                                className="h-[10px] text-[8px] leading-[10px] text-right text-gray-400 dark:text-gray-600 w-6"
-                            >
-                                {label}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="flex gap-[3px]">
-                        {grid.map((week, wi) => (
-                            <div key={wi} className="flex flex-col gap-[3px]">
-                                {week.map((cell, di) =>
-                                    cell === null ? (
-                                        <div
-                                            key={di}
-                                            className="w-[10px] h-[10px] shrink-0"
-                                        />
-                                    ) : (
-                                        <div
-                                            key={di}
-                                            className={`w-[10px] h-[10px] rounded-[2px] shrink-0 ${
-                                                cell.stream_count === 0
-                                                    ? 'bg-gray-100 dark:bg-slate-700/50'
-                                                    : ''
-                                            }`}
-                                            style={
-                                                cell.stream_count > 0
-                                                    ? {
-                                                          backgroundColor: `rgba(124, 58, 237, ${Math.max(0.15, cell.stream_count / maxCount)})`,
-                                                      }
-                                                    : undefined
-                                            }
-                                            onMouseEnter={(e) =>
-                                                handleMouseEnter(e, cell)
-                                            }
-                                            onMouseLeave={() =>
-                                                setTooltip(null)
-                                            }
-                                        />
-                                    )
-                                )}
-                            </div>
-                        ))}
+                <div className="overflow-x-auto">
+                    <div className="flex gap-2 mx-auto w-fit">
+                        <div className="flex flex-col gap-[3px] pt-0.5 shrink-0">
+                            {DAY_LABELS.map((label, i) => (
+                                <div
+                                    key={i}
+                                    className="h-[10px] text-[8px] leading-[10px] text-right text-gray-400 dark:text-gray-600 w-6"
+                                >
+                                    {label}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex gap-[3px]">
+                            {grid.map((week, wi) => (
+                                <div
+                                    key={wi}
+                                    className="flex flex-col gap-[3px]"
+                                >
+                                    {week.map((cell, di) =>
+                                        cell === null ? (
+                                            <div
+                                                key={di}
+                                                className="w-[10px] h-[10px] shrink-0"
+                                            />
+                                        ) : (
+                                            <div
+                                                key={di}
+                                                className={`w-[10px] h-[10px] rounded-[2px] shrink-0 ${
+                                                    cell.stream_count === 0
+                                                        ? 'bg-gray-100 dark:bg-slate-700/50'
+                                                        : ''
+                                                }`}
+                                                style={
+                                                    cell.stream_count > 0
+                                                        ? {
+                                                              backgroundColor: `rgba(124, 58, 237, ${Math.max(0.15, cell.stream_count / maxCount)})`,
+                                                          }
+                                                        : undefined
+                                                }
+                                                onMouseEnter={(e) =>
+                                                    handleMouseEnter(e, cell)
+                                                }
+                                                onMouseLeave={() =>
+                                                    setTooltip(null)
+                                                }
+                                            />
+                                        )
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
