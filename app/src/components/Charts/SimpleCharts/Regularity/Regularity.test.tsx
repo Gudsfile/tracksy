@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { Regularity } from './Regularity'
 
 describe('Regularity Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<Regularity data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders the title and total artists', () => {
         const data = {
             days_with_streams: 28,

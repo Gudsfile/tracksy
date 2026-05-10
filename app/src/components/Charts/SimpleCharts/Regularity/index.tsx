@@ -8,6 +8,5 @@ export function Regularity({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <RegularityView data={data} isLoading={isLoading} />
 }
