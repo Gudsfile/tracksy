@@ -63,7 +63,10 @@ export const SessionAnalysis: FC<Props> = ({ data, isLoading }) => {
                     <InsightCard>
                         Longest:{' '}
                         {formatDuration(Math.round(data.longest_session_ms))} —{' '}
-                        {data.longest_session_track_count} tracks
+                        {data.longest_session_track_count} tracks on{' '}
+                        {new Date(
+                            data.longest_session_date
+                        ).toLocaleDateString()}
                     </InsightCard>
 
                     <InsightCard>
