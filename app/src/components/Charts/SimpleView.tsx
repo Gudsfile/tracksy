@@ -101,10 +101,7 @@ export function SimpleView() {
                         <RepeatBehavior year={debouncedYear} />
                         <PrincipalPlatform year={debouncedYear} />
                         <FavoriteWeekday year={debouncedYear} />
-                        <HourlyStreams
-                            year={debouncedYear}
-                            maxHourlyCount={summarize.max_count_hourly_stream}
-                        />
+                        <HourlyStreams year={debouncedYear} />
                     </div>
                 </>
             )}

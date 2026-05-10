@@ -4,7 +4,7 @@ import { HourlyStreams as HourlyStreamsView } from './HourlyStreams'
 
 interface HourlyStreamsProps {
     year: number | undefined
-    maxHourlyCount: number
+    maxHourlyCount?: number
 }
 
 export function HourlyStreams({ year, maxHourlyCount }: HourlyStreamsProps) {
