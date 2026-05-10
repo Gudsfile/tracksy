@@ -86,6 +86,18 @@ describe('HourlyStreams', () => {
         expect(container.querySelector('.animate-pulse')).not.toBeNull()
     })
 
+    it('highlights peak hour wedge with darker teal', () => {
+        const { container } = render(
+            <HourlyStreams data={fixture} isLoading={false} />
+        )
+        const paths = container.querySelectorAll('path')
+        // paths are sorted by hour (data.map over 0-23).
+        // Hour 8 (peak, 42 streams) → first <path> → teal-600
+        // Hours 14 and 22 → second/third <path> → teal-400
+        expect(paths[0].getAttribute('class')).toContain('fill-teal-600')
+        expect(paths[1].getAttribute('class')).toContain('fill-teal-400')
+    })
+
     it('shows key hour labels in the svg', () => {
         const { container } = render(
             <HourlyStreams
