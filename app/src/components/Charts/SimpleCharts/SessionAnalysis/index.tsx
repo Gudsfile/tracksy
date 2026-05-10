@@ -8,6 +8,5 @@ export function SessionAnalysis({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <SessionAnalysisView data={data} isLoading={isLoading} />
 }
