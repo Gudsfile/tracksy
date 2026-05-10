@@ -24,8 +24,6 @@ const factConfig = (type: string) => {
             return { title: '🎉 Weekend Vibes', emoji: '🕺' }
 
         // Habits
-        case 'peak_hour':
-            return { title: '⏰ Peak Hour', emoji: '⏰' }
         case 'favorite_weekday':
             return { title: '📅 Favorite Day', emoji: '📅' }
 
