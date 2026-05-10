@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { QUERY_FUNCTIONS, type FunFactResult } from './queries'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
 import { FunFacts as FunFactsView } from './FunFacts'
 
 export function FunFacts() {
@@ -49,6 +50,16 @@ export function FunFacts() {
     useEffect(() => {
         loadRandomFact()
     }, [])
+
+    useEffect(() => {
+        const handleDataLoaded = () => {
+            seenFactsRef.current.clear()
+            loadRandomFact()
+        }
+        window.addEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+        return () =>
+            window.removeEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+    }, [loadRandomFact])
 
     if (!fact) return null
 

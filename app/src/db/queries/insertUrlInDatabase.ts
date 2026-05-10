@@ -1,6 +1,7 @@
 import { getDB } from '../getDB'
 import { TABLE, DROP_TABLE_QUERY } from './constants'
 import { precomputeDerivedTables } from '../precompute'
+import { dispatchDataLoaded } from '../dataSignal'
 
 export async function insertUrlInDatabase(jsonUrl: URL) {
     const { conn } = await getDB()
@@ -25,4 +26,5 @@ export async function insertUrlInDatabase(jsonUrl: URL) {
     )
 
     await precomputeDerivedTables(conn)
+    dispatchDataLoaded()
 }
