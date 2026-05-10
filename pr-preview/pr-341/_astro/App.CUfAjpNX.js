@@ -306,7 +306,8 @@ album_listening as (
         count(*) as playing_days_count
     from \${table}, max_date
     group by album_name, artist_name, ts::date
-    -- arbitrary threshold: an album listen is counted from 7 distinct tracks (conservative lower bound of average album length)
+    -- arbitrary threshold: an album listen is counted from 7 distinct tracks
+    -- conservative lower bound of average album length
     having count(distinct track_name) >= 7
 ),
 
