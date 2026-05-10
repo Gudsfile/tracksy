@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { buildCalendarHeatmapQuery } from './query'
 import { DuckDBConnection } from '@duckdb/node-api'
+import { DAILY_STREAM_COUNTS_TABLE } from '../../../../db/queries/constants'
 
 let conn: DuckDBConnection
 
@@ -15,14 +16,14 @@ describe('CalendarHeatmap Query', () => {
 
     beforeEach(async () => {
         await conn.run(`
-            CREATE OR REPLACE TABLE daily_stream_counts (
+            CREATE OR REPLACE TABLE ${DAILY_STREAM_COUNTS_TABLE} (
                 day DATE,
                 stream_count BIGINT,
                 ms_played BIGINT
             )
         `)
         await conn.run(`
-            INSERT INTO daily_stream_counts VALUES
+            INSERT INTO ${DAILY_STREAM_COUNTS_TABLE} VALUES
             ('2025-01-01', 5, 900000),
             ('2025-01-15', 3, 540000),
             ('2024-12-31', 7, 1260000)
