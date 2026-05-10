@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { FavoriteWeekday } from './FavoriteWeekday'
 
 describe('FavoriteWeekday Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<FavoriteWeekday data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     const data = [
         { day_name: 'Monday', stream_count: 10, pct: 10 },
         { day_name: 'Tuesday', stream_count: 20, pct: 20 },
