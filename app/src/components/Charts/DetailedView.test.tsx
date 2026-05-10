@@ -11,10 +11,6 @@ import {
     queryStreamsPerMonthByYear,
 } from './DetailedCharts/StreamPerMonth/query'
 import {
-    type StreamPerHourQueryResult,
-    queryStreamsPerHoursByYear,
-} from './DetailedCharts/StreamPerHour/query'
-import {
     type SummaryPerYearQueryResult,
     summarizePerYearQuery,
 } from './DetailedCharts/SummaryPerYear/query'
@@ -116,129 +112,6 @@ const streamPerMonthResultMock: StreamPerMonthQueryResult[] = [
         ts: 1733011200000,
         ms_played: 17777800,
         count_streams: 48,
-    },
-]
-
-const streamPerHourResultMock: StreamPerHourQueryResult[] = [
-    {
-        hour: 0,
-        count_streams: 1110,
-        ms_played: 394703536,
-    },
-    {
-        hour: 1,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 2,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 3,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 4,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 5,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 6,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 7,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 8,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 9,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 10,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 11,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 12,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 13,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 14,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 15,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 16,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 17,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 18,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 19,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 20,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 21,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 22,
-        count_streams: 0,
-        ms_played: 0,
-    },
-    {
-        hour: 23,
-        count_streams: 0,
-        ms_played: 0,
     },
 ]
 
@@ -387,8 +260,6 @@ it('renders all Charts', async () => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
         if (query === queryStreamsPerMonthByYear(2024))
             return Promise.resolve(streamPerMonthResultMock)
-        if (query === queryStreamsPerHoursByYear(2024))
-            return Promise.resolve(streamPerHourResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
         if (query === queryTopTracksByYear(2024))
@@ -417,7 +288,6 @@ it('renders all Charts', async () => {
     })
 
     await screen.findByRole('heading', { name: 'Stream duration per month' })
-    await screen.findByRole('heading', { name: 'Number of streams per hour' })
     await screen.findByRole('heading', { name: 'Distribution of streams' })
     await screen.findByRole('heading', { name: 'Top Tracks' })
     await screen.findByRole('heading', { name: 'Top Artists' })

@@ -1,5 +1,4 @@
 import { StreamPerMonth } from './DetailedCharts/StreamPerMonth'
-import { StreamPerHour } from './DetailedCharts/StreamPerHour'
 import { TopStreak } from './DetailedCharts/TopStreak'
 import { SummaryPerYear } from './DetailedCharts/SummaryPerYear'
 import { TotalStreams } from './DetailedCharts/TotalStreams'
@@ -78,10 +77,6 @@ export function DetailedView() {
                     <StreamPerMonth
                         year={debouncedYear}
                         maxValue={summarize.max_monthly_duration}
-                    />
-                    <StreamPerHour
-                        year={debouncedYear}
-                        maxValue={Number(summarize.max_count_hourly_stream)}
                     />
                     <SummaryPerYear year={debouncedYear} />
                     <TopTracks year={debouncedYear} />
