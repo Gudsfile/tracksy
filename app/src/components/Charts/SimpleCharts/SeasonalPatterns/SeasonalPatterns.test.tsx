@@ -4,6 +4,11 @@ import { SeasonalPatterns } from './SeasonalPatterns'
 import * as db from '../../../../db/queries/queryDB'
 
 describe('SeasonalPatterns Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<SeasonalPatterns data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const mockData = {
             winter: 10,
