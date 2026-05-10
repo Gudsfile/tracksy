@@ -1,4 +1,5 @@
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
+import { STREAM_SESSIONS_TABLE } from '../../../../db/queries/constants'
 
 export type SessionAnalysisDetailedResult = {
     session_id: number
@@ -21,7 +22,7 @@ export function buildSessionAnalysisDetailedQuery(
             session_start::VARCHAR                          AS session_start,
             session_end::VARCHAR                            AS session_end,
             dayofweek(session_start::timestamp)::INTEGER    AS day_of_week
-        FROM stream_sessions
+        FROM ${STREAM_SESSIONS_TABLE}
         WHERE ${yearCondition}
         ORDER BY session_start
     `
