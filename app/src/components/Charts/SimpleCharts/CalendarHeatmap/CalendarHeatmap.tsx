@@ -83,30 +83,36 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
                     <div className="flex gap-[3px]">
                         {grid.map((week, wi) => (
                             <div key={wi} className="flex flex-col gap-[3px]">
-                                {week.map((cell, di) => (
-                                    <div
-                                        key={di}
-                                        className={`w-[10px] h-[10px] rounded-[2px] shrink-0 ${
-                                            !cell || cell.stream_count === 0
-                                                ? 'bg-gray-100 dark:bg-slate-700/50'
-                                                : ''
-                                        }`}
-                                        style={
-                                            cell && cell.stream_count > 0
-                                                ? {
-                                                      backgroundColor: `rgba(124, 58, 237, ${Math.max(0.15, cell.stream_count / maxCount)})`,
-                                                  }
-                                                : undefined
-                                        }
-                                        onMouseEnter={
-                                            cell
-                                                ? (e) =>
-                                                      handleMouseEnter(e, cell)
-                                                : undefined
-                                        }
-                                        onMouseLeave={() => setTooltip(null)}
-                                    />
-                                ))}
+                                {week.map((cell, di) =>
+                                    cell === null ? (
+                                        <div
+                                            key={di}
+                                            className="w-[10px] h-[10px] shrink-0"
+                                        />
+                                    ) : (
+                                        <div
+                                            key={di}
+                                            className={`w-[10px] h-[10px] rounded-[2px] shrink-0 ${
+                                                cell.stream_count === 0
+                                                    ? 'bg-gray-100 dark:bg-slate-700/50'
+                                                    : ''
+                                            }`}
+                                            style={
+                                                cell.stream_count > 0
+                                                    ? {
+                                                          backgroundColor: `rgba(124, 58, 237, ${Math.max(0.15, cell.stream_count / maxCount)})`,
+                                                      }
+                                                    : undefined
+                                            }
+                                            onMouseEnter={(e) =>
+                                                handleMouseEnter(e, cell)
+                                            }
+                                            onMouseLeave={() =>
+                                                setTooltip(null)
+                                            }
+                                        />
+                                    )
+                                )}
                             </div>
                         ))}
                     </div>
