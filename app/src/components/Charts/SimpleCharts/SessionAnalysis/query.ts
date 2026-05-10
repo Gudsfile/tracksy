@@ -1,5 +1,6 @@
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQuery from './SessionAnalysis.sql?raw'
+import { STREAM_SESSIONS_TABLE } from '../../../../db/queries/constants'
 
 export type SessionAnalysisResult = {
     session_count: number
@@ -13,5 +14,7 @@ export type SessionAnalysisResult = {
 
 export function querySessionAnalysis(year: number | undefined): string {
     const yearCondition = buildYearCondition(year, 'year(session_start::date)')
-    return sqlQuery.replaceAll('${year_condition}', yearCondition)
+    return sqlQuery
+        .replaceAll('${table}', STREAM_SESSIONS_TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
