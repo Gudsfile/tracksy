@@ -2,8 +2,7 @@ import type { FC } from 'react'
 import type { CalendarHeatmapQueryResult } from './query'
 import { buildCells } from './buildCells'
 import { useState } from 'react'
-import { createPortal } from 'react-dom'
-import { ChartCard } from '../shared'
+import { ChartCard, ChartTooltip } from '../shared'
 
 const MIN_CELL = 10
 const LABEL_WIDTH = 24
@@ -135,28 +134,16 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
                     </div>
                 </div>
             )}
-            {tooltip &&
-                createPortal(
-                    <div
-                        className="fixed z-50 pointer-events-none"
-                        style={{
-                            left: tooltip.x,
-                            top: tooltip.y - 8,
-                            transform: 'translate(-50%, -100%)',
-                        }}
-                    >
-                        <div className="bg-gray-900 dark:bg-slate-700 text-white rounded-lg shadow-lg px-2.5 py-1.5 text-[11px] whitespace-nowrap">
-                            <div className="font-semibold">
-                                {formatDate(tooltip.cell.date)}
-                            </div>
-                            <div className="text-gray-300 dark:text-gray-400">
-                                {tooltip.cell.stream_count} streams
-                            </div>
-                        </div>
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700" />
-                    </div>,
-                    document.body
-                )}
+            {tooltip && (
+                <ChartTooltip x={tooltip.x} y={tooltip.y}>
+                    <div className="font-semibold">
+                        {formatDate(tooltip.cell.date)}
+                    </div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {tooltip.cell.stream_count} streams
+                    </div>
+                </ChartTooltip>
+            )}
         </ChartCard>
     )
 }
