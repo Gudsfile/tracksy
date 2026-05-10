@@ -14,7 +14,7 @@ session_starts as (
         case
             when
                 prev_ts is null
-                or date_diff('minute', prev_ts::timestamp, ts::timestamp) > 30
+                or date_diff('minute', prev_ts::timestamp, ts::timestamp) > 15
                 then 1
             else 0
         end as is_new_session
