@@ -11,7 +11,6 @@ function CalendarHeatmapLoader({ year }: { year: number }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <CalendarHeatmapView data={data} year={year} isLoading={isLoading} />
 }
 

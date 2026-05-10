@@ -8,6 +8,13 @@ describe('CalendarHeatmap', () => {
         screen.getByText('Select a year to view the calendar')
     })
 
+    it('renders empty state when data is undefined', () => {
+        render(
+            <CalendarHeatmap data={undefined} year={2025} isLoading={false} />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('shows the year in the card title', () => {
         render(<CalendarHeatmap data={[]} year={2024} />)
         screen.getByText(/Listening activity 2024/)

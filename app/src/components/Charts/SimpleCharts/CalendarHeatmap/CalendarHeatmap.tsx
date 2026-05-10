@@ -2,7 +2,7 @@ import type { FC } from 'react'
 import type { CalendarHeatmapQueryResult } from './query'
 import { buildCells } from './buildCells'
 import { useState } from 'react'
-import { ChartCard, ChartTooltip } from '../shared'
+import { ChartCard, ChartCardEmpty, ChartTooltip } from '../shared'
 
 const MIN_CELL = 10
 const LABEL_WIDTH = 24
@@ -40,7 +40,19 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
         )
     }
 
-    const cells = data ? buildCells(data, year) : []
+    if (!data) {
+        return (
+            <ChartCard
+                title={`Listening activity ${year}`}
+                emoji="🗓️"
+                isLoading={isLoading}
+            >
+                <ChartCardEmpty />
+            </ChartCard>
+        )
+    }
+
+    const cells = buildCells(data, year)
     const maxCount = Math.max(1, ...cells.map((c) => c.stream_count))
     const weekCount = cells.length > 0 ? cells[cells.length - 1].week + 1 : 53
 
