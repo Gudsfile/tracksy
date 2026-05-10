@@ -45,7 +45,6 @@ import {
 
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
-        max_count_hourly_stream: 1234,
         max_datetime: '1734134400000',
         max_monthly_duration: 39959692,
         min_datetime: '1704067200000',
