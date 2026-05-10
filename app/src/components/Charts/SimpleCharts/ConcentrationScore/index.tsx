@@ -8,6 +8,5 @@ export function ConcentrationScore({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <ConcentrationScoreView data={data} isLoading={isLoading} />
 }

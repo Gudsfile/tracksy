@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { ConcentrationScore } from './ConcentrationScore'
 
 describe('ConcentrationScore Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<ConcentrationScore data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it.each([
         { top5_pct: 25, top10_pct: 40, top20_pct: 60 },
         { top5_pct: 1, top10_pct: 99, top20_pct: 0 },
