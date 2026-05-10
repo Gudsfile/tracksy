@@ -73,6 +73,9 @@ export const SessionAnalysis: FC<Props> = ({ data, isLoading }) => {
                         Favorite start time:{' '}
                         {String(data.peak_start_hour).padStart(2, '0')}h
                     </InsightCard>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center">
+                        A session = consecutive streams with gaps ≤ 15 min
+                    </p>
                 </div>
             )}
         </ChartCard>
