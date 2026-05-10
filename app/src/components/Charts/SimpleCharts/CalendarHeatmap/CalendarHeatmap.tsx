@@ -45,15 +45,20 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
     const maxCount = Math.max(1, ...cells.map((c) => c.stream_count))
     const weekCount = cells.length > 0 ? cells[cells.length - 1].week + 1 : 53
 
+    const cellsByWeek = cells.reduce<Map<number, Cell[]>>((acc, c) => {
+        const bucket = acc.get(c.week) ?? []
+        bucket.push(c)
+        acc.set(c.week, bucket)
+        return acc
+    }, new Map())
+
     const grid: Array<Array<Cell | null>> = Array.from(
         { length: weekCount },
         (_, w) => {
             const row: Array<Cell | null> = Array(7).fill(null)
-            cells
-                .filter((c) => c.week === w)
-                .forEach((c) => {
-                    row[c.dayOfWeek] = c
-                })
+            cellsByWeek.get(w)?.forEach((c) => {
+                row[c.dayOfWeek] = c
+            })
             return row
         }
     )
