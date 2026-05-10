@@ -6,7 +6,7 @@ const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export function buildPlot(
     data: SessionAnalysisDetailedResult[],
     isDark = false
-): ReturnType<typeof Plot.plot> {
+): HTMLDivElement {
     const brandPurple = '#7c3aed'
     const style = {
         background: 'transparent',
@@ -93,5 +93,5 @@ export function buildPlot(
     const container = document.createElement('div')
     container.className = 'space-y-4 p-4'
     container.append(hist, scatter, dayBar)
-    return container as unknown as ReturnType<typeof Plot.plot>
+    return container
 }
