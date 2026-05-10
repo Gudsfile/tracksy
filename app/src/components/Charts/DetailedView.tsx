@@ -21,6 +21,7 @@ import { Top10AlbumsEvolution } from './DetailedCharts/Top10AlbumsEvolution'
 import { Top10TracksEvolution } from './DetailedCharts/Top10TracksEvolution'
 import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
+import { SessionAnalysis as SessionAnalysisDetailed } from './DetailedCharts/SessionAnalysis'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function DetailedView() {
@@ -99,6 +100,7 @@ export function DetailedView() {
                 <Streaks />
                 <Top10Evolution />
                 <Top10TracksEvolution />
+                <SessionAnalysisDetailed year={debouncedYear} />
             </section>
             <DuckDBShell />
         </>

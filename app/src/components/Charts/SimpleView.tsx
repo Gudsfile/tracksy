@@ -11,6 +11,7 @@ import { PrincipalPlatform } from './SimpleCharts/PrincipalPlatform'
 import { ArtistLoyalty } from './SimpleCharts/ArtistLoyalty'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
 import { CalendarHeatmap } from './SimpleCharts/CalendarHeatmap'
+import { SessionAnalysis } from './SimpleCharts/SessionAnalysis'
 import { TopArtists } from './SimpleCharts/TopArtists'
 import { TopAlbums } from './SimpleCharts/TopAlbums'
 import { TopTracks } from './SimpleCharts/TopTracks'
@@ -83,6 +84,7 @@ export function SimpleView() {
                         <RepeatBehavior year={debouncedYear} />
                         <PrincipalPlatform year={debouncedYear} />
                         <FavoriteWeekday year={debouncedYear} />
+                        <SessionAnalysis year={debouncedYear} />
                     </div>
                 </>
             )}
