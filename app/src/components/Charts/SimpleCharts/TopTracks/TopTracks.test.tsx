@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { TopTracks } from './TopTracks'
 
 describe('TopTracks Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<TopTracks data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const numberOfTracks = 10
         const data = Array.from({ length: numberOfTracks }, (_, i) => ({
