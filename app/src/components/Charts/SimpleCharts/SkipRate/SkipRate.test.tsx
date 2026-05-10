@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { SkipRate } from './SkipRate'
 
 describe('SkipRate Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<SkipRate data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const data = { complete_listens: 80, skipped_listens: 20 }
 

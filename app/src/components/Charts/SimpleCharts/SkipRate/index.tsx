@@ -8,6 +8,5 @@ export function SkipRate({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <SkipRateView data={data} isLoading={isLoading} />
 }
