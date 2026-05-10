@@ -15,6 +15,7 @@ const queryResult: SessionAnalysisDetailedResult[] = [
         session_start: '2025-01-10T20:00:00',
         session_end: '2025-01-10T20:30:00',
         day_of_week: 5,
+        start_hour: 20,
     },
     {
         session_id: 2,
@@ -23,6 +24,7 @@ const queryResult: SessionAnalysisDetailedResult[] = [
         session_start: '2025-01-15T21:00:00',
         session_end: '2025-01-15T22:00:00',
         day_of_week: 3,
+        start_hour: 21,
     },
 ]
 
