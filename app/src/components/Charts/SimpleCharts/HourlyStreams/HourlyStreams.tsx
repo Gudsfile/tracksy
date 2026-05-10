@@ -12,7 +12,7 @@ const KEY_HOURS = new Set([0, 3, 6, 9, 12, 15, 18, 21])
 
 type Props = {
     data: HourlyStreamsQueryResult[] | undefined
-    maxHourlyCount: number
+    maxHourlyCount?: number
     isLoading?: boolean
 }
 
@@ -50,7 +50,11 @@ export const HourlyStreams: FC<Props> = ({
 }) => {
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
-    const effective = Math.max(maxHourlyCount, 1)
+    const effective =
+        maxHourlyCount ??
+        (data
+            ? Math.max(...data.map((d) => d.count_streams), MIN_VISIBLE_R)
+            : 1)
 
     return (
         <ChartCard

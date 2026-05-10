@@ -36,7 +36,7 @@ describe('HourlyStreams', () => {
         expect(container.querySelector('svg')).not.toBeNull()
     })
 
-    it('renders 24 path elements — one per hour', () => {
+    it('renders path elements only for hours with activity', () => {
         const { container } = render(
             <HourlyStreams
                 data={fixture}
@@ -46,6 +46,22 @@ describe('HourlyStreams', () => {
         )
         const paths = container.querySelectorAll('path')
         expect(paths.length).toBe(3)
+    })
+
+    it('uses data max when maxHourlyCount is omitted, not a fixed external value', () => {
+        const { container: dynamic } = render(
+            <HourlyStreams data={fixture} isLoading={false} />
+        )
+        const { container: fixed } = render(
+            <HourlyStreams
+                data={fixture}
+                maxHourlyCount={100}
+                isLoading={false}
+            />
+        )
+        const dDynamic = dynamic.querySelector('path')!.getAttribute('d')
+        const dFixed = fixed.querySelector('path')!.getAttribute('d')
+        expect(dDynamic).not.toBe(dFixed)
     })
 
     it('renders empty state when data is undefined and not loading', () => {
