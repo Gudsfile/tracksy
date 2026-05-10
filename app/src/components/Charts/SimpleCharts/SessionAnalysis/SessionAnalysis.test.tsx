@@ -52,6 +52,14 @@ describe('SessionAnalysis Component', () => {
         expect(screen.getByText(/20h/)).toBeTruthy()
     })
 
+    it('renders the longest session date', () => {
+        render(<SessionAnalysis data={baseData} />)
+        const expectedDate = new Date(
+            baseData.longest_session_date
+        ).toLocaleDateString()
+        expect(screen.getByText(new RegExp(expectedDate))).toBeTruthy()
+    })
+
     it('renders skeleton and title when loading', () => {
         render(<SessionAnalysis data={undefined} isLoading />)
         expect(screen.getByText('Listening sessions')).toBeTruthy()
