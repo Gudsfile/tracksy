@@ -8,7 +8,6 @@ export function PrincipalPlatform({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data?.length) return null
-    if (!data || data.length <= 1) return null
+    if (!isLoading && (!data || data.length <= 1)) return null
     return <PrincipalPlatformView data={data} isLoading={isLoading} />
 }
