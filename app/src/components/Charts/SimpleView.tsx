@@ -21,8 +21,9 @@ import {
     type SummarizeDataQueryResult,
     summarizeQuery,
 } from './Summarize/summarizeQuery'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
+import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 
 export function SimpleView() {
     const [year, setYear] = useState<number | undefined>(undefined)
@@ -31,16 +32,26 @@ export function SimpleView() {
     >()
     const debouncedYear = useDebouncedValue(year, 250)
 
-    useEffect(() => {
-        const initDataSummarize = async () => {
-            const results =
-                await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
-            const s = results[0]
-            setSummarize(s)
-            if (s) setYear(new Date(Number(s.max_datetime)).getFullYear())
-        }
-        initDataSummarize()
+    const initDataSummarize = useCallback(async () => {
+        const results =
+            await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
+        setSummarize(results[0] || undefined)
     }, [])
+
+    useEffect(() => {
+        initDataSummarize()
+    }, [initDataSummarize])
+
+    useEffect(() => {
+        window.addEventListener(DATA_LOADED_EVENT, initDataSummarize)
+        return () =>
+            window.removeEventListener(DATA_LOADED_EVENT, initDataSummarize)
+    }, [initDataSummarize])
+
+    useEffect(() => {
+        if (summarize)
+            setYear(new Date(Number(summarize.max_datetime)).getFullYear())
+    }, [summarize])
 
     return (
         <>

@@ -5,13 +5,14 @@ import { SummaryPerYear } from './DetailedCharts/SummaryPerYear'
 import { TotalStreams } from './DetailedCharts/TotalStreams'
 import { TopArtist } from './DetailedCharts/TopArtist'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
     summarizeQuery,
     type SummarizeDataQueryResult,
 } from './Summarize/summarizeQuery'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
+import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 import { TopTracks } from './DetailedCharts/TopTracks'
 import { TopArtists } from './DetailedCharts/TopArtists'
 import { TopAlbums } from './DetailedCharts/TopAlbums'
@@ -31,14 +32,21 @@ export function DetailedView() {
     >()
     const debouncedYear = useDebouncedValue(year, 250)
 
-    useEffect(() => {
-        const initDataSummarize = async () => {
-            const results =
-                await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
-            setSummarize(results[0] || undefined)
-        }
-        initDataSummarize()
+    const initDataSummarize = useCallback(async () => {
+        const results =
+            await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
+        setSummarize(results[0] || undefined)
     }, [])
+
+    useEffect(() => {
+        initDataSummarize()
+    }, [initDataSummarize])
+
+    useEffect(() => {
+        window.addEventListener(DATA_LOADED_EVENT, initDataSummarize)
+        return () =>
+            window.removeEventListener(DATA_LOADED_EVENT, initDataSummarize)
+    }, [initDataSummarize])
 
     useEffect(() => {
         if (summarize)

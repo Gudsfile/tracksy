@@ -4,6 +4,7 @@ import { tableFromJSON } from 'apache-arrow'
 import { detectProvider } from '../../streamProvider'
 import type { StreamRecord } from '../../streamProvider/types'
 import { precomputeDerivedTables } from '../precompute'
+import { dispatchDataLoaded } from '../dataSignal'
 
 export async function insertFilesInDatabase(files: FileList) {
     if (files.length < 1) {
@@ -56,4 +57,5 @@ export async function insertFilesInDatabase(files: FileList) {
     )
 
     await precomputeDerivedTables(conn)
+    dispatchDataLoaded()
 }

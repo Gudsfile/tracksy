@@ -6,6 +6,7 @@ import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
 import * as adapters from '../../streamProvider'
 import * as precompute from '../precompute'
+import * as dataSignal from '../dataSignal'
 
 import type { StreamRecord } from '../../streamProvider/types'
 import { TABLE } from './constants'
@@ -71,6 +72,7 @@ describe('insertFilesInDatabase', () => {
         vi.spyOn(precompute, 'precomputeDerivedTables').mockResolvedValue(
             undefined
         )
+        vi.spyOn(dataSignal, 'dispatchDataLoaded').mockImplementation(() => {})
     })
 
     afterEach(() => {
