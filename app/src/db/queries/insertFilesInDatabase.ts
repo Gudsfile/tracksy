@@ -3,6 +3,7 @@ import { TABLE, DROP_TABLE_QUERY } from './constants'
 import { tableFromJSON } from 'apache-arrow'
 import { detectProvider } from '../../streamProvider'
 import type { StreamRecord } from '../../streamProvider/types'
+import { precomputeDerivedTables } from '../precompute'
 
 export async function insertFilesInDatabase(files: FileList) {
     if (files.length < 1) {
@@ -53,4 +54,6 @@ export async function insertFilesInDatabase(files: FileList) {
     console.debug(
         `Table ${TABLE} created with ${allStreamRecords.length} records.`
     )
+
+    await precomputeDerivedTables(conn)
 }
