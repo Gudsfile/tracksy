@@ -37,7 +37,7 @@ export function buildPlot(
                 tip: {
                     format: {
                         x: (d) => `${d}h`,
-                        y: (d) => days[d - 1],
+                        y: (d) => days[d],
                         fill: (d) => `${d} streams`,
                     },
                 },
