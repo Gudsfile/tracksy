@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { EvolutionOverTime } from './EvolutionOverTime'
 
 describe('EvolutionOverTime Component', () => {
+    it('renders empty state when data is empty', () => {
+        render(<EvolutionOverTime data={[]} year={2025} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const data = [
             { year: 2020, streams: 100, ms_played: 60 * 60 * 1000 },

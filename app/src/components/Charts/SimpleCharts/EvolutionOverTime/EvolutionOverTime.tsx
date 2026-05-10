@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import type { EvolutionResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { ChartCard } from '../shared'
+import { ChartCard, ChartCardEmpty } from '../shared'
 
 type Props = {
     data: EvolutionResult[] | undefined
@@ -25,7 +25,9 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
             isLoading={isLoading}
             question="How has my listening evolved over the years?"
         >
-            {data && (
+            {!data?.length ? (
+                <ChartCardEmpty />
+            ) : (
                 <>
                     <div className="flex items-end gap-1 h-24 mt-4 mb-2">
                         {data.map((d) => {
