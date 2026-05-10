@@ -1,6 +1,11 @@
 import type { FC } from 'react'
 import type { ListeningRhythmResult } from './query'
-import { ChartCard, ChartHero, LabeledProgressBar } from '../shared'
+import {
+    ChartCard,
+    ChartCardEmpty,
+    ChartHero,
+    LabeledProgressBar,
+} from '../shared'
 
 type Props = {
     data: ListeningRhythmResult | undefined
@@ -8,25 +13,36 @@ type Props = {
 }
 
 export const ListeningRhythm: FC<Props> = ({ data, isLoading }) => {
-    const {
-        morning = 0,
-        afternoon = 0,
-        evening = 0,
-        night = 0,
-        total = 0,
-    } = data ?? {}
+    const periods = data
+        ? [
+              {
+                  label: 'Morning',
+                  value: data.morning,
+                  emoji: '🥣',
+                  time: '6‑11h',
+              },
+              {
+                  label: 'Afternoon',
+                  value: data.afternoon,
+                  emoji: '🧃',
+                  time: '12‑17h',
+              },
+              {
+                  label: 'Evening',
+                  value: data.evening,
+                  emoji: '🫒',
+                  time: '18‑21h',
+              },
+              { label: 'Night', value: data.night, emoji: '🫐', time: '22‑5h' },
+          ]
+        : []
+    const total = data?.total ?? 0
     const percent = (count: number) => (total ? (count / total) * 100 : 0)
-
-    const periods = [
-        { label: 'Morning', value: morning, emoji: '🥣', time: '6‑11h' },
-        { label: 'Afternoon', value: afternoon, emoji: '🧃', time: '12‑17h' },
-        { label: 'Evening', value: evening, emoji: '🫒', time: '18‑21h' },
-        { label: 'Night', value: night, emoji: '🫐', time: '22‑5h' },
-    ]
-
-    const favorite = periods.reduce((prev, current) =>
-        prev.value > current.value ? prev : current
-    )
+    const favorite = periods.length
+        ? periods.reduce((prev, current) =>
+              prev.value > current.value ? prev : current
+          )
+        : null
 
     return (
         <ChartCard
@@ -35,23 +51,31 @@ export const ListeningRhythm: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="What time of day do I listen the most?"
         >
-            <ChartHero
-                label={favorite.label}
-                sublabel={`${favorite.value?.toLocaleString()} streams`}
-                emoji={favorite.emoji}
-            />
-            <ul className="space-y-3" role="list">
-                {periods.map((period) => (
-                    <li key={period.label} role="listitem">
-                        <LabeledProgressBar
-                            label={`${period.label} (${period.time})`}
-                            value={`${percent(period.value).toFixed(1)}%`}
-                            pct={percent(period.value)}
-                            barColor="bg-brand-purple"
+            {!data ? (
+                <ChartCardEmpty />
+            ) : (
+                <>
+                    {favorite && (
+                        <ChartHero
+                            label={favorite.label}
+                            sublabel={`${favorite.value?.toLocaleString()} streams`}
+                            emoji={favorite.emoji}
                         />
-                    </li>
-                ))}
-            </ul>
+                    )}
+                    <ul className="space-y-3" role="list">
+                        {periods.map((period) => (
+                            <li key={period.label} role="listitem">
+                                <LabeledProgressBar
+                                    label={`${period.label} (${period.time})`}
+                                    value={`${percent(period.value).toFixed(1)}%`}
+                                    pct={percent(period.value)}
+                                    barColor="bg-brand-purple"
+                                />
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </ChartCard>
     )
 }

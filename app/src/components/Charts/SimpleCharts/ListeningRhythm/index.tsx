@@ -8,6 +8,5 @@ export function ListeningRhythm({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data) return null
     return <ListeningRhythmView data={data} isLoading={isLoading} />
 }

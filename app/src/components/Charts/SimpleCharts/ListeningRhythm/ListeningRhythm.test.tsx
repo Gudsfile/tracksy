@@ -4,6 +4,11 @@ import { ListeningRhythm } from './ListeningRhythm'
 import * as db from '../../../../db/queries/queryDB'
 
 describe('ListeningRhythm Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<ListeningRhythm data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const mockData = {
             morning: 10,
