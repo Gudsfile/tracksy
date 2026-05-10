@@ -8,7 +8,6 @@ export function EvolutionOverTime({ year }: { year: number | undefined }) {
         year,
     })
 
-    if (!isLoading && !data?.length) return null
     return (
         <EvolutionOverTimeView data={data} year={year} isLoading={isLoading} />
     )
