@@ -6,7 +6,7 @@ select
     'between 0am and 6am' as context
 from ${table}
 where
-    (hour(ts::datetime) >= 24 or hour(ts::datetime) < 6)
+    hour(ts::datetime) < 6
     and artist_name is not null
 group by artist_name
 order by value desc

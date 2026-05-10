@@ -41,7 +41,12 @@ select
     count(*)::double as total_repeat_sequences,
     coalesce(max(repeat_count)::double, 0) as max_consecutive,
     coalesce(
-        (select track_name from group_sizes order by repeat_count desc limit 1),
+        (
+            select track_name
+            from group_sizes
+            order by repeat_count desc, track_name asc
+            limit 1
+        ),
         ''
     ) as most_repeated_track,
     coalesce(avg(repeat_count)::double, 0) as avg_repeat_length

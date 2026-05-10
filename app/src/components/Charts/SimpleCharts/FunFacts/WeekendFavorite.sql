@@ -8,7 +8,7 @@ from ${table}
 where
     (
         dayofweek(ts::date) in (0, 6)
-        or (dayofweek(ts::date) in (5, 6) and hour(ts::datetime) >= 18)
+        or (dayofweek(ts::date) = 5 and hour(ts::datetime) >= 18)
     )
     and artist_name is not null
 group by artist_name
