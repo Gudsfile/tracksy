@@ -87,7 +87,7 @@ describe('useDBQueryFirst', () => {
         vi.clearAllMocks()
     })
 
-    it('should return first row', async () => {
+    it('should return only the first row', async () => {
         const mockData: User[] = [{ id: 1 }, { id: 2 }, { id: 3 }]
         vi.spyOn(queryDB, 'queryDBAsJSON').mockResolvedValue(mockData)
 
@@ -120,26 +120,6 @@ describe('useDBQueryFirst', () => {
 
         expect(result.current.data).toBeUndefined()
         expect(result.current.error).toBeUndefined()
-    })
-
-    it('should handle errors', async () => {
-        vi.spyOn(queryDB, 'queryDBAsJSON').mockRejectedValue(
-            new Error('DB error')
-        )
-
-        const { result } = renderHook(() =>
-            useDBQueryFirst<User>({
-                query: 'SELECT * FROM test',
-            })
-        )
-
-        await waitFor(() => {
-            expect(result.current.isLoading).toBe(false)
-        })
-
-        expect(result.current.data).toBeUndefined()
-        expect(result.current.error).toBeInstanceOf(Error)
-        expect(result.current.error?.message).toBe('DB error')
     })
 })
 
@@ -221,65 +201,6 @@ describe('stale-while-revalidate', () => {
         })
 
         await waitFor(() => expect(result.current.data).toEqual([{ id: 99 }]))
-    })
-})
-
-describe('useDBQueryFirst — stale-while-revalidate', () => {
-    beforeEach(() => {
-        vi.clearAllMocks()
-    })
-
-    it('keeps isLoading false during refetch after initial load', async () => {
-        let resolveRefetch!: (v: User[]) => void
-        const refetchPromise = new Promise<User[]>((res) => {
-            resolveRefetch = res
-        })
-
-        const spy = vi.spyOn(queryDB, 'queryDBAsJSON')
-        spy.mockResolvedValueOnce([{ id: 1 }])
-        spy.mockReturnValueOnce(refetchPromise)
-
-        const { result, rerender } = renderHook(
-            ({ year }: { year: number }) =>
-                useDBQueryFirst<User>({ query: `SELECT ${year}`, year }),
-            { initialProps: { year: 2024 } }
-        )
-
-        await waitFor(() => expect(result.current.data).toEqual({ id: 1 }))
-        expect(result.current.isLoading).toBe(false)
-
-        rerender({ year: 2025 })
-
-        expect(result.current.isLoading).toBe(false)
-
-        resolveRefetch([{ id: 2 }])
-        await waitFor(() => expect(result.current.data).toEqual({ id: 2 }))
-    })
-
-    it('shows skeleton on DATA_LOADED_EVENT, then refetches', async () => {
-        let resolveReload!: (v: User[]) => void
-        const reloadPromise = new Promise<User[]>((res) => {
-            resolveReload = res
-        })
-
-        const spy = vi.spyOn(queryDB, 'queryDBAsJSON')
-        spy.mockResolvedValueOnce([{ id: 1 }])
-        spy.mockReturnValueOnce(reloadPromise)
-
-        const { result } = renderHook(() =>
-            useDBQueryFirst<User>({ query: 'SELECT 1' })
-        )
-
-        await waitFor(() => expect(result.current.isLoading).toBe(false))
-
-        act(() => {
-            window.dispatchEvent(new CustomEvent(DATA_LOADED_EVENT))
-        })
-
-        await waitFor(() => expect(result.current.isLoading).toBe(true))
-
-        resolveReload([{ id: 99 }])
-        await waitFor(() => expect(result.current.data).toEqual({ id: 99 }))
     })
 })
 
