@@ -31,7 +31,10 @@ jobs:
           cache: true
 
       - name: Setup toolchains
-        run: moon setup
+        run: |
+          moon setup
+          echo "$HOME/.proto/shims" >> $GITHUB_PATH
+          echo "$HOME/.proto/bin" >> $GITHUB_PATH
 
       - name: Generate datasets
         run: |
