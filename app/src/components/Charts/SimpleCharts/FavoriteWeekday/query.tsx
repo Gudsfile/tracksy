@@ -5,6 +5,7 @@ import sqlQueryFavoriteWeekday from './FavoriteWeekday.sql?raw'
 export type FavoriteWeekdayResult = {
     day_name: string
     stream_count: number
+    ms_played: number
     pct: number
 }
 

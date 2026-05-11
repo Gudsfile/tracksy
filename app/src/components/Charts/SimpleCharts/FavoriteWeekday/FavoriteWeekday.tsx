@@ -1,6 +1,16 @@
 import type { FC } from 'react'
+import { useState } from 'react'
 import type { FavoriteWeekdayResult } from './query'
-import { ChartCard, ChartCardEmpty, ChartHero } from '../shared'
+import { formatDuration } from '../../../../utils/formatDuration'
+import { ChartCard, ChartCardEmpty, ChartHero, ChartTooltip } from '../shared'
+
+type TooltipState = {
+    x: number
+    y: number
+    day_name: string
+    stream_count: number
+    ms_played: number
+}
 
 type Props = {
     data: FavoriteWeekdayResult[] | undefined
@@ -18,6 +28,7 @@ const DAY_ABBREVIATIONS: Record<string, string> = {
 }
 
 export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
+    const [tooltip, setTooltip] = useState<TooltipState | null>(null)
     const favoriteDay = data
         ? data.reduce((max, day) => (day.pct > max.pct ? day : max), data[0])
         : undefined
@@ -40,7 +51,10 @@ export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
                         labelColor="text-orange-400"
                     />
 
-                    <div className="grid grid-cols-7 gap-1">
+                    <div
+                        className="grid grid-cols-7 gap-1"
+                        onMouseLeave={() => setTooltip(null)}
+                    >
                         {data.map((day) => {
                             const isFavorite =
                                 day.day_name === favoriteDay!.day_name
@@ -54,7 +68,21 @@ export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
                                     <div className="text-[10px] font-medium text-gray-600 dark:text-gray-400">
                                         {DAY_ABBREVIATIONS[day.day_name]}
                                     </div>
-                                    <div className="w-full h-16 bg-gray-200 dark:bg-slate-700/50 rounded-sm flex items-end overflow-hidden">
+                                    <div
+                                        className="w-full h-16 bg-gray-200 dark:bg-slate-700/50 rounded-sm flex items-end overflow-hidden"
+                                        onMouseEnter={(e) => {
+                                            const rect = (
+                                                e.currentTarget as HTMLElement
+                                            ).getBoundingClientRect()
+                                            setTooltip({
+                                                x: rect.left + rect.width / 2,
+                                                y: rect.top,
+                                                day_name: day.day_name,
+                                                stream_count: day.stream_count,
+                                                ms_played: day.ms_played,
+                                            })
+                                        }}
+                                    >
                                         <div
                                             className={`w-full rounded-sm transition-all duration-300 ${
                                                 isFavorite
@@ -72,6 +100,17 @@ export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
                         })}
                     </div>
                 </>
+            )}
+            {tooltip && (
+                <ChartTooltip x={tooltip.x} y={tooltip.y}>
+                    <div className="font-semibold">{tooltip.day_name}</div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {tooltip.stream_count.toLocaleString()} streams
+                    </div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {formatDuration(tooltip.ms_played)}
+                    </div>
+                </ChartTooltip>
             )}
         </ChartCard>
     )
