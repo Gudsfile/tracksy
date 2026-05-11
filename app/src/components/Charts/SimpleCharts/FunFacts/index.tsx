@@ -13,13 +13,11 @@ export function FunFacts() {
     const [fact, setFact] = useState<FunFactProps | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [isEmpty, setIsEmpty] = useState(false)
     const seenFactsRef = useRef<Set<string>>(new Set())
 
     const loadRandomFact = useCallback(async () => {
         setIsLoading(true)
         setError(null)
-        setIsEmpty(false)
         try {
             if (seenFactsRef.current.size === facts.length) {
                 seenFactsRef.current.clear()
@@ -58,7 +56,6 @@ export function FunFacts() {
 
             if (!found) {
                 setFact(null)
-                setIsEmpty(true)
             }
         } catch (error) {
             console.error('Error loading fun fact:', error)
@@ -93,7 +90,6 @@ export function FunFacts() {
             onRefresh={loadRandomFact}
             isLoading={isLoading}
             error={error}
-            isEmpty={isEmpty}
         />
     )
 }

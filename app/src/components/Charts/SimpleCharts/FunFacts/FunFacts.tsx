@@ -16,7 +16,6 @@ type Props = {
     onRefresh: () => void
     isLoading: boolean
     error: string | null
-    isEmpty: boolean
 }
 
 const LoadingSkeleton: FC = () => (
