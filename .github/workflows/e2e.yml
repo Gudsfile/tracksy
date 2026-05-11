@@ -36,6 +36,7 @@ jobs:
       - name: Setup toolchains
         run: |
           moon setup
+          proto install node 24
           proto install pnpm 9
 
       - name: Install Playwright Browsers
