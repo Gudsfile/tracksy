@@ -44,4 +44,20 @@ describe('SeasonalPatterns Component', () => {
         expect(screen.getAllByText('Fall')).toHaveLength(2)
         screen.getByText('40.0%')
     })
+
+    it('renders with non-monotonic values to cover reduce > branch', () => {
+        render(
+            <SeasonalPatterns
+                data={{
+                    winter: 40,
+                    spring: 10,
+                    summer: 30,
+                    fall: 20,
+                    total: 100,
+                }}
+            />
+        )
+        expect(screen.getAllByText('Winter')).toHaveLength(2)
+        screen.getByText('40.0%')
+    })
 })
