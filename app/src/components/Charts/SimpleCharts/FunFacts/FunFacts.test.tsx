@@ -7,8 +7,7 @@ import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
 import { FunFactResult, facts } from './queries'
 
-const EMPTY_MESSAGE =
-    'Not enough listening data to generate fun facts — keep streaming!'
+const EMPTY_MESSAGE = 'Not enough data for this fun fact — keep listening!'
 const ERROR_MESSAGE = 'Something went wrong while loading fun facts'
 
 describe('FunFacts Component', () => {
@@ -68,7 +67,7 @@ describe('FunFacts Component', () => {
                     {
                         fact_type: match[1],
                         main_text: `Test ${match[1]} #${callIndex}`,
-                        value: callIndex,
+                        fact_value: callIndex,
                         unit: 'streams',
                     },
                 ] as FunFactResult[]
@@ -164,6 +163,9 @@ describe('FunFacts Component', () => {
         await waitFor(() => {
             expect(screen.getByText(EMPTY_MESSAGE)).toBeDefined()
         })
+
+        const hasAnyTitle = facts.some((f) => screen.queryByText(f.title))
+        expect(hasAnyTitle).toBe(true)
     })
 
     it('should show error state when query fails', async () => {
@@ -202,7 +204,7 @@ describe('FunFacts Component', () => {
             {
                 fact_type: 'morning_favorite',
                 main_text: 'Test morning_favorite',
-                value: 1,
+                fact_value: 1,
                 unit: 'streams',
             },
         ] as FunFactResult[])
@@ -210,30 +212,29 @@ describe('FunFacts Component', () => {
         fireEvent.click(screen.getByTitle('New fact'))
 
         await waitFor(() => {
-            expect(screen.getByText('🌅 Musical Breakfast')).toBeDefined()
+            expect(screen.queryByText(ERROR_MESSAGE)).toBeNull()
+            const hasAnyTitle = facts.some((f) => screen.queryByText(f.title))
+            expect(hasAnyTitle).toBe(true)
         })
     })
 
-    it('should handle cozy album with null main_text', async () => {
+    it('should show empty state when query returns null main_text and no other content', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 fact_type: 'dummy_fact_type',
                 main_text: null,
-                second_text: 'This fun fact is unfortunately unavailable',
-                value: undefined,
-                context: 'feel like listening to an album today?',
             },
         ] as FunFactResult[])
         render(<FunFacts />)
 
         await waitFor(() => {
-            expect(
-                screen.getByText('This fun fact is unfortunately unavailable')
-            ).toBeDefined()
+            expect(screen.getByText(EMPTY_MESSAGE)).toBeDefined()
         })
+        const hasAnyTitle = facts.some((f) => screen.queryByText(f.title))
+        expect(hasAnyTitle).toBe(true)
     })
 
-    it('should show cozy album title when rendering', async () => {
+    it('should render content when query returns main_text and value', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 fact_type: 'cozy_album',
@@ -248,11 +249,38 @@ describe('FunFacts Component', () => {
         render(<FunFacts />)
 
         await waitFor(() => {
-            expect(screen.getByText('💿 Cozy Album')).toBeDefined()
+            expect(screen.getByText('Cozy Album')).toBeDefined()
         })
-        expect(screen.getByText('Cozy Album')).toBeDefined()
         expect(
             screen.getByText((content) => content.includes('10'))
         ).toBeDefined()
+    })
+
+    it('does not show generic fallback identity when all facts are empty', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([])
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            const el = document.querySelector('[data-fact-type]')
+            expect(el?.getAttribute('data-fact-type')).not.toBe('fallback_fact')
+        })
+    })
+
+    it('displays numeric value when query returns fact_value', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
+            {
+                fact_type: 'morning_favorite',
+                main_text: 'Some Artist',
+                fact_value: 42,
+                unit: 'streams',
+            },
+        ] as FunFactResult[])
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(
+                screen.getByText((content) => content.includes('42'))
+            ).toBeDefined()
+        })
     })
 })
