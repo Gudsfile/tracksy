@@ -32,8 +32,7 @@ jobs:
       - name: Setup toolchains
         run: |
           moon setup
-          echo "$HOME/.proto/shims" >> $GITHUB_PATH
-          echo "$HOME/.proto/bin" >> $GITHUB_PATH
+          proto install pnpm 9
 
       - name: Audit dependencies
         run: moon run app:audit

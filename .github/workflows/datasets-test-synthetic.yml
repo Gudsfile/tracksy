@@ -43,8 +43,7 @@ jobs:
       - name: Setup toolchains
         run: |
           moon setup
-          echo "$HOME/.proto/shims" >> $GITHUB_PATH
-          echo "$HOME/.proto/bin" >> $GITHUB_PATH
+          proto install pnpm 9
 
       - name: Run format check
         run: moon run synthetic-datasets:format-check

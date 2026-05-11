@@ -36,8 +36,7 @@ jobs:
       - name: Setup toolchains
         run: |
           moon setup
-          echo "$HOME/.proto/shims" >> $GITHUB_PATH
-          echo "$HOME/.proto/bin" >> $GITHUB_PATH
+          proto install pnpm 9
 
       - name: Install Playwright Browsers
         run: moon run e2e:install-browsers

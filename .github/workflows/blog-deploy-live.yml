@@ -43,8 +43,7 @@ jobs:
       - name: Setup toolchains
         run: |
           moon setup
-          echo "$HOME/.proto/shims" >> $GITHUB_PATH
-          echo "$HOME/.proto/bin" >> $GITHUB_PATH
+          proto install pnpm 9
 
       - name: Build with Hugo
         run: moon run blog:build -- -d ./public --baseURL https://Gudsfile.github.io/tracksy/blog/
