@@ -25,6 +25,8 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
         : 0
     const currentYearData = data?.find((d) => d.year === year)
     const totalStreams = data?.reduce((acc, curr) => acc + curr.streams, 0) ?? 0
+    const totalMsPlayed =
+        data?.reduce((acc, curr) => acc + curr.ms_played, 0) ?? 0
     const startYear = data?.length ? Math.min(...data.map((d) => d.year)) : 0
 
     return (
@@ -119,6 +121,13 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                     </div>
                     <div className="text-gray-300 dark:text-gray-400">
                         {formatDuration(tooltip.ms_played)}
+                    </div>
+                    <div className="border-t border-gray-700 my-1.5" />
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {totalStreams.toLocaleString()} total streams
+                    </div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {formatDuration(totalMsPlayed)} total listening
                     </div>
                 </ChartTooltip>
             )}
