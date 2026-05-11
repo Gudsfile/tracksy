@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { QUERY_FUNCTIONS, type FunFactResult } from './queries'
+import { queryDefinitions, type FunFactResult } from './queries'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
 import { FunFacts as FunFactsView } from './FunFacts'
@@ -12,32 +12,32 @@ export function FunFacts() {
     const loadRandomFact = useCallback(async () => {
         setIsLoading(true)
         try {
-            if (seenFactsRef.current.size === QUERY_FUNCTIONS.length) {
+            if (seenFactsRef.current.size === queryDefinitions.length) {
                 seenFactsRef.current.clear()
             }
 
-            const unseenQueries = QUERY_FUNCTIONS.filter(
+            const unseenQueries = queryDefinitions.filter(
                 (q) => !seenFactsRef.current.has(q.name)
             )
             const availableQueries =
-                unseenQueries.length > 0 ? unseenQueries : QUERY_FUNCTIONS
+                unseenQueries.length > 0 ? unseenQueries : queryDefinitions
 
             const shuffled = [...availableQueries].sort(
                 () => Math.random() - 0.5
             )
 
-            for (const queryFn of shuffled) {
+            for (const queryDef of shuffled) {
                 const [result] =
-                    (await queryDBAsJSON<FunFactResult>(queryFn())) || []
+                    (await queryDBAsJSON<FunFactResult>(queryDef.sql)) || []
 
-                seenFactsRef.current.add(queryFn.name)
+                seenFactsRef.current.add(queryDef.name)
                 if (result) {
                     setFact(result)
                     break
                 }
                 console.warn(
                     'An empty result is returned by a fun fact:',
-                    queryFn.name
+                    queryDef.name
                 )
             }
         } catch (error) {

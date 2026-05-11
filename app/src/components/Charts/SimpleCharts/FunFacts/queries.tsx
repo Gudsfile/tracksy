@@ -29,105 +29,32 @@ export type FunFactResult = {
     context?: string
 }
 
-export function queryMorningFavorite(): string {
-    return sqlQueryMorningFavorite.replaceAll('${table}', TABLE)
-}
+const build = (sql: string) => sql.replaceAll('${table}', TABLE)
 
-export function queryAfternoonFavorite(): string {
-    return sqlQueryAfternoonFavorite.replaceAll('${table}', TABLE)
-}
+export const queries = {
+    morning_favorite: build(sqlQueryMorningFavorite),
+    afternoon_favorite: build(sqlQueryAfternoonFavorite),
+    evening_favorite: build(sqlQueryEveningFavorite),
+    night_favorite: build(sqlQueryNightFavorite),
+    weekend_favorite: build(sqlQueryWeekendFavorite),
+    nostalgic_return: build(sqlQueryNostalgicReturn),
+    forgotten_artist: build(sqlQueryForgottenArtist),
+    absolute_loyalty: build(sqlQueryAbsoluteLoyalty),
+    subscribed_artist: build(sqlQuerySubscribedArtist),
+    musical_anniversary: build(sqlQueryMusicalAnniversary),
+    first_artist: build(sqlQueryFirstArtist),
+    one_hit_wonder: build(sqlQueryOneHitWonder),
+    variety_day: build(sqlQueryVarietyDay),
+    binge_listener: build(sqlQueryBingeListener),
+    current_obsession: build(sqlQueryCurrentObsession),
+    recent_discovery: build(sqlQueryRecentDiscovery),
+    marathon: build(sqlQueryMarathon),
+    unbeatable_streak: build(sqlQueryUnbeatableStreak),
+    track_proposition: build(sqlQueryTrackProposition),
+    cozy_album: build(sqlQueryCozyAlbum),
+} as const
 
-export function queryEveningFavorite(): string {
-    return sqlQueryEveningFavorite.replaceAll('${table}', TABLE)
-}
-
-export function queryNightFavorite(): string {
-    return sqlQueryNightFavorite.replaceAll('${table}', TABLE)
-}
-
-export function queryWeekendFavorite(): string {
-    return sqlQueryWeekendFavorite.replaceAll('${table}', TABLE)
-}
-
-export function queryNostalgicReturn(): string {
-    return sqlQueryNostalgicReturn.replaceAll('${table}', TABLE)
-}
-
-export function queryForgottenArtist(): string {
-    return sqlQueryForgottenArtist.replaceAll('${table}', TABLE)
-}
-
-export function queryAbsoluteLoyalty(): string {
-    return sqlQueryAbsoluteLoyalty.replaceAll('${table}', TABLE)
-}
-
-export function querySubscribedArtist(): string {
-    return sqlQuerySubscribedArtist.replaceAll('${table}', TABLE)
-}
-
-export function queryMusicalAnniversary(): string {
-    return sqlQueryMusicalAnniversary.replaceAll('${table}', TABLE)
-}
-
-export function queryFirstArtist(): string {
-    return sqlQueryFirstArtist.replaceAll('${table}', TABLE)
-}
-
-export function queryOneHitWonder(): string {
-    return sqlQueryOneHitWonder.replaceAll('${table}', TABLE)
-}
-
-export function queryVarietyDay(): string {
-    return sqlQueryVarietyDay.replaceAll('${table}', TABLE)
-}
-
-export function queryBingeListener(): string {
-    return sqlQueryBingeListener.replaceAll('${table}', TABLE)
-}
-
-export function queryCurrentObsession(): string {
-    return sqlQueryCurrentObsession.replaceAll('${table}', TABLE)
-}
-
-export function queryRecentDiscovery(): string {
-    return sqlQueryRecentDiscovery.replaceAll('${table}', TABLE)
-}
-
-export function queryMarathon(): string {
-    return sqlQueryMarathon.replaceAll('${table}', TABLE)
-}
-
-export function queryUnbeatableStreak(): string {
-    return sqlQueryUnbeatableStreak.replaceAll('${table}', TABLE)
-}
-
-export function queryTrackProposition(): string {
-    return sqlQueryTrackProposition.replaceAll('${table}', TABLE)
-}
-
-export function queryCozyAlbum(): string {
-    return sqlQueryCozyAlbum.replaceAll('${table}', TABLE)
-}
-
-export const QUERY_FUNCTIONS = [
-    queryAfternoonFavorite,
-    queryEveningFavorite,
-    queryNightFavorite,
-    queryMorningFavorite,
-    queryMarathon,
-    queryOneHitWonder,
-    queryWeekendFavorite,
-    queryAbsoluteLoyalty,
-    queryNostalgicReturn,
-    queryVarietyDay,
-    queryBingeListener,
-    queryCurrentObsession,
-    queryFirstArtist,
-    queryRecentDiscovery,
-    querySubscribedArtist,
-    queryMusicalAnniversary,
-    queryUnbeatableStreak,
-    queryForgottenArtist,
-    queryTrackProposition,
-    queryCozyAlbum,
-]
+export const queryDefinitions = Object.entries(queries).map(([name, sql]) => ({
+    name,
+    sql,
+}))
