@@ -1,7 +1,16 @@
 import type { FC } from 'react'
+import { useState } from 'react'
 import type { EvolutionResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { ChartCard, ChartCardEmpty } from '../shared'
+import { ChartCard, ChartCardEmpty, ChartTooltip } from '../shared'
+
+type TooltipState = {
+    x: number
+    y: number
+    year: number
+    streams: number
+    ms_played: number
+}
 
 type Props = {
     data: EvolutionResult[] | undefined
@@ -10,6 +19,7 @@ type Props = {
 }
 
 export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
+    const [tooltip, setTooltip] = useState<TooltipState | null>(null)
     const maxStreams = data?.length
         ? Math.max(...data.map((d) => d.streams))
         : 0
@@ -29,14 +39,29 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                 <ChartCardEmpty />
             ) : (
                 <>
-                    <div className="flex items-end gap-1 h-24 mt-4 mb-2">
+                    <div
+                        className="flex items-end gap-1 h-24 mt-4 mb-2"
+                        onMouseLeave={() => setTooltip(null)}
+                    >
                         {data.map((d) => {
                             const height = (d.streams / maxStreams) * 100
                             return (
                                 <div
                                     key={d.year}
-                                    className="flex-1 bg-brand-blue dark:bg-brand-blue rounded-t relative group"
+                                    className="flex-1 bg-brand-blue dark:bg-brand-blue rounded-t relative"
                                     style={{ height: `${height}%` }}
+                                    onMouseEnter={(e) => {
+                                        const rect = (
+                                            e.currentTarget as HTMLElement
+                                        ).getBoundingClientRect()
+                                        setTooltip({
+                                            x: rect.left + rect.width / 2,
+                                            y: rect.top,
+                                            year: d.year,
+                                            streams: d.streams,
+                                            ms_played: d.ms_played,
+                                        })
+                                    }}
                                 >
                                     <div
                                         className={`absolute bottom-0 left-0 right-0 bg-brand-blue rounded-t transition-all duration-300 ${
@@ -46,12 +71,6 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                                         }`}
                                         style={{ height: '100%' }}
                                     ></div>
-                                    <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-black text-white text-xs px-2 py-1 rounded pointer-events-none whitespace-nowrap z-10">
-                                        {d.year}
-                                        <br /> {d.streams.toLocaleString()}{' '}
-                                        streams
-                                        <br /> ({formatDuration(d.ms_played)})
-                                    </div>
                                 </div>
                             )
                         })}
@@ -91,6 +110,17 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                         )}
                     </ul>
                 </>
+            )}
+            {tooltip && (
+                <ChartTooltip x={tooltip.x} y={tooltip.y}>
+                    <div className="font-semibold">{tooltip.year}</div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {tooltip.streams.toLocaleString()} streams
+                    </div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {formatDuration(tooltip.ms_played)}
+                    </div>
+                </ChartTooltip>
             )}
         </ChartCard>
     )
