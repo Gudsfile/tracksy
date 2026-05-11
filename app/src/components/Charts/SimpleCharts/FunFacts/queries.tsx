@@ -11,12 +11,9 @@ import sqlQuerySubscribedArtist from './SubscribedArtist.sql?raw'
 import sqlQueryMusicalAnniversary from './MusicalAnniversary.sql?raw'
 import sqlQueryFirstArtist from './FirstArtist.sql?raw'
 import sqlQueryOneHitWonder from './OneHitWonder.sql?raw'
-import sqlQueryVarietyDay from './VarietyDay.sql?raw'
-import sqlQueryBingeListener from './BingeListener.sql?raw'
 import sqlQueryCurrentObsession from './CurrentObsession.sql?raw'
 import sqlQueryRecentDiscovery from './RecentDiscovery.sql?raw'
 import sqlQueryMarathon from './Marathon.sql?raw'
-import sqlQueryUnbeatableStreak from './UnbeatableStreak.sql?raw'
 import sqlQueryTrackProposition from './TrackProposition.sql?raw'
 import sqlQueryCozyAlbum from './CozyAlbum.sql?raw'
 
@@ -105,18 +102,6 @@ export const facts = [
         sql: build(sqlQueryOneHitWonder),
     },
     {
-        fact_type: 'variety_day',
-        title: '🌈 Variety Day',
-        emoji: '🎨',
-        sql: build(sqlQueryVarietyDay),
-    },
-    {
-        fact_type: 'binge_listener',
-        title: '🎧 Binge Listener',
-        emoji: '🎶',
-        sql: build(sqlQueryBingeListener),
-    },
-    {
         fact_type: 'current_obsession',
         title: '🔁 Current Obsession',
         emoji: '🎯',
@@ -133,12 +118,6 @@ export const facts = [
         title: '🏃 Marathon',
         emoji: '☄️',
         sql: build(sqlQueryMarathon),
-    },
-    {
-        fact_type: 'unbeatable_streak',
-        title: '🔥 Unbeatable Streak',
-        emoji: '🏆',
-        sql: build(sqlQueryUnbeatableStreak),
     },
     {
         fact_type: 'track_proposition',
