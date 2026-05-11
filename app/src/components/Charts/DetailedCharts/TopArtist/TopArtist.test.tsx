@@ -1,10 +1,11 @@
-import { describe, it, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import * as db from '../../../../db/getDB'
 import * as query from '../../../../db/queries/queryDB'
 import * as queries from './query'
 
 import { TopArtist } from '.'
+import { TopArtist as TopArtistPlot } from './TopArtist'
 
 describe('TopArtist Component', () => {
     beforeEach(() => {
@@ -34,6 +35,11 @@ describe('TopArtist Component', () => {
             db: vi.fn(),
             conn: vi.fn(),
         } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
+    it('should return null when data is empty', () => {
+        const { container } = render(<TopArtistPlot data={[]} />)
+        expect(container.innerHTML).toBe('')
     })
 
     it('should render the top artist by count by default', async () => {
