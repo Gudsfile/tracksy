@@ -4,7 +4,6 @@ import { FunFacts } from '.'
 
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
-import { FunFactResult } from './queries'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
 
 const allFactTitles = [
@@ -36,6 +35,8 @@ const allFactTitles = [
 
 describe('FunFacts Component', () => {
     beforeEach(() => {
+        vi.clearAllMocks()
+
         vi.spyOn(query, 'queryDBAsJSON').mockImplementation(
             async (sql: string) => {
                 const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
@@ -74,6 +75,8 @@ describe('FunFacts Component', () => {
             },
             { timeout: 3000 }
         )
+
+        expect(query.queryDBAsJSON).toHaveBeenCalledWith(expect.any(String))
     })
 
     it('should have a refresh button', async () => {
