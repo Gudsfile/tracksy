@@ -4,11 +4,11 @@ export type FunFactProps = {
     fact_type: string
     title: string
     emoji: string
-    main_text: string
-    second_text?: string | undefined
-    value: string | number
-    unit?: string | undefined
-    context?: string | undefined
+    main_text: string | null
+    second_text?: string
+    value?: number | string
+    unit?: string
+    context?: string
 }
 
 type Props = {
