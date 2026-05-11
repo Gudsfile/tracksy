@@ -18,14 +18,8 @@ export const factConfig = (type: string) => {
             return { title: '🌆 Calm Return', emoji: '🛋️' }
         case 'night_favorite':
             return { title: '🌙 Musical Insomnia', emoji: '💤' }
-        case 'night_champion':
-            return { title: '🌙 Night Champion', emoji: '🏅' }
         case 'weekend_favorite':
             return { title: '🎉 Weekend Vibes', emoji: '🕺' }
-
-        // Habits
-        case 'favorite_weekday':
-            return { title: '📅 Favorite Day', emoji: '📅' }
 
         // Loyalty
         case 'absolute_loyalty':
