@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useTheme } from './useTheme'
-import { THEME_STORAGE_KEY } from './theme.constants'
+import { THEME_STORAGE_KEY, MEDIA_QUERY } from './theme.constants'
 
 describe('useTheme', () => {
     beforeEach(() => {
@@ -94,6 +94,28 @@ describe('useTheme', () => {
 
         expect(result.current.effectiveTheme).toBe('dark')
         expect(document.documentElement.classList.contains('dark')).toBe(true)
+    })
+
+    it('should fall back to light when matchMedia returns matches as undefined', () => {
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            value: vi.fn().mockImplementation(() => ({
+                matches: undefined,
+                media: MEDIA_QUERY,
+                onchange: null,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+                dispatchEvent: vi.fn(),
+            })),
+        })
+
+        const { result } = renderHook(() => useTheme())
+
+        act(() => {
+            result.current.setTheme('system')
+        })
+
+        expect(result.current.effectiveTheme).toBe('light')
     })
 
     it('should cycle through themes correctly', () => {
