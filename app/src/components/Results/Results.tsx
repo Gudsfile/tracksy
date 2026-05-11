@@ -8,7 +8,7 @@ type Tab = 'simple' | 'detailed' | 'chat'
 const TABS: { id: Tab; label: string }[] = [
     { id: 'simple', label: '✨ Simple View' },
     { id: 'detailed', label: '🔬 Detailed View' },
-    { id: 'chat', label: '💬 Chat' },
+    { id: 'chat', label: '💬 Chat (beta)' },
 ]
 
 export function Results() {
