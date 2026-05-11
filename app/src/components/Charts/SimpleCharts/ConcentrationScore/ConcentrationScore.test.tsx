@@ -8,6 +8,16 @@ describe('ConcentrationScore Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when all values are zero', () => {
+        render(
+            <ConcentrationScore
+                data={{ top5_pct: 0, top10_pct: 0, top20_pct: 0 }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it.each([
         { top5_pct: 25, top10_pct: 40, top20_pct: 60 },
         { top5_pct: 1, top10_pct: 99, top20_pct: 0 },

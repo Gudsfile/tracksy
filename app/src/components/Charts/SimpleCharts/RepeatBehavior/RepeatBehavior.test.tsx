@@ -4,6 +4,21 @@ import { RepeatBehavior } from './RepeatBehavior'
 import { type RepeatResult } from './query'
 
 describe('RepeatBehavior Component', () => {
+    it('renders empty state when all values are zero', () => {
+        render(
+            <RepeatBehavior
+                data={{
+                    total_repeat_sequences: 0,
+                    max_consecutive: 0,
+                    most_repeated_track: '',
+                    avg_repeat_length: 0,
+                }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const data: RepeatResult = {
             total_repeat_sequences: 15,

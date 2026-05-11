@@ -9,6 +9,22 @@ describe('ListeningRhythm Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when all values are zero', () => {
+        render(
+            <ListeningRhythm
+                data={{
+                    morning: 0,
+                    afternoon: 0,
+                    evening: 0,
+                    night: 0,
+                    total: 0,
+                }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const mockData = {
             morning: 10,

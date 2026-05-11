@@ -29,7 +29,7 @@ export const NewVsOld: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Am I discovering new artists?"
         >
-            {!data ? (
+            {!data?.total ? (
                 <ChartCardEmpty />
             ) : (
                 <>

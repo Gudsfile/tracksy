@@ -8,6 +8,21 @@ describe('NewVsOld Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when all values are zero', () => {
+        render(
+            <NewVsOld
+                data={{
+                    new_artists_streams: 0,
+                    old_artists_streams: 0,
+                    new_artists_count: 0,
+                    total: 0,
+                }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const data = {
             new_artists_streams: 30,

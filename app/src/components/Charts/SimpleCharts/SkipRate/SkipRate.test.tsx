@@ -8,6 +8,16 @@ describe('SkipRate Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when all values are zero', () => {
+        render(
+            <SkipRate
+                data={{ complete_listens: 0, skipped_listens: 0 }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const data = { complete_listens: 80, skipped_listens: 20 }
 

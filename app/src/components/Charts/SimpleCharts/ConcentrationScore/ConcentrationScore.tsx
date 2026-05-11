@@ -15,7 +15,7 @@ export const ConcentrationScore: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Is my listening concentrated on just a few artists?"
         >
-            {!data ? (
+            {!data?.top5_pct ? (
                 <ChartCardEmpty />
             ) : (
                 <>

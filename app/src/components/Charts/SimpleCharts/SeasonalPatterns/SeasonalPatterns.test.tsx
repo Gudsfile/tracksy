@@ -9,6 +9,16 @@ describe('SeasonalPatterns Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when all values are zero', () => {
+        render(
+            <SeasonalPatterns
+                data={{ winter: 0, spring: 0, summer: 0, fall: 0, total: 0 }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders correctly with data', async () => {
         const mockData = {
             winter: 10,

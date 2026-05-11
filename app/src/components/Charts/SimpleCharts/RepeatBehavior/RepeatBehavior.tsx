@@ -27,7 +27,7 @@ export const RepeatBehavior: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Do I replay the same tracks over and over?"
         >
-            {!data ? (
+            {!data?.total_repeat_sequences ? (
                 <ChartCardEmpty />
             ) : (
                 <>
