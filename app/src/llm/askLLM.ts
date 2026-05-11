@@ -104,11 +104,11 @@ export function parseChatAnswer(raw: string): ChatAnswer {
             : 'Result'
     const explanation =
         typeof obj.explanation === 'string' ? obj.explanation.trim() : ''
-    const sql = typeof obj.sql === 'string' ? obj.sql : undefined
+    const sql = typeof obj.sql === 'string' ? obj.sql.trim() : ''
 
-    if (intent === 'custom' && (!sql || sql.trim().length === 0)) {
+    if (sql.length === 0) {
         throw new LLMError(
-            'Custom intent requires a non-empty SQL string.',
+            'Response is missing the required sql field.',
             'schema'
         )
     }

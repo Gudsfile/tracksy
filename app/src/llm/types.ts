@@ -10,7 +10,7 @@ export type ChatAnswer = {
     params: ChatAnswerParams
     title: string
     explanation: string
-    sql?: string
+    sql: string
 }
 
 export type ChatRole = 'user' | 'assistant'
