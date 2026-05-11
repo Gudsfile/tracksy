@@ -1,11 +1,12 @@
 import { describe, it, vi, expect, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
 import { FunFacts } from '.'
+import { factConfig } from './FunFacts'
 
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
-import { FunFactResult, queryDefinitions } from './queries'
+import { FunFactResult, queryDefinitions, queries } from './queries'
 
 describe('FunFacts Component', () => {
     beforeEach(() => {
@@ -132,5 +133,30 @@ describe('FunFacts Component', () => {
         })
 
         consoleSpy.mockRestore()
+    })
+
+    describe('factConfig coherence', () => {
+        function extractFactType(sql: string): string | null {
+            const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
+            return match?.[1] ?? null
+        }
+
+        it('should ensure default exists in factConfig', () => {
+            expect(factConfig('non_existent_fun_fact')).toBeDefined()
+        })
+
+        it('should know all the fact types used', () => {
+            const usedTypes = Object.values(queries).map(
+                extractFactType
+            ) as string[]
+
+            const defaultType = factConfig('non_existent_fun_fact')
+
+            const knownTypes = usedTypes
+                .map(factConfig)
+                .filter((q) => q.title != defaultType.title)
+
+            expect(knownTypes.length).toBe(usedTypes.length)
+        })
     })
 })

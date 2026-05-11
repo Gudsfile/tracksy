@@ -7,7 +7,7 @@ type Props = {
     isLoading: boolean
 }
 
-const factConfig = (type: string) => {
+export const factConfig = (type: string) => {
     switch (type) {
         // Moments
         case 'morning_favorite':
