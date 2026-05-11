@@ -38,4 +38,32 @@ describe('NewVsOld Component', () => {
         screen.getByText('70%')
         screen.getByText(/5 new artists discovered/)
     })
+
+    it('renders Trend Hunter when new artists dominate', () => {
+        render(
+            <NewVsOld
+                data={{
+                    new_artists_streams: 70,
+                    old_artists_streams: 30,
+                    new_artists_count: 10,
+                    total: 100,
+                }}
+            />
+        )
+        screen.getByText('Trend Hunter')
+    })
+
+    it('renders Balanced Taste when new and old are equal', () => {
+        render(
+            <NewVsOld
+                data={{
+                    new_artists_streams: 50,
+                    old_artists_streams: 50,
+                    new_artists_count: 2,
+                    total: 100,
+                }}
+            />
+        )
+        screen.getByText('Balanced Taste')
+    })
 })

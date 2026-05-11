@@ -20,7 +20,7 @@ export const NewVsOld: FC<Props> = ({ data, isLoading }) => {
             ? 'Comfort Listener'
             : oldPct < newPct
               ? 'Trend Hunter'
-              : 'Balanced Tast'
+              : 'Balanced Taste'
 
     return (
         <ChartCard
