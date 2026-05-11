@@ -29,7 +29,7 @@ export const SkipRate: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Do I skip tracks often?"
         >
-            {!data ? (
+            {!data?.complete_listens ? (
                 <ChartCardEmpty />
             ) : (
                 <>

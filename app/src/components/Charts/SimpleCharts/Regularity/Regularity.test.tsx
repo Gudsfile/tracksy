@@ -8,6 +8,20 @@ describe('Regularity Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when days_with_streams is zero', () => {
+        render(
+            <Regularity
+                data={{
+                    days_with_streams: 0,
+                    total_days: 365,
+                    longest_pause_days: 365,
+                }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders the title and total artists', () => {
         const data = {
             days_with_streams: 28,

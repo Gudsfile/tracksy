@@ -51,7 +51,7 @@ export const ListeningRhythm: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="What time of day do I listen the most?"
         >
-            {!data ? (
+            {!data?.total ? (
                 <ChartCardEmpty />
             ) : (
                 <>

@@ -18,6 +18,24 @@ describe('SessionAnalysis Component', () => {
         screen.getByText('No data for this year')
     })
 
+    it('renders empty state when session_count is zero', () => {
+        render(
+            <SessionAnalysis
+                data={{
+                    session_count: 0,
+                    avg_duration_ms: null,
+                    median_tracks: null,
+                    longest_session_ms: null,
+                    longest_session_track_count: null,
+                    longest_session_date: null,
+                    peak_start_hour: null,
+                }}
+                isLoading={false}
+            />
+        )
+        screen.getByText('No data for this year')
+    })
+
     it('renders Express profile for short average sessions', () => {
         render(<SessionAnalysis data={baseData} />)
         expect(screen.getByText('Express')).toBeTruthy()

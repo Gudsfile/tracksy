@@ -29,7 +29,7 @@ export const SessionAnalysis: FC<Props> = ({ data, isLoading }) => {
             question="How are my listening sessions structured?"
             className="h-full"
         >
-            {!data ? (
+            {!data?.session_count ? (
                 <ChartCardEmpty />
             ) : (
                 <>

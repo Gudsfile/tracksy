@@ -50,7 +50,7 @@ export const SeasonalPatterns: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Which season do I listen the most?"
         >
-            {!data ? (
+            {!data?.total ? (
                 <ChartCardEmpty />
             ) : (
                 <>

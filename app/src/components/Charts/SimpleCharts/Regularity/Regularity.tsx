@@ -31,7 +31,7 @@ export const Regularity: FC<Props> = ({ data, isLoading }) => {
             isLoading={isLoading}
             question="Do I listen to music regularly?"
         >
-            {!data ? (
+            {!data?.days_with_streams ? (
                 <ChartCardEmpty />
             ) : (
                 <>
