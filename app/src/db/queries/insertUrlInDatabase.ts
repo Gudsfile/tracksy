@@ -1,29 +1,39 @@
 import { getDB } from '../getDB'
 import { TABLE, DROP_TABLE_QUERY } from './constants'
+import { tableFromJSON } from 'apache-arrow'
+import { detectProvider } from '../../streamProvider'
 import { precomputeDerivedTables } from '../precompute'
 import { dispatchDataLoaded } from '../dataSignal'
 
 export async function insertUrlInDatabase(jsonUrl: URL) {
+    const response = await fetch(jsonUrl.toString())
+    if (!response.ok) {
+        throw new Error(`Failed to fetch demo data: ${response.statusText}`)
+    }
+
+    const blob = await response.blob()
+    const filename = jsonUrl.pathname.split('/').pop() || 'streaming_data.json'
+    const file = new File([blob], filename, { type: 'application/json' })
+
+    const provider = detectProvider(file)
+    if (!provider) {
+        throw new Error('No provider found for the demo data URL')
+    }
+
+    const records = await provider.processFile(file)
+
+    if (records.length === 0) {
+        throw new Error('No valid stream records found in demo data')
+    }
+
+    const arrowTableContent = tableFromJSON(records)
+
     const { conn } = await getDB()
     await conn.query(DROP_TABLE_QUERY)
-    await conn.insertJSONFromPath(jsonUrl.toString(), { name: TABLE })
-    // The Spotify fields are renamed to match the `StreamRecord` model.
-    // `insertUrlInDatabase` is only used by the `DemoButton`, which provides a Spotify file.
-    // It's acceptable to apply this transformation here as a temporary hotfix, but ideally,
-    // we should use the transformation from `SpotifyStreamProvider` and automatically detect
-    // the correct provider to use.
-    await conn.query(
-        `ALTER TABLE ${TABLE} RENAME COLUMN spotify_track_uri TO track_uri`
-    )
-    await conn.query(
-        `ALTER TABLE ${TABLE} RENAME COLUMN master_metadata_track_name TO track_name`
-    )
-    await conn.query(
-        `ALTER TABLE ${TABLE} RENAME COLUMN master_metadata_album_artist_name TO artist_name`
-    )
-    await conn.query(
-        `ALTER TABLE ${TABLE} RENAME COLUMN master_metadata_album_album_name TO album_name`
-    )
+    await conn.insertArrowTable(arrowTableContent, {
+        name: TABLE,
+        create: true,
+    })
 
     await precomputeDerivedTables(conn)
     dispatchDataLoaded()
