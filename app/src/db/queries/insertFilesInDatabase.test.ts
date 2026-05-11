@@ -1,16 +1,14 @@
 import { vi, describe, it, expect, afterEach, beforeEach } from 'vitest'
 
-import * as db from '../getDB'
 import { insertFilesInDatabase } from './insertFilesInDatabase'
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
-import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
 import * as adapters from '../../streamProvider'
 import * as precompute from '../precompute'
 import * as dataSignal from '../dataSignal'
 
-import type { StreamRecord } from '../../streamProvider/types'
 import { TABLE } from './constants'
-import { StreamProvider } from '../../streamProvider/StreamProvider'
+
+import { mockDB, mockStreamProviderWithSpy } from './__tests__/test-utils'
 
 /**
  * We use this mock function due to JSDOM not supporting full File API : https://developer.mozilla.org/en-US/docs/Web/API/Blob/text
@@ -24,36 +22,6 @@ function mockFile(content: string, name: string, options: { type: string }) {
         type: options.type,
         size: content.length,
     } as unknown as File
-}
-
-function mockDB() {
-    const connectionMock = {
-        query: vi.fn().mockResolvedValue({}),
-        insertArrowTable: vi.fn().mockResolvedValue({}),
-    } as unknown as AsyncDuckDBConnection
-
-    vi.spyOn(db, 'getDB').mockResolvedValue({
-        conn: connectionMock,
-        db: {} as unknown as AsyncDuckDB,
-    })
-
-    return connectionMock
-}
-
-function mockStreamProviderWithSpy(records: StreamRecord[]) {
-    const provider = new (class extends StreamProvider {
-        readonly name = 'test'
-        readonly displayName = 'Test Provider'
-        readonly filePattern = /test\.json$/
-        readonly fileContentType = 'application/json'
-
-        readFile = vi.fn(async () => records)
-        transform = vi.fn((raw) => raw as StreamRecord[])
-    })()
-
-    const processFileSpy = vi.spyOn(provider, 'processFile')
-
-    return { provider, processFileSpy }
 }
 
 describe('insertFilesInDatabase', () => {

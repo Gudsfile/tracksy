@@ -1,46 +1,14 @@
 import { vi, describe, it, expect, afterEach, beforeEach } from 'vitest'
 
-import * as db from '../getDB'
 import { insertUrlInDatabase } from './insertUrlInDatabase'
-import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
 import * as adapters from '../../streamProvider'
 import { SpotifyStreamProvider } from '../../streamProvider/SpotifyStreamProvider/SpotifyStreamProvider'
 import * as precompute from '../precompute'
 import * as dataSignal from '../dataSignal'
+import { mockDB, mockStreamProviderWithSpy } from './__tests__/test-utils'
 
 import type { StreamRecord } from '../../streamProvider/types'
 import { TABLE } from './constants'
-import { StreamProvider } from '../../streamProvider/StreamProvider'
-
-function mockDB() {
-    const connectionMock = {
-        query: vi.fn().mockResolvedValue({}),
-        insertArrowTable: vi.fn().mockResolvedValue({}),
-    } as unknown as AsyncDuckDBConnection
-
-    vi.spyOn(db, 'getDB').mockResolvedValue({
-        conn: connectionMock,
-        db: {} as unknown as AsyncDuckDB,
-    })
-
-    return connectionMock
-}
-
-function mockStreamProviderWithSpy(records: StreamRecord[]) {
-    const provider = new (class extends StreamProvider {
-        readonly name = 'test'
-        readonly displayName = 'Test Provider'
-        readonly filePattern = /test\.json$/
-        readonly fileContentType = 'application/json'
-
-        readFile = vi.fn(async () => records)
-        transform = vi.fn((raw) => raw as StreamRecord[])
-    })()
-
-    const processFileSpy = vi.spyOn(provider, 'processFile')
-
-    return { provider, processFileSpy }
-}
 
 describe('insertUrlInDatabase', () => {
     beforeEach(() => {
