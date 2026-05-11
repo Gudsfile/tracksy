@@ -1,4 +1,4 @@
-import { describe, it, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 
 import * as query from '../../../../db/queries/queryDB'
@@ -6,6 +6,7 @@ import * as db from '../../../../db/getDB'
 import { TotalStreamsQueryResult } from './query'
 
 import { TotalStreams } from '.'
+import { TotalStreams as TotalStreamsPlot } from './TotalStreams'
 describe('TotalStreams Component', () => {
     beforeEach(() => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
@@ -19,6 +20,11 @@ describe('TotalStreams Component', () => {
             db: vi.fn(),
             conn: vi.fn(),
         } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
+    it('should return null when data is empty', () => {
+        const { container } = render(<TotalStreamsPlot data={[]} />)
+        expect(container.innerHTML).toBe('')
     })
 
     it('should render the text', async () => {
