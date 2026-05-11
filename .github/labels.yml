@@ -50,6 +50,10 @@
   color: "f0ad4e"
   description: "Involves code restructuring or cleanup"
 
+- name: "performance"
+  color: "f3d252"
+  description: "Concerns performance (Front-end, synthetics, ...)"
+
 - name: "{ a11y }"
   color: "87666c"
   description: "About accessibility"
