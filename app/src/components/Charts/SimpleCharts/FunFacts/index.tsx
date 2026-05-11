@@ -1,43 +1,51 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { queryDefinitions, type FunFactResult } from './queries'
+import { type FunFactResult, facts } from './queries'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
-import { FunFacts as FunFactsView } from './FunFacts'
+import { FunFacts as FunFactsView, type FunFactProps } from './FunFacts'
+
+const shuffle = <T,>(array: readonly T[]): T[] => {
+    const copy = [...array]
+    return copy.sort(() => Math.random() - 0.5)
+}
 
 export function FunFacts() {
-    const [fact, setFact] = useState<FunFactResult | null>(null)
+    const [fact, setFact] = useState<FunFactProps | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const seenFactsRef = useRef<Set<string>>(new Set())
 
     const loadRandomFact = useCallback(async () => {
         setIsLoading(true)
         try {
-            if (seenFactsRef.current.size === queryDefinitions.length) {
+            if (seenFactsRef.current.size === facts.length) {
                 seenFactsRef.current.clear()
             }
 
-            const unseenQueries = queryDefinitions.filter(
-                (q) => !seenFactsRef.current.has(q.name)
-            )
-            const availableQueries =
-                unseenQueries.length > 0 ? unseenQueries : queryDefinitions
-
-            const shuffled = [...availableQueries].sort(
-                () => Math.random() - 0.5
+            const unseenFacts = facts.filter(
+                (fact) => !seenFactsRef.current.has(fact.fact_type)
             )
 
-            for (const queryDef of shuffled) {
-                const [result] =
-                    (await queryDBAsJSON<FunFactResult>(queryDef.sql)) || []
+            const candidates = unseenFacts.length > 0 ? unseenFacts : facts
 
-                seenFactsRef.current.add(queryDef.name)
+            const shuffled = shuffle(candidates)
+
+            for (const factDefinition of shuffled) {
+                const [result] = await queryDBAsJSON<FunFactResult>(
+                    factDefinition.sql
+                )
+
+                seenFactsRef.current.add(factDefinition.fact_type)
                 if (result) {
-                    setFact(result)
+                    setFact({
+                        title: factDefinition.title,
+                        emoji: factDefinition.emoji,
+                        ...result,
+                    })
                     break
                 }
                 console.warn(
                     'An empty result is returned by a fun fact:',
-                    queryDef.name
+                    factDefinition.fact_type
                 )
             }
         } catch (error) {
@@ -49,7 +57,7 @@ export function FunFacts() {
 
     useEffect(() => {
         loadRandomFact()
-    }, [])
+    }, [loadRandomFact])
 
     useEffect(() => {
         const handleDataLoaded = () => {

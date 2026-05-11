@@ -1,12 +1,11 @@
 import { describe, it, vi, expect, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
 import { FunFacts } from '.'
-import { factConfig } from './FunFacts'
 
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
-import { FunFactResult, queryDefinitions, queries } from './queries'
+import { FunFactResult, facts } from './queries'
 
 describe('FunFacts Component', () => {
     beforeEach(() => {
@@ -16,13 +15,14 @@ describe('FunFacts Component', () => {
 
         vi.spyOn(query, 'queryDBAsJSON').mockImplementation(async (_sql) => {
             void _sql
-            const queryName = queryDefinitions[i % queryDefinitions.length].name
+            const fact = facts[i % facts.length]
             i++
             return [
                 {
-                    fact_type: 'dummy_fact',
-                    main_text: queryName,
-                    value: 1,
+                    fact_type: fact.fact_type,
+                    main_text: `main_text_for_${fact.fact_type}`,
+                    value: i % 2 === 0 ? 1 : 'one',
+                    context: i % 2 === 0 ? undefined : 'dummy_context',
                 },
             ] as FunFactResult[]
         })
@@ -37,9 +37,7 @@ describe('FunFacts Component', () => {
         render(<FunFacts />)
 
         await waitFor(() => {
-            const hasAnyTitle = queryDefinitions.some((q) =>
-                screen.queryByText(q.name)
-            )
+            const hasAnyTitle = facts.some((f) => screen.queryByText(f.title))
             expect(hasAnyTitle).toBe(true)
         })
 
@@ -77,19 +75,24 @@ describe('FunFacts Component', () => {
     })
 
     it('refreshes fact when clicking button', async () => {
-        const { container } = render(<FunFacts />)
+        render(<FunFacts />)
 
         await waitFor(() => {
             expect(screen.getByTitle('New fact')).toBeDefined()
         })
 
-        const first = container.textContent
+        const el = document.querySelector('[data-fact-type]')
+        const firstFactType = el?.getAttribute('data-fact-type')
+        expect(firstFactType).toBeTruthy()
 
         fireEvent.click(screen.getByTitle('New fact'))
 
         await waitFor(() => {
-            expect(container.textContent).not.toBe(first)
+            const el = document.querySelector('[data-fact-type]')
+            const secondFactType = el?.getAttribute('data-fact-type')
+            expect(secondFactType).not.toBe(firstFactType)
         })
+        expect(query.queryDBAsJSON).toHaveBeenCalledTimes(2)
     })
 
     it('repeats facts after full cycle reset', async () => {
@@ -97,21 +100,21 @@ describe('FunFacts Component', () => {
 
         render(<FunFacts />)
 
-        await waitFor(() => {
-            expect(screen.getByTitle('New fact')).toBeDefined()
-        })
+        const button = await screen.findByTitle('New fact')
 
-        const button = screen.getByTitle('New fact')
-
-        for (let i = 0; i < queryDefinitions.length * 2; i++) {
+        for (let i = 0; i < facts.length * 2; i++) {
             fireEvent.click(button)
 
             await waitFor(() => {
-                seen.add(document.body.textContent ?? '')
+                const el = document.querySelector('[data-fact-type]')
+                const factType = el?.getAttribute('data-fact-type')
+
+                expect(factType).toBeTruthy()
+                seen.add(factType!)
             })
         }
 
-        expect(seen.size).toBe(queryDefinitions.length)
+        expect(seen.size).toBe(facts.length)
     })
 
     it('logs error when loading fun fact fails', async () => {
@@ -133,30 +136,5 @@ describe('FunFacts Component', () => {
         })
 
         consoleSpy.mockRestore()
-    })
-
-    describe('factConfig coherence', () => {
-        function extractFactType(sql: string): string | null {
-            const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
-            return match?.[1] ?? null
-        }
-
-        it('should ensure default exists in factConfig', () => {
-            expect(factConfig('non_existent_fun_fact')).toBeDefined()
-        })
-
-        it('should know all the fact types used', () => {
-            const usedTypes = Object.values(queries).map(
-                extractFactType
-            ) as string[]
-
-            const defaultType = factConfig('non_existent_fun_fact')
-
-            const knownTypes = usedTypes
-                .map(factConfig)
-                .filter((q) => q.title != defaultType.title)
-
-            expect(knownTypes.length).toBe(usedTypes.length)
-        })
     })
 })
