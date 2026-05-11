@@ -3,12 +3,27 @@ import { render, screen } from '@testing-library/react'
 import { PrincipalPlatform } from './PrincipalPlatform'
 
 describe('PrincipalPlatform Component', () => {
+    it('renders empty state when data is undefined', () => {
+        render(<PrincipalPlatform data={undefined} isLoading={false} />)
+        screen.getByText('No data for this year')
+    })
+
     it('renders empty state when data is empty', () => {
         render(<PrincipalPlatform data={[]} isLoading={false} />)
         screen.getByText('No data for this year')
     })
 
-    it('renders correctly with data', async () => {
+    it('renders single-platform message when only one platform', () => {
+        render(
+            <PrincipalPlatform
+                data={[{ platform: 'iOS', stream_count: 100, pct: 100 }]}
+                isLoading={false}
+            />
+        )
+        screen.getByText('All streams are on iOS')
+    })
+
+    it('renders correctly with multiple platforms', () => {
         const data = [
             { platform: 'iOS', stream_count: 100, pct: 50 },
             { platform: 'Android', stream_count: 60, pct: 30 },

@@ -22,6 +22,10 @@ export const PrincipalPlatform: FC<Props> = ({ data, isLoading }) => {
         >
             {!data?.length ? (
                 <ChartCardEmpty />
+            ) : data.length === 1 ? (
+                <p className="text-sm text-gray-400 dark:text-gray-500 italic text-center py-6">
+                    All streams are on {data[0].platform}
+                </p>
             ) : (
                 <>
                     <ChartHero
