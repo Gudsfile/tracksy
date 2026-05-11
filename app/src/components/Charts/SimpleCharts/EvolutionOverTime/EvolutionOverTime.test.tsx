@@ -39,6 +39,8 @@ describe('EvolutionOverTime Component', () => {
 
         expect(screen.getByText('100 streams')).toBeDefined()
         expect(screen.getByText('1h 0m 0s')).toBeDefined()
+        expect(screen.getByText('450 total streams')).toBeDefined()
+        expect(screen.getByText('6h 0m 0s total listening')).toBeDefined()
 
         fireEvent.mouseLeave(barElements[0].parentElement!)
         expect(screen.queryByText('100 streams')).toBeNull()
