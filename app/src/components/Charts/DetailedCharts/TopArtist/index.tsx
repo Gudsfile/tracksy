@@ -8,7 +8,7 @@ import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { useState, useEffect } from 'react'
 
 export function TopArtist() {
-    const [topArtistByCount, settopArtistByCount] = useState<
+    const [topArtistByCount, setTopArtistByCount] = useState<
         TopArtistQueryResult[] | undefined
     >()
     const [topArtistByDuration, setTopArtistByDuration] = useState<
@@ -21,7 +21,7 @@ export function TopArtist() {
             const topByCount = await queryDBAsJSON<TopArtistQueryResult>(
                 queryTopArtistByCount()
             )
-            settopArtistByCount(topByCount)
+            setTopArtistByCount(topByCount)
             const topByDuration = await queryDBAsJSON<TopArtistQueryResult>(
                 queryTopArtistByDuration()
             )
