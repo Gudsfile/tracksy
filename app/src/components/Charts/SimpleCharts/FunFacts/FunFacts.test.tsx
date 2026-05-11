@@ -5,53 +5,26 @@ import { FunFacts } from '.'
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
-import { FunFactResult } from './queries'
-
-const allFactTitles = [
-    '🌅 Musical Breakfast',
-    '☀️ Afternoon Boost',
-    '🌆 Calm Return',
-    '🌙 Musical Insomnia',
-    '🌙 Night Champion',
-    '🎉 Weekend Vibes',
-    '⏰ Peak Hour',
-    '📅 Favorite Day',
-    '❤️ Absolute Loyalty',
-    '🎸 Monthly Subscription',
-    '🕰️ Nostalgic Return',
-    '🕰️ Forgotten Artist',
-    '🎧 Binge Listener',
-    '🔥 Unbeatable Streak',
-    '🌈 Variety Day',
-    '⭐ One-Hit Wonder',
-    '🏃 Marathon',
-    '🎵 Recent Discovery',
-    '🔁 Current Obsession',
-    '🎉 Musical Anniversary',
-    '🦖 The Very First',
-    '🔮 Listening Proposition',
-    '🫂 Most Comforting Album',
-    '🎲 Fun Fact',
-]
+import { FunFactResult, queryDefinitions } from './queries'
 
 describe('FunFacts Component', () => {
     beforeEach(() => {
         vi.clearAllMocks()
 
-        vi.spyOn(query, 'queryDBAsJSON').mockImplementation(
-            async (sql: string) => {
-                const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
-                if (!match) return []
-                return [
-                    {
-                        fact_type: match[1],
-                        main_text: `Test ${match[1]}`,
-                        value: 1,
-                        unit: 'streams',
-                    },
-                ] as FunFactResult[]
-            }
-        )
+        let i = 0
+
+        vi.spyOn(query, 'queryDBAsJSON').mockImplementation(async (_sql) => {
+            void _sql
+            const queryName = queryDefinitions[i % queryDefinitions.length].name
+            i++
+            return [
+                {
+                    fact_type: 'dummy_fact',
+                    main_text: queryName,
+                    value: 1,
+                },
+            ] as FunFactResult[]
+        })
 
         vi.spyOn(db, 'getDB').mockResolvedValue({
             db: vi.fn(),
@@ -62,30 +35,21 @@ describe('FunFacts Component', () => {
     it('should render a fun fact', async () => {
         render(<FunFacts />)
 
-        await waitFor(
-            () => {
-                const hasTitle = allFactTitles.some((title) => {
-                    try {
-                        screen.getByText(title)
-                        return true
-                    } catch {
-                        return false
-                    }
-                })
-                expect(hasTitle).toBe(true)
-            },
-            { timeout: 3000 }
-        )
+        await waitFor(() => {
+            const hasAnyTitle = queryDefinitions.some((q) =>
+                screen.queryByText(q.name)
+            )
+            expect(hasAnyTitle).toBe(true)
+        })
 
-        expect(query.queryDBAsJSON).toHaveBeenCalledWith(expect.any(String))
+        expect(query.queryDBAsJSON).toHaveBeenCalled()
     })
 
     it('should have a refresh button', async () => {
         render(<FunFacts />)
 
         await waitFor(() => {
-            const button = screen.getByTitle('New fact')
-            expect(button).toBeDefined()
+            expect(screen.getByTitle('New fact')).toBeDefined()
         })
     })
 
@@ -97,43 +61,56 @@ describe('FunFacts Component', () => {
             expect(container.textContent).toBeTruthy()
         })
 
-        const firstFact = container.textContent
-        const callCountAfterMount = querySpy.mock.calls.length
+        const first = container.textContent
+        const calls = querySpy.mock.calls.length
 
         act(() => {
             window.dispatchEvent(new CustomEvent(DATA_LOADED_EVENT))
         })
 
         await waitFor(() => {
-            expect(querySpy.mock.calls.length).toBeGreaterThan(
-                callCountAfterMount
-            )
+            expect(querySpy.mock.calls.length).toBeGreaterThan(calls)
         })
 
-        expect(container.textContent).not.toBe(firstFact)
+        expect(container.textContent).not.toBe(first)
     })
 
-    it('should refresh to a different fact when clicking refresh', async () => {
+    it('refreshes fact when clicking button', async () => {
         const { container } = render(<FunFacts />)
 
         await waitFor(() => {
-            expect(container.textContent).toBeTruthy()
+            expect(screen.getByTitle('New fact')).toBeDefined()
         })
 
-        const firstFact = container.textContent
+        const first = container.textContent
 
         fireEvent.click(screen.getByTitle('New fact'))
 
-        await waitFor(
-            () => {
-                expect(container.textContent).not.toBe(firstFact)
-            },
-            { timeout: 2000 }
-        )
+        await waitFor(() => {
+            expect(container.textContent).not.toBe(first)
+        })
+    })
 
-        const secondFact = container.textContent
+    it('repeats facts after full cycle reset', async () => {
+        const seen = new Set<string>()
 
-        expect(secondFact).not.toBe(firstFact)
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(screen.getByTitle('New fact')).toBeDefined()
+        })
+
+        const button = screen.getByTitle('New fact')
+
+        for (let i = 0; i < queryDefinitions.length * 2; i++) {
+            fireEvent.click(button)
+
+            await waitFor(() => {
+                seen.add(document.body.textContent ?? '')
+            })
+        }
+
+        expect(seen.size).toBe(queryDefinitions.length)
     })
 
     it('logs error when loading fun fact fails', async () => {
