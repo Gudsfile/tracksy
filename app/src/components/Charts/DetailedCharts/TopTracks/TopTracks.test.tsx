@@ -6,6 +6,7 @@ import * as db from '../../../../db/getDB'
 import { TopTracksQueryResult } from './query'
 
 import { TopTracks } from '.'
+import { buildPlot } from './plot'
 
 describe('TopTracks Component', () => {
     beforeEach(() => {
@@ -34,5 +35,10 @@ describe('TopTracks Component', () => {
         })
         screen.getByText('Top Tracks')
         screen.getByText('track_a — artist_b')
+    })
+
+    it('returns empty plot when data is empty', () => {
+        const result = buildPlot([], false)
+        expect(result).toBeDefined()
     })
 })

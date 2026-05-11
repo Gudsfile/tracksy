@@ -6,6 +6,7 @@ import * as db from '../../../../db/getDB'
 import { TopAlbumsQueryResult } from './query'
 
 import { TopAlbums } from '.'
+import { buildPlot } from './plot'
 describe('TopAlbums Component', () => {
     beforeEach(() => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
@@ -30,5 +31,10 @@ describe('TopAlbums Component', () => {
         })
         screen.getByText('Top Albums')
         screen.getByText('album_a')
+    })
+
+    it('returns empty plot when data is empty', () => {
+        const result = buildPlot([], false)
+        expect(result).toBeDefined()
     })
 })
