@@ -1,77 +1,27 @@
 import type { FC } from 'react'
-import type { FunFactResult } from './queries'
+
+export type FunFactProps = {
+    fact_type: string
+    title: string
+    emoji: string
+    main_text: string
+    second_text?: string | undefined
+    value: string | number
+    unit?: string | undefined
+    context?: string | undefined
+}
 
 type Props = {
-    fact: FunFactResult
+    fact: FunFactProps
     onRefresh: () => void
     isLoading: boolean
 }
 
-export const factConfig = (type: string) => {
-    switch (type) {
-        // Moments
-        case 'morning_favorite':
-            return { title: '🌅 Musical Breakfast', emoji: '🥐' }
-        case 'afternoon_favorite':
-            return { title: '☀️ Afternoon Boost', emoji: '⚡️' }
-        case 'evening_favorite':
-            return { title: '🌆 Calm Return', emoji: '🛋️' }
-        case 'night_favorite':
-            return { title: '🌙 Musical Insomnia', emoji: '💤' }
-        case 'weekend_favorite':
-            return { title: '🎉 Weekend Vibes', emoji: '🕺' }
-
-        // Loyalty
-        case 'absolute_loyalty':
-            return { title: '❤️ Absolute Loyalty', emoji: '💍' }
-        case 'subscribed_artist':
-            return { title: '🎸 Monthly Subscription', emoji: '📬' }
-
-        // Nostalgia
-        case 'nostalgic_return':
-            return { title: '🕰️ Nostalgic Return', emoji: '📼' }
-        case 'forgotten_artist':
-            return { title: '🕰️ Forgotten Artist', emoji: '💔' }
-
-        // Records
-        case 'binge_listener':
-            return { title: '🎧 Binge Listener', emoji: '🎶' }
-        case 'unbeatable_streak':
-            return { title: '🔥 Unbeatable Streak', emoji: '🏆' }
-        case 'variety_day':
-            return { title: '🌈 Variety Day', emoji: '🎨' }
-        case 'one_hit_wonder':
-            return { title: '⭐ One-Hit Wonder', emoji: '🎵' }
-        case 'marathon':
-            return { title: '🏃 Marathon', emoji: '☄️' }
-
-        // Discovery
-        case 'recent_discovery':
-            return { title: '🎵 Recent Discovery', emoji: '✨' }
-        case 'current_obsession':
-            return { title: '🔁 Current Obsession', emoji: '🎯' }
-
-        // Misc
-        case 'musical_anniversary':
-            return { title: '🎉 Musical Anniversary', emoji: '🎂' }
-        case 'first_artist':
-            return { title: '🦖 The Very First', emoji: '1️⃣' }
-        case 'track_proposition':
-            return { title: '🔮 Listening Proposition', emoji: '🐙' }
-        case 'cozy_album':
-            return { title: '💿 Cozy Album', emoji: '☁️' }
-
-        default:
-            return { title: '🎲 Fun Fact', emoji: '🎲' }
-    }
-}
-
 export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
-    const { fact_type, main_text, second_text, value, unit, context } = fact
-    const { title, emoji } = factConfig(fact_type)
-
     const valueDisplayed =
-        typeof value === 'number' ? value.toLocaleString() : value
+        typeof fact.value === 'number'
+            ? fact.value.toLocaleString()
+            : fact.value
 
     return (
         <div className="col-span-1 md:col-span-2 lg:col-span-3 p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-slate-900 rounded-2xl shadow border border-purple-100 dark:border-gray-700 relative overflow-hidden group transition-all duration-300 shadow-glass hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
@@ -90,34 +40,37 @@ export const FunFacts: FC<Props> = ({ fact, onRefresh, isLoading }) => {
                 </button>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center gap-6">
+            <div
+                className="flex flex-col md:flex-row items-center gap-6"
+                data-fact-type={fact.fact_type}
+            >
                 <div className="text-6xl md:text-8xl flex-shrink-0 animate-bounce-slow">
-                    {emoji}
+                    {fact.emoji}
                 </div>
 
                 <div className="flex-1 text-center md:text-left">
                     <div className="text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2">
-                        {title}
+                        {fact.title}
                     </div>
 
                     <div className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 break-words text-balance">
-                        {main_text}
+                        {fact.main_text}
                     </div>
 
                     <div className="text-lg text-gray-600 dark:text-gray-300">
-                        {second_text}{' '}
-                        {second_text && valueDisplayed ? '(' : undefined}
+                        {fact.second_text}{' '}
+                        {fact.second_text && valueDisplayed ? '(' : undefined}
                         <span className="font-bold text-blue-600 dark:text-blue-400">
                             {valueDisplayed}
-                            {unit === '%' ? unit : undefined}
+                            {fact.unit === '%' ? fact.unit : undefined}
                         </span>{' '}
-                        {unit !== '%' ? unit : undefined}
-                        {second_text && valueDisplayed ? ')' : undefined}
+                        {fact.unit !== '%' ? fact.unit : undefined}
+                        {fact.second_text && valueDisplayed ? ')' : undefined}
                     </div>
 
-                    {context && (
+                    {fact.context && (
                         <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 italic">
-                            {context}
+                            {fact.context}
                         </div>
                     )}
                 </div>
