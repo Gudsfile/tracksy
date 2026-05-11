@@ -1,4 +1,4 @@
-import { describe, it, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 
 import * as queries from './query'
@@ -6,6 +6,7 @@ import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 
 import { TopStreak } from '.'
+import { TopStreak as TopStreakPlot } from './TopStreak'
 
 const topStreakData = [
     {
@@ -45,6 +46,11 @@ describe('TopStreak Component', () => {
             db: vi.fn(),
             conn: vi.fn(),
         } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
+    it('should return null when data is empty', () => {
+        const { container } = render(<TopStreakPlot data={[]} />)
+        expect(container.innerHTML).toBe('')
     })
 
     it('should render the top streak by default', async () => {
