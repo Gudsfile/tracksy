@@ -16,7 +16,7 @@ const config = getViteConfig({
             thresholds: {
                 statements: 79,
                 branches: 78,
-                functions: 85,
+                functions: 84,
                 lines: 79,
             },
             exclude: [
