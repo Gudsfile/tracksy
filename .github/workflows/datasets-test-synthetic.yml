@@ -38,8 +38,10 @@ jobs:
         uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: false
-          auto-setup: true
           cache: true
+
+      - name: Setup toolchains
+        run: moon setup
 
       - name: Run format check
         run: moon run synthetic-datasets:format-check
