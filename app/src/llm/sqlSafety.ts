@@ -1,9 +1,17 @@
+import {
+    TABLE,
+    DAILY_STREAM_COUNTS_TABLE,
+    ARTIST_FIRST_YEAR_TABLE,
+    STREAM_SESSIONS_TABLE,
+    SUMMARIZE_CACHE_TABLE,
+} from '../db/queries/constants'
+
 const TABLE_ALLOWLIST = new Set([
-    'music_streams',
-    'daily_stream_counts',
-    'artist_first_year',
-    'stream_sessions',
-    'summarize_cache',
+    TABLE,
+    DAILY_STREAM_COUNTS_TABLE,
+    ARTIST_FIRST_YEAR_TABLE,
+    STREAM_SESSIONS_TABLE,
+    SUMMARIZE_CACHE_TABLE,
 ])
 
 const DENY_KEYWORDS = [

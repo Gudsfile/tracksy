@@ -1,23 +1,30 @@
 import { INTENTS, type IntentName } from './intents'
+import {
+    TABLE,
+    DAILY_STREAM_COUNTS_TABLE,
+    ARTIST_FIRST_YEAR_TABLE,
+    STREAM_SESSIONS_TABLE,
+    SUMMARIZE_CACHE_TABLE,
+} from '../db/queries/constants'
 
 const SCHEMA_DESCRIPTION = `\
 DuckDB schema (the user's music streaming history, fully local):
 
-Table music_streams (one row per playback):
+Table ${TABLE} (one row per playback):
   track_uri TEXT, track_name TEXT, artist_name TEXT, album_name TEXT,
   ts TIMESTAMP (ISO 8601), ms_played INTEGER (milliseconds), platform TEXT
 
-Table daily_stream_counts:
+Table ${DAILY_STREAM_COUNTS_TABLE}:
   day DATE, stream_count DOUBLE, ms_played DOUBLE
 
-Table artist_first_year:
+Table ${ARTIST_FIRST_YEAR_TABLE}:
   artist_name TEXT, first_year INTEGER
 
-Table stream_sessions:
+Table ${STREAM_SESSIONS_TABLE}:
   session_id INTEGER, track_count DOUBLE, duration_ms DOUBLE,
   session_start TIMESTAMP, session_end TIMESTAMP
 
-Table summarize_cache: aggregate stats cache (rarely needed).
+Table ${SUMMARIZE_CACHE_TABLE}: aggregate stats cache (rarely needed).
 
 Notes:
 - Use ts::date for grouping by day. EXTRACT(year FROM ts) for year.
