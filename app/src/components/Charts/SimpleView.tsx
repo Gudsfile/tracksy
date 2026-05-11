@@ -10,6 +10,7 @@ import { FunFacts } from './SimpleCharts/FunFacts'
 import { PrincipalPlatform } from './SimpleCharts/PrincipalPlatform'
 import { ArtistLoyalty } from './SimpleCharts/ArtistLoyalty'
 import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
+import { UnbeatableStreak } from './SimpleCharts/UnbeatableStreak'
 import { CalendarHeatmap } from './SimpleCharts/CalendarHeatmap'
 import { HourlyStreams } from './SimpleCharts/HourlyStreams'
 import { SessionAnalysis } from './SimpleCharts/SessionAnalysis'
@@ -104,6 +105,7 @@ export function SimpleView() {
                         </div>
                         <PrincipalPlatform year={debouncedYear} />
                         <FavoriteWeekday year={debouncedYear} />
+                        <UnbeatableStreak />
                     </div>
                 </>
             )}
