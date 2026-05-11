@@ -107,7 +107,7 @@ export function SimpleView() {
                         <PrincipalPlatform year={debouncedYear} />
                         <FavoriteWeekday year={debouncedYear} />
                         <UnbeatableStreak year={debouncedYear} />
-                        <BingeListener />
+                        <BingeListener year={debouncedYear} />
                     </div>
                 </>
             )}

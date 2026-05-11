@@ -11,10 +11,15 @@ import type { DuckDBConnection } from '@duckdb/node-api'
 
 let conn: DuckDBConnection
 
+const testYear = 2025
+const anotherYear = testYear - 1
+
 const testData: TestStreamEntry[] = [
-    { ts: '2025-01-01', ms_played: 3600000 },
-    { ts: '2025-01-01', ms_played: 3600000 },
-    { ts: '2025-01-02', ms_played: 1800000 },
+    { ts: `${testYear}-01-01`, ms_played: 3600000 },
+    { ts: `${testYear}-01-01`, ms_played: 3600000 },
+    { ts: `${testYear}-01-02`, ms_played: 1800000 },
+    { ts: `${anotherYear}-06-01`, ms_played: 7200000 },
+    { ts: `${anotherYear}-06-01`, ms_played: 7200000 },
 ]
 
 describe('BingeListener Query', () => {
@@ -30,16 +35,23 @@ describe('BingeListener Query', () => {
         await createTestTable(conn, testData)
     })
 
-    it('should return the day with the most hours played', async () => {
-        const rows = await testQuery(conn, buildBingeListenerQuery())
+    it('should return the heaviest listening day for a given year', async () => {
+        const rows = await testQuery(conn, buildBingeListenerQuery(testYear))
         expect(rows.length).toBe(1)
-        expect(rows[0].date).toBe('2025-01-01')
+        expect(rows[0].date).toBe(`${testYear}-01-01`)
         expect(rows[0].hours_played).toBeCloseTo(2.0)
+    })
+
+    it('should include all years when year is undefined', async () => {
+        const rows = await testQuery(conn, buildBingeListenerQuery(undefined))
+        expect(rows.length).toBe(1)
+        expect(rows[0].date).toBe(`${anotherYear}-06-01`)
+        expect(rows[0].hours_played).toBeCloseTo(4.0)
     })
 
     it('should return empty when no data', async () => {
         await createTestTable(conn, [])
-        const rows = await testQuery(conn, buildBingeListenerQuery())
+        const rows = await testQuery(conn, buildBingeListenerQuery(testYear))
         expect(rows.length).toBe(0)
     })
 })
