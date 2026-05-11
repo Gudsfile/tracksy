@@ -1,27 +1,25 @@
 with
-selected_streams as (
-    select *
-    from ${table}
-    where ${year_condition}
-),
-
-day_streams as (
+daily_stats as (
     select
         dayname(ts::date) as day_name,
         count(*) as stream_count,
-        count(*)::double / (
+        coalesce(sum(ms_played), 0)::double as ms_played,
+        (
             select count(*)
-            from selected_streams
-        )::double * 100 as pct
-    from selected_streams
+            from ${table}
+            where ${year_condition}
+        ) as total_count
+    from ${table}
+    where ${year_condition}
     group by dayname(ts::date)
 )
 
 select
     day_name,
+    ms_played,
     stream_count::double as stream_count,
-    pct
-from day_streams
+    stream_count::double / total_count * 100 as pct
+from daily_stats
 order by
     case day_name
         when 'Monday' then 1
