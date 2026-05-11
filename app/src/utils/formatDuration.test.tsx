@@ -2,6 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { formatDuration } from './formatDuration'
 
 describe('FormatDuration', () => {
+    it('should return "undefined" when ms is undefined', () => {
+        expect(formatDuration(undefined as unknown as number)).toBe('undefined')
+    })
+
     it.each([
         { ms: 0, expected: '0s' },
         { ms: 1000, expected: '1s' },
