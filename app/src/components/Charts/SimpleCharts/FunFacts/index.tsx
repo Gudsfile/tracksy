@@ -11,11 +11,15 @@ const shuffle = <T,>(array: readonly T[]): T[] => {
 
 export function FunFacts() {
     const [fact, setFact] = useState<FunFactProps | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [isEmpty, setIsEmpty] = useState(false)
     const seenFactsRef = useRef<Set<string>>(new Set())
 
     const loadRandomFact = useCallback(async () => {
         setIsLoading(true)
+        setError(null)
+        setIsEmpty(false)
         try {
             if (seenFactsRef.current.size === facts.length) {
                 seenFactsRef.current.clear()
@@ -24,6 +28,8 @@ export function FunFacts() {
             const unseenFacts = facts.filter(
                 (fact) => !seenFactsRef.current.has(fact.fact_type)
             )
+
+            let found = false
 
             const candidates = unseenFacts.length > 0 ? unseenFacts : facts
 
@@ -41,6 +47,7 @@ export function FunFacts() {
                         emoji: factDefinition.emoji,
                         ...result,
                     })
+                    found = true
                     break
                 }
                 console.warn(
@@ -48,8 +55,19 @@ export function FunFacts() {
                     factDefinition.fact_type
                 )
             }
+
+            if (!found) {
+                setFact(null)
+                setIsEmpty(true)
+            }
         } catch (error) {
             console.error('Error loading fun fact:', error)
+            setFact(null)
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to load fun fact'
+            )
         } finally {
             setIsLoading(false)
         }
@@ -69,13 +87,13 @@ export function FunFacts() {
             window.removeEventListener(DATA_LOADED_EVENT, handleDataLoaded)
     }, [loadRandomFact])
 
-    if (!fact) return null
-
     return (
         <FunFactsView
             fact={fact}
             onRefresh={loadRandomFact}
             isLoading={isLoading}
+            error={error}
+            isEmpty={isEmpty}
         />
     )
 }
