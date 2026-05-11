@@ -44,4 +44,20 @@ describe('ListeningRhythm Component', () => {
         screen.findByText('Night (22‑5h)')
         screen.findByText('40.0%')
     })
+
+    it('renders with descending values to cover reduce > branch', () => {
+        render(
+            <ListeningRhythm
+                data={{
+                    morning: 40,
+                    afternoon: 10,
+                    evening: 30,
+                    night: 20,
+                    total: 100,
+                }}
+            />
+        )
+        screen.getByText('Morning')
+        screen.getByText('40.0%')
+    })
 })
