@@ -81,7 +81,7 @@ def test_spotify_writer_write_calls_helpers(mock_write_zip, mock_write_json, str
     # then
     assert mock_write_json.called
     assert mock_write_json.call_args.args == (
-        Path(f"tmp_path/spotify/streamings_{size}.json"),
+        Path(f"tmp_path/spotify/Streaming_History_Audio_2006_{size}.json"),
         streaming_records,
     )
     assert mock_write_zip.called

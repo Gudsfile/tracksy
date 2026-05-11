@@ -15,7 +15,7 @@ class SpotifyWriter:
 
     def __init__(self, output_dir: Path, reference_date: datetime) -> None:
         folder = output_dir / "spotify"
-        self.json_path_template: str = str(folder) + "/streamings_{num_records}.json"
+        self.json_path_template: str = str(folder) + "/Streaming_History_Audio_2006_{num_records}.json"
         self.zip_path_template: str = str(folder) + "/streamings_{num_records}.zip"
         self.reference_date = reference_date
 
