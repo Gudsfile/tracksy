@@ -27,41 +27,27 @@ export function FunFacts() {
                 (fact) => !seenFactsRef.current.has(fact.fact_type)
             )
 
-            let found = false
-
             const candidates = unseenFacts.length > 0 ? unseenFacts : facts
 
-            const shuffled = shuffle(candidates)
+            const [factDefinition] = shuffle(candidates)
 
-            for (const factDefinition of shuffled) {
-                const [result] = await queryDBAsJSON<FunFactResult>(
-                    factDefinition.sql
-                )
+            seenFactsRef.current.add(factDefinition.fact_type)
 
-                seenFactsRef.current.add(factDefinition.fact_type)
-                if (result) {
-                    const { fact_value, ...rest } = result
-                    setFact({
-                        title: factDefinition.title,
-                        emoji: factDefinition.emoji,
-                        ...rest,
-                        value: fact_value,
-                    })
-                    found = true
-                    break
-                }
-                console.warn(
-                    'An empty result is returned by a fun fact:',
-                    factDefinition.fact_type
-                )
-            }
-
-            if (!found) {
-                setFact(undefined)
-            }
+            const [result] = await queryDBAsJSON<FunFactResult>(
+                factDefinition.sql
+            )
+            setFact({
+                title: factDefinition.title,
+                emoji: factDefinition.emoji,
+                fact_type: factDefinition.fact_type,
+                main_text: result?.main_text ?? undefined,
+                second_text: result?.second_text,
+                value: result?.fact_value,
+                unit: result?.unit,
+                context: result?.context,
+            })
         } catch (error) {
             console.error('Error loading fun fact:', error)
-            setFact(undefined)
             setError(
                 error instanceof Error
                     ? error.message
