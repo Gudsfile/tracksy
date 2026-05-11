@@ -94,11 +94,9 @@ function AssistantCard({
                 <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                     ℹ️ {answer.explanation}
                 </summary>
-                {answer.sql && (
-                    <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
-                        {answer.sql}
-                    </pre>
-                )}
+                <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
+                    {answer.sql}
+                </pre>
             </details>
         </div>
     )

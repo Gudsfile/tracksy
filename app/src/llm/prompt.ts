@@ -56,14 +56,15 @@ Output format (return EXACTLY one JSON object, no prose, no code fences, no comm
   "params": { "year": <int|omit>, "limit": <int|omit> },
   "title": "<short chart title>",
   "explanation": "<one sentence: what the chart shows>",
-  "sql": "<only when intent is 'custom'; SELECT or WITH..SELECT, no semicolon, no DDL/DML>"
+  "sql": "<SELECT or WITH..SELECT representing this question, no semicolon, no DDL/DML>"
 }
 
 Rules:
 - "intent" MUST be one of the catalog names.
+- "sql" is ALWAYS required for every intent, including non-custom ones.
 - "params.year" only if user mentioned a year. Omit otherwise.
 - "params.limit" only for top_artists/top_tracks/top_albums when user asked for a specific N.
-- Use intent "custom" ONLY if no other intent fits. In "custom", you MUST include "sql" — a single SELECT/WITH..SELECT, no semicolons, querying only the tables listed above.
+- Use intent "custom" ONLY if no other intent fits.
 - Never invent table or column names. Never include any text outside the JSON object.
 `
 
@@ -77,6 +78,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: {},
             title: 'Top artists',
             explanation: 'Artists ranked by total stream count.',
+            sql: 'SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE artist_name IS NOT NULL GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5',
         }),
     },
     {
@@ -86,6 +88,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: 2023, limit: 10 },
             title: 'Top 10 tracks in 2023',
             explanation: 'Most-played tracks during 2023.',
+            sql: 'SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM music_streams WHERE EXTRACT(year FROM ts) = 2023 AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 10',
         }),
     },
     {
@@ -95,6 +98,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: new Date().getFullYear() },
             title: 'Listening calendar',
             explanation: 'Daily listening intensity across the calendar year.',
+            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE EXTRACT(year FROM ts) = ${new Date().getFullYear()} GROUP BY ts::date ORDER BY day`,
         }),
     },
     {
@@ -104,6 +108,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: 2022 },
             title: 'Streams per month — 2022',
             explanation: 'Monthly stream counts for the year 2022.',
+            sql: "SELECT DATE_TRUNC('month', ts) AS month, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE EXTRACT(year FROM ts) = 2022 GROUP BY month ORDER BY month",
         }),
     },
     {
@@ -124,6 +129,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: {},
             title: 'Skip rate',
             explanation: 'Share of streams that were skipped vs completed.',
+            sql: 'SELECT COUNT(*) FILTER (WHERE ms_played < 30000)::DOUBLE AS skipped_listens, COUNT(*) FILTER (WHERE ms_played >= 30000)::DOUBLE AS complete_listens FROM music_streams',
         }),
     },
 ]
