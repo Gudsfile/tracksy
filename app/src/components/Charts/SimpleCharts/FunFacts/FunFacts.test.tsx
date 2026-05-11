@@ -5,6 +5,7 @@ import { FunFacts } from '.'
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
+import { FunFactResult } from './queries'
 
 const allFactTitles = [
     '🌅 Musical Breakfast',
@@ -133,5 +134,26 @@ describe('FunFacts Component', () => {
         const secondFact = container.textContent
 
         expect(secondFact).not.toBe(firstFact)
+    })
+
+    it('logs error when loading fun fact fails', async () => {
+        const consoleSpy = vi
+            .spyOn(console, 'error')
+            .mockImplementation(() => {})
+
+        vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
+            new Error('DB failure')
+        )
+
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(consoleSpy).toHaveBeenCalledWith(
+                'Error loading fun fact:',
+                expect.any(Error)
+            )
+        })
+
+        consoleSpy.mockRestore()
     })
 })
