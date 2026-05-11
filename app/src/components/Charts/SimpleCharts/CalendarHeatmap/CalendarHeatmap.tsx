@@ -102,6 +102,7 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
                             gap: `${CELL_GAP}px`,
                             minWidth: `${minGridWidth}px`,
                         }}
+                        onMouseLeave={() => setTooltip(null)}
                     >
                         {DAY_LABELS.map((label, dayIdx) => (
                             <div
@@ -138,7 +139,6 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
                                         onMouseEnter={(e) =>
                                             handleMouseEnter(e, cell)
                                         }
-                                        onMouseLeave={() => setTooltip(null)}
                                     />
                                 )
                             )
