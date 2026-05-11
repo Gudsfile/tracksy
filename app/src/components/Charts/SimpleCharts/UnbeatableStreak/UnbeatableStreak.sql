@@ -2,6 +2,7 @@ with
 daily_streams as (
     select distinct ts::date as stream_date
     from ${table}
+    where ${year_condition}
     order by ts::date
 ),
 
