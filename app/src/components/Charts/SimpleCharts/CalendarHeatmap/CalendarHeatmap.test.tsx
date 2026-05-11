@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { CalendarHeatmap } from './CalendarHeatmap'
 
 describe('CalendarHeatmap', () => {
@@ -28,5 +28,23 @@ describe('CalendarHeatmap', () => {
         // 365 days + 2 leading nulls (Jan 1 is Wed) + 4 trailing nulls (Dec 31 is Wed)
         const cells = container.querySelectorAll('[style*="aspect-ratio"]')
         expect(cells.length).toBe(371)
+    })
+
+    it('shows tooltip on cell hover', () => {
+        const data = [{ day: '2025-06-15', stream_count: 5 }]
+        const { container } = render(
+            <CalendarHeatmap data={data} year={2025} />
+        )
+
+        const cells = container.querySelectorAll('[style*="aspect-ratio"]')
+        const targetCell = Array.from(cells).find((cell) =>
+            cell.getAttribute('style')?.includes('background-color')
+        ) as HTMLElement | undefined
+
+        expect(targetCell).toBeTruthy()
+        fireEvent.mouseEnter(targetCell!)
+
+        screen.getByText(/Jun 15/)
+        screen.getByText(/5 streams/)
     })
 })
