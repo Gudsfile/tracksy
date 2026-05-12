@@ -7,6 +7,10 @@ import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
 import { FunFactResult, facts } from './queries'
 
+const EMPTY_MESSAGE =
+    'Not enough listening data to generate fun facts — keep streaming!'
+const ERROR_MESSAGE = 'Something went wrong while loading fun facts'
+
 describe('FunFacts Component', () => {
     beforeEach(() => {
         vi.clearAllMocks()
@@ -53,7 +57,22 @@ describe('FunFacts Component', () => {
     })
 
     it('should refresh fact on DATA_LOADED_EVENT', async () => {
-        const querySpy = vi.spyOn(query, 'queryDBAsJSON')
+        let callIndex = 0
+        const querySpy = vi
+            .spyOn(query, 'queryDBAsJSON')
+            .mockImplementation(async (sql: string) => {
+                const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
+                if (!match) return []
+                callIndex++
+                return [
+                    {
+                        fact_type: match[1],
+                        main_text: `Test ${match[1]} #${callIndex}`,
+                        value: callIndex,
+                        unit: 'streams',
+                    },
+                ] as FunFactResult[]
+            })
         const { container } = render(<FunFacts />)
 
         await waitFor(() => {
@@ -136,5 +155,104 @@ describe('FunFacts Component', () => {
         })
 
         consoleSpy.mockRestore()
+    })
+
+    it('should show empty state when no data is available', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([])
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(screen.getByText(EMPTY_MESSAGE)).toBeDefined()
+        })
+    })
+
+    it('should show error state when query fails', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
+            new Error('DB error')
+        )
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
+        })
+    })
+
+    it('should have a refresh button in error state', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
+            new Error('DB error')
+        )
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(screen.getByTitle('New fact')).toBeDefined()
+        })
+    })
+
+    it('should retry loading a fact after error when clicking refresh', async () => {
+        const spy = vi
+            .spyOn(query, 'queryDBAsJSON')
+            .mockRejectedValue(new Error('DB error'))
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
+        })
+
+        spy.mockResolvedValue([
+            {
+                fact_type: 'morning_favorite',
+                main_text: 'Test morning_favorite',
+                value: 1,
+                unit: 'streams',
+            },
+        ] as FunFactResult[])
+
+        fireEvent.click(screen.getByTitle('New fact'))
+
+        await waitFor(() => {
+            expect(screen.getByText('🌅 Musical Breakfast')).toBeDefined()
+        })
+    })
+
+    it('should handle cozy album with null main_text', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
+            {
+                fact_type: 'cozy_album',
+                main_text: null,
+                second_text: 'This fun fact is unfortunately unavailable',
+                value: undefined,
+                context: 'feel like listening to an album today?',
+            },
+        ] as FunFactResult[])
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(
+                screen.getByText('This fun fact is unfortunately unavailable')
+            ).toBeDefined()
+        })
+    })
+
+    it('should show cozy album title when rendering', async () => {
+        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
+            {
+                fact_type: 'cozy_album',
+                main_text: 'Cozy Album',
+                second_text: 'Cozy Artist',
+                value: 10,
+                unit: 'streams',
+                context:
+                    'the album that wraps your Sundays in musical coziness',
+            },
+        ] as FunFactResult[])
+        render(<FunFacts />)
+
+        await waitFor(() => {
+            expect(screen.getByText('💿 Cozy Album')).toBeDefined()
+        })
+        expect(screen.getByText('Cozy Album')).toBeDefined()
+        expect(
+            screen.getByText((content) => content.includes('10'))
+        ).toBeDefined()
     })
 })

@@ -22,9 +22,9 @@ import sqlQueryCozyAlbum from './CozyAlbum.sql?raw'
 
 export type FunFactResult = {
     fact_type: string
-    main_text: string
+    main_text: string | null
     second_text?: string
-    value: number | string
+    value?: number | string
     unit?: string
     context?: string
 }
