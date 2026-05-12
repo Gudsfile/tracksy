@@ -33,8 +33,7 @@ jobs:
       - name: Setup toolchains
         run: |
           moon setup
-          proto install node 24
-          proto install pnpm 9
+          proto use
 
       - name: Generate datasets
         run: |
