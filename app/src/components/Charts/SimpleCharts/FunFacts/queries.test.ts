@@ -240,55 +240,6 @@ describe('FunFacts queries', () => {
         })
     })
 
-    describe('Variety day queries', () => {
-        const testData: TestStreamEntry[] = [
-            // One day
-            { ts: '2024-01-01', artist_name: 'artist1' },
-            { ts: '2024-01-01', artist_name: 'artist2' },
-            { ts: '2024-01-01', artist_name: 'artist3' },
-            // Another day
-            { ts: '2024-01-02', artist_name: 'artist1' },
-        ]
-
-        beforeEach(async () => {
-            await createTestTable(conn, testData)
-        })
-
-        it('queryVarietyDay returns day with most distinct artists', async () => {
-            const rows = await testQuery(conn, getFact('variety_day').sql)
-            expect(rows.length).toBe(1)
-            const row = rows[0]
-            expect(row.fact_type).toBe('variety_day')
-            expect(row.main_text).toBe('2024-01-01')
-            expect(row.value).toBe(3)
-            expect(row.unit).toBe('different artists')
-            expect(row.context).toBe('record of diversity in one day')
-        })
-    })
-
-    describe('Binge listener queries', () => {
-        const testData: TestStreamEntry[] = [
-            { ts: '2024-01-01', ms_played: 10000 },
-            { ts: '2024-01-02', ms_played: 200000 },
-            { ts: '2024-01-03', ms_played: 3600000 },
-        ]
-
-        beforeEach(async () => {
-            await createTestTable(conn, testData)
-        })
-
-        it('queryBingeListener returns day with most listening time', async () => {
-            const rows = await testQuery(conn, getFact('binge_listener').sql)
-            expect(rows.length).toBe(1)
-            const row = rows[0]
-            expect(row.fact_type).toBe('binge_listener')
-            expect(row.main_text).toBe('2024-01-03')
-            expect(row.value).toBe(1)
-            expect(row.unit).toBe('hours of listening')
-            expect(row.context).toBe('your record of listening time in one day')
-        })
-    })
-
     describe('Current obsession queries', () => {
         // prettier-ignore
         const testData: TestStreamEntry[] = [
@@ -406,34 +357,6 @@ describe('FunFacts queries', () => {
             expect(row.value).toBeDefined()
             expect(row.unit).toBe('years')
             expect(row.context).toBe('with you')
-        })
-    })
-
-    describe('Unbeatable streak queries', () => {
-        const testData: TestStreamEntry[] = [
-            { ts: '2024-01-01' },
-            // Start streak
-            { ts: '2024-01-03' },
-            { ts: '2024-01-04' },
-            { ts: '2024-01-04' },
-            { ts: '2024-01-05' },
-            // End streak
-            { ts: '2024-01-07' },
-        ]
-
-        beforeEach(async () => {
-            await createTestTable(conn, testData)
-        })
-
-        it('queryUnbeatableStreak returns longest consecutive listening days', async () => {
-            const rows = await testQuery(conn, getFact('unbeatable_streak').sql)
-            expect(rows.length).toBe(1)
-            const row = rows[0]
-            expect(row.fact_type).toBe('unbeatable_streak')
-            expect(row.main_text).toBe('2024-01-03 - 2024-01-05')
-            expect(row.value).toBe(3)
-            expect(row.unit).toBe('days in a row')
-            expect(row.context).toBe('your longest streak')
         })
     })
 

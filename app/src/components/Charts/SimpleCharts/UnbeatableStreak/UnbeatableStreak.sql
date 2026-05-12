@@ -2,15 +2,17 @@ with
 daily_streams as (
     select distinct ts::date as stream_date
     from ${table}
+    where ${year_condition}
     order by ts::date
 ),
 
 date_diffs as (
     select
         stream_date,
-        lag(stream_date) over (order by stream_date) as prev_date,
         date_diff(
-            'day', lag(stream_date) over (order by stream_date), stream_date
+            'day',
+            lag(stream_date) over (order by stream_date),
+            stream_date
         ) as day_diff
     from daily_streams
 ),
@@ -18,8 +20,9 @@ date_diffs as (
 streak_groups as (
     select
         stream_date,
-        sum(case when day_diff = 1 or day_diff is null then 0 else 1 end)
-            over (order by stream_date)
+        sum(
+            case when day_diff = 1 or day_diff is null then 0 else 1 end
+        ) over (order by stream_date)
         as streak_id
     from date_diffs
 ),
@@ -35,11 +38,9 @@ streak_lengths as (
 )
 
 select
-    streak_length::integer as value,
-    'unbeatable_streak' as fact_type,
-    start_date::varchar || ' - ' || end_date::varchar as main_text,
-    'days in a row' as unit,
-    'your longest streak' as context
+    streak_length::integer as streak_days,
+    start_date::varchar as start_date,
+    end_date::varchar as end_date
 from streak_lengths
 order by streak_length desc
 limit 1
