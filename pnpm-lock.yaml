@@ -1,7 +1,7 @@
 lockfileVersion: '9.0'
 
 settings:
-  autoInstallPeers: false
+  autoInstallPeers: true
   excludeLinksFromLockfile: false
 
 overrides:
@@ -31,7 +31,7 @@ importers:
         version: 0.6.17
       '@tailwindcss/vite':
         specifier: ^4.3.0
-        version: 4.3.0(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4))
+        version: 4.3.0(vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -110,7 +110,7 @@ importers:
         version: 0.14.1
       vite-plugin-static-copy:
         specifier: ^4.1.0
-        version: 4.1.0(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4))
+        version: 4.1.0(vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.13)(@types/node@24.12.3)(jiti@2.7.0)(jsdom@29.1.1)(lightningcss@1.32.0)(yaml@2.8.4)
@@ -137,7 +137,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.17
-        version: 4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(@vitest/coverage-v8@4.1.5)(esbuild@0.27.7)(jiti@2.7.0)(jsdom@29.1.1)(yaml@2.8.4)
+        version: 4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1)(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4))
 
 packages:
 
@@ -4773,6 +4773,7 @@ packages:
       '@vitest/ui': 4.1.5
       happy-dom: '*'
       jsdom: '*'
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -6342,12 +6343,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.0
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.0
 
-  '@tailwindcss/vite@4.3.0(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4))':
+  '@tailwindcss/vite@4.3.0(vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))':
     dependencies:
       '@tailwindcss/node': 4.3.0
       '@tailwindcss/oxide': 4.3.0
       tailwindcss: 4.3.0
-      vite: 8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4)
+      vite: 7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4)
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -6739,7 +6740,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(@vitest/coverage-v8@4.1.5)(esbuild@0.27.7)(jiti@2.7.0)(jsdom@29.1.1)(yaml@2.8.4)
+      vitest: 4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1)(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4))
 
   '@vitest/expect@3.2.4':
     dependencies:
@@ -10336,13 +10337,13 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-static-copy@4.1.0(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4)):
+  vite-plugin-static-copy@4.1.0(vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4)):
     dependencies:
       chokidar: 3.6.0
       p-map: 7.0.4
       picocolors: 1.1.1
       tinyglobby: 0.2.16
-      vite: 8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4)
+      vite: 7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4)
 
   vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4):
     dependencies:
@@ -10420,7 +10421,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(@vitest/coverage-v8@4.1.5)(esbuild@0.27.7)(jiti@2.7.0)(jsdom@29.1.1)(yaml@2.8.4):
+  vitest@4.1.5(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.1)(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4)):
     dependencies:
       '@vitest/expect': 4.1.5
       '@vitest/mocker': 4.1.5(vite@8.0.11(@types/node@24.12.3)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.4))
@@ -10448,18 +10449,7 @@ snapshots:
       '@vitest/coverage-v8': 4.1.5(vitest@4.1.5)
       jsdom: 29.1.1
     transitivePeerDependencies:
-      - '@vitejs/devtools'
-      - esbuild
-      - jiti
-      - less
       - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
 
   volar-service-css@0.0.70(@volar/language-service@2.4.28):
     dependencies:
