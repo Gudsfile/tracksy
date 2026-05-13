@@ -31,30 +31,30 @@ describe('ArtistDiscovery Query', () => {
                 (
                     a: Record<string, DuckDBValue>,
                     b: Record<string, DuckDBValue>
-                ) => (a.year as number) - (b.year as number)
+                ) => (a.stream_year as number) - (b.stream_year as number)
             )
 
         expect(rows).toEqual([
             {
-                year: 2020,
+                stream_year: 2020,
                 new_artists: 2,
                 cumulative_artists: 2,
                 avg_listens_per_artist: 1.5,
             },
             {
-                year: 2021,
+                stream_year: 2021,
                 new_artists: 1,
                 cumulative_artists: 3,
                 avg_listens_per_artist: 1,
             },
             {
-                year: 2022,
+                stream_year: 2022,
                 new_artists: 0,
                 cumulative_artists: 3,
                 avg_listens_per_artist: 0,
             },
             {
-                year: 2023,
+                stream_year: 2023,
                 new_artists: 0,
                 cumulative_artists: 3,
                 avg_listens_per_artist: 2,

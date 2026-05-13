@@ -29,28 +29,31 @@ describe('Streaks Query', () => {
                 (
                     a: Record<string, DuckDBValue>,
                     b: Record<string, DuckDBValue>
-                ) => ((a.day as string) < (b.day as string) ? -1 : 1)
+                ) =>
+                    (a.stream_date as string) < (b.stream_date as string)
+                        ? -1
+                        : 1
             )
 
         expect(rows).toEqual([
             {
-                day: '2020-01-01',
+                stream_date: '2020-01-01',
                 played: 1,
             },
             {
-                day: '2020-01-02',
+                stream_date: '2020-01-02',
                 played: 1,
             },
             {
-                day: '2020-01-03',
+                stream_date: '2020-01-03',
                 played: 1,
             },
             {
-                day: '2020-01-10',
+                stream_date: '2020-01-10',
                 played: 1,
             },
             {
-                day: '2020-01-11',
+                stream_date: '2020-01-11',
                 played: 1,
             },
         ])

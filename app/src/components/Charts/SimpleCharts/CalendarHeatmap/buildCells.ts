@@ -18,7 +18,7 @@ export function buildCells(
     data: CalendarHeatmapQueryResult[],
     year: number
 ): DayCell[] {
-    const countByDay = new Map(data.map((d) => [d.day, d.stream_count]))
+    const countByDay = new Map(data.map((d) => [d.stream_date, d.stream_count]))
     const jan1DayOfWeek = new Date(year, 0, 1).getDay()
 
     const cells: DayCell[] = []

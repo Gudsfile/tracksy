@@ -18,13 +18,19 @@ describe('buildCells', () => {
     })
 
     it('fills stream_count from the provided data', () => {
-        const cells = buildCells([{ day: '2025-03-15', stream_count: 7 }], 2025)
+        const cells = buildCells(
+            [{ stream_date: '2025-03-15', stream_count: 7 }],
+            2025
+        )
         const target = cells.find((c) => c.date === '2025-03-15')
         expect(target?.stream_count).toBe(7)
     })
 
     it('leaves other days at zero when only one day has data', () => {
-        const cells = buildCells([{ day: '2025-06-01', stream_count: 3 }], 2025)
+        const cells = buildCells(
+            [{ stream_date: '2025-06-01', stream_count: 3 }],
+            2025
+        )
         const others = cells.filter((c) => c.date !== '2025-06-01')
         expect(others.every((c) => c.stream_count === 0)).toBe(true)
     })

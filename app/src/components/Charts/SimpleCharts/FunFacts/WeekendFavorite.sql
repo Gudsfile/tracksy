@@ -1,7 +1,7 @@
 select
     artist_name as main_text,
     'weekend_favorite' as fact_type,
-    count(*) as value,
+    count(*) as fact_value,
     'streams' as unit,
     'during the weekend' as context
 from ${table}
@@ -12,5 +12,5 @@ where
     )
     and artist_name is not null
 group by artist_name
-order by value desc
+order by fact_value desc
 limit 1

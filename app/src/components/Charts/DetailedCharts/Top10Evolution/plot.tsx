@@ -20,7 +20,7 @@ export function Top10EvolutionPlot({
 
         const sortedData = [...data].sort((a, b) => {
             if (a.artist !== b.artist) return a.artist.localeCompare(b.artist)
-            return a.year - b.year
+            return a.stream_year - b.stream_year
         })
 
         const artistLastPoints = Array.from(
@@ -31,7 +31,7 @@ export function Top10EvolutionPlot({
         })
 
         const sortedLabels = [...artistLastPoints].sort(
-            (a, b) => a.rank - b.rank
+            (a, b) => a.stream_rank - b.stream_rank
         )
         const labelsEven = sortedLabels.filter((_, i) => i % 2 === 0)
         const labelsOdd = sortedLabels.filter((_, i) => i % 2 === 1)
@@ -61,21 +61,21 @@ export function Top10EvolutionPlot({
             },
             marks: [
                 Plot.lineY(sortedData, {
-                    x: 'year',
-                    y: 'rank',
+                    x: 'stream_year',
+                    y: 'stream_rank',
                     stroke: 'artist',
                     strokeWidth: 2.5,
                 }),
                 Plot.dot(sortedData, {
-                    x: 'year',
-                    y: 'rank',
+                    x: 'stream_year',
+                    y: 'stream_rank',
                     fill: 'artist',
                     r: 4,
                 }),
 
                 Plot.text(labelsEven, {
-                    x: 'year',
-                    y: 'rank',
+                    x: 'stream_year',
+                    y: 'stream_rank',
                     text: 'artist',
                     fill: 'artist',
                     dx: 10,
@@ -85,8 +85,8 @@ export function Top10EvolutionPlot({
                     fontWeight: 'bold',
                 }),
                 Plot.text(labelsOdd, {
-                    x: 'year',
-                    y: 'rank',
+                    x: 'stream_year',
+                    y: 'stream_rank',
                     text: 'artist',
                     fill: 'artist',
                     dx: 10,
@@ -98,10 +98,10 @@ export function Top10EvolutionPlot({
                 Plot.tip(
                     sortedData,
                     Plot.pointerX({
-                        x: 'year',
-                        y: 'rank',
+                        x: 'stream_year',
+                        y: 'stream_rank',
                         title: (d) =>
-                            `${d.artist}\nRank: ${d.rank}\nYear: ${d.year}`,
+                            `${d.artist}\nRank: ${d.stream_rank}\nYear: ${d.stream_year}`,
                     })
                 ),
             ],

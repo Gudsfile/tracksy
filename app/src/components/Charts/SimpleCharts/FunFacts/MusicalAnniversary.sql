@@ -37,7 +37,7 @@ artist_years as (
 select
     artist_name as main_text,
     'musical_anniversary' as fact_type,
-    year(max_date) - first_year as value,
+    year(max_date) - first_year as fact_value,
     'years' as unit,
     'with you' as context
 from artist_years, recent_date

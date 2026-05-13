@@ -1,11 +1,11 @@
 with artist_yearly_play_counts as (
     select
-        year(ts::datetime)::int as year,
+        year(ts::datetime)::int as stream_year,
         artist_name as artist,
         count(*)::int as play_count
     from ${table}
     where artist_name is not null
-    group by year, artist
+    group by stream_year, artist
 ),
 
 artist_total_play_counts as (
@@ -25,20 +25,20 @@ top_10_global_artists as (
 
 yearly_ranks as (
     select
-        year,
+        stream_year,
         artist,
         play_count,
         row_number()
-            over (partition by year order by play_count desc)
-        ::int as rank
+            over (partition by stream_year order by play_count desc)
+        ::int as stream_rank
     from artist_yearly_play_counts
 )
 
 select
-    yr.year,
+    yr.stream_year,
     yr.artist,
-    yr.rank,
+    yr.stream_rank,
     yr.play_count
 from yearly_ranks as yr
 inner join top_10_global_artists as t10 on yr.artist = t10.artist
-order by yr.year, yr.rank
+order by yr.stream_year, yr.stream_rank

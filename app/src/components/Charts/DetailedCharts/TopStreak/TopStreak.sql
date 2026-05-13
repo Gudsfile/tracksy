@@ -1,22 +1,21 @@
 with dates as (
-    select distinct ts::date as date
+    select distinct ts::date as stream_date
     from ${table}
 ),
 
-groups as (
+streak_groups as (
     select
-        date,
-        date_add(
-            date, interval '-1' day * (row_number() over (order by date))
-        ) as grp
+        stream_date,
+        stream_date
+        - (row_number() over (order by stream_date) - 1)::int as grp
     from dates
 )
 
 select
     count(*)::integer as streaks,
-    min(date) as start_ts,
-    max(date) as end_ts
-from groups
+    min(stream_date) as start_ts,
+    max(stream_date) as end_ts
+from streak_groups
 group by grp
 order by ${order_condition}
 limit 1

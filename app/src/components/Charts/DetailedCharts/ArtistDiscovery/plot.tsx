@@ -54,19 +54,19 @@ export function ArtistDiscoveryPlot({
         if (mode === 'cumulative') {
             marks.push(
                 Plot.areaY(data, {
-                    x: 'year',
+                    x: 'stream_year',
                     y: 'cumulative_artists',
                     fill: 'url(#gradient-cumulative)',
                     fillOpacity: 0.3,
                 }),
                 Plot.lineY(data, {
-                    x: 'year',
+                    x: 'stream_year',
                     y: 'cumulative_artists',
                     stroke: '#8b5cf6',
                     strokeWidth: 2.5,
                 }),
                 Plot.dot(data, {
-                    x: 'year',
+                    x: 'stream_year',
                     y: 'cumulative_artists',
                     fill: '#8b5cf6',
                     r: 4,
@@ -77,13 +77,13 @@ export function ArtistDiscoveryPlot({
         if (mode === 'new') {
             marks.push(
                 Plot.lineY(data, {
-                    x: 'year',
+                    x: 'stream_year',
                     y: 'new_artists',
                     stroke: '#06b6d4',
                     strokeWidth: 2,
                 }),
                 Plot.dot(data, {
-                    x: 'year',
+                    x: 'stream_year',
                     y: 'new_artists',
                     fill: '#06b6d4',
                     r: 3,
@@ -95,7 +95,7 @@ export function ArtistDiscoveryPlot({
             Plot.lineY(
                 data,
                 Plot.mapY((D: number[]) => D.map(yAvg), {
-                    x: 'year',
+                    x: 'stream_year',
                     y: 'avg_listens_per_artist',
                     stroke: '#f59e0b',
                     strokeWidth: 2.5,

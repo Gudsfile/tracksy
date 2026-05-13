@@ -1,6 +1,6 @@
 select
-    year(ts::date)::integer as year,
-    count(*)::double as streams,
+    year(ts::date)::integer as stream_year,
+    count(*)::double as stream_count,
     sum(ms_played)::double as ms_played
 from ${table}
 group by year(ts::date)

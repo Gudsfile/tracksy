@@ -26,14 +26,14 @@ describe('StreamPerDayOfWeek query', () => {
         )
         const rows = result.getRowObjects()
         expect(rows).toEqual([
-            { day_of_week: 0, hour: 4, count_streams: 1 },
-            { day_of_week: 1, hour: 4, count_streams: 2 },
-            { day_of_week: 1, hour: 10, count_streams: 1 },
-            { day_of_week: 2, hour: 6, count_streams: 1 },
-            { day_of_week: 3, hour: 4, count_streams: 1 },
-            { day_of_week: 5, hour: 4, count_streams: 2 },
-            { day_of_week: 5, hour: 10, count_streams: 1 },
-            { day_of_week: 6, hour: 6, count_streams: 1 },
+            { day_of_week: 0, play_hour: 4, count_streams: 1 },
+            { day_of_week: 1, play_hour: 4, count_streams: 2 },
+            { day_of_week: 1, play_hour: 10, count_streams: 1 },
+            { day_of_week: 2, play_hour: 6, count_streams: 1 },
+            { day_of_week: 3, play_hour: 4, count_streams: 1 },
+            { day_of_week: 5, play_hour: 4, count_streams: 2 },
+            { day_of_week: 5, play_hour: 10, count_streams: 1 },
+            { day_of_week: 6, play_hour: 6, count_streams: 1 },
         ])
     })
 
@@ -43,10 +43,10 @@ describe('StreamPerDayOfWeek query', () => {
         )
         const rows = result.getRowObjects()
         expect(rows).toEqual([
-            { day_of_week: 0, hour: 4, count_streams: 1 },
-            { day_of_week: 5, hour: 4, count_streams: 2 },
-            { day_of_week: 5, hour: 10, count_streams: 1 },
-            { day_of_week: 6, hour: 6, count_streams: 1 },
+            { day_of_week: 0, play_hour: 4, count_streams: 1 },
+            { day_of_week: 5, play_hour: 4, count_streams: 2 },
+            { day_of_week: 5, play_hour: 10, count_streams: 1 },
+            { day_of_week: 6, play_hour: 6, count_streams: 1 },
         ])
     })
 })

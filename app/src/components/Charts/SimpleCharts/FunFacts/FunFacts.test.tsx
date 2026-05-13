@@ -21,7 +21,7 @@ describe('FunFacts Component', () => {
                 {
                     fact_type: fact.fact_type,
                     main_text: `main_text_for_${fact.fact_type}`,
-                    value: i % 2 === 0 ? 1 : 'one',
+                    fact_value: i % 2 === 0 ? 1 : 'one',
                     context: i % 2 === 0 ? undefined : 'dummy_context',
                 },
             ] as FunFactResult[]

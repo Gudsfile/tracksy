@@ -1,5 +1,5 @@
 with all_months as (
-    select last_day(month) as ts
+    select last_day(month_start) as ts
     from generate_series(
         (
             select date_trunc('year', min(ts::date))
@@ -15,7 +15,7 @@ with all_months as (
             where ${year_condition}
         ),
         interval 1 month
-    ) as t (month)
+    ) as t (month_start)
 ),
 
 monthly_streams as (

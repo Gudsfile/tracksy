@@ -6,7 +6,7 @@ import type { HourlyStreamsQueryResult } from './query'
 const fixture: HourlyStreamsQueryResult[] = Array.from(
     { length: 24 },
     (_, h) => ({
-        hour: h,
+        play_hour: h,
         count_streams: h === 8 ? 42 : h === 14 ? 25 : h === 22 ? 10 : 0,
         ms_played:
             h === 8 ? 5400000 : h === 14 ? 3000000 : h === 22 ? 1200000 : 0,

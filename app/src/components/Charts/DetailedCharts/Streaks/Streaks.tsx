@@ -16,7 +16,9 @@ export function Streaks({ data }: Props) {
         if (!data || data.length === 0) return []
 
         const playedDates = Array.from(
-            new Set(data.map((item) => dayjs(item.day).format('YYYY-MM-DD')))
+            new Set(
+                data.map((item) => dayjs(item.stream_date).format('YYYY-MM-DD'))
+            )
         ).sort()
 
         const start = dayjs(playedDates[0])

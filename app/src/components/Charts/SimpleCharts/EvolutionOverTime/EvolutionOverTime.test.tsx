@@ -10,9 +10,9 @@ describe('EvolutionOverTime Component', () => {
 
     it('renders correctly with data', () => {
         const data = [
-            { year: 2020, streams: 100, ms_played: 60 * 60 * 1000 },
-            { year: 2021, streams: 150, ms_played: 60 * 60 * 1000 },
-            { year: 2022, streams: 200, ms_played: 60 * 60 * 1000 },
+            { stream_year: 2020, stream_count: 100, ms_played: 60 * 60 * 1000 },
+            { stream_year: 2021, stream_count: 150, ms_played: 60 * 60 * 1000 },
+            { stream_year: 2022, stream_count: 200, ms_played: 60 * 60 * 1000 },
         ]
         const currentYear = 2022
 
@@ -25,9 +25,17 @@ describe('EvolutionOverTime Component', () => {
 
     it('shows tooltip on bar hover', () => {
         const data = [
-            { year: 2020, streams: 100, ms_played: 60 * 60 * 1000 },
-            { year: 2021, streams: 150, ms_played: 2 * 60 * 60 * 1000 },
-            { year: 2022, streams: 200, ms_played: 3 * 60 * 60 * 1000 },
+            { stream_year: 2020, stream_count: 100, ms_played: 60 * 60 * 1000 },
+            {
+                stream_year: 2021,
+                stream_count: 150,
+                ms_played: 2 * 60 * 60 * 1000,
+            },
+            {
+                stream_year: 2022,
+                stream_count: 200,
+                ms_played: 3 * 60 * 60 * 1000,
+            },
         ]
 
         render(<EvolutionOverTime data={data} year={2022} />)

@@ -15,7 +15,7 @@ artist_first_listen as (
 
 select
     artist_name as main_text,
-    count(*)::integer as value,
+    count(*)::integer as fact_value,
     'recent_discovery' as fact_type,
     'streams' as unit,
     'discovered during the last 3 months' as context
@@ -25,5 +25,5 @@ where
     first_listen >= (select max_date - interval 90 day from recent_date)
     and artist_name is not null
 group by artist_name
-order by value desc
+order by fact_value desc
 limit 1

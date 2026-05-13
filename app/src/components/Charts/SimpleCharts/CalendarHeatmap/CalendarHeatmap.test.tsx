@@ -21,7 +21,7 @@ describe('CalendarHeatmap', () => {
     })
 
     it('renders cells for the full year including leading/trailing nulls', () => {
-        const data = [{ day: '2025-06-15', stream_count: 5 }]
+        const data = [{ stream_date: '2025-06-15', stream_count: 5 }]
         const { container } = render(
             <CalendarHeatmap data={data} year={2025} />
         )
@@ -31,7 +31,7 @@ describe('CalendarHeatmap', () => {
     })
 
     it('shows tooltip on cell hover', () => {
-        const data = [{ day: '2025-06-15', stream_count: 5 }]
+        const data = [{ stream_date: '2025-06-15', stream_count: 5 }]
         const { container } = render(
             <CalendarHeatmap data={data} year={2025} />
         )

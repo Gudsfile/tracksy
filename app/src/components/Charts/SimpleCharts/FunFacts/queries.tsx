@@ -24,7 +24,7 @@ export type FunFactResult = {
     fact_type: string
     main_text: string
     second_text?: string
-    value: number | string
+    fact_value: number | string
     unit?: string
     context?: string
 }

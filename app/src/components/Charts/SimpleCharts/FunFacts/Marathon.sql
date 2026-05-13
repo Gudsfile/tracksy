@@ -22,17 +22,17 @@ group_sizes as (
     select
         artist_name,
         count(*) as stream_count,
-        min(ts::date) as date
+        min(ts::date) as listen_date
     from group_ids
     group by group_id, artist_name
 )
 
 select
     artist_name as main_text,
-    stream_count::double as value,
+    stream_count::double as fact_value,
     'marathon' as fact_type,
     'streams in a row' as unit,
-    'on ' || date::varchar as context
+    'on ' || listen_date::varchar as context
 from group_sizes
 order by stream_count desc
 limit 1

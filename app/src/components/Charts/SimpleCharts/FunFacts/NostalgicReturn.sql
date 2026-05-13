@@ -51,7 +51,7 @@ artist_gaps as (
 
 select
     artist as main_text,
-    gap::integer as value,
+    gap::integer as fact_value,
     'nostalgic_return' as fact_type,
     'days' as unit,
     'days since last listen ('

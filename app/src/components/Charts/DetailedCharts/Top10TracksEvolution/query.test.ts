@@ -30,31 +30,31 @@ describe('queryTop10TracksEvolution Query', () => {
                     a: Record<string, DuckDBValue>,
                     b: Record<string, DuckDBValue>
                 ) =>
-                    (a.year as number) - (b.year as number) ||
-                    (a.rank as number) - (b.rank as number)
+                    (a.stream_year as number) - (b.stream_year as number) ||
+                    (a.stream_rank as number) - (b.stream_rank as number)
             )
 
         expect(rows).toEqual([
             {
                 artist: 'artist_b',
                 play_count: 3,
-                rank: 1,
+                stream_rank: 1,
                 track: 'track_1',
-                year: 2020,
+                stream_year: 2020,
             },
             {
                 artist: 'artist_a',
                 play_count: 2,
-                rank: 2,
+                stream_rank: 2,
                 track: 'track_2',
-                year: 2020,
+                stream_year: 2020,
             },
             {
                 artist: 'artist_a',
                 play_count: 1,
-                rank: 3,
+                stream_rank: 3,
                 track: 'track_1',
-                year: 2020,
+                stream_year: 2020,
             },
         ])
     })

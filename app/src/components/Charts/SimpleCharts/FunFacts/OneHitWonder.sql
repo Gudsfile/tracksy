@@ -30,7 +30,7 @@ track_stats as (
 
 select
     track_name as main_text,
-    percentage as value,
+    percentage as fact_value,
     'one_hit_wonder' as fact_type,
     '%' as unit,
     'of total streams of ' || artist_name as context

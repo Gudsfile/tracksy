@@ -11,6 +11,6 @@ export function streamPerDayOfWeekQueryByYear(year: number | undefined) {
 
 export type StreamPerDayOfWeekQueryResult = {
     day_of_week: number
-    hour: number
+    play_hour: number
     count_streams: number
 }
