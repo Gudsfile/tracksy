@@ -35,7 +35,7 @@ artist_loyalty as (
 
 select
     artist_name as main_text,
-    (loyalty_ratio * 100)::integer as value,
+    (loyalty_ratio * 100)::integer as fact_value,
     'absolute_loyalty' as fact_type,
     '%' as unit,
     'of your completed ('
@@ -44,5 +44,5 @@ select
     || skipped_count
     || ')' as context
 from artist_loyalty
-order by value desc
+order by fact_value desc
 limit 1

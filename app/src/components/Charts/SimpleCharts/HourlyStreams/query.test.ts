@@ -46,8 +46,8 @@ describe('HourlyStreams Query', () => {
             buildHourlyStreamsQuery(2025)
         )) as unknown as HourlyStreamsQueryResult[]
 
-        const hour8 = rows.find((r) => r.hour === 8)
-        const hour14 = rows.find((r) => r.hour === 14)
+        const hour8 = rows.find((r) => r.play_hour === 8)
+        const hour14 = rows.find((r) => r.play_hour === 14)
 
         expect(hour8?.count_streams).toBe(2)
         expect(hour14?.count_streams).toBe(1)
@@ -59,7 +59,7 @@ describe('HourlyStreams Query', () => {
             buildHourlyStreamsQuery(2025)
         )) as unknown as HourlyStreamsQueryResult[]
 
-        const hour0 = rows.find((r) => r.hour === 0)
+        const hour0 = rows.find((r) => r.play_hour === 0)
         expect(hour0?.count_streams).toBe(0)
         expect(hour0?.ms_played).toBe(0)
     })

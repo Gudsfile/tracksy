@@ -31,15 +31,20 @@ listening_days_count as (
 ),
 
 listening_days as (
-    (select distinct ts::date as day from selected_tracks)
+    (select distinct ts::date as stream_date from selected_tracks)
     union
-    (select '${ year}-01-01'::date - 1 as day)
+    (select '${ year}-01-01'::date - 1 as stream_date)
     union
-    (select max_date + 1 as day from max_date)
+    (select max_date + 1 as stream_date from max_date)
 ),
 
 gaps as (
-    select date_diff('day', lag(day) over (order by day), day) - 1 as gap
+    select
+        date_diff(
+            'day',
+            lag(stream_date) over (order by stream_date),
+            stream_date
+        ) - 1 as gap
     from listening_days
 ),
 

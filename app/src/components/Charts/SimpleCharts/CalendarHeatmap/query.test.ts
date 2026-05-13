@@ -17,7 +17,7 @@ describe('CalendarHeatmap Query', () => {
     beforeEach(async () => {
         await conn.run(`
             CREATE OR REPLACE TABLE ${DAILY_STREAM_COUNTS_TABLE} (
-                day DATE,
+                stream_date DATE,
                 stream_count BIGINT,
                 ms_played BIGINT
             )
@@ -44,17 +44,17 @@ describe('CalendarHeatmap Query', () => {
         expect(rows).toHaveLength(3)
     })
 
-    it('should return day as a YYYY-MM-DD string and stream_count as a number', async () => {
+    it('should return stream_date as a YYYY-MM-DD string and stream_count as a number', async () => {
         const result = await conn.runAndReadAll(buildCalendarHeatmapQuery(2025))
         const rows = result.getRowObjectsJson()
-        expect(rows[0].day).toBe('2025-01-01')
+        expect(rows[0].stream_date).toBe('2025-01-01')
         expect(rows[0].stream_count).toBe(5)
     })
 
-    it('should order results by day ascending', async () => {
+    it('should order results by stream_date ascending', async () => {
         const result = await conn.runAndReadAll(buildCalendarHeatmapQuery(2025))
         const rows = result.getRowObjectsJson()
-        expect(rows[0].day).toBe('2025-01-01')
-        expect(rows[1].day).toBe('2025-01-15')
+        expect(rows[0].stream_date).toBe('2025-01-01')
+        expect(rows[1].stream_date).toBe('2025-01-15')
     })
 })

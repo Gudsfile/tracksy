@@ -6,8 +6,8 @@ export function queryTop10Evolution() {
 }
 
 export type Top10EvolutionQueryResult = {
-    year: number
+    stream_year: number
     artist: string
-    rank: number
+    stream_rank: number
     play_count: number
 }

@@ -8,7 +8,7 @@ type TooltipState = {
     x: number
     y: number
     year: number
-    streams: number
+    count: number
     ms_played: number
 }
 
@@ -21,13 +21,16 @@ type Props = {
 export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
     const maxStreams = data?.length
-        ? Math.max(...data.map((d) => d.streams))
+        ? Math.max(...data.map((d) => d.stream_count))
         : 0
-    const currentYearData = data?.find((d) => d.year === year)
-    const totalStreams = data?.reduce((acc, curr) => acc + curr.streams, 0) ?? 0
+    const currentYearData = data?.find((d) => d.stream_year === year)
+    const totalStreams =
+        data?.reduce((acc, curr) => acc + curr.stream_count, 0) ?? 0
     const totalMsPlayed =
         data?.reduce((acc, curr) => acc + curr.ms_played, 0) ?? 0
-    const startYear = data?.length ? Math.min(...data.map((d) => d.year)) : 0
+    const startYear = data?.length
+        ? Math.min(...data.map((d) => d.stream_year))
+        : 0
 
     return (
         <ChartCard
@@ -46,10 +49,10 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                         onMouseLeave={() => setTooltip(null)}
                     >
                         {data.map((d) => {
-                            const height = (d.streams / maxStreams) * 100
+                            const height = (d.stream_count / maxStreams) * 100
                             return (
                                 <div
-                                    key={d.year}
+                                    key={d.stream_year}
                                     className="flex-1 bg-brand-blue dark:bg-brand-blue rounded-t relative"
                                     style={{ height: `${height}%` }}
                                     onMouseEnter={(e) => {
@@ -59,15 +62,15 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                                         setTooltip({
                                             x: rect.left + rect.width / 2,
                                             y: rect.top,
-                                            year: d.year,
-                                            streams: d.streams,
+                                            year: d.stream_year,
+                                            count: d.stream_count,
                                             ms_played: d.ms_played,
                                         })
                                     }}
                                 >
                                     <div
                                         className={`absolute bottom-0 left-0 right-0 bg-brand-blue rounded-t transition-all duration-300 ${
-                                            d.year === year
+                                            d.stream_year === year
                                                 ? 'bg-brand-purple'
                                                 : ''
                                         }`}
@@ -79,7 +82,9 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                     </div>
                     <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 px-1">
                         <span>{startYear}</span>
-                        <span>{Math.max(...data.map((d) => d.year))}</span>
+                        <span>
+                            {Math.max(...data.map((d) => d.stream_year))}
+                        </span>
                     </div>
 
                     <ul
@@ -106,7 +111,7 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                                     This year
                                 </span>
                                 <span className="font-bold text-brand-purple dark:text-brand-purple">
-                                    {currentYearData.streams.toLocaleString()}
+                                    {currentYearData.stream_count.toLocaleString()}
                                 </span>
                             </li>
                         )}
@@ -117,7 +122,7 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                 <ChartTooltip x={tooltip.x} y={tooltip.y}>
                     <div className="font-semibold">{tooltip.year}</div>
                     <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.streams.toLocaleString()} streams
+                        {tooltip.count.toLocaleString()} streams
                     </div>
                     <div className="text-gray-300 dark:text-gray-400">
                         {formatDuration(tooltip.ms_played)}

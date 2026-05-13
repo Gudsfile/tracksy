@@ -65,7 +65,9 @@ top_platforms as (
         platform,
         stream_count,
         pct,
-        row_number() over (order by stream_count desc, platform desc) as rank
+        row_number()
+            over (order by stream_count desc, platform desc)
+        as stream_rank
     from platform_counts
     where platform != 'Others'
 ),
@@ -78,13 +80,13 @@ other_platforms as (
     from (
         select *
         from top_platforms
-        where rank > 3
+        where stream_rank > 3
         union all
         select
             platform,
             stream_count,
             pct,
-            999 as rank
+            999 as stream_rank
         from platform_counts
         where platform = 'Others'
     )
@@ -100,7 +102,7 @@ from (
         stream_count,
         pct
     from top_platforms
-    where rank <= 3
+    where stream_rank <= 3
     union all
     select
         platform,

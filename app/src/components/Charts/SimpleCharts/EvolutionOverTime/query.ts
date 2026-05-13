@@ -2,8 +2,8 @@ import { TABLE } from '../../../../db/queries/constants'
 import sqlQueryEvolutionOverTime from './EvolutionOverTime.sql?raw'
 
 export type EvolutionResult = {
-    year: number
-    streams: number
+    stream_year: number
+    stream_count: number
     ms_played: number
 }
 

@@ -7,10 +7,7 @@ rules = all
 # RF02: Unqualified reference <reference> found in select with more than one referenced table/view.
 #       Too many warnings; to be corrected in separate PR
 #       https://github.com/Gudsfile/tracksy/issues/294
-# RF04: Keywords should not be used as identifiers
-#       Too many warnings; to be corrected in separate PR
-#       https://github.com/Gudsfile/tracksy/issues/293
-exclude_rules = ST07, RF02, RF04
+exclude_rules = ST07, RF02
 warn_unused_ignores = True
 max_line_length = 80
 
@@ -42,3 +39,11 @@ preferred_not_equal_style = c_style
 
 [sqruff:templater:placeholder]
 param_style = dollar
+# Provide non-keyword substitutions so the RF04 linter does not flag
+# ${table} -> "table" (a reserved word) as an identifier violation.
+table = listen_history
+year_condition = true
+order_condition = streaks desc
+# ${year} only appears inside SQL string literals (e.g. '${ year}-01-01'),
+# so this substitution is a no-op for linting but documents the expected type.
+year = 2024

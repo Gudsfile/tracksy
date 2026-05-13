@@ -3,7 +3,7 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryHourlyStreams from './HourlyStreams.sql?raw'
 
 export type HourlyStreamsQueryResult = {
-    hour: number
+    play_hour: number
     count_streams: number
     ms_played: number
 }

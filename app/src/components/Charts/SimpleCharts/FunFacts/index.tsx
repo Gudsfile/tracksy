@@ -36,10 +36,12 @@ export function FunFacts() {
 
                 seenFactsRef.current.add(factDefinition.fact_type)
                 if (result) {
+                    const { fact_value, ...rest } = result
                     setFact({
                         title: factDefinition.title,
                         emoji: factDefinition.emoji,
-                        ...result,
+                        ...rest,
+                        value: fact_value,
                     })
                     break
                 }

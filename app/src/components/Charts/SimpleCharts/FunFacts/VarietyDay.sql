@@ -1,10 +1,10 @@
 select
     cast(cast(ts as date) as varchar) as main_text,
-    cast(count(distinct artist_name) as integer) as value,
+    cast(count(distinct artist_name) as integer) as fact_value,
     'variety_day' as fact_type,
     'different artists' as unit,
     'record of diversity in one day' as context
 from ${table}
 group by cast(ts as date)
-order by value desc
+order by fact_value desc
 limit 1

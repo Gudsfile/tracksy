@@ -8,7 +8,7 @@ album_listening as (
     select
         album_name,
         artist_name,
-        year(ts::date)::int as year,
+        year(ts::date)::int as stream_year,
         count(*) as playing_days_count
     from ${table}, max_date
     group by album_name, artist_name, ts::date
@@ -19,12 +19,12 @@ album_listening as (
 
 album_yearly_play_counts as (
     select
-        year,
+        stream_year,
         album_name as album,
         artist_name as artist,
         count(*)::int as play_count
     from album_listening
-    group by year, album_name, artist_name
+    group by stream_year, album_name, artist_name
 ),
 
 album_total_play_counts as (
@@ -47,22 +47,22 @@ top_10_global_albums as (
 
 yearly_ranks as (
     select
-        year,
+        stream_year,
         album,
         artist,
         play_count,
         row_number()
-            over (partition by year order by play_count desc)
-        ::int as rank
+            over (partition by stream_year order by play_count desc)
+        ::int as stream_rank
     from album_yearly_play_counts
 )
 
 select
-    yr.year,
+    yr.stream_year,
     yr.album,
     yr.artist,
-    yr.rank,
+    yr.stream_rank,
     yr.play_count
 from yearly_ranks as yr
 inner join top_10_global_albums using (artist, album)
-order by yr.year, yr.rank
+order by yr.stream_year, yr.stream_rank

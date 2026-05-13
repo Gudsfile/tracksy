@@ -6,6 +6,6 @@ export function queryStreaks() {
 }
 
 export type StreaksQueryResult = {
-    day: string
+    stream_date: string
     played: number
 }

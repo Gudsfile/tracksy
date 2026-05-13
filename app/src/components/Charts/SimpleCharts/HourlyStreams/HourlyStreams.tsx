@@ -64,12 +64,12 @@ export const HourlyStreams: FC<Props> = ({
               )
             : undefined
 
-    const peakHour = peakRow?.hour ?? -1
+    const peakHour = peakRow?.play_hour ?? -1
 
     return (
         <ChartCard
             title="Around the Clock"
-            emoji={peakRow ? clockEmoji(peakRow.hour) : '🕐'}
+            emoji={peakRow ? clockEmoji(peakRow.play_hour) : '🕐'}
             isLoading={isLoading}
             question="When do you listen to music?"
             className="h-full w-full"
@@ -78,7 +78,7 @@ export const HourlyStreams: FC<Props> = ({
                 <>
                     {peakRow && (
                         <ChartHero
-                            label={`${String(peakRow.hour).padStart(2, '0')}h`}
+                            label={`${String(peakRow.play_hour).padStart(2, '0')}h`}
                             sublabel={`${peakRow.count_streams.toLocaleString()} streams`}
                             labelColor="text-teal-600"
                         />
@@ -112,12 +112,12 @@ export const HourlyStreams: FC<Props> = ({
                                       )
                                     : 0
                             if (r === 0) return null
-                            const isHovered = tooltip?.hour === row.hour
-                            const isPeak = row.hour === peakHour
+                            const isHovered = tooltip?.hour === row.play_hour
+                            const isPeak = row.play_hour === peakHour
                             return (
                                 <path
-                                    key={row.hour}
-                                    d={wedgePath(row.hour, r, CX, CY)}
+                                    key={row.play_hour}
+                                    d={wedgePath(row.play_hour, r, CX, CY)}
                                     className={
                                         isHovered
                                             ? 'fill-teal-300 stroke-white dark:stroke-slate-900'
@@ -133,7 +133,7 @@ export const HourlyStreams: FC<Props> = ({
                                             .closest('svg')!
                                             .getBoundingClientRect()
                                         const aCenter =
-                                            ((row.hour + 0.5) / 24) *
+                                            ((row.play_hour + 0.5) / 24) *
                                                 2 *
                                                 Math.PI -
                                             Math.PI / 2
@@ -151,7 +151,7 @@ export const HourlyStreams: FC<Props> = ({
                                                 (CY +
                                                     rMid * Math.sin(aCenter)) *
                                                     (svgH / 300),
-                                            hour: row.hour,
+                                            hour: row.play_hour,
                                             count: row.count_streams,
                                             ms: row.ms_played,
                                         })

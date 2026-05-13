@@ -158,8 +158,8 @@ const regularityMock: RegularityResult[] = [
 
 const evolutionOverTimeMock: EvolutionResult[] = [
     {
-        year: 2024,
-        streams: 100,
+        stream_year: 2024,
+        stream_count: 100,
         ms_played: 1000,
     },
 ]

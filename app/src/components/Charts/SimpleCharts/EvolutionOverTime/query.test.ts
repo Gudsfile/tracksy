@@ -36,10 +36,10 @@ describe('EvolutionOverTime Query', () => {
         const rows = await testQuery(conn, queryEvolutionOverTime())
 
         expect(rows).toEqual([
-            { year: 2006, streams: 1, ms_played: 1 },
-            { year: 2018, streams: 1, ms_played: 2 },
-            { year: 2024, streams: 2, ms_played: 7 },
-            { year: 2025, streams: 1, ms_played: 5 },
+            { stream_year: 2006, stream_count: 1, ms_played: 1 },
+            { stream_year: 2018, stream_count: 1, ms_played: 2 },
+            { stream_year: 2024, stream_count: 2, ms_played: 7 },
+            { stream_year: 2025, stream_count: 1, ms_played: 5 },
         ])
     })
 })

@@ -6,9 +6,9 @@ export function queryTop10AlbumsEvolution() {
 }
 
 export type Top10AlbumsEvolutionQueryResult = {
-    year: number
+    stream_year: number
     album: string
     artist: string
-    rank: number
+    stream_rank: number
     play_count: number
 }
