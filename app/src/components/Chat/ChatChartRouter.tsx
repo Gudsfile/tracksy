@@ -12,11 +12,17 @@ import { SkipRate } from '../Charts/SimpleCharts/SkipRate'
 import { Regularity } from '../Charts/SimpleCharts/Regularity'
 import { NewVsOld } from '../Charts/SimpleCharts/NewVsOld'
 import { FavoriteWeekday } from '../Charts/SimpleCharts/FavoriteWeekday'
+import { ConcentrationScore } from '../Charts/SimpleCharts/ConcentrationScore'
+import { EvolutionOverTime } from '../Charts/SimpleCharts/EvolutionOverTime'
+import { PrincipalPlatform } from '../Charts/SimpleCharts/PrincipalPlatform'
+import { RepeatBehavior } from '../Charts/SimpleCharts/RepeatBehavior'
+import { SeasonalPatterns } from '../Charts/SimpleCharts/SeasonalPatterns'
 import { StreamPerMonth } from '../Charts/DetailedCharts/StreamPerMonth'
 import { HourlyStreams } from '../Charts/SimpleCharts/HourlyStreams'
 import { StreamPerDayOfWeek } from '../Charts/DetailedCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from '../Charts/DetailedCharts/ArtistDiscovery'
 import { TotalStreams } from '../Charts/DetailedCharts/TotalStreams'
+import { TopStreak } from '../Charts/DetailedCharts/TopStreak'
 import { CustomChart } from './CustomChart'
 
 type ChatChartRouterProps = {
@@ -68,6 +74,18 @@ export function ChatChartRouter({
             return <FavoriteWeekday year={year} />
         case 'total_streams':
             return <TotalStreams />
+        case 'concentration_score':
+            return <ConcentrationScore year={year} />
+        case 'evolution_over_time':
+            return <EvolutionOverTime year={year} />
+        case 'principal_platform':
+            return <PrincipalPlatform year={year} />
+        case 'repeat_behavior':
+            return <RepeatBehavior year={year} />
+        case 'top_streak':
+            return <TopStreak />
+        case 'seasonal_patterns':
+            return <SeasonalPatterns year={year} />
         case 'custom':
             return <CustomChart title={answer.title} rows={rows ?? []} />
         default:

@@ -82,9 +82,12 @@ function PlotChart({
         if (!containerRef.current) return
 
         const keys = Object.keys(rows[0])
-        const labelKey = keys[0]
+        const labelKey =
+            keys.find((k) => typeof rows[0][k] === 'string') ?? keys[0]
         const valueKey =
-            keys.find((k) => typeof rows[0][k] === 'number') ?? keys[1]
+            keys.find(
+                (k) => k !== labelKey && typeof rows[0][k] === 'number'
+            ) ?? keys[1]
 
         const textColor = isDark ? '#e2e8f0' : '#1e293b'
         const gridColor = isDark ? '#334155' : '#e2e8f0'
@@ -172,6 +175,11 @@ function TableFallback({ rows }: { rows: DBRow[] }) {
                     ))}
                 </tbody>
             </table>
+            {rows.length > 200 && (
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-2">
+                    Showing 200 of {rows.length.toLocaleString()} rows
+                </p>
+            )}
         </div>
     )
 }

@@ -18,7 +18,7 @@ Table ${TABLE} (one row per playback):
   ts TIMESTAMP (ISO 8601), ms_played INTEGER (milliseconds), platform TEXT
 
 Table ${DAILY_STREAM_COUNTS_TABLE}:
-  day DATE, stream_count DOUBLE, ms_played DOUBLE
+  stream_date DATE, stream_count DOUBLE, ms_played DOUBLE
 
 Table ${ARTIST_FIRST_YEAR_TABLE}:
   artist_name TEXT, first_year INTEGER
@@ -151,6 +151,38 @@ export const FEW_SHOTS: FewShot[] = [
             title: 'Skip rate',
             explanation: 'Share of streams that were skipped vs completed.',
             sql: 'SELECT COUNT(*) FILTER (WHERE ms_played < 30000)::DOUBLE AS skipped_listens, COUNT(*) FILTER (WHERE ms_played >= 30000)::DOUBLE AS complete_listens FROM music_streams',
+        }),
+    },
+    {
+        user: 'How has my listening grown over the years?',
+        assistant: JSON.stringify({
+            intent: 'evolution_over_time',
+            params: {},
+            title: 'Listening evolution',
+            explanation: 'Total stream count per year across all years.',
+            sql: 'SELECT year(ts::date)::integer AS stream_year, COUNT(*)::DOUBLE AS stream_count, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams GROUP BY year(ts::date) ORDER BY year(ts::date)',
+        }),
+    },
+    {
+        user: "What's my longest listening streak?",
+        assistant: JSON.stringify({
+            intent: 'top_streak',
+            params: {},
+            title: 'Listening streaks',
+            explanation:
+                'Longest and most recent consecutive listening day streaks.',
+            sql: 'SELECT COUNT(*)::integer AS streaks, MIN(ts::date) AS start_ts, MAX(ts::date) AS end_ts FROM music_streams GROUP BY ts::date ORDER BY streaks DESC LIMIT 1',
+        }),
+    },
+    {
+        user: 'What app or device do I use most to listen?',
+        assistant: JSON.stringify({
+            intent: 'principal_platform',
+            params: {},
+            title: 'Principal platform',
+            explanation:
+                'Distribution of listening across platforms and devices.',
+            sql: 'SELECT platform, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE platform IS NOT NULL GROUP BY platform ORDER BY stream_count DESC LIMIT 5',
         }),
     },
 ]

@@ -14,11 +14,17 @@ import * as SkipRateModule from '../Charts/SimpleCharts/SkipRate'
 import * as RegularityModule from '../Charts/SimpleCharts/Regularity'
 import * as NewVsOldModule from '../Charts/SimpleCharts/NewVsOld'
 import * as FavoriteWeekdayModule from '../Charts/SimpleCharts/FavoriteWeekday'
+import * as ConcentrationScoreModule from '../Charts/SimpleCharts/ConcentrationScore'
+import * as EvolutionOverTimeModule from '../Charts/SimpleCharts/EvolutionOverTime'
+import * as PrincipalPlatformModule from '../Charts/SimpleCharts/PrincipalPlatform'
+import * as RepeatBehaviorModule from '../Charts/SimpleCharts/RepeatBehavior'
+import * as SeasonalPatternsModule from '../Charts/SimpleCharts/SeasonalPatterns'
 import * as StreamPerMonthModule from '../Charts/DetailedCharts/StreamPerMonth'
 import * as HourlyStreamsModule from '../Charts/SimpleCharts/HourlyStreams'
 import * as StreamPerDayOfWeekModule from '../Charts/DetailedCharts/StreamPerDayOfWeek'
 import * as ArtistDiscoveryModule from '../Charts/DetailedCharts/ArtistDiscovery'
 import * as TotalStreamsModule from '../Charts/DetailedCharts/TotalStreams'
+import * as TopStreakModule from '../Charts/DetailedCharts/TopStreak'
 
 function makeAnswer(intent: ChatAnswer['intent'], year?: number): ChatAnswer {
     return {
@@ -61,6 +67,22 @@ describe('ChatChartRouter', () => {
         vi.spyOn(FavoriteWeekdayModule, 'FavoriteWeekday').mockReturnValue(
             <div data-testid="FavoriteWeekday" />
         )
+        vi.spyOn(
+            ConcentrationScoreModule,
+            'ConcentrationScore'
+        ).mockReturnValue(<div data-testid="ConcentrationScore" />)
+        vi.spyOn(EvolutionOverTimeModule, 'EvolutionOverTime').mockReturnValue(
+            <div data-testid="EvolutionOverTime" />
+        )
+        vi.spyOn(PrincipalPlatformModule, 'PrincipalPlatform').mockReturnValue(
+            <div data-testid="PrincipalPlatform" />
+        )
+        vi.spyOn(RepeatBehaviorModule, 'RepeatBehavior').mockReturnValue(
+            <div data-testid="RepeatBehavior" />
+        )
+        vi.spyOn(SeasonalPatternsModule, 'SeasonalPatterns').mockReturnValue(
+            <div data-testid="SeasonalPatterns" />
+        )
         vi.spyOn(StreamPerMonthModule, 'StreamPerMonth').mockReturnValue(
             <div data-testid="StreamPerMonth" />
         )
@@ -76,6 +98,9 @@ describe('ChatChartRouter', () => {
         )
         vi.spyOn(TotalStreamsModule, 'TotalStreams').mockReturnValue(
             <div data-testid="TotalStreams" />
+        )
+        vi.spyOn(TopStreakModule, 'TopStreak').mockReturnValue(
+            <div data-testid="TopStreak" />
         )
     })
 
@@ -95,6 +120,12 @@ describe('ChatChartRouter', () => {
         ['streams_per_day_of_week', 'StreamPerDayOfWeek'],
         ['artist_discovery', 'ArtistDiscovery'],
         ['total_streams', 'TotalStreams'],
+        ['concentration_score', 'ConcentrationScore'],
+        ['evolution_over_time', 'EvolutionOverTime'],
+        ['principal_platform', 'PrincipalPlatform'],
+        ['repeat_behavior', 'RepeatBehavior'],
+        ['top_streak', 'TopStreak'],
+        ['seasonal_patterns', 'SeasonalPatterns'],
     ] as const)('routes %s → %s', (intent, testId) => {
         render(
             <ChatChartRouter
