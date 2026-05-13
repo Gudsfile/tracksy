@@ -1,6 +1,23 @@
 import { describe, it, expect } from 'vitest'
 import { extractJsonObject, parseChatAnswer } from './askLLM'
+import { SYSTEM_PROMPT, FEW_SHOTS } from './prompt'
 import { LLMError } from './types'
+
+describe('prompt date context', () => {
+    const currentYear = new Date().getFullYear()
+
+    it('includes the current year in SYSTEM_PROMPT', () => {
+        expect(SYSTEM_PROMPT).toContain(String(currentYear))
+    })
+
+    it('has a few-shot that maps "this year" to the current year', () => {
+        const shot = FEW_SHOTS.find((s) =>
+            s.user.toLowerCase().includes('this year')
+        )
+        expect(shot).toBeDefined()
+        expect(shot!.assistant).toContain(String(currentYear))
+    })
+})
 
 describe('extractJsonObject', () => {
     it('returns the object as-is when not wrapped', () => {

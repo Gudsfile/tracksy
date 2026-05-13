@@ -42,7 +42,7 @@ export function ChatInput({ disabled, placeholder, onSubmit }: ChatInputProps) {
                 rows={2}
                 placeholder={
                     placeholder ??
-                    'Ask about your listening (e.g. top tracks in 2023)'
+                    `Ask about your listening (e.g. top tracks in ${new Date().getFullYear()})`
                 }
                 className="flex-1 resize-none bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50"
             />

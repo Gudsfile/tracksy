@@ -7,6 +7,9 @@ import {
     SUMMARIZE_CACHE_TABLE,
 } from '../db/queries/constants'
 
+const CURRENT_YEAR = new Date().getFullYear()
+const CURRENT_DATE = new Date().toISOString().split('T')[0]
+
 const SCHEMA_DESCRIPTION = `\
 DuckDB schema (the user's music streaming history, fully local):
 
@@ -73,6 +76,7 @@ Rules:
 - "params.limit" only for top_artists/top_tracks/top_albums when user asked for a specific N.
 - Use intent "custom" ONLY if no other intent fits.
 - Never invent table or column names. Never include any text outside the JSON object.
+- Today is ${CURRENT_DATE}. When the user says "this year", "current year", or similar without an explicit year, use ${CURRENT_YEAR} in the SQL and params.
 `
 
 export type FewShot = { user: string; assistant: string }
@@ -86,6 +90,16 @@ export const FEW_SHOTS: FewShot[] = [
             title: 'Top artists',
             explanation: 'Artists ranked by total stream count.',
             sql: 'SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE artist_name IS NOT NULL GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5',
+        }),
+    },
+    {
+        user: 'What are my top artists this year?',
+        assistant: JSON.stringify({
+            intent: 'top_artists',
+            params: { year: CURRENT_YEAR },
+            title: `Top artists ${CURRENT_YEAR}`,
+            explanation: `Artists ranked by total stream count in ${CURRENT_YEAR}.`,
+            sql: `SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE artist_name IS NOT NULL AND EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5`,
         }),
     },
     {
