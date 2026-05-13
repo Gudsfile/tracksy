@@ -14,6 +14,12 @@ export const INTENT_NAMES = [
     'new_vs_old',
     'favorite_weekday',
     'total_streams',
+    'concentration_score',
+    'evolution_over_time',
+    'principal_platform',
+    'repeat_behavior',
+    'top_streak',
+    'seasonal_patterns',
     'custom',
 ] as const
 
@@ -102,6 +108,41 @@ export const INTENTS: Record<IntentName, IntentSpec> = {
     total_streams: {
         description: 'Lifetime total of streams',
         acceptsYear: false,
+        acceptsLimit: false,
+    },
+    concentration_score: {
+        description:
+            'How concentrated listening is across the top 5, 10, and 20 artists (share of total streams)',
+        acceptsYear: true,
+        acceptsLimit: false,
+    },
+    evolution_over_time: {
+        description: 'How total stream count has evolved year by year',
+        acceptsYear: false,
+        acceptsLimit: false,
+    },
+    principal_platform: {
+        description:
+            'Which platform or device (Android, iOS, Web, etc.) is used most for listening',
+        acceptsYear: true,
+        acceptsLimit: false,
+    },
+    repeat_behavior: {
+        description:
+            'Repeat listening statistics — consecutive replays of the same track',
+        acceptsYear: true,
+        acceptsLimit: false,
+    },
+    top_streak: {
+        description:
+            'Longest and most recent consecutive listening day streaks',
+        acceptsYear: false,
+        acceptsLimit: false,
+    },
+    seasonal_patterns: {
+        description:
+            'Distribution of listening across seasons (winter, spring, summer, fall)',
+        acceptsYear: true,
         acceptsLimit: false,
     },
     custom: {
