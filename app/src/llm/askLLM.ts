@@ -3,7 +3,7 @@ import type {
     MLCEngineInterface,
 } from '@mlc-ai/web-llm'
 import { isIntentName } from './intents'
-import { SYSTEM_PROMPT, FEW_SHOTS } from './prompt'
+import { SYSTEM_PROMPT, FEW_SHOTS, CURRENT_DATE } from './prompt'
 import { LLMError, type ChatAnswer, type ChatMessage } from './types'
 
 function buildMessages(
@@ -25,7 +25,10 @@ function buildMessages(
             content: msg.text,
         })
     }
-    messages.push({ role: 'user', content: userText })
+    messages.push({
+        role: 'user',
+        content: `[Today is ${CURRENT_DATE}] ${userText}`,
+    })
     return messages
 }
 
