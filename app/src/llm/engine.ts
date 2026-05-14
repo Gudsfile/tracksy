@@ -5,6 +5,7 @@ import {
 } from '@mlc-ai/web-llm'
 
 export const MODEL_ID = 'Qwen2.5-Coder-1.5B-Instruct-q4f16_1-MLC'
+export const MODEL_ID_IOS = 'Qwen2.5-Coder-0.5B-Instruct-q4f16_1-MLC'
 
 let enginePromise: Promise<MLCEngineInterface> | null = null
 
@@ -14,6 +15,20 @@ export function isWebGPUAvailable(): boolean {
         'gpu' in navigator &&
         navigator.gpu !== undefined
     )
+}
+
+export function isSafariIOS(): boolean {
+    if (typeof navigator === 'undefined') return false
+    const ua = navigator.userAgent
+    return (
+        /iP(hone|ad|od)/.test(ua) &&
+        /Safari/.test(ua) &&
+        !/Chrome|CriOS|FxiOS|EdgiOS/.test(ua)
+    )
+}
+
+export function selectModelId(): string {
+    return isSafariIOS() ? MODEL_ID_IOS : MODEL_ID
 }
 
 export type ProgressHandler = (report: InitProgressReport) => void
@@ -28,7 +43,7 @@ export async function getEngine(
     }
     if (enginePromise) return enginePromise
 
-    enginePromise = CreateMLCEngine(MODEL_ID, {
+    enginePromise = CreateMLCEngine(selectModelId(), {
         initProgressCallback: (report) => onProgress?.(report),
     }).catch((e) => {
         // Reset so a future attempt can retry
