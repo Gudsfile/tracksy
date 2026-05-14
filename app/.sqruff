@@ -4,10 +4,7 @@ dialect = duckdb
 templater = placeholder
 rules = all
 # ST07: Found USING statement. Expected only ON statements.
-# RF02: Unqualified reference <reference> found in select with more than one referenced table/view.
-#       Too many warnings; to be corrected in separate PR
-#       https://github.com/Gudsfile/tracksy/issues/294
-exclude_rules = ST07, RF02
+exclude_rules = ST07
 warn_unused_ignores = True
 max_line_length = 80
 
@@ -47,3 +44,4 @@ order_condition = streaks desc
 # ${year} only appears inside SQL string literals (e.g. '${ year}-01-01'),
 # so this substitution is a no-op for linting but documents the expected type.
 year = 2024
+year_for_new = 2024

@@ -14,11 +14,11 @@ threshold as (
 ),
 
 recent_artists as (
-    select distinct artist_name as artist
-    from ${table}, recent_date
+    select distinct t.artist_name as artist
+    from ${table} as t, recent_date
     where
-        artist_name is not null
-        and ts::date >= max_date - interval 90 day
+        t.artist_name is not null
+        and t.ts::date >= recent_date.max_date - interval 90 day
 ),
 
 artist_years as (
@@ -35,9 +35,9 @@ artist_years as (
 )
 
 select
-    artist_name as main_text,
+    artist_years.artist_name as main_text,
     'musical_anniversary' as fact_type,
-    year(max_date) - first_year as fact_value,
+    year(recent_date.max_date) - artist_years.first_year as fact_value,
     'years' as unit,
     'with you' as context
 from artist_years, recent_date

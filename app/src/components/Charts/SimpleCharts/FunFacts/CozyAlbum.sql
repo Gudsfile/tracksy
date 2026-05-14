@@ -5,18 +5,18 @@ with max_date as (
 
 sunday_album_listening as (
     select
-        album_name,
-        artist_name,
-        sum(ms_played) as total_ms_played
-    from ${table}, max_date
+        t.album_name,
+        t.artist_name,
+        sum(t.ms_played) as total_ms_played
+    from ${table} as t, max_date
     where
         (
-            dayofweek(ts::date) = 0
-            or (dayofweek(ts::date) = 1 and hour(ts::datetime) <= 4)
+            dayofweek(t.ts::date) = 0
+            or (dayofweek(t.ts::date) = 1 and hour(t.ts::datetime) <= 4)
         )
-        and ts::date >= (max_date.last_date - interval 1 YEARS)
-    group by album_name, artist_name
-    having count(distinct track_name) >= 7
+        and t.ts::date >= (max_date.last_date - interval 1 YEARS)
+    group by t.album_name, t.artist_name
+    having count(distinct t.track_name) >= 7
     order by total_ms_played desc
     limit 1
 )

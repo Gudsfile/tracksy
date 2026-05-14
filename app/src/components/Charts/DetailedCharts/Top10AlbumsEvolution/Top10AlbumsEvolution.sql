@@ -6,15 +6,15 @@ max_date as (
 
 album_listening as (
     select
-        album_name,
-        artist_name,
-        year(ts::date)::int as stream_year,
+        t.album_name,
+        t.artist_name,
+        year(t.ts::date)::int as stream_year,
         count(*) as playing_days_count
-    from ${table}, max_date
-    group by album_name, artist_name, ts::date
+    from ${table} as t, max_date
+    group by t.album_name, t.artist_name, t.ts::date
     -- arbitrary threshold: an album listen is counted from 7 distinct tracks
     -- conservative lower bound of average album length
-    having count(distinct track_name) >= 7
+    having count(distinct t.track_name) >= 7
 ),
 
 album_yearly_play_counts as (
