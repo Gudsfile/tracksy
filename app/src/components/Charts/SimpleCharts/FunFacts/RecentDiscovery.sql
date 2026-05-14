@@ -22,7 +22,8 @@ select
 from ${table}
 inner join artist_first_listen using (artist_name)
 where
-    first_listen >= (select max_date - interval 90 day from recent_date)
+    artist_first_listen.first_listen
+    >= (select max_date - interval 90 day from recent_date)
     and artist_name is not null
 group by artist_name
 order by fact_value desc

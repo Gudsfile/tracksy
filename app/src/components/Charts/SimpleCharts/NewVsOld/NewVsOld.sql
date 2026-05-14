@@ -11,7 +11,7 @@ streams_classified as (
     select
         artist_name as artist,
         case
-            when first_year = ${year_for_new} then 'new'
+            when artist_first_listen.first_year = ${year_for_new} then 'new'
             else 'old'
         end as category
     from ${table}

@@ -6,13 +6,13 @@ recent_date as (
 
 recent_artists as (
     select
-        artist_name as artist,
-        min(ts::date) as last_listen
-    from ${table}, recent_date
+        t.artist_name as artist,
+        min(t.ts::date) as last_listen
+    from ${table} as t, recent_date
     where
-        ts::date >= max_date - interval 90 day
-        and artist_name is not null
-    group by artist_name
+        t.ts::date >= recent_date.max_date - interval 90 day
+        and t.artist_name is not null
+    group by t.artist_name
 ),
 
 threshold as (
@@ -26,23 +26,25 @@ threshold as (
 
 previous_listens as (
     select
-        artist_name as artist,
-        max(ts::date) as previous_listen
-    from ${table}, recent_date
+        t.artist_name as artist,
+        max(t.ts::date) as previous_listen
+    from ${table} as t, recent_date
     where
-        artist_name is not null
-        and ts::date < max_date - interval 90 day
-        and artist_name in (select artist from recent_artists)
-    group by artist_name
+        t.artist_name is not null
+        and t.ts::date < recent_date.max_date - interval 90 day
+        and t.artist_name in (select artist from recent_artists)
+    group by t.artist_name
     having count(*) > (select limit_streams from threshold)
 ),
 
 artist_gaps as (
     select
         artist,
-        last_listen,
-        previous_listen,
-        date_diff('day', previous_listen, last_listen) as gap
+        recent_artists.last_listen,
+        previous_listens.previous_listen,
+        date_diff(
+            'day', previous_listens.previous_listen, recent_artists.last_listen
+        ) as gap
     from recent_artists
     inner join previous_listens using (artist)
     order by gap desc

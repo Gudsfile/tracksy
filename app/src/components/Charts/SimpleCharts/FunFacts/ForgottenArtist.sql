@@ -5,22 +5,22 @@ recent_date as (
 ),
 
 recent_artists as (
-    select distinct artist_name as artist
-    from ${table}, recent_date
+    select distinct t.artist_name as artist
+    from ${table} as t, recent_date
     where
-        artist_name is not null
-        and ts::date >= max_date - interval 90 day
+        t.artist_name is not null
+        and t.ts::date >= recent_date.max_date - interval 90 day
 ),
 
 forgotten as (
     select
-        artist_name as artist,
-        ts::date as listen_date
-    from ${table}, recent_date
+        t.artist_name as artist,
+        t.ts::date as listen_date
+    from ${table} as t, recent_date
     where
-        artist_name is not null
-        and ts::date < max_date - interval 90 day
-        and artist_name not in (select artist from recent_artists)
+        t.artist_name is not null
+        and t.ts::date < recent_date.max_date - interval 90 day
+        and t.artist_name not in (select artist from recent_artists)
 ),
 
 counts as (
