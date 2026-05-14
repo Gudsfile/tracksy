@@ -7,8 +7,8 @@ import {
     SUMMARIZE_CACHE_TABLE,
 } from '../db/queries/constants'
 
-const CURRENT_YEAR = new Date().getFullYear()
-const CURRENT_DATE = new Date().toISOString().split('T')[0]
+export const CURRENT_YEAR = new Date().getFullYear()
+export const CURRENT_DATE = new Date().toISOString().split('T')[0]
 
 const SCHEMA_DESCRIPTION = `\
 DuckDB schema (the user's music streaming history, fully local):
@@ -93,7 +93,7 @@ export const FEW_SHOTS: FewShot[] = [
         }),
     },
     {
-        user: 'What are my top artists this year?',
+        user: `[Today is ${CURRENT_DATE}] What are my top artists this year?`,
         assistant: JSON.stringify({
             intent: 'top_artists',
             params: { year: CURRENT_YEAR },
@@ -113,13 +113,13 @@ export const FEW_SHOTS: FewShot[] = [
         }),
     },
     {
-        user: 'How does my listening look across the year?',
+        user: `[Today is ${CURRENT_DATE}] How does my listening look across the year?`,
         assistant: JSON.stringify({
             intent: 'calendar_heatmap',
-            params: { year: new Date().getFullYear() },
+            params: { year: CURRENT_YEAR },
             title: 'Listening calendar',
             explanation: 'Daily listening intensity across the calendar year.',
-            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE EXTRACT(year FROM ts) = ${new Date().getFullYear()} GROUP BY ts::date ORDER BY day`,
+            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY day`,
         }),
     },
     {
