@@ -31,12 +31,18 @@ jobs:
         uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: false
+          cache: true
 
       - name: Setup toolchains
-        run: moon setup
+        run: |
+          moon setup
+          proto use
 
       - name: Install Playwright Browsers
         run: moon run e2e:install-browsers
+
+      - name: Check tests
+        run: moon run e2e:test-coverage
 
       - name: Run Playwright tests
         run: moon run --force e2e:test

@@ -1,0 +1,24 @@
+name: Tracksy Black Box Test
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL to test"
+        required: true
+        default: "https://gudsfile.github.io"
+      testPath:
+        description: "Path to test"
+        required: true
+        default: "/tracksy"
+
+jobs:
+  black-box-test:
+    uses: ./.github/workflows/e2e.yml
+    with:
+      baseUrl: ${{ inputs.url }}
+      testPath: ${{ inputs.testPath }}
+    secrets: inherit

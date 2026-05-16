@@ -38,9 +38,12 @@ jobs:
         uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: false
+          cache: true
 
       - name: Setup toolchains
-        run: moon setup
+        run: |
+          moon setup
+          proto use
 
       - name: Build with Hugo
         run: moon run blog:build -- -d ./public --baseURL https://Gudsfile.github.io/tracksy/blog/
