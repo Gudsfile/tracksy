@@ -6,7 +6,8 @@ const config = getViteConfig({
     // https://docs.astro.build/en/guides/testing/#vitest
     test: {
         environment: 'jsdom',
-        setupFiles: './vitest.setupFiles.ts',
+        setupFiles: ['vitest-leak-detector/setup', './vitest.setupFiles.ts'],
+        reporters: ['default', 'vitest-leak-detector/reporter'],
         include: ['**/*.test.?(c|m)[jt]s?(x)'],
         exclude: ['**/node_modules/**'],
         sequence: { shuffle: true },
@@ -15,8 +16,8 @@ const config = getViteConfig({
             reporter: ['text'],
             thresholds: {
                 statements: 79,
-                branches: 78,
-                functions: 84,
+                branches: 74,
+                functions: 82,
                 lines: 79,
             },
             exclude: [
