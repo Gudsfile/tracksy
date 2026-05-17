@@ -37,8 +37,10 @@ export function DropzoneWrapper({ handleValidatedFiles }: Props) {
         event.preventDefault()
     }
 
-    const contentTypeAccepted =
-        STREAM_PROVIDERS_CONTENT_TYPES.join(',') + zipContentFile
+    const contentTypeAccepted = [
+        ...STREAM_PROVIDERS_CONTENT_TYPES,
+        zipContentFile,
+    ].join(',')
 
     return (
         <Dropzone

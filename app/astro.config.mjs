@@ -34,6 +34,7 @@ export default defineConfig({
                     {
                         src: 'node_modules/libarchive.js/dist/libarchive.wasm',
                         dest: './_astro/',
+                        rename: { stripBase: true },
                     },
                 ],
             }),
