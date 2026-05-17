@@ -7,8 +7,8 @@ import {
     SUMMARIZE_CACHE_TABLE,
 } from '../db/queries/constants'
 
-const CURRENT_YEAR = new Date().getFullYear()
-const CURRENT_DATE = new Date().toISOString().split('T')[0]
+export const CURRENT_YEAR = new Date().getFullYear()
+export const CURRENT_DATE = new Date().toISOString().split('T')[0]
 
 const SCHEMA_DESCRIPTION = `\
 DuckDB schema (the user's music streaming history, fully local):
@@ -76,7 +76,7 @@ Rules:
 - "params.limit" only for top_artists/top_tracks/top_albums when user asked for a specific N.
 - Use intent "custom" ONLY if no other intent fits.
 - Never invent table or column names. Never include any text outside the JSON object.
-- Today is ${CURRENT_DATE}. When the user says "this year", "current year", or similar without an explicit year, use ${CURRENT_YEAR} in the SQL and params.
+- Today is ${CURRENT_DATE}. If the message prefix contains "The user is asking about year X", use X in the SQL and params. Otherwise omit year from params.
 `
 
 export type FewShot = { user: string; assistant: string }
@@ -93,13 +93,23 @@ export const FEW_SHOTS: FewShot[] = [
         }),
     },
     {
-        user: 'What are my top artists this year?',
+        user: `[Today is ${CURRENT_DATE}. The user is asking about year ${CURRENT_YEAR}.] What are my top artists this year?`,
         assistant: JSON.stringify({
             intent: 'top_artists',
             params: { year: CURRENT_YEAR },
             title: `Top artists ${CURRENT_YEAR}`,
             explanation: `Artists ranked by total stream count in ${CURRENT_YEAR}.`,
             sql: `SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE artist_name IS NOT NULL AND EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5`,
+        }),
+    },
+    {
+        user: `[Today is ${CURRENT_DATE}. The user is asking about year ${CURRENT_YEAR - 1}.] What are my top tracks from last year?`,
+        assistant: JSON.stringify({
+            intent: 'top_tracks',
+            params: { year: CURRENT_YEAR - 1 },
+            title: `Top tracks ${CURRENT_YEAR - 1}`,
+            explanation: `Most-played tracks during ${CURRENT_YEAR - 1}.`,
+            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM music_streams WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR - 1} AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 5`,
         }),
     },
     {
@@ -113,13 +123,13 @@ export const FEW_SHOTS: FewShot[] = [
         }),
     },
     {
-        user: 'How does my listening look across the year?',
+        user: `[Today is ${CURRENT_DATE}. The user is asking about year ${CURRENT_YEAR}.] How does my listening look across the year?`,
         assistant: JSON.stringify({
             intent: 'calendar_heatmap',
-            params: { year: new Date().getFullYear() },
+            params: { year: CURRENT_YEAR },
             title: 'Listening calendar',
             explanation: 'Daily listening intensity across the calendar year.',
-            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE EXTRACT(year FROM ts) = ${new Date().getFullYear()} GROUP BY ts::date ORDER BY day`,
+            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY day`,
         }),
     },
     {
