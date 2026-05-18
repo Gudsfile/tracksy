@@ -142,10 +142,10 @@ To get started, you don't need to install Node.js, Python, or pnpm manually. Moo
 
 3. **Install the pre-commit hooks**:
 
-  ```bash
-  # This installs the Git hooks defined in .moon/workspace.yml
-  moon sync hooks
-  ```
+    ```bash
+    # This installs the Git hooks defined in .moon/workspace.yml
+    moon sync hooks
+    ```
 
 #### Available Commands
 
@@ -194,11 +194,11 @@ Run tasks across the entire monorepo or for specific projects.
     ```
 
 > [!NOTE]
-> ensure `proto` is in your PATH to use `uv` `pnpm` and python and Node.js tools.
+> Ensure `proto` is in your PATH to use `uv` `pnpm` and python and Node.js tools.
 > `export PATH="$HOME/.proto/shims:$HOME/.proto/bin:$PATH"`
 
 > [!NOTE]
-> commands `moon run e2e:test-ui` and `moon run e2e:test-dev` starts the application dev server (moon run app:dev) first then runs the tests.
+> `moon run e2e:test-ui` and `moon run e2e:test-dev` start the application dev server (`moon run app:dev`) first, then run the tests.
 
 ## Architecture Decision Records (ADRs)
 

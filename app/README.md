@@ -1,6 +1,6 @@
 # Tracksy app
 
-Front end of Tracksy based on [Astro](https://docs.astro.build/en/getting-started/) and use [DuckDB](https://duckdb.org/docs/) as embedded database.
+Front end of Tracksy based on [Astro](https://docs.astro.build/en/getting-started/), using [DuckDB](https://duckdb.org/docs/) as embedded database.
 
 ## ⏩ Quick Start
 
@@ -46,7 +46,7 @@ As an Astro project, you'll see the following folders and files:
 
 Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components. See [below](##Components) for details of specific Tracksy components.
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components. See [below](#components) for details of specific Tracksy components.
 
 Any static assets, like images, can be placed in the `public/` directory.
 
@@ -86,8 +86,8 @@ The `Results` component renders visualizations in two tabs:
 
 Both views use a `RangeSlider` to filter by year. User interaction (year change) re-renders only the charts within the active view.
 
-- **SimpleView** — a grid of high-level insights (top tracks/artists/albums, listening patterns, fun facts, etc.)
-- **DetailedView** — deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`) and an interactive `DuckDBShell`
+- **SimpleView**: a grid of high-level insights (top tracks/artists/albums, listening patterns, fun facts, etc.)
+- **DetailedView**: deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`) and an interactive `DuckDBShell`
 
 Each view is responsible for orchestrating and rendering visualizations. It manages how different components interact with each other, such as coordinating between the RangeSlider and insights components. Below is a mermaid diagram that illustrates how the SimpleView works (without the summarize query):
 
