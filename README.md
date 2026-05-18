@@ -34,7 +34,7 @@ Deezer:
   - Go to your "_Account settings_"
   - Scroll and click on "_My personal data_"
   - Click on "_Request my data_"
-  - **Confirm your identity** by enter the code sent by e-mail
+  - **Confirm your identity** by entering the code sent by email
 2. A few days later
 3. Open the mail from Deezer and download the `.xlsx` file
 
@@ -44,7 +44,7 @@ Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file or use
 
 No data is sent to us, it stays with you!
 
-You can also deploy Tracksy on your own, just take a look at the [documentation](app/).
+You can also deploy Tracksy on your own, just take a look at the [app documentation](app/).
 
 ### 👀 Visualize your data
 
@@ -55,7 +55,7 @@ Once you've uploaded your file, you'll be able to see graphs about your data. �
 ## _"Roadmap"_
 
 The project is currently under development. We plan to add visualizations as well as a simplified view to make understanding streaming data as accessible as possible.
-We also intend to support other data sources (Deezer, Funkwhale, etc.).
+We also intend to support other data sources (Funkwhale, etc.).
 See our [issues](https://github.com/Gudsfile/tracksy/issues).
 
 ## Project Structure
@@ -71,7 +71,7 @@ Inside of this project, you'll see the following folders and files:
 ```
 
 - `app/` is the front end. It's an Astro project using DuckDB WASM for data storage. This means that your uploaded data stays with you, client-side.
-  We don't want to help you understand your data without knowing your data.
+  All data processing stays client-side — we never see your data.
   For developers or curious, take a look at [`app/README.md`](app/) for more details on development.
 - `blog/` is a static blog built with Hugo.
   Technical decisions are documented as ADRs in the [decisions](blog/content/decisions/) folder.
@@ -83,14 +83,14 @@ Inside of this project, you'll see the following folders and files:
 
 ## Installation
 
- ```bash
- moon setup
+```bash
+moon setup
 ```
 ```bash
- moon run app:dev
- ```
+moon run app:dev
+```
 
- More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
+More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
 
 ## Contributing
 
