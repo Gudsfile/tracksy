@@ -1,23 +1,20 @@
 # AGENTS.md
 
 ## Project Overview
+Tracksy: privacy-first music streaming data viz tool. Monorepo via [Moon](https://moonrepo.dev/), three components:
 
-Tracksy is a privacy-first music streaming data visualization tool. Monorepo managed by [Moon](https://moonrepo.dev/) with three components:
-
-- **`app/`**: Astro + React web app using DuckDB WASM for client-side data processing
+- **`app/`**: Astro + React web app, DuckDB WASM for client-side data processing
 - **`synthetic-datasets/`**: Python scripts for synthetic music streaming history generation
 - **`blog/`**: Gohugo-based site
 
 **Tech Stack:**
-
 - **App:** Astro, React, TypeScript, TailwindCSS, DuckDB WASM, Vitest
 - **Synthetic Datasets:** Python, Faker, NumPy, openpyxl, Pydantic, pytest, Ruff, ty
 - **Blog:** Gohugo
 
-**Privacy:** All data processing happens client-side in the browser.
+**Privacy:** All processing client-side in browser.
 
 ## Setup
-
 Initialize workspace:
 
 ```bash
@@ -25,42 +22,33 @@ moon setup  # Downloads Node.js, Python, and dependencies
 ```
 
 ## Dev Environment Tips
-
-- Use `moon run app:dev` to start the web app dev server
-- Use `moon run blog:dev` to start the blog dev server
-- Use `moon run synthetic-datasets:generate -- 100` to generate 100 Spotify test records
-- Use `moon run synthetic-datasets:generate -- 100 --provider deezer` to generate 100 Deezer test records
-- Use `moon run synthetic-datasets:generate -- 100 --seed 42` to generate 100 test records with a specific seed
-- Use `moon run synthetic-datasets:generate -- --help` to show help for generating test records
-- Run `moon run :test` to run all tests across the monorepo
-- Use `moon run app:pnpm -- <args>` to run pnpm commands in the app workspace (e.g. `moon run app:pnpm -- add <package>`)
-- Use `moon run synthetic-datasets:uv -- <args>` to run uv commands in the synthetic-datasets workspace (e.g. `moon run synthetic-datasets:uv -- add <package>`)
-- Check `app/moon.yml`, `blog/moon.yml`, and `synthetic-datasets/moon.yml` for available tasks
-- The project uses TypeScript strict mode, ESLint, and Prettier
-- Components: `.astro` files for static content, `.tsx` for interactive React components
-- Follow Astro's islands architecture pattern
+- `moon run app:dev` — start web app dev server
+- `moon run blog:dev` — start blog dev server
+- `moon run synthetic-datasets:generate -- 100 --provider spotify` — generate 100 Spotify records
+- `moon run synthetic-datasets:generate -- --seed 42` — generate deterministic records with seed
+- `moon run synthetic-datasets:generate -- --help` — show generation help
+- `moon run :test` — run all tests across monorepo
+- Prefer moon tasks in `app/moon.yml` and `synthetic-datasets/moon.yml` over raw `moon run app:pnpm` or `moon run synthetic-datasets:uv`.
 
 ## Code Style
-
 - TypeScript strict mode enabled
-- Use Prettier for formatting: `moon run app:format`
-- Lint before committing: `moon run app:lint`
-- File naming: kebab-case for files, PascalCase for components, camelCase for functions
-- Keep components focused and single-purpose
+- Prettier: `moon run app:format`
+- Lint before commit: `moon run app:lint`
+- Components: `.astro` for static content, `.tsx` for interactive React components
+- Follow Astro's islands architecture pattern
+- File naming: kebab-case files, PascalCase components, camelCase functions
+- Components: focused, single-purpose
 - Separate business logic from UI components
 
 ## Testing Instructions
 
 ### App testing
-
-- Run `moon run app:test` to run all tests for the app
-- Run `moon run app:test-coverage` for coverage report
-- Use `moon run app:test-watch` for watch mode during development
-- Focus on specific test: `moon run app:test -- -t "<test name>"`
-- Focus on specific test file: `moon run app:test -- <file path : src/component.test.ts>`
+- `moon run app:test` — run all app tests
+- `moon run app:test-coverage` — coverage report
+- Focus specific test: `moon run app:test -- -t "<test name>"`
+- Focus specific file: `moon run app:test -- <file path : src/component.test.ts>`
 - All tests must pass before committing
-- **IMPORTANT:** Use `vi.spyOn()` instead of `vi.mock()` for mocking (ESLint enforced)
-
+- **IMPORTANT:** Use `vi.spyOn()` not `vi.mock()` (ESLint enforced)
   ```ts
   // ❌ Bad
   vi.mock("../db/queries", () => ({ getUser: vi.fn() }));
@@ -69,32 +57,24 @@ moon setup  # Downloads Node.js, Python, and dependencies
   import * as queries from "../db/queries";
   vi.spyOn(queries, "getUser").mockResolvedValue(mockUser);
   ```
-
-- Add or update tests for any code changes, even if not explicitly requested
+- Add/update tests for any code changes, even if not requested
 - Fix all type errors and lint issues before submitting
 
 #### Astro Testing
+Astro outputs raw HTML — e2e tests can use build output. Vitest and React Testing Library work for React component tests.
 
-As Astro outputs raw HTML, it is possible to write end-to-end tests using the output of the build step. Any end-to-end tests written previously might work out-of-the-box if you have been able to match the markup of your CRA site. Testing libraries such as Jest and React Testing Library can be imported and used in Astro to test your React components.
-
-See Astro’s [testing guide](https://docs.astro.build/en/guides/testing/) for more.
-
+See Astro's [testing guide](https://docs.astro.build/en/guides/testing/).
 
 ### End-to-End Testing
+Tracksy e2e built with Playwright.
 
-Tracksy e2e is an end-to-end testing suite built with Playwright.
-
-Refer to [E2E README](e2e/README.md) and [Playwright documentation](https://playwright.dev/docs/intro) for more information.
-
+See [E2E README](e2e/README.md) and [Playwright documentation](https://playwright.dev/docs/intro).
 
 ## CI/CD
-
-- Find CI workflows in `.github/workflows/`
+- Workflows in `.github/workflows/`
 
 ## Commit Conventions
-
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
-
 - `feat(scope): description` - New feature
 - `fix(scope): description` - Bug fix
 - `docs: description` - Documentation changes
@@ -104,7 +84,6 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore: description` - Build/tooling changes
 
 Examples:
-
 ```
 feat(charts): add streaming trends visualization
 fix(upload): resolve file parsing timeout
@@ -112,34 +91,28 @@ docs: update setup instructions
 ```
 
 ## PR Instructions
-
 1. Create feature branch from `main`: `git checkout -b feat/your-feature-name`
-2. Make focused, atomic commits following conventions above
+2. Focused, atomic commits per conventions
 3. Before submitting, rebase on latest main:
-
    ```bash
    git fetch origin
    git rebase origin/main
    ```
-
-4. Run quality checks:
-
+4. Quality checks:
    ```bash
    moon run app:lint
    moon run app:test
    moon run app:format-check
    ```
-
 5. All tests must pass before merging
 6. Use **rebase and merge** strategy (enforced)
-7. Squash related commits representing single logical changes
+7. Squash related commits for single logical changes
 
 ## Architecture Notes
-
-- **Data Flow:** User uploads streaming data file → `StreamProvider` detects format and parses → DuckDB WASM → Observable Plot/D3.js visualization
+- **Data Flow:** User uploads file → `StreamProvider` detects format + parses → DuckDB WASM → Observable Plot/D3.js visualization
   - Spotify: ZIP or JSON (`Streaming_History_Audio_*.json`)
   - Deezer: XLSX (`deezer-data_\d{10}.xlsx`), sheet `10_listeningHistory`, parsed via DuckDB Excel extension
-- **StreamProvider pattern:** `app/src/streamProvider/` — extensible adapter pattern for multi-source support. Each provider implements `filePattern`, `readFile()`, and `transform()` to produce canonical `StreamRecord` objects. Register new providers in `index.ts`.
+- **StreamProvider pattern:** `app/src/streamProvider/` — extensible adapter for multi-source support. Each provider implements `filePattern`, `readFile()`, `transform()` → canonical `StreamRecord` objects. Register new providers in `index.ts`.
 - **Key Directories:**
   - `app/src/components/`: React and Astro components
   - `app/src/pages/`: Astro page routes
@@ -148,18 +121,15 @@ docs: update setup instructions
   - `synthetic-datasets/`: Python test data generation (supports `--provider spotify|deezer`)
 
 ## Environment Variables
-
-See `app/.env.example` for required configuration.
+See `app/.env.example` for required config.
 
 ## Security Considerations
-
-- **No server-side data storage** - All processing is client-side
+- **No server-side data storage** — all processing client-side
 - **No external API calls** with user data
 - Review `SECURITY.md` for vulnerability reporting
-- Run `moon run app:audit` to check for dependency vulnerabilities
+- `moon run app:audit` — check dependency vulnerabilities
 
 ## Additional Resources
-
 - [Contributing Guide](CONTRIBUTING.md)
 - [App-specific README](app/README.md)
 - [Datasets README](synthetic-datasets/README.md)
