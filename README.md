@@ -1,102 +1,112 @@
+<div align="center">
+
 # Tracksy
 
-[![Astro badge](https://img.shields.io/badge/-Astro-AF56E6?logo=Astro&logoColor=FFFFFF&label=Built%20with&labelColor=000000)](https://github.com/withastro/astro) [![DuckDB badge](https://img.shields.io/badge/-DuckDB-FCF550?logo=DuckDB&label=Powered%20by&labelColor=000000)](https://github.com/duckdb/duckdb) [![Hugging Face badge](https://img.shields.io/badge/-available-F8D44E?logo=Hugging%20Face&label=Datasets&labelColor=000000)](https://huggingface.co/datasets/tracksy/synthetic-datasets) [![uv badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) [![Ruff badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![ty badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
+**Visualize and understand how you listen to music, without sharing your data.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE) [![Actions status](https://github.com/gudsfile/tracksy/actions/workflows/app-deploy-live.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions/workflows/app-deploy-live.yml) [![Actions status](https://github.com/gudsfile/tracksy/actions/workflows/datasets-generate-synthetic.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions/workflows/datasets-generate-synthetic.yml)
+The same old song? Late at night? Only in summer? Tracksy helps you answer these questions.
 
-👀 Visualize and understand how you listen to music.
+[![Astro](https://img.shields.io/badge/-Astro-AF56E6?logo=Astro&logoColor=FFFFFF&label=Built%20with&labelColor=000000)](https://github.com/withastro/astro) [![DuckDB](https://img.shields.io/badge/-DuckDB-FCF550?logo=DuckDB&label=Powered%20by&labelColor=000000)](https://github.com/duckdb/duckdb) [![Datasets](https://img.shields.io/badge/-available-F8D44E?logo=Hugging%20Face&label=Datasets&labelColor=000000)](https://huggingface.co/datasets/tracksy/synthetic-datasets)
 
-- > The same old song? Late at night? Only in summer?
-- Tracksy aims to help you answer these questions. It helps you see your data without us seeing your data.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE) [![Deploy](https://github.com/gudsfile/tracksy/actions/workflows/app-deploy-live.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions/workflows/app-deploy-live.yml) [![Datasets CI](https://github.com/gudsfile/tracksy/actions/workflows/datasets-generate-synthetic.yml/badge.svg)](https://github.com/gudsfile/tracksy/actions/workflows/datasets-generate-synthetic.yml)
 
-🦆 Powered by DuckDB WASM x Astro x React.
+![Tracksy demo](.github/img/tracksy_demo.gif)
 
-🚧 Currently only works with Spotify and Deezer streaming data.
+</div>
+
+---
+
+Tracksy is a **privacy-first** music streaming data visualization tool. All processing happens in your browser. Your data never leaves your device.
+
+- 🎵 Supports **Spotify** and **Deezer** streaming history
+- 🦆 Powered by **DuckDB WASM**: SQL in the browser, zero server
+- 🔒 **No account. No upload. No tracking.**
 
 ## Usage
 
 ### ⬇️ Download your data
 
-**You can skip this step** using pre-generated datasets through the demo button on the home page.
+**You can skip this step** and use the demo button on the home page to explore with pre-generated data.
 
-**Or use your own data:**
+Or bring your own data:
 
-Spotify:
-1. Request your Spotify data on [your Spotify account](https://www.spotify.com/account/privacy/)
+<details>
+<summary>Spotify</summary>
+<br>
+
+1. Request your data on [your Spotify account](https://www.spotify.com/account/privacy/)
    - Select "_Extended streaming history_"
-   - Click on "_Request data_"
-   - **Confirm your request** by clicking on Spotify's confirmation e-mail
-2. A few days later
-3. Open the mail from Spotify and download the `.zip` file
+   - Click "_Request data_"
+   - **Confirm** via the email from Spotify
+2. Wait a few days
+3. Download the `.zip` file from the email
 
-Deezer:
-1. Request your Deezer data on [your Deezer account](https://www.deezer.com)
-  - Go to your "_Account settings_"
-  - Scroll and click on "_My personal data_"
-  - Click on "_Request my data_"
-  - **Confirm your identity** by entering the code sent by email
-2. A few days later
-3. Open the mail from Deezer and download the `.xlsx` file
+</details>
+
+<details>
+<summary>Deezer</summary>
+<br>
+
+1. Request your data on [your Deezer account](https://www.deezer.com)
+   - Go to "_Account settings_"
+   - Scroll to "_My personal data_"
+   - Click "_Request my data_"
+   - **Confirm** by entering the code sent by email
+2. Wait a few days
+3. Download the `.xlsx` file from the email
+
+</details>
 
 ### 🚀 Upload your data
 
-Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file or use the demo button.
+Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file, or hit the demo button.
 
-No data is sent to us, it stays with you!
-
-You can also deploy Tracksy on your own, just take a look at the [app documentation](app/).
+Your data stays local. Nothing is sent anywhere. You can also [self-host Tracksy](#installation).
 
 ### 👀 Visualize your data
 
-Once you've uploaded your file, you'll be able to see graphs about your data. 🎉
-
-![Tracksy demo](.github/img/tracksy_demo.gif)
-
-## _"Roadmap"_
-
-The project is currently under development. We plan to add visualizations as well as a simplified view to make understanding streaming data as accessible as possible.
-We also intend to support other data sources (Funkwhale, etc.).
-See our [issues](https://github.com/Gudsfile/tracksy/issues).
+Once uploaded, explore interactive graphs about your listening habits. 🎉
 
 ## Project Structure
 
-Inside of this project, you'll see the following folders and files:
-
 ```text
 /
-├── app/
-├── blog/
-├── e2e/
-└── synthetic-datasets/
+├── app/                  # Astro + React frontend (DuckDB WASM)
+├── blog/                 # Hugo static blog (ADRs and technical notes)
+├── e2e/                  # Playwright end-to-end tests
+└── synthetic-datasets/   # Python scripts for generating test data
 ```
 
-- `app/` is the front end. It's an Astro project using DuckDB WASM for data storage. This means that your uploaded data stays with you, client-side.
-  All data processing stays client-side — we never see your data.
-  For developers or curious, take a look at [`app/README.md`](app/) for more details on development.
-- `blog/` is a static blog built with Hugo.
-  Technical decisions are documented as ADRs in the [decisions](blog/content/decisions/) folder.
-  See [`blog/README.md`](blog/) for more details.
-- `e2e/` is an end-to-end testing suite built with Playwright.
-  See [`e2e/README.md`](e2e/) for more details.
-- `synthetic-datasets/` is used to generate datasets to test the Tracksy application.
-  For developers or curious, take a look at [`synthetic-datasets/README.md`](synthetic-datasets/) for more details on development.
+| Directory | Description |
+|-----------|-------------|
+| [`app/`](app/) | Frontend. DuckDB WASM processes data client-side; nothing reaches a server. |
+| [`blog/`](blog/) | Static blog with architectural decision records. |
+| [`e2e/`](e2e/) | End-to-end test suite built with Playwright. |
+| [`synthetic-datasets/`](synthetic-datasets/) | Generates synthetic Spotify/Deezer streaming histories for testing. |
 
 ## Installation
 
 ```bash
-moon setup
-```
-```bash
-moon run app:dev
+moon setup       # download Node.js, Python, and dependencies
+moon run app:dev # start the dev server
 ```
 
-More details in [CONTRIBUTING.md development section](CONTRIBUTING.md#development)
+More details in the [CONTRIBUTING.md development section](CONTRIBUTING.md#development).
+
+## Roadmap
+
+Tracksy is under active development. On the horizon:
+
+- More visualizations and a simplified view for non-technical users
+- Support for additional data sources (Apple Music, Funkwhale, etc.)
+
+See [open issues](https://github.com/Gudsfile/tracksy/issues) for the full list.
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or a pull request (don't forget to consult our [CONTRIBUTING.md](CONTRIBUTING.md)).
+Contributions are welcome! Open an issue or a pull request (read [CONTRIBUTING.md](CONTRIBUTING.md) first).
 
-If you would like to be added to or removed from this list, feel free to open an issue or a PR.
+If you would like to be added to or removed from the contributors list, feel free to open an issue or a PR.
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
