@@ -24,4 +24,4 @@ moon run e2e:test-ui
 - `moon run e2e:show-report`: View the last test report.
 
 > [!NOTE]
-> commands `moon run e2e:test-ui` and `moon run e2e:test-dev` starts the application dev server (`moon run app:dev`) first then runs the tests.
+> `moon run e2e:test-ui` and `moon run e2e:test-dev` start the application dev server (`moon run app:dev`) first, then run the tests.
