@@ -622,20 +622,10 @@ describe('FunFacts queries', () => {
               { artist_name: 'artist1', album_name: 'album1', track_name: 't3', ts: RECENT_SUNDAY },
             ]
 
-            it('returns error message if no album satisfies the rules', async () => {
+            it('returns empty result if no album satisfies the rules', async () => {
                 await createTestTable(conn, testData)
                 const rows = await testQuery(conn, getFact('cozy_album').sql)
-                expect(rows.length).toBe(1)
-                expect(rows[0].fact_type).toBe('cozy_album')
-                expect(rows[0].main_text).toBeNull()
-                expect(rows[0].second_text).toBe(
-                    'This fun fact is unfortunately unavailable'
-                )
-                expect(rows[0].fact_value).toBeUndefined()
-                expect(rows[0].unit).toBeUndefined()
-                expect(rows[0].context).toBe(
-                    'feel like listening to an album today?'
-                )
+                expect(rows.length).toBe(0)
             })
         })
     })
