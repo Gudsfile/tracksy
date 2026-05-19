@@ -25,8 +25,8 @@ describe('BingeListener Component', () => {
             />
         )
         screen.getByRole('heading', { name: /🎧Deep Dive/ })
-        screen.getByText('5.8')
-        screen.getByText('hours in a day')
+        screen.getByText('5h 45min')
+        screen.getByText('in a day')
         screen.getByText('March 15, 2025')
     })
 })

@@ -15,6 +15,13 @@ function formatDate(dateStr: string): string {
     })
 }
 
+function formatHours(hours: number): string {
+    const h = Math.floor(hours)
+    const m = Math.round((hours - h) * 60)
+    if (m === 0) return `${h}h`
+    return `${h}h ${m}min`
+}
+
 export const BingeListener: FC<Props> = ({ data, isLoading }) => {
     return (
         <ChartCard
@@ -28,8 +35,8 @@ export const BingeListener: FC<Props> = ({ data, isLoading }) => {
             ) : (
                 <>
                     <ChartHero
-                        label={data.hours_played.toFixed(1)}
-                        sublabel="hours in a day"
+                        label={formatHours(data.hours_played)}
+                        sublabel="in a day"
                     />
                     <InsightCard>{formatDate(data.stream_date)}</InsightCard>
                 </>
