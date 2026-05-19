@@ -5,8 +5,10 @@ from pathlib import Path
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.deezer import DeezerFactory
+from synthetic_datasets.factories.funkwhale import FunkWhaleFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
 from synthetic_datasets.writers.deezer import DeezerWriter
+from synthetic_datasets.writers.funkwhale import FunkWhaleWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
@@ -24,6 +26,14 @@ def deezer(num_records: int, output_dir: Path, config: GenerationConfig):
 
     writer = DeezerWriter(output_dir=output_dir, reference_date=config.reference_date)
     writer.write(all_streamings)
+
+
+def funkwhale(num_records: int, output_dir: Path, config: GenerationConfig):
+    factory = FunkWhaleFactory(num_records, config=config)
+    all_listens = factory.create_streaming_history()
+
+    writer = FunkWhaleWriter(output_dir=output_dir, reference_date=config.reference_date)
+    writer.write(all_listens)
 
 
 def min_int(min_value):
@@ -62,7 +72,7 @@ Examples:
     )
     parser.add_argument(
         "--provider",
-        choices=["spotify", "deezer"],
+        choices=["spotify", "deezer", "funkwhale"],
         default="spotify",
         help="Streaming provider to generate data for (default: spotify)",
     )
@@ -75,6 +85,8 @@ Examples:
 
     if args.provider == "deezer":
         deezer(args.num_records, args.output_dir, config)
+    elif args.provider == "funkwhale":
+        funkwhale(args.num_records, args.output_dir, config)
     else:
         spotify(args.num_records, args.output_dir, config)
     print("--- %s seconds ---" % (time.time() - start_data_generation))

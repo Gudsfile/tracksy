@@ -5,6 +5,7 @@ import pytest
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.models.deezer import DeezerStreaming
+from synthetic_datasets.models.funkwhale import FunkWhaleAlbum, FunkWhaleArtist, FunkWhaleListen, FunkWhaleTrack
 from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
 
 
@@ -41,6 +42,30 @@ def deezer_streaming_record():
         platform_name="web",
         platform_model="",
         date=datetime.fromisoformat("2020-08-07T11:48:23"),
+    )
+
+
+@pytest.fixture
+def funkwhale_listen_record():
+    return FunkWhaleListen(
+        id=1,
+        creation_date=datetime.fromisoformat("2024-03-15T14:30:00"),
+        track=FunkWhaleTrack(
+            id=456,
+            title="Never Gonna Give You Up",
+            mbid="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            duration=213,
+            artist=FunkWhaleArtist(
+                id=1,
+                name="Rick Astley",
+                mbid="b1c2d3e4-f5a6-7890-abcd-ef1234567890",
+            ),
+            album=FunkWhaleAlbum(
+                id=1,
+                title="Whenever You Need Somebody",
+                mbid="c1d2e3f4-a5b6-7890-abcd-ef1234567890",
+            ),
+        ),
     )
 
 
