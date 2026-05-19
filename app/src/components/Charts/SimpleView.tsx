@@ -37,9 +37,13 @@ export function SimpleView() {
     const debouncedYear = useDebouncedValue(year, 250)
 
     const initDataSummarize = useCallback(async () => {
-        const results =
-            await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
-        setSummarize(results[0] || undefined)
+        try {
+            const results =
+                await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
+            setSummarize(results[0] || undefined)
+        } catch {
+            // DB not ready yet (no data loaded), year stays at default
+        }
     }, [])
 
     useEffect(() => {
