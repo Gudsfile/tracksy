@@ -282,3 +282,16 @@ it('renders all SimpleView', async () => {
     await screen.findByRole('heading', { name: '📅Your Power Day' })
     await screen.findByRole('heading', { name: '🕐Around the Clock' })
 })
+
+it('renders without crashing when queryDBAsJSON throws', async () => {
+    vi.spyOn(db, 'queryDBAsJSON').mockRejectedValue(
+        new Error('DB not ready yet')
+    )
+
+    render(<SimpleView />)
+
+    // Year slider must not appear (summarize stays undefined when DB throws)
+    await waitFor(() => {
+        expect(screen.queryByRole('slider')).toBeNull()
+    })
+})
