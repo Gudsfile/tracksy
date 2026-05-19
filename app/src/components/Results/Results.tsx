@@ -6,8 +6,8 @@ import { useState } from 'react'
 type Tab = 'simple' | 'detailed' | 'chat'
 
 const TABS: { id: Tab; label: string }[] = [
-    { id: 'simple', label: '✨ Simple View' },
-    { id: 'detailed', label: '🔬 Detailed View' },
+    { id: 'simple', label: '✨ Simple' },
+    { id: 'detailed', label: '🔬 Detailed' },
     { id: 'chat', label: '💬 Chat (beta)' },
 ]
 
