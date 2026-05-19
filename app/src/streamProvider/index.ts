@@ -1,4 +1,5 @@
 import { DeezerStreamProvider } from './DeezerStreamProvider/DeezerStreamProvider'
+import { FunkWhaleStreamProvider } from './FunkWhaleStreamProvider/FunkWhaleStreamProvider'
 import type { StreamProvider } from './StreamProvider'
 import { SpotifyStreamProvider } from './SpotifyStreamProvider/SpotifyStreamProvider'
 
@@ -6,6 +7,7 @@ import { SpotifyStreamProvider } from './SpotifyStreamProvider/SpotifyStreamProv
 const STREAM_PROVIDERS: StreamProvider[] = [
     new SpotifyStreamProvider(),
     new DeezerStreamProvider(),
+    new FunkWhaleStreamProvider(),
 ]
 
 export const STREAM_PROVIDERS_CONTENT_TYPES = STREAM_PROVIDERS.map(

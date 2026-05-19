@@ -1,0 +1,1 @@
+export { FunkWhaleStreamProvider } from './FunkWhaleStreamProvider'
