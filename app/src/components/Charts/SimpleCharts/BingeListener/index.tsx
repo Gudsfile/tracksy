@@ -7,5 +7,5 @@ export function BingeListener({ year }: { year: number | undefined }) {
         query: buildBingeListenerQuery(year),
         year,
     })
-    return <BingeListenerView data={data} isLoading={isLoading} />
+    return <BingeListenerView data={data} isLoading={isLoading} year={year} />
 }
