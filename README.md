@@ -57,6 +57,24 @@ Or bring your own data:
 
 </details>
 
+<details>
+<summary>FunkWhale</summary>
+<br>
+
+FunkWhale does not provide a UI download button. Use the API:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  "https://your-instance.example.com/api/v1/history/listenings/?format=json&page_size=1000" \
+  > funkwhale-history.json
+```
+
+Replace `YOUR_TOKEN` with your FunkWhale API token (_Settings_ > _Security_ > _API tokens_) and `your-instance.example.com` with your FunkWhale instance URL.
+
+If you have more than 1000 listens, repeat with `&page=2`, `&page=3`, etc., and concatenate the `results` arrays into a single JSON array before saving as `funkwhale-history.json`.
+
+</details>
+
 ### 🚀 Upload your data
 
 Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file, or hit the demo button.
