@@ -5,12 +5,16 @@ import { useFileUpload } from './useFileUpload'
 
 interface Props {
     handleValidatedFiles: (files: FileList | null) => void
+    onFail?: (error: unknown) => void
 }
 
-export function DropzoneWrapper({ handleValidatedFiles }: Props) {
+export function DropzoneWrapper({
+    handleValidatedFiles,
+    onFail = () => {},
+}: Props) {
     const { uploadFiles } = useFileUpload({
         onSuccess: (validatedFiles) => handleValidatedFiles(validatedFiles),
-        onFail: () => console.error('Upload failed'),
+        onFail,
     })
 
     const handleFileUpload = async (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getDB } from '../db/getDB'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
 import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
@@ -8,6 +8,8 @@ import { DemoButton } from './DemoButton/DemoButton'
 import { HowToButton } from './HowToButton/HowToButton'
 import { useDemo } from '../hooks/useDemo'
 import { Results } from './Results/Results'
+import { UploadError } from './UploadError'
+import { getUserMessage } from '../utils/uploadErrorMessages'
 
 interface TracksyWrapperProps {
     initialDb?: DuckdbAppType | null
@@ -23,6 +25,8 @@ export function TracksyWrapper({
     const [db, setDb] = useState<DuckdbAppType | null>(initialDb)
     const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
     const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
+    const [uploadError, setUploadError] = useState<string | null>(null)
+    const dismissUploadError = useCallback(() => setUploadError(null), [])
     const { isDemoReady, handleDemoButtonClick, demoJsonUrl } = useDemo()
 
     useEffect(() => {
@@ -44,6 +48,7 @@ export function TracksyWrapper({
             console.error('Failed to upload files:', error)
             setIsDataReady(false)
             setIsDataDropped(false)
+            setUploadError(getUserMessage(error))
         }
     }
 
@@ -64,6 +69,9 @@ export function TracksyWrapper({
                     <div className="flex-grow transition-all duration-300">
                         <DropzoneWrapper
                             handleValidatedFiles={handleFileUpload}
+                            onFail={(error) =>
+                                setUploadError(getUserMessage(error))
+                            }
                         />
                     </div>
                     <div className="flex flex-col justify-center gap-4">
@@ -83,6 +91,12 @@ export function TracksyWrapper({
             )}
             {isDataDropped && !isDataReady && <Spinner />}
             {(isDataReady || isDemoReady) && <Results />}
+            {uploadError && (
+                <UploadError
+                    message={uploadError}
+                    onDismiss={dismissUploadError}
+                />
+            )}
         </>
     )
 }

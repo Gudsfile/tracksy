@@ -2,6 +2,7 @@ import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
 import { isAllowedFileContentType } from '../../streamProvider'
 import { isZipArchive } from '../../utils/isZipArchive'
 import { openArchive } from '../../utils/openArchive'
+import { UPLOAD_ERROR } from '../../utils/uploadErrorMessages'
 
 const HIDDEN_FILE_PREFIX = ['__MACOSX']
 
@@ -21,7 +22,7 @@ export function useFileUpload({
     onFail,
 }: {
     onSuccess: (validatedFiles: FileList) => void
-    onFail: () => void
+    onFail: (error: unknown) => void
 }) {
     /**
      * Filters the provided FileList to only include files with allowed content types.
@@ -40,9 +41,7 @@ export function useFileUpload({
         )
 
         if (allowedFiles.length !== files.length) {
-            throw new Error(
-                'One or more files have an unsupported content type'
-            )
+            throw new Error(UPLOAD_ERROR.UNSUPPORTED_CONTENT_TYPE)
         }
     }
 
@@ -69,7 +68,7 @@ export function useFileUpload({
             })
 
         if (filteredFiles.length === 0) {
-            throw new Error('No files found in the archive')
+            throw new Error(UPLOAD_ERROR.NO_FILES_IN_ARCHIVE)
         }
 
         return convertArrayToFileList(filteredFiles)
@@ -102,7 +101,7 @@ export function useFileUpload({
             onSuccess(validatedFiles)
         } catch (error) {
             console.error('Error while processing files:', error)
-            onFail()
+            onFail(error)
         }
     }
 
