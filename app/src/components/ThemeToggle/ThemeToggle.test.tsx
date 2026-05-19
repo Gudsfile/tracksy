@@ -1,16 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { ThemeToggle } from './ThemeToggle'
-import { ThemeProvider } from '../../hooks/ThemeContext'
-
-// Mock the useTheme hook
-// FIXME: Remove this when refactoring the ThemeToggle component
-// eslint-disable-next-line no-restricted-syntax
-vi.mock('../../hooks/useTheme', () => ({
-    useTheme: vi.fn(),
-}))
-
-import { useTheme } from '../../hooks/useTheme'
+import { ThemeContext } from '../../hooks/ThemeContext'
+import type { Theme } from '../../hooks/theme.constants'
 
 describe('ThemeToggle', () => {
     const mockSetTheme = vi.fn()
@@ -19,124 +11,50 @@ describe('ThemeToggle', () => {
         vi.clearAllMocks()
     })
 
-    it('should render with system theme by default', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'system',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'light',
-        })
-
+    const renderWithTheme = (theme: Theme, effectiveTheme: 'light' | 'dark') =>
         render(
-            <ThemeProvider>
+            <ThemeContext.Provider
+                value={{ theme, setTheme: mockSetTheme, effectiveTheme }}
+            >
                 <ThemeToggle />
-            </ThemeProvider>
+            </ThemeContext.Provider>
         )
 
+    it('should render with system theme by default', () => {
+        renderWithTheme('system', 'light')
         screen.getByTitle('System (light)')
     })
 
     it('should render with light theme', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'light',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'light',
-        })
-
-        render(
-            <ThemeProvider>
-                <ThemeToggle />
-            </ThemeProvider>
-        )
-
+        renderWithTheme('light', 'light')
         screen.getByTitle('Light')
     })
 
     it('should render with dark theme', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'dark',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'dark',
-        })
-
-        render(
-            <ThemeProvider>
-                <ThemeToggle />
-            </ThemeProvider>
-        )
-
+        renderWithTheme('dark', 'dark')
         screen.getByTitle('Dark')
     })
 
     it('should cycle from light to dark when clicked', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'light',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'light',
-        })
-
-        render(
-            <ThemeProvider>
-                <ThemeToggle />
-            </ThemeProvider>
-        )
-
-        const button = screen.getByRole('button')
-        fireEvent.click(button)
-
+        renderWithTheme('light', 'light')
+        fireEvent.click(screen.getByRole('button'))
         expect(mockSetTheme).toHaveBeenCalledWith('dark')
     })
 
     it('should cycle from dark to system when clicked', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'dark',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'dark',
-        })
-
-        render(
-            <ThemeProvider>
-                <ThemeToggle />
-            </ThemeProvider>
-        )
-
-        const button = screen.getByRole('button')
-        fireEvent.click(button)
-
+        renderWithTheme('dark', 'dark')
+        fireEvent.click(screen.getByRole('button'))
         expect(mockSetTheme).toHaveBeenCalledWith('system')
     })
 
     it('should cycle from system to light when clicked', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'system',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'light',
-        })
-
-        render(
-            <ThemeProvider>
-                <ThemeToggle />
-            </ThemeProvider>
-        )
-
-        const button = screen.getByRole('button')
-        fireEvent.click(button)
-
+        renderWithTheme('system', 'light')
+        fireEvent.click(screen.getByRole('button'))
         expect(mockSetTheme).toHaveBeenCalledWith('light')
     })
 
     it('should have accessible label', () => {
-        vi.mocked(useTheme).mockReturnValue({
-            theme: 'light',
-            setTheme: mockSetTheme,
-            effectiveTheme: 'light',
-        })
-
-        render(
-            <ThemeProvider>
-                <ThemeToggle />
-            </ThemeProvider>
-        )
-
+        renderWithTheme('light', 'light')
         const button = screen.getByRole('button')
         expect(button.getAttribute('aria-label')).toBe(
             'Current theme: Light. Click to change theme.'
