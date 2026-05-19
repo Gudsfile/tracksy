@@ -263,7 +263,9 @@ it('renders all SimpleView', async () => {
         expect(slider.getAttribute('value')).toBe('2024')
     })
 
-    // TODO: test funfact rendering
+    await screen.findByText(
+        'Not enough data for this fun fact — keep listening!'
+    )
     await screen.findByRole('heading', { name: '🎵Top Tracks' })
     await screen.findByRole('heading', { name: '🎤Top Artists' })
     await screen.findByRole('heading', { name: '💿Top Albums' })
