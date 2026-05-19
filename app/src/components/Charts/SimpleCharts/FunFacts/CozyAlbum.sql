@@ -22,17 +22,8 @@ sunday_album_listening as (
 )
 
 select
-    'cozy_album' as fact_type,
     album_name as main_text,
     artist_name as second_text,
+    'cozy_album' as fact_type,
     'the album that wraps your Sundays in musical coziness' as context
 from sunday_album_listening
-
-union all
-
-select
-    'cozy_album' as fact_type,
-    null as main_text,
-    'This fun fact is unfortunately unavailable' as second_text,
-    'feel like listening to an album today?' as context
-where not exists (select 1 from sunday_album_listening)
