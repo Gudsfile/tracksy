@@ -59,14 +59,11 @@ describe('FunFacts Component', () => {
         let callIndex = 0
         const querySpy = vi
             .spyOn(query, 'queryDBAsJSON')
-            .mockImplementation(async (sql: string) => {
-                const match = sql.match(/'([a-z_]+)'\s+as\s+fact_type/)
-                if (!match) return []
+            .mockImplementation(async () => {
                 callIndex++
                 return [
                     {
-                        fact_type: match[1],
-                        main_text: `Test ${match[1]} #${callIndex}`,
+                        main_text: `Test fact #${callIndex}`,
                         fact_value: callIndex,
                         unit: 'streams',
                     },
