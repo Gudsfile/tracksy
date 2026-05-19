@@ -30,7 +30,6 @@ group_sizes as (
 select
     artist_name as main_text,
     stream_count::double as fact_value,
-    'marathon' as fact_type,
     'streams in a row' as unit,
     'on ' || listen_date::varchar as context
 from group_sizes

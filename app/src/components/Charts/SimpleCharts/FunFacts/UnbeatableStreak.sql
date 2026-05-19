@@ -36,7 +36,6 @@ streak_lengths as (
 
 select
     streak_length::integer as fact_value,
-    'unbeatable_streak' as fact_type,
     start_date::varchar || ' - ' || end_date::varchar as main_text,
     'days in a row' as unit,
     'your longest streak' as context

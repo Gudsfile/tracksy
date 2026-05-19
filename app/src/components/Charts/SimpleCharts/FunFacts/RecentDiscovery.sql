@@ -16,7 +16,6 @@ artist_first_listen as (
 select
     artist_name as main_text,
     count(*)::integer as fact_value,
-    'recent_discovery' as fact_type,
     'streams' as unit,
     'discovered during the last 3 months' as context
 from ${table}

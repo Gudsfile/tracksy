@@ -1,6 +1,5 @@
 select
     artist_name as main_text,
-    'weekend_favorite' as fact_type,
     count(*) as fact_value,
     'streams' as unit,
     'during the weekend' as context

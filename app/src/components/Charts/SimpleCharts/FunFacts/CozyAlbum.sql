@@ -24,6 +24,5 @@ sunday_album_listening as (
 select
     album_name as main_text,
     artist_name as second_text,
-    'cozy_album' as fact_type,
     'the album that wraps your Sundays in musical coziness' as context
 from sunday_album_listening
