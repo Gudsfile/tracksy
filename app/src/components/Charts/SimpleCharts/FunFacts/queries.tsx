@@ -21,7 +21,6 @@ import sqlQueryTrackProposition from './TrackProposition.sql?raw'
 import sqlQueryCozyAlbum from './CozyAlbum.sql?raw'
 
 export type FunFactResult = {
-    fact_type: string
     main_text: string | undefined
     second_text?: string
     fact_value?: number | string

@@ -53,7 +53,6 @@ select
     date_diff(
         'day', last_listen, (select max_date from recent_date)
     )::integer as fact_value,
-    'forgotten_artist' as fact_type,
     'days' as unit,
     'without listening to artist with more than '
     || (

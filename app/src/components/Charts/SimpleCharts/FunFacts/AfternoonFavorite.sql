@@ -1,6 +1,5 @@
 select
     artist_name as main_text,
-    'afternoon_favorite' as fact_type,
     count(*) as fact_value,
     'streams' as unit,
     'between 12pm and 6pm' as context

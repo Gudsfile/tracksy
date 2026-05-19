@@ -7,7 +7,6 @@ recent_date as (
 select
     t.track_name as main_text,
     count(*)::integer as fact_value,
-    'current_obsession' as fact_type,
     'streams' as unit,
     'in the last 30 days' as context
 from ${table} as t, recent_date

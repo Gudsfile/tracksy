@@ -36,7 +36,6 @@ artist_loyalty as (
 select
     artist_name as main_text,
     (loyalty_ratio * 100)::integer as fact_value,
-    'absolute_loyalty' as fact_type,
     '%' as unit,
     'of your completed ('
     || completed_count

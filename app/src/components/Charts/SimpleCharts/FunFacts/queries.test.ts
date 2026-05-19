@@ -59,7 +59,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('morning_favorite').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('morning_favorite')
             expect(row.main_text).toBe('top_morning_artist')
             expect(row.fact_value).toBe('2')
             expect(row.unit).toBe('streams')
@@ -73,7 +72,6 @@ describe('FunFacts queries', () => {
             )
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('afternoon_favorite')
             expect(row.main_text).toBe('top_afternoon_artist')
             expect(row.fact_value).toBe('2')
             expect(row.unit).toBe('streams')
@@ -87,7 +85,6 @@ describe('FunFacts queries', () => {
             const rows = result.getRowObjectsJson()
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('evening_favorite')
             expect(row.main_text).toBe('top_evening_artist')
             expect(row.fact_value).toBe('2')
             expect(row.unit).toBe('streams')
@@ -101,7 +98,6 @@ describe('FunFacts queries', () => {
             const rows = result.getRowObjectsJson()
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('night_favorite')
             expect(row.main_text).toBe('top_night_artist')
             expect(row.fact_value).toBe('2')
             expect(row.unit).toBe('streams')
@@ -126,7 +122,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('marathon').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('marathon')
             expect(row.main_text).toBe('consecutive_stream_artist')
             expect(row.fact_value).toBe(3)
             expect(row.unit).toBe('streams in a row')
@@ -147,7 +142,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('one_hit_wonder').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('one_hit_wonder')
             expect(row.main_text).toBe('hit_track')
             expect(row.fact_value).toBe(100)
             expect(row.unit).toBe('%')
@@ -177,7 +171,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('weekend_favorite').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('weekend_favorite')
             expect(row.main_text).toBe('weekend_artist')
             expect(row.fact_value).toBe('2')
             expect(row.unit).toBe('streams')
@@ -205,7 +198,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('absolute_loyalty').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('absolute_loyalty')
             expect(row.main_text).toBe('loyal_artist')
             expect(row.fact_value).toBe(75)
             expect(row.unit).toBe('%')
@@ -230,7 +222,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('nostalgic_return').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('nostalgic_return')
             expect(row.main_text).toBe('nostalgic_artist')
             expect(row.fact_value).toBe(366)
             expect(row.unit).toBe('days')
@@ -258,7 +249,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('variety_day').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('variety_day')
             expect(row.main_text).toBe('2024-01-01')
             expect(row.fact_value).toBe(3)
             expect(row.unit).toBe('different artists')
@@ -281,7 +271,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('binge_listener').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('binge_listener')
             expect(row.main_text).toBe('2024-01-03')
             expect(row.fact_value).toBe(1)
             expect(row.unit).toBe('hours of listening')
@@ -310,7 +299,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('current_obsession').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('current_obsession')
             expect(row.main_text).toBe('current_hit')
             expect(row.fact_value).toBe(2)
             expect(row.unit).toBe('streams')
@@ -336,7 +324,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('recent_discovery').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('recent_discovery')
             expect(row.main_text).toBe('recent_discovery_artist')
             expect(row.fact_value).toBe(1)
             expect(row.unit).toBe('streams')
@@ -363,7 +350,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('subscribed_artist').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('subscribed_artist')
             expect(row.main_text).toBe('subscribed_artist')
             expect(row.fact_value).toBe(3)
             expect(row.unit).toBe('months')
@@ -387,7 +373,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('first_artist').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('first_artist')
             expect(row.main_text).toBe('first_artist')
             expect(row.fact_value).toBe('2006')
             expect(row.unit).toBeUndefined()
@@ -401,7 +386,6 @@ describe('FunFacts queries', () => {
             )
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('musical_anniversary')
             expect(row.main_text).toBeDefined()
             expect(row.fact_value).toBeDefined()
             expect(row.unit).toBe('years')
@@ -429,7 +413,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('unbeatable_streak').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('unbeatable_streak')
             expect(row.main_text).toBe('2024-01-03 - 2024-01-05')
             expect(row.fact_value).toBe(3)
             expect(row.unit).toBe('days in a row')
@@ -456,7 +439,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('forgotten_artist').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('forgotten_artist')
             expect(row.main_text).toBe('forgotten_artist')
             expect(row.fact_value).toBe(366)
             expect(row.unit).toBe('days')
@@ -480,7 +462,6 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('track_proposition').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.fact_type).toBe('track_proposition')
             expect(row.main_text).toBeOneOf(['track1', 'track2'])
             expect(row.fact_value).toBeOneOf(['by artist1', 'by artist2'])
             expect(row.unit).toBeUndefined()
@@ -514,7 +495,6 @@ describe('FunFacts queries', () => {
 
                 const rows = await testQuery(conn, getFact('cozy_album').sql)
                 expect(rows.length).toBe(1)
-                expect(rows[0].fact_type).toBe('cozy_album')
                 expect(rows[0].main_text).toBe('album1')
                 expect(rows[0].second_text).toBe('artist1')
                 expect(rows[0].fact_value).toBeUndefined()
