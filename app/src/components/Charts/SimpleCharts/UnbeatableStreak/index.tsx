@@ -10,5 +10,7 @@ export function UnbeatableStreak({ year }: { year: number | undefined }) {
         query: buildUnbeatableStreakQuery(year),
         year,
     })
-    return <UnbeatableStreakView data={data} isLoading={isLoading} />
+    return (
+        <UnbeatableStreakView data={data} isLoading={isLoading} year={year} />
+    )
 }

@@ -5,22 +5,29 @@ import { ChartCard, ChartCardEmpty, ChartHero, InsightCard } from '../shared'
 type Props = {
     data: UnbeatableStreakResult | undefined
     isLoading?: boolean
+    year?: number
 }
 
 function formatDate(dateStr: string): string {
     return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
+        year: 'numeric',
     })
 }
 
-export const UnbeatableStreak: FC<Props> = ({ data, isLoading }) => {
+export const UnbeatableStreak: FC<Props> = ({ data, isLoading, year }) => {
+    const question =
+        year !== undefined
+            ? `What's my longest listening run in ${year}?`
+            : "What's my longest listening run ever?"
+
     return (
         <ChartCard
             title="On a Roll"
             emoji="🔥"
             isLoading={isLoading}
-            question="What's my longest listening run this year?"
+            question={question}
         >
             {!data?.streak_days ? (
                 <ChartCardEmpty />

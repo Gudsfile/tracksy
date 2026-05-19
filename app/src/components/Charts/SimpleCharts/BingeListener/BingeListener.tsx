@@ -5,6 +5,7 @@ import { ChartCard, ChartCardEmpty, ChartHero, InsightCard } from '../shared'
 type Props = {
     data: BingeListenerResult | undefined
     isLoading?: boolean
+    year?: number
 }
 
 function formatDate(dateStr: string): string {
@@ -22,13 +23,18 @@ function formatHours(hours: number): string {
     return `${h}h ${m}min`
 }
 
-export const BingeListener: FC<Props> = ({ data, isLoading }) => {
+export const BingeListener: FC<Props> = ({ data, isLoading, year }) => {
+    const question =
+        year !== undefined
+            ? `What's my most immersive day in ${year}?`
+            : "What's my most immersive day ever?"
+
     return (
         <ChartCard
             title="Deep Dive"
             emoji="🎧"
             isLoading={isLoading}
-            question="What's my most immersive day this year?"
+            question={question}
         >
             {!data?.hours_played ? (
                 <ChartCardEmpty />

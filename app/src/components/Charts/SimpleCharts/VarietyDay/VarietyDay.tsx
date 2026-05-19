@@ -5,6 +5,7 @@ import { ChartCard, ChartCardEmpty, ChartHero, InsightCard } from '../shared'
 type Props = {
     data: VarietyDayResult | undefined
     isLoading?: boolean
+    year?: number
 }
 
 function formatDate(dateStr: string): string {
@@ -15,13 +16,18 @@ function formatDate(dateStr: string): string {
     })
 }
 
-export const VarietyDay: FC<Props> = ({ data, isLoading }) => {
+export const VarietyDay: FC<Props> = ({ data, isLoading, year }) => {
+    const question =
+        year !== undefined
+            ? `My most diverse listening day in ${year}?`
+            : 'My most diverse listening day ever?'
+
     return (
         <ChartCard
             title="Eclectic Day"
             emoji="🎨"
             isLoading={isLoading}
-            question="My most diverse listening day this year?"
+            question={question}
         >
             {!data?.artist_count ? (
                 <ChartCardEmpty />

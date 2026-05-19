@@ -7,5 +7,5 @@ export function VarietyDay({ year }: { year: number | undefined }) {
         query: buildVarietyDayQuery(year),
         year,
     })
-    return <VarietyDayView data={data} isLoading={isLoading} />
+    return <VarietyDayView data={data} isLoading={isLoading} year={year} />
 }
