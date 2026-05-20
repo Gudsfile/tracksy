@@ -76,6 +76,29 @@ Or bring your own data:
 
 </details>
 
+<details>
+<summary>Any other source</summary>
+<br>
+
+Tracksy accepts data from **any source** as long as you format it as a CSV with the following columns:
+
+| Column        | Type                | Description                      | Example                      |
+| ------------- | ------------------- | -------------------------------- | ---------------------------- |
+| `ts`          | ISO 8601 UTC string | Start of play                    | `2024-03-15T14:30:00.000Z`   |
+| `track_name`  | string              | Song title                       | `Never Gonna Give You Up`    |
+| `artist_name` | string              | Artist (empty string if unknown) | `Rick Astley`                |
+| `album_name`  | string              | Album (empty string if unknown)  | `Whenever You Need Somebody` |
+| `ms_played`   | integer ≥ 0         | Milliseconds played              | `213000`                     |
+| `track_uri`   | string              | Stable unique ID for the track   | `custom:rick-astley:ngru`    |
+| `platform`    | string              | Source label                     | `tidal`                      |
+
+Save the file as **`tracksy-custom.csv`** (exact name required) and upload it to Tracksy.
+
+> Records with `ms_played < 30000` (less than 30 seconds) are filtered automatically.
+> Use any stable string for `track_uri` — `custom:{artist}:{title}` works fine.
+
+</details>
+
 ### 🚀 Upload your data
 
 Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file, or hit the demo button.
