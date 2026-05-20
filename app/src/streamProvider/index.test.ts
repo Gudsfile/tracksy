@@ -38,59 +38,68 @@ describe('StreamProvider Factory', () => {
 
             expect(streamProvider).not.toBeUndefined()
             expect(streamProvider?.name).toBe('custom')
+
+            it('should detect JellyFin files', () => {
+                const file = new File([], 'playback_report.csv')
+                const streamProvider = detectProvider(file)
+
+                expect(streamProvider).not.toBeUndefined()
+                expect(streamProvider?.name).toBe('jellyfin')
+            })
+
+            it('should return undefined for unknown file formats', () => {
+                const file = new File([], 'unknown_format.json')
+                const streamProvider = detectProvider(file)
+
+                expect(streamProvider).toBeUndefined()
+            })
         })
 
-        it('should return undefined for unknown file formats', () => {
-            const file = new File([], 'unknown_format.json')
-            const streamProvider = detectProvider(file)
+        describe('getSupportedProviderNames', () => {
+            it('returns a non-empty array of display names', () => {
+                const names = getSupportedProviderNames()
+                expect(names.length).toBeGreaterThan(0)
+                expect(
+                    names.every((n) => typeof n === 'string' && n.length > 0)
+                ).toBe(true)
+            })
 
-            expect(streamProvider).toBeUndefined()
-        })
-    })
-
-    describe('getSupportedProviderNames', () => {
-        it('returns a non-empty array of display names', () => {
-            const names = getSupportedProviderNames()
-            expect(names.length).toBeGreaterThan(0)
-            expect(
-                names.every((n) => typeof n === 'string' && n.length > 0)
-            ).toBe(true)
-        })
-
-        it('returns one entry per registered provider with format hint', () => {
-            const names = getSupportedProviderNames()
-            expect(names.length).toBe(3)
-            expect(names).toContain('Spotify (ZIP/JSON)')
-            expect(names).toContain('Deezer (XLSX)')
-            expect(names).toContain('Custom (CSV)')
-            expect(names).not.toContain('Apple Music (ZIP/CSV)')
-        })
-    })
-
-    describe('isFileSupported', () => {
-        it('should return true for supported files', () => {
-            const file = new File([], 'Streaming_History_Audio_2024.json')
-            expect(isFileSupported(file)).toBe(true)
+            it('returns one entry per registered provider with format hint', () => {
+                const names = getSupportedProviderNames()
+                expect(names.length).toBe(3)
+                expect(names).toContain('Spotify (ZIP/JSON)')
+                expect(names).toContain('Deezer (XLSX)')
+                expect(names).toContain('Custom (CSV)')
+                expect(names).not.toContain('Apple Music (ZIP/CSV)')
+                expect(names).toContain('JellyFin (CSV)')
+            })
         })
 
-        it('should return false for unsupported files', () => {
-            const file = new File([], 'unsupported.json')
-            expect(isFileSupported(file)).toBe(false)
-        })
-    })
+        describe('isFileSupported', () => {
+            it('should return true for supported files', () => {
+                const file = new File([], 'Streaming_History_Audio_2024.json')
+                expect(isFileSupported(file)).toBe(true)
+            })
 
-    describe('isAllowedFileContentType', () => {
-        it.each([
-            'application/json',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'text/csv',
-        ])(
-            'should return true if the file content type %s is allowed',
-            (contentType) => {
-                const file = new File([], 'filename', { type: contentType })
-                expect(isAllowedFileContentType(file)).toBe(true)
-            }
-        )
+            it('should return false for unsupported files', () => {
+                const file = new File([], 'unsupported.json')
+                expect(isFileSupported(file)).toBe(false)
+            })
+        })
+
+        describe('isAllowedFileContentType', () => {
+            it.each([
+                'application/json',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'text/csv',
+            ])(
+                'should return true if the file content type %s is allowed',
+                (contentType) => {
+                    const file = new File([], 'filename', { type: contentType })
+                    expect(isAllowedFileContentType(file)).toBe(true)
+                }
+            )
+        })
 
         it.each([
             'image/png',
