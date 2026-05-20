@@ -1,6 +1,7 @@
 import { AppleMusicStreamProvider } from './AppleMusicStreamProvider/AppleMusicStreamProvider'
 import { CustomStreamProvider } from './CustomStreamProvider/CustomStreamProvider'
 import { DeezerStreamProvider } from './DeezerStreamProvider/DeezerStreamProvider'
+import { JellyFinStreamProvider } from './JellyFinStreamProvider/JellyFinStreamProvider'
 import type { StreamProvider } from './StreamProvider'
 import { SpotifyStreamProvider } from './SpotifyStreamProvider/SpotifyStreamProvider'
 
@@ -9,6 +10,7 @@ const STREAM_PROVIDERS: StreamProvider[] = [
     new DeezerStreamProvider(),
     new AppleMusicStreamProvider(),
     new CustomStreamProvider(),
+    new JellyFinStreamProvider(),
 ]
 
 export const STREAM_PROVIDERS_CONTENT_TYPES = STREAM_PROVIDERS.map(
