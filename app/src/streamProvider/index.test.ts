@@ -32,6 +32,14 @@ describe('StreamProvider Factory', () => {
             expect(streamProvider?.name).toBe('apple-music')
         })
 
+        it('should detect custom files', () => {
+            const file = new File([], 'tracksy-custom.csv')
+            const streamProvider = detectProvider(file)
+
+            expect(streamProvider).not.toBeUndefined()
+            expect(streamProvider?.name).toBe('custom')
+        })
+
         it('should return undefined for unknown file formats', () => {
             const file = new File([], 'unknown_format.json')
             const streamProvider = detectProvider(file)
@@ -51,9 +59,10 @@ describe('StreamProvider Factory', () => {
 
         it('returns one entry per registered provider with format hint', () => {
             const names = getSupportedProviderNames()
-            expect(names.length).toBe(2)
+            expect(names.length).toBe(3)
             expect(names).toContain('Spotify (ZIP/JSON)')
             expect(names).toContain('Deezer (XLSX)')
+            expect(names).toContain('Custom (CSV)')
             expect(names).not.toContain('Apple Music (ZIP/CSV)')
         })
     })
