@@ -74,7 +74,7 @@ stateDiagram-v2
 Nothing:Renders nothing
 Dropzone_and_Buttons:Shows the file dropzone, HowToButton, and DemoButton
 Spinner:Shows a spinner while processing
-Dropzone_Buttons_and_Results:Shows Results (SimpleView / Lab tabs) and the dropzone for further uploads
+Dropzone_Buttons_and_Results:Shows Results (Simple / Lab / Chat / Query tabs) and the dropzone for further uploads
 ```
 
 > [!NOTE]
@@ -82,12 +82,16 @@ Dropzone_Buttons_and_Results:Shows Results (SimpleView / Lab tabs) and the dropz
 
 ### 📊 Results Component
 
-The `Results` component renders visualizations in two tabs:
+The `Results` component renders visualizations across four tabs:
 
-Both views use a `RangeSlider` to filter by year. User interaction (year change) re-renders only the charts within the active view.
+| Tab           | Description                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| ✨ **Simple** | Grid of high-level insights (top tracks/artists/albums, listening patterns, fun facts, etc.)           |
+| 🔬 **Lab**    | Deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`, etc.) |
+| 💬 **Chat**   | Conversational exploration of listening data using a built-in local LLM                                |
+| ⌨️ **Query**  | Direct SQL access to the dataset via `DuckDBShell`                                                     |
 
-- **SimpleView**: a grid of high-level insights (top tracks/artists/albums, listening patterns, fun facts, etc.)
-- **LabView**: deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`) and an interactive `DuckDBShell`
+Simple and Lab use a `RangeSlider` to filter by year. User interaction (year change) re-renders only the charts within the active view.
 
 Each view is responsible for orchestrating and rendering visualizations. It manages how different components interact with each other, such as coordinating between the RangeSlider and insights components. Below is a mermaid diagram that illustrates how the SimpleView works (without the summarize query):
 
