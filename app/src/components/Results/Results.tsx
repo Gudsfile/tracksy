@@ -3,11 +3,11 @@ import { SimpleView } from '../Charts/SimpleView'
 import { ChatView } from '../Charts/ChatView'
 import { useState } from 'react'
 
-type Tab = 'simple' | 'detailed' | 'chat'
+type Tab = 'simple' | 'lab' | 'chat'
 
 const TABS: { id: Tab; label: string }[] = [
     { id: 'simple', label: '✨ Simple' },
-    { id: 'detailed', label: '🔬 Detailed' },
+    { id: 'lab', label: '🔬 Lab' },
     { id: 'chat', label: '💬 Chat (beta)' },
 ]
 
@@ -47,7 +47,7 @@ export function Results() {
             <div className="min-h-screen">
                 {activeTab === 'simple' ? (
                     <SimpleView />
-                ) : activeTab === 'detailed' ? (
+                ) : activeTab === 'lab' ? (
                     <DetailedView />
                 ) : (
                     <ChatView />

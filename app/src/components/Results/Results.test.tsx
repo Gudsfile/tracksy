@@ -20,45 +20,45 @@ describe('Results Component', () => {
         render(<Results />)
         // Check that both buttons are rendered
         screen.getByRole('tab', { name: '✨ Simple' })
-        screen.getByRole('tab', { name: '🔬 Detailed' })
+        screen.getByRole('tab', { name: '🔬 Lab' })
 
         // Simple default to Simple view
-        // Simple View contains specific charts like "Concentration Score" or just checking absent Detailed content
-        // Detailed View contains the "Work in Progress" section
+        // Simple View contains specific charts like "Concentration Score" or just checking absent Lab content
+        // Lab View contains the "Work in Progress" section
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
     })
 
     it('switches to simple view when Simple button is clicked', async () => {
         render(<Results />)
         const simpleButton = screen.getByRole('tab', {
-            name: '🔬 Detailed',
+            name: '🔬 Lab',
         })
 
         fireEvent.click(simpleButton)
 
-        // Detailed view content should be visible
+        // Lab view content should be visible
         screen.queryByText(/Work in Progress/i)
 
         // We can check if RangeSlider is present (common) but distinguishing is key.
     })
 
-    it('switches to detailed view when Detailed View button is clicked', async () => {
+    it('switches to lab view when Lab View button is clicked', async () => {
         render(<Results />)
 
-        // First switch to detailed view
+        // First switch to lab view
         const simpleButton = screen.getByRole('tab', {
-            name: '🔬 Detailed',
+            name: '🔬 Lab',
         })
         fireEvent.click(simpleButton)
         screen.getByText(/Work in Progress/i)
 
         // Then switch back to simple view
-        const detailedButton = screen.getByRole('tab', {
+        const labButton = screen.getByRole('tab', {
             name: '✨ Simple',
         })
-        fireEvent.click(detailedButton)
+        fireEvent.click(labButton)
 
-        // Detailed View content should not be visible again
+        // Lab View content should not be visible again
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
     })
 })
