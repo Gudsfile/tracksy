@@ -17,6 +17,8 @@ export abstract class StreamProvider<TRawData = unknown> {
 
     abstract readonly displayName: string
 
+    abstract readonly acceptedFormats: string
+
     abstract readonly fileContentType: string
 
     /**

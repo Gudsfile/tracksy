@@ -10,6 +10,7 @@ type TestRawData = {
 class TestProvider extends StreamProvider<TestRawData> {
     name = 'test'
     displayName = 'Test Provider'
+    acceptedFormats = 'TestFormat'
     filePattern = /.*/
     fileContentType = 'application/json'
 

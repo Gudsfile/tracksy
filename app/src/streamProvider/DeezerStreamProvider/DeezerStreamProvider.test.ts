@@ -42,6 +42,7 @@ describe('DeezerStreamProvider', () => {
         expect(provider.displayName).toBe('Deezer')
         expect(provider.fileContentType).toBe(XLSX_TYPE)
         expect(provider.filePattern).toBeInstanceOf(RegExp)
+        expect(provider.acceptedFormats).toBe('XLSX')
     })
 
     describe('validateFile', () => {

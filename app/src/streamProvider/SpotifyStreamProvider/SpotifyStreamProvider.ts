@@ -8,6 +8,7 @@ import type { SpotifyRawStreamRecord } from './types'
 export class SpotifyStreamProvider extends StreamProvider<SpotifyRawStreamRecord> {
     name = 'spotify'
     displayName = 'Spotify'
+    acceptedFormats = 'ZIP/JSON'
     filePattern = /^Streaming_History_Audio_\d{4}(-\d{4})?(_\d+)?\.json$/i
     fileContentType = 'application/json'
 

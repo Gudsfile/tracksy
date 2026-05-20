@@ -30,3 +30,9 @@ export const isAllowedFileContentType = (file: File) => {
         (contentType) => contentType === file.type
     )
 }
+
+export function getSupportedProviderNames(): string[] {
+    return STREAM_PROVIDERS.map(
+        (p) => `${p.displayName} (${p.acceptedFormats})`
+    )
+}

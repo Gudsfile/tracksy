@@ -9,6 +9,7 @@ const TMP_FILE_NAME = '_deezer_tmp.xlsx'
 export class DeezerStreamProvider extends StreamProvider<DeezerRawStreamRecord> {
     name = 'deezer'
     displayName = 'Deezer'
+    acceptedFormats = 'XLSX'
     filePattern = /^deezer-data_\d{10}\.xlsx$/i
     fileContentType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

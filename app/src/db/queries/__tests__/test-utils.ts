@@ -24,6 +24,7 @@ export function mockStreamProviderWithSpy(records: StreamRecord[]) {
     const provider = new (class extends StreamProvider {
         readonly name = 'test'
         readonly displayName = 'Test Provider'
+        readonly acceptedFormats = 'TestFormat'
         readonly filePattern = /test\.json$/
         readonly fileContentType = 'application/json'
 
