@@ -5,8 +5,22 @@ type ModelLoaderProps = {
     onEnable: () => void
 }
 
+function DegradedNotice() {
+    return (
+        <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/60 dark:border-amber-700/40 text-amber-800 dark:text-amber-300 text-sm">
+            <span className="shrink-0">⚠️</span>
+            <p>
+                A lighter model is used on this device. Responses may be less
+                accurate — especially for time-based questions.
+            </p>
+        </div>
+    )
+}
+
 export function ModelLoader({ state, onEnable }: ModelLoaderProps) {
-    if (state.kind === 'ready') return null
+    if (state.kind === 'ready') {
+        return state.isDegraded ? <DegradedNotice /> : null
+    }
 
     if (state.kind === 'unsupported') {
         return (
@@ -69,9 +83,15 @@ export function ModelLoader({ state, onEnable }: ModelLoaderProps) {
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Ask questions about your listening history in plain English. The
                 assistant runs locally in your browser using WebLLM. The first
-                time you enable it, it will download about 1&nbsp;GB of model
-                weights; afterwards everything works offline.
+                time you enable it, it will download about{' '}
+                {state.isDegraded ? '~950 MB' : '~1 GB'} of model weights;
+                afterwards everything works offline.
             </p>
+            {state.isDegraded && (
+                <div className="mb-4">
+                    <DegradedNotice />
+                </div>
+            )}
             <button
                 onClick={onEnable}
                 className="px-4 py-2 bg-gradient-brand text-white font-semibold rounded-xl shadow-glow transition-all"

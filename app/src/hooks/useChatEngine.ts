@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
 import { validateSql } from '../llm/sqlSafety'
+import { isSafariIOS } from '../llm/deviceDetection'
 import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
 
 export type AskResult = {
@@ -9,7 +10,11 @@ export type AskResult = {
 }
 
 export function useChatEngine() {
-    const [state, setState] = useState<EngineState>({ kind: 'idle' })
+    const isDegraded = isSafariIOS()
+    const [state, setState] = useState<EngineState>({
+        kind: 'idle',
+        isDegraded,
+    })
     // Holds the dynamically imported module + engine instance so we don't
     // bloat the main bundle with @mlc-ai/web-llm.
     const moduleRef = useRef<typeof import('../llm/engine') | null>(null)
@@ -40,7 +45,7 @@ export function useChatEngine() {
                     text: report.text,
                 })
             })
-            setState({ kind: 'ready' })
+            setState({ kind: 'ready', isDegraded })
         } catch (e) {
             setState({
                 kind: 'error',

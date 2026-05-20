@@ -26,10 +26,10 @@ export type ChatMessage =
     | { id: string; role: 'assistant'; text: string; payload: AssistantPayload }
 
 export type EngineState =
-    | { kind: 'idle' }
+    | { kind: 'idle'; isDegraded: boolean }
     | { kind: 'unsupported'; reason: string }
     | { kind: 'loading'; progress: number; text: string }
-    | { kind: 'ready' }
+    | { kind: 'ready'; isDegraded: boolean }
     | { kind: 'error'; error: string }
 
 export class LLMError extends Error {
