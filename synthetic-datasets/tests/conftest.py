@@ -4,6 +4,7 @@ from ipaddress import IPv4Address
 import pytest
 
 from synthetic_datasets.config import GenerationConfig
+from synthetic_datasets.models.apple_music import AppleMusicRecord
 from synthetic_datasets.models.deezer import DeezerStreaming
 from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
 
@@ -41,6 +42,17 @@ def deezer_streaming_record():
         platform_name="web",
         platform_model="",
         date=datetime.fromisoformat("2020-08-07T11:48:23"),
+    )
+
+
+@pytest.fixture
+def apple_music_record():
+    return AppleMusicRecord(
+        event_start_timestamp=datetime.fromisoformat("2020-08-07T11:48:23"),
+        song_name="Never Gonna Give You Up",
+        media_type="AUDIO",
+        play_duration_ms=213_000,
+        client_platform="FUSE",
     )
 
 

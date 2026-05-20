@@ -4,10 +4,20 @@ from datetime import datetime
 from pathlib import Path
 
 from synthetic_datasets.config import GenerationConfig
+from synthetic_datasets.factories.apple_music import AppleMusicFactory
 from synthetic_datasets.factories.deezer import DeezerFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
+from synthetic_datasets.writers.apple_music import AppleMusicWriter
 from synthetic_datasets.writers.deezer import DeezerWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
+
+
+def apple_music(num_records: int, output_dir: Path, config: GenerationConfig):
+    factory = AppleMusicFactory(num_records, config=config)
+    all_streamings = factory.create_streaming_history()
+
+    writer = AppleMusicWriter(output_dir=output_dir, reference_date=config.reference_date)
+    writer.write(all_streamings)
 
 
 def spotify(num_records: int, output_dir: Path, config: GenerationConfig):
@@ -62,7 +72,7 @@ Examples:
     )
     parser.add_argument(
         "--provider",
-        choices=["spotify", "deezer"],
+        choices=["spotify", "deezer", "apple-music"],
         default="spotify",
         help="Streaming provider to generate data for (default: spotify)",
     )
@@ -75,6 +85,8 @@ Examples:
 
     if args.provider == "deezer":
         deezer(args.num_records, args.output_dir, config)
+    elif args.provider == "apple-music":
+        apple_music(args.num_records, args.output_dir, config)
     else:
         spotify(args.num_records, args.output_dir, config)
     print("--- %s seconds ---" % (time.time() - start_data_generation))
