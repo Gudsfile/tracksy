@@ -3,9 +3,9 @@ import {
     type InitProgressReport,
     type MLCEngineInterface,
 } from '@mlc-ai/web-llm'
-import { isSafariIOS } from './deviceDetection'
+import { isMobileBrowser } from './deviceDetection'
 
-export { isSafariIOS } from './deviceDetection'
+export { isSafariIOS, isMobileBrowser } from './deviceDetection'
 
 export const MODEL_ID = 'Qwen2.5-Coder-1.5B-Instruct-q4f16_1-MLC'
 export const MODEL_ID_IOS = 'Qwen2.5-Coder-0.5B-Instruct-q4f16_1-MLC'
@@ -21,7 +21,7 @@ export function isWebGPUAvailable(): boolean {
 }
 
 export function selectModelId(): string {
-    return isSafariIOS() ? MODEL_ID_IOS : MODEL_ID
+    return isMobileBrowser() ? MODEL_ID_IOS : MODEL_ID
 }
 
 export type ProgressHandler = (report: InitProgressReport) => void

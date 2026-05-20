@@ -7,3 +7,8 @@ export function isSafariIOS(): boolean {
         !/Chrome|CriOS|FxiOS|EdgiOS/.test(ua)
     )
 }
+
+export function isMobileBrowser(): boolean {
+    if (typeof navigator === 'undefined') return false
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
