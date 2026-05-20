@@ -18,7 +18,7 @@ test("has title and can upload dataset", async ({ page }) => {
   await fileInput.setInputFiles(path.join(__dirname, "../datasets/spotify/streamings_1000.zip"));
 
   // Simple view assertions
-  const simpleViewTab = page.getByRole("tab", { name: /Simple View/ });
+  const simpleViewTab = page.getByRole("tab", { name: /✨ Simple/ });
   await expect(simpleViewTab).toBeVisible();
 
   // Assert it is active (selected)
