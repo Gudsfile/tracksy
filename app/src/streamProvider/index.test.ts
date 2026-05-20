@@ -24,6 +24,14 @@ describe('StreamProvider Factory', () => {
             expect(streamProvider?.name).toBe('deezer')
         })
 
+        it('should detect Apple Music files', () => {
+            const file = new File([], 'Apple Music Play Activity.csv')
+            const streamProvider = detectProvider(file)
+
+            expect(streamProvider).not.toBeUndefined()
+            expect(streamProvider?.name).toBe('apple-music')
+        })
+
         it('should return undefined for unknown file formats', () => {
             const file = new File([], 'unknown_format.json')
             const streamProvider = detectProvider(file)
@@ -43,9 +51,10 @@ describe('StreamProvider Factory', () => {
 
         it('returns one entry per registered provider with format hint', () => {
             const names = getSupportedProviderNames()
-            expect(names.length).toBe(2)
+            expect(names.length).toBe(3)
             expect(names).toContain('Spotify (ZIP/JSON)')
             expect(names).toContain('Deezer (XLSX)')
+            expect(names).toContain('Apple Music (ZIP/CSV)')
         })
     })
 
@@ -65,6 +74,7 @@ describe('StreamProvider Factory', () => {
         it.each([
             'application/json',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/csv',
         ])(
             'should return true if the file content type %s is allowed',
             (contentType) => {
