@@ -3,6 +3,9 @@ import {
     type InitProgressReport,
     type MLCEngineInterface,
 } from '@mlc-ai/web-llm'
+import { isSafariIOS } from './deviceDetection'
+
+export { isSafariIOS } from './deviceDetection'
 
 export const MODEL_ID = 'Qwen2.5-Coder-1.5B-Instruct-q4f16_1-MLC'
 export const MODEL_ID_IOS = 'Qwen2.5-Coder-0.5B-Instruct-q4f16_1-MLC'
@@ -14,16 +17,6 @@ export function isWebGPUAvailable(): boolean {
         typeof navigator !== 'undefined' &&
         'gpu' in navigator &&
         navigator.gpu !== undefined
-    )
-}
-
-export function isSafariIOS(): boolean {
-    if (typeof navigator === 'undefined') return false
-    const ua = navigator.userAgent
-    return (
-        /iP(hone|ad|od)/.test(ua) &&
-        /Safari/.test(ua) &&
-        !/Chrome|CriOS|FxiOS|EdgiOS/.test(ua)
     )
 }
 
