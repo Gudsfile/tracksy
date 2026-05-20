@@ -57,6 +57,22 @@ Or bring your own data:
 
 </details>
 
+
+<details>
+<summary>Apple Music</summary>
+<br>
+
+1. Sign in at [privacy.apple.com](https://privacy.apple.com) and request a copy of your data.
+  - Click "_Request a copy of your data_"
+  - Select "_Apple Media Services information_" in the data categories
+  - Submit the request
+2. Wait a few days
+3. Download and extract the ZIP you receive by email
+4. Inside the archive, navigate to `Apple Music Activity/` and find `Apple Music Play Activity.csv`.
+5. If the data is in a nested ZIP (e.g. `Apple_Media_Services.zip`), upload the outer ZIP directly, Tracksy extracts it automatically.
+
+</details>
+
 ### 🚀 Upload your data
 
 Go to [Tracksy](https://gudsfile.github.io/tracksy/) and upload your file, or hit the demo button.
