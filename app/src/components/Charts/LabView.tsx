@@ -1,8 +1,8 @@
-import { StreamPerMonth } from './DetailedCharts/StreamPerMonth'
-import { TopStreak } from './DetailedCharts/TopStreak'
-import { SummaryPerYear } from './DetailedCharts/SummaryPerYear'
-import { TotalStreams } from './DetailedCharts/TotalStreams'
-import { TopArtist } from './DetailedCharts/TopArtist'
+import { StreamPerMonth } from './LabCharts/StreamPerMonth'
+import { TopStreak } from './LabCharts/TopStreak'
+import { SummaryPerYear } from './LabCharts/SummaryPerYear'
+import { TotalStreams } from './LabCharts/TotalStreams'
+import { TopArtist } from './LabCharts/TopArtist'
 import { RangeSlider } from '../RangeSlider/RangeSlider'
 import { useState, useEffect, useCallback } from 'react'
 import {
@@ -12,19 +12,19 @@ import {
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
-import { TopTracks } from './DetailedCharts/TopTracks'
-import { TopArtists } from './DetailedCharts/TopArtists'
-import { TopAlbums } from './DetailedCharts/TopAlbums'
-import { Streaks } from './DetailedCharts/Streaks'
-import { Top10Evolution } from './DetailedCharts/Top10Evolution'
-import { Top10AlbumsEvolution } from './DetailedCharts/Top10AlbumsEvolution'
-import { Top10TracksEvolution } from './DetailedCharts/Top10TracksEvolution'
-import { StreamPerDayOfWeek } from './DetailedCharts/StreamPerDayOfWeek'
-import { ArtistDiscovery } from './DetailedCharts/ArtistDiscovery'
-import { SessionAnalysis as SessionAnalysisDetailed } from './DetailedCharts/SessionAnalysis'
+import { TopTracks } from './LabCharts/TopTracks'
+import { TopArtists } from './LabCharts/TopArtists'
+import { TopAlbums } from './LabCharts/TopAlbums'
+import { Streaks } from './LabCharts/Streaks'
+import { Top10Evolution } from './LabCharts/Top10Evolution'
+import { Top10AlbumsEvolution } from './LabCharts/Top10AlbumsEvolution'
+import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
+import { StreamPerDayOfWeek } from './LabCharts/StreamPerDayOfWeek'
+import { ArtistDiscovery } from './LabCharts/ArtistDiscovery'
+import { SessionAnalysis as SessionAnalysisDetailed } from './LabCharts/SessionAnalysis'
 import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
-export function DetailedView() {
+export function LabView() {
     const [year, setYear] = useState<number | undefined>(2006)
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined

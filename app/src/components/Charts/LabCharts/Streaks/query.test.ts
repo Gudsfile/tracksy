@@ -2,8 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { queryStreaks } from './query'
 import { DuckDBConnection, type DuckDBValue } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
-const seedPath =
-    'src/components/Charts/DetailedCharts/Streaks/fixtures/seed.json'
+const seedPath = 'src/components/Charts/LabCharts/Streaks/fixtures/seed.json'
 let conn: DuckDBConnection
 
 describe('Streaks Query', () => {

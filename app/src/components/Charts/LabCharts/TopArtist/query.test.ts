@@ -3,8 +3,7 @@ import { DuckDBConnection } from '@duckdb/node-api'
 import { queryTopArtistByCount, queryTopArtistByDuration } from './query'
 import { TABLE } from '../../../../db/queries/constants'
 
-const seedPath =
-    'src/components/Charts/DetailedCharts/TopArtist/fixtures/seed.json'
+const seedPath = 'src/components/Charts/LabCharts/TopArtist/fixtures/seed.json'
 let conn: DuckDBConnection
 
 beforeAll(async () => {
