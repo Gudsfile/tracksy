@@ -25,6 +25,7 @@ describe('SpotifyStreamProvider', () => {
         expect(provider.displayName).toBe('Spotify')
         expect(provider.fileContentType).toBe('application/json')
         expect(provider.filePattern).toBeInstanceOf(RegExp)
+        expect(provider.acceptedFormats).toBe('ZIP/JSON')
     })
 
     describe('validateFile', () => {

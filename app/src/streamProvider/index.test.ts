@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
     detectProvider,
-    isFileSupported,
+    getSupportedProviderNames,
     isAllowedFileContentType,
+    isFileSupported,
 } from './index'
 
 describe('StreamProvider Factory', () => {
@@ -28,6 +29,23 @@ describe('StreamProvider Factory', () => {
             const streamProvider = detectProvider(file)
 
             expect(streamProvider).toBeUndefined()
+        })
+    })
+
+    describe('getSupportedProviderNames', () => {
+        it('returns a non-empty array of display names', () => {
+            const names = getSupportedProviderNames()
+            expect(names.length).toBeGreaterThan(0)
+            expect(
+                names.every((n) => typeof n === 'string' && n.length > 0)
+            ).toBe(true)
+        })
+
+        it('returns one entry per registered provider with format hint', () => {
+            const names = getSupportedProviderNames()
+            expect(names.length).toBe(2)
+            expect(names).toContain('Spotify (ZIP/JSON)')
+            expect(names).toContain('Deezer (XLSX)')
         })
     })
 
