@@ -35,16 +35,19 @@ export function Results() {
 
     return (
         <div className="py-8 animate-slide-up">
-            <div className="relative mb-8 bg-gray-100 dark:bg-slate-800/50 backdrop-blur-md p-1.5 rounded-2xl shadow-lg border border-gray-300/60 dark:border-slate-700/50 max-w-xl mx-auto">
+            <div className="relative mb-8 bg-gray-100 dark:bg-slate-800/50 backdrop-blur-md pt-1.5 pl-1.5 pb-1.5 sm:p-1.5 rounded-2xl shadow-lg border border-gray-300/60 dark:border-slate-700/50 max-w-xl mx-auto">
                 <div
-                    className="absolute top-1.5 left-1.5 h-[calc(100%-0.75rem)] bg-gradient-brand rounded-xl shadow-glow transition-transform duration-300 ease-out"
+                    className="hidden sm:block absolute top-1.5 left-1.5 h-[calc(100%-0.75rem)] bg-gradient-brand rounded-xl shadow-glow transition-transform duration-300 ease-out"
                     style={{
                         width: `calc(${(100 / TABS.length).toFixed(4)}% - 0.25rem)`,
                         transform: `translateX(calc(${tabIndex} * (100% + 0.125rem)))`,
                     }}
                 />
 
-                <div className="relative flex gap-1" role="tablist">
+                <div
+                    className="flex gap-1 overflow-x-auto overflow-y-hidden scrollbar-hide sm:overflow-x-visible"
+                    role="tablist"
+                >
                     {TABS.map((tab) => (
                         <button
                             key={tab.id}
@@ -52,9 +55,9 @@ export function Results() {
                             aria-selected={activeTab === tab.id}
                             title={tab.tooltip}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`group relative z-10 flex-1 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${
+                            className={`group relative z-10 flex-shrink-0 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 sm:flex-1 ${
                                 activeTab === tab.id
-                                    ? 'text-white'
+                                    ? 'text-white bg-gradient-brand shadow-glow sm:bg-transparent sm:shadow-none'
                                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                             }`}
                         >
@@ -70,7 +73,7 @@ export function Results() {
                 </div>
             </div>
 
-            <div className="min-h-screen">
+            <div className="min-h-64">
                 {activeTab === 'simple' ? (
                     <SimpleView />
                 ) : activeTab === 'lab' ? (
