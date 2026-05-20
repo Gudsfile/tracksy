@@ -50,7 +50,7 @@ export function DuckDBShell() {
     }, [query])
 
     return (
-        <div className="group p-6 my-4 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100">
+        <div className="p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100">
             <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                 ⌨️ DuckDB Shell
             </h3>
@@ -73,7 +73,7 @@ export function DuckDBShell() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="col-start-2 mt-2 bg-brand-purple rounded-lg text-gray-100 px-4 py-2"
+                        className="col-start-2 mt-2 bg-gradient-brand text-white font-semibold rounded-xl shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all px-4 py-2"
                     >
                         Run query
                     </button>
