@@ -18,7 +18,7 @@ The same old song? Late at night? Only in summer? Tracksy helps you answer these
 
 Tracksy is a **privacy-first** music streaming data visualization tool. All processing happens in your browser. Your data never leaves your device.
 
-- 🎵 Supports **Spotify** and **Deezer** streaming history
+- 🎵 Supports **Spotify**, **Deezer**, and **any source** via custom CSV
 - 🦆 Powered by **DuckDB WASM**: SQL in the browser, zero server
 - 🔒 **No account. No upload. No tracking.**
 
@@ -73,6 +73,74 @@ Or bring your own data:
 3. Download and extract the ZIP you receive by email
 4. Inside the archive, navigate to `Apple Music Activity/` and find `Apple Music Play Activity.csv`.
 5. If the data is in a nested ZIP (e.g. `Apple_Media_Services.zip`), upload the outer ZIP directly, Tracksy extracts it automatically.
+
+</details>
+
+<details>
+<summary>Any other source</summary>
+<br>
+
+Tracksy accepts data from **any source** as long as you format it as a CSV with the following columns:
+
+| Column        | Type                | Description                      | Example                      |
+| ------------- | ------------------- | -------------------------------- | ---------------------------- |
+| `ts`          | ISO 8601 UTC string | Start of play                    | `2024-03-15T14:30:00.000Z`   |
+| `track_name`  | string              | Song title                       | `Le vent se lève`            |
+| `artist_name` | string              | Artist (empty string if unknown) | `Veridis Project`            |
+| `album_name`  | string              | Album (empty string if unknown)  | `Voir le soleil`             |
+| `ms_played`   | integer ≥ 0         | Milliseconds played              | `213000`                     |
+| `track_uri`   | string              | Stable identifier (any unique string) | `custom:veridis-project:le-vent-se-leve` |
+| `platform`    | string              | Source label                     | `tidal`                      |
+
+Save the file as **`tracksy-custom.csv`** (exact name required) and upload it to Tracksy.
+
+> [!NOTE]
+>
+> Records with `ms_played < 30000` (less than 30 seconds) are filtered automatically.
+>
+> Use any stable string for `track_uri` - `custom:{artist}:{title}` works fine.
+
+#### Example
+
+```csv
+ts,track_name,artist_name,album_name,ms_played,track_uri,platform
+2024-03-15T14:30:00.000Z,Le vent se lève,Veridis Project,Voir le soleil,213000,custom:veridis-project:le-vent-se-leve,tidal
+2024-03-15T14:33:53.000Z,Veridis Quo,Daft Punk,Discovery,243000,custom:daft-punk:veridis-quo,tidal
+2024-03-15T14:38:06.000Z,my dey,Zubi,Dear Z,120000,custom:zubi:my-dey,tidal
+```
+
+#### Convert with a spreadsheet editor
+
+Works with Excel, Google Sheets, LibreOffice Calc, or any equivalent.
+
+1. Open your export file in your spreadsheet editor.
+2. Rename each column header to match the required names: `ts`, `track_name`, `artist_name`, `album_name`, `ms_played`, `track_uri`, `platform`.
+3. Make sure `ts` is formatted as ISO 8601 UTC (e.g. `2024-03-15T14:30:00.000Z`). If it is a date/time cell, format it as plain text first.
+4. If your source has no unique track ID, add a `track_uri` column with a formula like `="custom:"&[artist column]&":"&[title column]`.
+5. Delete rows where the play duration is under 30 seconds (30 000 ms).
+6. Export as CSV with UTF-8 encoding.
+7. Rename the saved file to `tracksy-custom.csv`.
+
+#### Convert with DuckDB CLI
+
+If your source data is already in CSV or JSON, [DuckDB CLI](https://duckdb.org/docs/installation/) can reshape it in one query:
+
+```sql
+COPY (
+    SELECT
+        your_timestamp_col                                        AS ts,
+        your_title_col                                            AS track_name,
+        your_artist_col                                           AS artist_name,
+        your_album_col                                            AS album_name,
+        your_duration_ms_col                                      AS ms_played,
+        'custom:' || your_artist_col || ':' || your_title_col     AS track_uri,
+        'my-source'                                               AS platform
+    FROM read_csv('your-export.csv', header = true)
+    WHERE your_duration_ms_col >= 30000
+) TO 'tracksy-custom.csv' (HEADER, DELIMITER ',');
+```
+
+Replace `read_csv` with `read_json`, `read_xlsx` [or other](https://duckdb.org/docs/current/data/data_sources) depending on your source.
 
 </details>
 
