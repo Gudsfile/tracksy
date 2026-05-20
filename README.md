@@ -65,7 +65,14 @@ Your data stays local. Nothing is sent anywhere. You can also [self-host Tracksy
 
 ### 👀 Visualize your data
 
-Once uploaded, explore interactive graphs about your listening habits. 🎉
+Once uploaded, explore your listening habits across four views:
+
+| View | Description |
+|------|-------------|
+| ✨ **Simple** | Curated and guided overview of your listening data |
+| 🔬 **Lab** | Experimental insights and advanced visualizations |
+| 💬 **Chat** | Conversational exploration using a built-in LLM |
+| ⌨️ **Query** | Direct SQL-based exploration of the dataset |
 
 ## Project Structure
 
