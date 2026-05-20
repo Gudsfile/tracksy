@@ -6,9 +6,11 @@ from pathlib import Path
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
 from synthetic_datasets.factories.deezer import DeezerFactory
+from synthetic_datasets.factories.jellyfin import JellyFinFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
 from synthetic_datasets.writers.apple_music import AppleMusicWriter
 from synthetic_datasets.writers.deezer import DeezerWriter
+from synthetic_datasets.writers.jellyfin import JellyFinWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
@@ -34,6 +36,14 @@ def deezer(num_records: int, output_dir: Path, config: GenerationConfig):
 
     writer = DeezerWriter(output_dir=output_dir, reference_date=config.reference_date)
     writer.write(all_streamings)
+
+
+def jellyfin(num_records: int, output_dir: Path, config: GenerationConfig):
+    factory = JellyFinFactory(num_records, config=config)
+    all_records = factory.create_streaming_history()
+
+    writer = JellyFinWriter(output_dir=output_dir, reference_date=config.reference_date)
+    writer.write(all_records)
 
 
 def min_int(min_value):
@@ -72,7 +82,7 @@ Examples:
     )
     parser.add_argument(
         "--provider",
-        choices=["spotify", "deezer", "apple-music"],
+        choices=["spotify", "deezer", "apple-music", "jellyfin"],
         default="spotify",
         help="Streaming provider to generate data for (default: spotify)",
     )
@@ -87,6 +97,8 @@ Examples:
         deezer(args.num_records, args.output_dir, config)
     elif args.provider == "apple-music":
         apple_music(args.num_records, args.output_dir, config)
+    elif args.provider == "jellyfin":
+        jellyfin(args.num_records, args.output_dir, config)
     else:
         spotify(args.num_records, args.output_dir, config)
     print("--- %s seconds ---" % (time.time() - start_data_generation))

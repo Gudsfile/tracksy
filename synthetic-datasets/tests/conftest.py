@@ -6,6 +6,7 @@ import pytest
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.models.apple_music import AppleMusicRecord
 from synthetic_datasets.models.deezer import DeezerStreaming
+from synthetic_datasets.models.jellyfin import JellyFinRecord
 from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
 
 
@@ -53,6 +54,20 @@ def apple_music_record():
         media_type="AUDIO",
         play_duration_ms=213_000,
         client_platform="FUSE",
+    )
+
+
+def jellyfin_record():
+    return JellyFinRecord(
+        date_created=datetime.fromisoformat("2024-03-15T14:30:00"),
+        user_id="abcdef1234567890abcdef1234567890",
+        item_id="fedcba0987654321fedcba0987654321",
+        item_type="Audio",
+        item_name="Never Gonna Give You Up",
+        playback_method="DirectPlay",
+        client_name="Jellyfin Web",
+        device_name="Chrome/123",
+        play_duration=213,
     )
 
 
