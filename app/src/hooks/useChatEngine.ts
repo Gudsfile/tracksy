@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
 import { validateSql } from '../llm/sqlSafety'
-import { isSafariIOS } from '../llm/deviceDetection'
+import { isMobileBrowser } from '../llm/deviceDetection'
 import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
 
 export type AskResult = {
@@ -10,7 +10,7 @@ export type AskResult = {
 }
 
 export function useChatEngine() {
-    const isDegraded = isSafariIOS()
+    const isDegraded = isMobileBrowser()
     const [state, setState] = useState<EngineState>({
         kind: 'idle',
         isDegraded,
