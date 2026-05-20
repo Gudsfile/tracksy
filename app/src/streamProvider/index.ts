@@ -1,13 +1,14 @@
 import { AppleMusicStreamProvider } from './AppleMusicStreamProvider/AppleMusicStreamProvider'
+import { CustomStreamProvider } from './CustomStreamProvider/CustomStreamProvider'
 import { DeezerStreamProvider } from './DeezerStreamProvider/DeezerStreamProvider'
 import type { StreamProvider } from './StreamProvider'
 import { SpotifyStreamProvider } from './SpotifyStreamProvider/SpotifyStreamProvider'
 
-// Registry of all available provider adapters
 const STREAM_PROVIDERS: StreamProvider[] = [
     new SpotifyStreamProvider(),
     new DeezerStreamProvider(),
     new AppleMusicStreamProvider(),
+    new CustomStreamProvider(),
 ]
 
 export const STREAM_PROVIDERS_CONTENT_TYPES = STREAM_PROVIDERS.map(
