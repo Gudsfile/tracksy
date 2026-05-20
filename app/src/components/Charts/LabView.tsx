@@ -22,7 +22,6 @@ import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
 import { StreamPerDayOfWeek } from './LabCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from './LabCharts/ArtistDiscovery'
 import { SessionAnalysis as SessionAnalysisDetailed } from './LabCharts/SessionAnalysis'
-import { DuckDBShell } from '../DuckDBShell/DuckDBShell'
 
 export function LabView() {
     const [year, setYear] = useState<number | undefined>(2006)
@@ -109,7 +108,6 @@ export function LabView() {
                 <Top10TracksEvolution />
                 <SessionAnalysisDetailed year={debouncedYear} />
             </section>
-            <DuckDBShell />
         </>
     )
 }

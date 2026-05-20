@@ -21,6 +21,7 @@ describe('Results Component', () => {
         // Check that both buttons are rendered
         screen.getByRole('tab', { name: '✨ Simple' })
         screen.getByRole('tab', { name: '🔬 Lab' })
+        screen.getByRole('tab', { name: '⌨️ Query' })
 
         // Simple default to Simple view
         // Simple View contains specific charts like "Concentration Score" or just checking absent Lab content
@@ -40,6 +41,14 @@ describe('Results Component', () => {
         screen.queryByText(/Work in Progress/i)
 
         // We can check if RangeSlider is present (common) but distinguishing is key.
+    })
+
+    it('switches to query view when Query button is clicked', async () => {
+        render(<Results />)
+
+        fireEvent.click(screen.getByRole('tab', { name: '⌨️ Query' }))
+
+        screen.getByText('⌨️ DuckDB Shell')
     })
 
     it('switches to lab view when Lab View button is clicked', async () => {
