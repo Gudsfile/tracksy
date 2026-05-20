@@ -74,7 +74,7 @@ stateDiagram-v2
 Nothing:Renders nothing
 Dropzone_and_Buttons:Shows the file dropzone, HowToButton, and DemoButton
 Spinner:Shows a spinner while processing
-Dropzone_Buttons_and_Results:Shows Results (SimpleView / DetailedView tabs) and the dropzone for further uploads
+Dropzone_Buttons_and_Results:Shows Results (SimpleView / Lab tabs) and the dropzone for further uploads
 ```
 
 > [!NOTE]
@@ -87,7 +87,7 @@ The `Results` component renders visualizations in two tabs:
 Both views use a `RangeSlider` to filter by year. User interaction (year change) re-renders only the charts within the active view.
 
 - **SimpleView**: a grid of high-level insights (top tracks/artists/albums, listening patterns, fun facts, etc.)
-- **DetailedView**: deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`) and an interactive `DuckDBShell`
+- **LabView**: deeper exploration with time-series charts (`StreamPerMonth`, `StreamPerHour`, `SummaryPerYear`) and an interactive `DuckDBShell`
 
 Each view is responsible for orchestrating and rendering visualizations. It manages how different components interact with each other, such as coordinating between the RangeSlider and insights components. Below is a mermaid diagram that illustrates how the SimpleView works (without the summarize query):
 

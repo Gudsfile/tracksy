@@ -4,7 +4,7 @@ import { DuckDBConnection, DuckDBValue } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
 
 const seedPath =
-    'src/components/Charts/DetailedCharts/ArtistDiscovery/fixtures/seed.json'
+    'src/components/Charts/LabCharts/ArtistDiscovery/fixtures/seed.json'
 
 let conn: DuckDBConnection
 

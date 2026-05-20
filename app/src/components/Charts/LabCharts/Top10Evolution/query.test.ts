@@ -3,7 +3,7 @@ import { queryTop10Evolution } from './query'
 import { DuckDBConnection, type DuckDBValue } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
 const seedPath =
-    'src/components/Charts/DetailedCharts/Top10Evolution/fixtures/seed.json'
+    'src/components/Charts/LabCharts/Top10Evolution/fixtures/seed.json'
 let conn: DuckDBConnection
 
 describe('Top10Evolution Query', () => {

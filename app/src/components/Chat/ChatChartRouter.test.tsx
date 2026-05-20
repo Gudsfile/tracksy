@@ -19,12 +19,12 @@ import * as EvolutionOverTimeModule from '../Charts/SimpleCharts/EvolutionOverTi
 import * as PrincipalPlatformModule from '../Charts/SimpleCharts/PrincipalPlatform'
 import * as RepeatBehaviorModule from '../Charts/SimpleCharts/RepeatBehavior'
 import * as SeasonalPatternsModule from '../Charts/SimpleCharts/SeasonalPatterns'
-import * as StreamPerMonthModule from '../Charts/DetailedCharts/StreamPerMonth'
+import * as StreamPerMonthModule from '../Charts/LabCharts/StreamPerMonth'
 import * as HourlyStreamsModule from '../Charts/SimpleCharts/HourlyStreams'
-import * as StreamPerDayOfWeekModule from '../Charts/DetailedCharts/StreamPerDayOfWeek'
-import * as ArtistDiscoveryModule from '../Charts/DetailedCharts/ArtistDiscovery'
-import * as TotalStreamsModule from '../Charts/DetailedCharts/TotalStreams'
-import * as TopStreakModule from '../Charts/DetailedCharts/TopStreak'
+import * as StreamPerDayOfWeekModule from '../Charts/LabCharts/StreamPerDayOfWeek'
+import * as ArtistDiscoveryModule from '../Charts/LabCharts/ArtistDiscovery'
+import * as TotalStreamsModule from '../Charts/LabCharts/TotalStreams'
+import * as TopStreakModule from '../Charts/LabCharts/TopStreak'
 
 function makeAnswer(intent: ChatAnswer['intent'], year?: number): ChatAnswer {
     return {

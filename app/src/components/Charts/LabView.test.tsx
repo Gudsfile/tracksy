@@ -1,6 +1,6 @@
 import { it, vi, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { DetailedView } from './DetailedView'
+import { LabView } from './LabView'
 import * as db from '../../db/queries/queryDB'
 import {
     type SummarizeDataQueryResult,
@@ -9,39 +9,39 @@ import {
 import {
     type StreamPerMonthQueryResult,
     queryStreamsPerMonthByYear,
-} from './DetailedCharts/StreamPerMonth/query'
+} from './LabCharts/StreamPerMonth/query'
 import {
     type SummaryPerYearQueryResult,
     summarizePerYearQuery,
-} from './DetailedCharts/SummaryPerYear/query'
+} from './LabCharts/SummaryPerYear/query'
 import {
     type TopTracksQueryResult,
     queryTopTracksByYear,
-} from './DetailedCharts/TopTracks/query'
+} from './LabCharts/TopTracks/query'
 import {
     type TopArtistsQueryResult,
     queryTopArtistsByYear,
-} from './DetailedCharts/TopArtists/query'
+} from './LabCharts/TopArtists/query'
 import {
     type Top10EvolutionQueryResult,
     queryTop10Evolution,
-} from './DetailedCharts/Top10Evolution/query'
+} from './LabCharts/Top10Evolution/query'
 import {
     type StreamPerDayOfWeekQueryResult,
     streamPerDayOfWeekQueryByYear,
-} from './DetailedCharts/StreamPerDayOfWeek/query'
+} from './LabCharts/StreamPerDayOfWeek/query'
 import {
     type ArtistDiscoveryQueryResult,
     queryArtistDiscovery,
-} from './DetailedCharts/ArtistDiscovery/query'
+} from './LabCharts/ArtistDiscovery/query'
 import {
     type Top10AlbumsEvolutionQueryResult,
     queryTop10AlbumsEvolution,
-} from './DetailedCharts/Top10AlbumsEvolution/query'
+} from './LabCharts/Top10AlbumsEvolution/query'
 import {
     type Top10TracksEvolutionQueryResult,
     queryTop10TracksEvolution,
-} from './DetailedCharts/Top10TracksEvolution/query'
+} from './LabCharts/Top10TracksEvolution/query'
 
 const summarizedDataMock: SummarizeDataQueryResult[] = [
     {
@@ -277,7 +277,7 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamPerDayOfWeekResultMock)
     })
 
-    render(<DetailedView />)
+    render(<LabView />)
 
     //range slider
     const slider = await screen.findByRole('slider')

@@ -1,4 +1,4 @@
-import { DetailedView } from '../Charts/DetailedView'
+import { LabView } from '../Charts/LabView'
 import { SimpleView } from '../Charts/SimpleView'
 import { ChatView } from '../Charts/ChatView'
 import { useState } from 'react'
@@ -48,7 +48,7 @@ export function Results() {
                 {activeTab === 'simple' ? (
                     <SimpleView />
                 ) : activeTab === 'lab' ? (
-                    <DetailedView />
+                    <LabView />
                 ) : (
                     <ChatView />
                 )}
