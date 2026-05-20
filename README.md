@@ -57,7 +57,6 @@ Or bring your own data:
 
 </details>
 
-
 <details>
 <summary>Apple Music (experimental)</summary>
 <br>
@@ -73,6 +72,21 @@ Or bring your own data:
 3. Download and extract the ZIP you receive by email
 4. Inside the archive, navigate to `Apple Music Activity/` and find `Apple Music Play Activity.csv`.
 5. If the data is in a nested ZIP (e.g. `Apple_Media_Services.zip`), upload the outer ZIP directly, Tracksy extracts it automatically.
+
+</details>
+
+<details>
+<summary>JellyFin</summary>
+<br>
+
+**Requires the [Playback Reporting plugin](https://github.com/jellyfin/jellyfin-plugin-playbackreporting).**
+
+1. In JellyFin, go to "_Dashboard_" > "_Plugins_" and install "Playback Reporting" if not already installed
+2. After some listening activity has been recorded, go to "_Dashboard_" > "_Playback Report_"
+3. Click "_Export as CSV_" to download `playback_report.csv`
+
+> [!NOTE]
+> Artist and album names are not included in the plugin export. Charts based on artist or album will not be populated for JellyFin data.
 
 </details>
 
