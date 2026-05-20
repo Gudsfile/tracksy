@@ -1,10 +1,8 @@
 import { convertArrayToFileList } from '../../utils/convertArrayToFileList'
+import { extractFilesRecursively } from '../../utils/extractFilesRecursively'
 import { isAllowedFileContentType } from '../../streamProvider'
 import { isZipArchive } from '../../utils/isZipArchive'
-import { openArchive } from '../../utils/openArchive'
 import { UPLOAD_ERROR } from '../../utils/uploadErrorMessages'
-
-const HIDDEN_FILE_PREFIX = ['__MACOSX']
 
 /**
  * Custom hook for handling file uploads with validation and processing.
@@ -54,24 +52,13 @@ export function useFileUpload({
      * @throws {Error} - Throws an error if no files are found in the archive.
      */
     const manageZipArchive = async (file: File): Promise<FileList> => {
-        const archive = await openArchive(file)
-        const extractedFiles: Record<string, File | Record<string, File>> =
-            await archive.extractFiles()
+        const extractedFiles = await extractFilesRecursively(file)
 
-        const filteredFiles = Object.entries(extractedFiles)
-            .filter(
-                ([key]) =>
-                    !HIDDEN_FILE_PREFIX.some((prefix) => key.startsWith(prefix))
-            )
-            .flatMap(([, value]) => {
-                return value instanceof File ? [value] : Object.values(value)
-            })
-
-        if (filteredFiles.length === 0) {
+        if (extractedFiles.length === 0) {
             throw new Error(UPLOAD_ERROR.NO_FILES_IN_ARCHIVE)
         }
 
-        return convertArrayToFileList(filteredFiles)
+        return convertArrayToFileList(extractedFiles)
     }
 
     /**
