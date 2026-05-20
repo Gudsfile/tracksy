@@ -1,5 +1,5 @@
 import { render, fireEvent, screen } from '@testing-library/react'
-import { it, vi, expect } from 'vitest'
+import { it, describe, vi, expect } from 'vitest'
 
 import { Dropzone } from './Dropzone'
 
@@ -69,4 +69,45 @@ it('should call handleFileUpload when a file is uploaded', () => {
     })
 
     expect(handleFileUpload).toHaveBeenCalled()
+})
+
+describe('contentTypeAcceptedMessage', () => {
+    it('renders a string message', () => {
+        const { container } = render(
+            <Dropzone
+                handleDragOver={vi.fn()}
+                handleDrop={vi.fn()}
+                handleFileUpload={vi.fn()}
+                contentTypeAcceptedMessage="Only ZIP/JSON are accepted"
+            />
+        )
+        expect(container.textContent).toContain('Only ZIP/JSON are accepted')
+    })
+
+    it('renders a ReactNode message', () => {
+        const { container } = render(
+            <Dropzone
+                handleDragOver={vi.fn()}
+                handleDrop={vi.fn()}
+                handleFileUpload={vi.fn()}
+                contentTypeAcceptedMessage={
+                    <>
+                        Only <strong>Spotify</strong> are accepted
+                    </>
+                }
+            />
+        )
+        expect(container.textContent).toContain('Spotify')
+    })
+
+    it('renders nothing when omitted', () => {
+        const { container } = render(
+            <Dropzone
+                handleDragOver={vi.fn()}
+                handleDrop={vi.fn()}
+                handleFileUpload={vi.fn()}
+            />
+        )
+        expect(container.textContent).not.toContain('accepted')
+    })
 })

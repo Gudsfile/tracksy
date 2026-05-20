@@ -3,6 +3,7 @@ type Props = {
     handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
     contentTypeAccepted: string
+    contentTypeAcceptedMessage?: React.ReactNode
 }
 
 export function Dropzone({
@@ -10,6 +11,7 @@ export function Dropzone({
     handleDragOver,
     handleFileUpload,
     contentTypeAccepted,
+    contentTypeAcceptedMessage,
 }: Props) {
     return (
         <div>
@@ -34,9 +36,7 @@ export function Dropzone({
                     Drag and drop or click to upload your music streaming data
                     files
                     <br />
-                    Only <strong>ZIP archive</strong>, a{' '}
-                    <strong>JSON file</strong>, or an <strong>XLSX file</strong>{' '}
-                    are accepted
+                    {contentTypeAcceptedMessage}
                 </label>
             </div>
         </div>

@@ -2,6 +2,7 @@ import { STREAM_PROVIDERS_CONTENT_TYPES } from '../../streamProvider'
 import { zipContentFile } from '../../utils/isZipArchive'
 import { Dropzone } from './Dropzone'
 import { useFileUpload } from './useFileUpload'
+import { getSupportedProviderNames } from '../../streamProvider'
 
 interface Props {
     handleValidatedFiles: (files: FileList | null) => void
@@ -46,12 +47,20 @@ export function DropzoneWrapper({
         zipContentFile,
     ].join(',')
 
+    const names = getSupportedProviderNames()
+    const contentTypeAcceptedMessage = (
+        <>
+            Only <strong>{names.join(', ')}</strong> are accepted
+        </>
+    )
+
     return (
         <Dropzone
             handleDrop={handleDrop}
             handleDragOver={handleDragOver}
             handleFileUpload={handleFileUpload}
             contentTypeAccepted={contentTypeAccepted}
+            contentTypeAcceptedMessage={contentTypeAcceptedMessage}
         />
     )
 }
