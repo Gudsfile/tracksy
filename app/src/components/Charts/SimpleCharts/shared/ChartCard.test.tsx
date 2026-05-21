@@ -117,8 +117,6 @@ describe('ChartCard', () => {
         render(<ChartCard title="Test">Content</ChartCard>)
 
         expect(screen.queryByRole('button')).toBeNull()
-        expect(
-            screen.getByRole('heading', { name: 'Test' })
-        ).toBeDefined()
+        expect(screen.getByRole('heading', { name: 'Test' })).toBeDefined()
     })
 })

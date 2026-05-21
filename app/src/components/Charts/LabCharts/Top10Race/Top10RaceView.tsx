@@ -138,7 +138,9 @@ export function Top10RaceView({ data }: Props) {
                         undefined,
                         { year: 'numeric', month: 'long', day: 'numeric' }
                     )}
-                    <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-2 font-sans">· daily</span>
+                    <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-2 font-sans">
+                        · daily
+                    </span>
                 </h4>
                 <div className="flex items-center gap-4 flex-wrap">
                     {/* Speed selector */}
@@ -169,23 +171,62 @@ export function Top10RaceView({ data }: Props) {
                                     setIsPlaying(!isPlaying)
                                 }
                             }}
-                            aria-label={isPlaying ? 'Pause' : currentFrameIdx >= frames.length - 1 ? 'Replay' : 'Play'}
-                            title={isPlaying ? 'Pause' : currentFrameIdx >= frames.length - 1 ? 'Replay' : 'Play'}
+                            aria-label={
+                                isPlaying
+                                    ? 'Pause'
+                                    : currentFrameIdx >= frames.length - 1
+                                      ? 'Replay'
+                                      : 'Play'
+                            }
+                            title={
+                                isPlaying
+                                    ? 'Pause'
+                                    : currentFrameIdx >= frames.length - 1
+                                      ? 'Replay'
+                                      : 'Play'
+                            }
                             className="p-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg transition-colors"
                         >
                             {isPlaying ? (
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                    <rect x="3" y="2" width="4" height="12" rx="1"/>
-                                    <rect x="9" y="2" width="4" height="12" rx="1"/>
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                >
+                                    <rect
+                                        x="3"
+                                        y="2"
+                                        width="4"
+                                        height="12"
+                                        rx="1"
+                                    />
+                                    <rect
+                                        x="9"
+                                        y="2"
+                                        width="4"
+                                        height="12"
+                                        rx="1"
+                                    />
                                 </svg>
                             ) : currentFrameIdx >= frames.length - 1 ? (
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                >
+                                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
                                 </svg>
                             ) : (
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                >
+                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
                                 </svg>
                             )}
                         </button>
@@ -197,7 +238,10 @@ export function Top10RaceView({ data }: Props) {
             {frames.length > 1 && (
                 <div className="flex items-center gap-3 w-full bg-gray-50/50 dark:bg-slate-800/20 p-2.5 rounded-xl border border-gray-200/50 dark:border-slate-800/50">
                     <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
-                        {new Date(frames[0].dateTs).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}
+                        {new Date(frames[0].dateTs).toLocaleDateString(
+                            undefined,
+                            { year: 'numeric', month: 'short' }
+                        )}
                     </span>
                     <input
                         type="range"
@@ -211,13 +255,20 @@ export function Top10RaceView({ data }: Props) {
                         className="flex-grow h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
                     />
                     <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
-                        {new Date(frames[frames.length - 1].dateTs).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}
+                        {new Date(
+                            frames[frames.length - 1].dateTs
+                        ).toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                        })}
                     </span>
                 </div>
             )}
 
             <div className="flex justify-end pr-[62px]">
-                <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">streams</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
+                    streams
+                </span>
             </div>
 
             <div className="relative h-[450px] w-full mt-4">

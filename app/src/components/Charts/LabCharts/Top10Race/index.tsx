@@ -31,7 +31,11 @@ export function Top10Race({ year }: { year: number | undefined }) {
             isLoading={isLoading}
             question="Who dominated my listening, and when did they rise?"
         >
-            {data.length === 0 ? <ChartCardEmpty /> : <Top10RaceView data={data} />}
+            {data.length === 0 ? (
+                <ChartCardEmpty />
+            ) : (
+                <Top10RaceView data={data} />
+            )}
         </ChartCard>
     )
 }

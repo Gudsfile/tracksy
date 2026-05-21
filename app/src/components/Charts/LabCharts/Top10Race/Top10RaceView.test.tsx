@@ -86,5 +86,4 @@ describe('Top10RaceView', () => {
 
         vi.useRealTimers()
     })
-
 })
