@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { queryTop10Race, type Top10RaceQueryResult } from './query'
 import { Top10RaceView } from './Top10RaceView'
-import { ChartCard } from '../../SimpleCharts/shared'
+import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
 
 export function Top10Race({ year }: { year: number | undefined }) {
     const [data, setData] = useState<Top10RaceQueryResult[]>([])
@@ -29,8 +29,9 @@ export function Top10Race({ year }: { year: number | undefined }) {
             emoji="🏎️"
             className="mt-4 md:col-span-2 lg:col-span-3"
             isLoading={isLoading}
+            question="Who dominated my listening, and when did they rise?"
         >
-            {data.length > 0 && <Top10RaceView data={data} />}
+            {data.length === 0 ? <ChartCardEmpty /> : <Top10RaceView data={data} />}
         </ChartCard>
     )
 }
