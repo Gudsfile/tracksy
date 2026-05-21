@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import type { Top10EvolutionQueryResult } from './query'
 
 type Props = {
@@ -116,23 +116,42 @@ export function Top10EvolutionView({ data }: Props) {
                         { year: 'numeric', month: 'long', day: 'numeric' }
                     )}
                 </h4>
-                <button
-                    onClick={() => {
-                        if (currentFrameIdx >= frames.length - 1) {
-                            setCurrentFrameIdx(0)
-                            setIsPlaying(true)
-                        } else {
-                            setIsPlaying(!isPlaying)
-                        }
-                    }}
-                    className="px-4 py-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors"
-                >
-                    {isPlaying
-                        ? 'Pause'
-                        : currentFrameIdx >= frames.length - 1
-                          ? 'Replay'
-                          : 'Play'}
-                </button>
+                <div className="flex items-center gap-4">
+                    {/* Speed selector */}
+                    <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
+                        {([0.5, 1, 2, 4] as const).map((speed) => (
+                            <button
+                                key={speed}
+                                onClick={() => setSpeedMultiplier(speed)}
+                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                                    speedMultiplier === speed
+                                        ? 'bg-blue-500 text-white shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                }`}
+                            >
+                                {speed}x
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            if (currentFrameIdx >= frames.length - 1) {
+                                setCurrentFrameIdx(0)
+                                setIsPlaying(true)
+                            } else {
+                                setIsPlaying(!isPlaying)
+                            }
+                        }}
+                        className="px-4 py-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors"
+                    >
+                        {isPlaying
+                            ? 'Pause'
+                            : currentFrameIdx >= frames.length - 1
+                              ? 'Replay'
+                              : 'Play'}
+                    </button>
+                </div>
             </div>
 
             <div className="relative h-[450px] w-full mt-4">
