@@ -27,7 +27,7 @@ export function Top10Evolution({ year }: { year: number | undefined }) {
         <ChartCard
             title="Top 10 Evolution"
             emoji="🏎️"
-            className="md:col-span-2 lg:col-span-3"
+            className="mt-4 md:col-span-2 lg:col-span-3"
             isLoading={isLoading}
         >
             {data.length > 0 && <Top10EvolutionView data={data} />}
