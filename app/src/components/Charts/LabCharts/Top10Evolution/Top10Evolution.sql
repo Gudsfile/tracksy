@@ -1,10 +1,11 @@
-WITH daily_streams AS (
-    SELECT
-        date_trunc('day', ts::datetime)::date AS stream_date,
-        artist_name AS artist,
-        count(*)::int AS daily_plays
-    FROM ${table}
-    WHERE artist_name IS NOT NULL
+with daily_streams as (
+    select
+        date_trunc('day', ts::datetime)::date as stream_date,
+        artist_name as artist,
+        count(*)::int as daily_plays
+    from ${table}
+    where artist_name is not null
+    ${yearFilter}
     GROUP BY stream_date, artist
 )
 
