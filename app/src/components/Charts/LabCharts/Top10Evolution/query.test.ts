@@ -21,7 +21,7 @@ describe('Top10Evolution Query', () => {
         )
     })
 
-    it('should return global top 10 artists evolution', async () => {
+    it('should return cumulative stream counts per artist per day', async () => {
         const result = await conn.runAndReadAll(queryTop10Evolution())
         const rows = result
             .getRowObjects()
@@ -30,40 +30,45 @@ describe('Top10Evolution Query', () => {
                     a: Record<string, DuckDBValue>,
                     b: Record<string, DuckDBValue>
                 ) =>
-                    (a.stream_year as number) - (b.stream_year as number) ||
-                    (a.stream_rank as number) - (b.stream_rank as number)
+                    (a.stream_date_ts as number) - (b.stream_date_ts as number) ||
+                    (a.artist as string).localeCompare(b.artist as string)
             )
 
         expect(rows).toEqual([
             {
-                stream_year: 2020,
+                stream_date_ts: new Date('2020-01-01').getTime(),
                 artist: 'Artist A',
-                stream_rank: 1,
+                play_count: 1,
+            },
+            {
+                stream_date_ts: new Date('2020-01-01').getTime(),
+                artist: 'Artist C',
+                play_count: 1,
+            },
+            {
+                stream_date_ts: new Date('2020-01-02').getTime(),
+                artist: 'Artist A',
                 play_count: 3,
             },
             {
-                stream_year: 2020,
+                stream_date_ts: new Date('2020-01-03').getTime(),
                 artist: 'Artist B',
-                stream_rank: 2,
                 play_count: 2,
             },
             {
-                stream_year: 2020,
-                artist: 'Artist C',
-                stream_rank: 3,
-                play_count: 1,
-            },
-            {
-                stream_year: 2021,
+                stream_date_ts: new Date('2021-01-01').getTime(),
                 artist: 'Artist B',
-                stream_rank: 1,
-                play_count: 2,
+                play_count: 3,
             },
             {
-                stream_year: 2021,
+                stream_date_ts: new Date('2021-01-02').getTime(),
+                artist: 'Artist B',
+                play_count: 4,
+            },
+            {
+                stream_date_ts: new Date('2021-01-03').getTime(),
                 artist: 'Artist A',
-                stream_rank: 2,
-                play_count: 1,
+                play_count: 4,
             },
         ])
     })

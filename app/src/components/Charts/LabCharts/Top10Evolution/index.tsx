@@ -1,26 +1,35 @@
 import { useEffect, useState } from 'react'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { queryTop10Evolution, type Top10EvolutionQueryResult } from './query'
-import { Top10EvolutionPlot } from './plot'
+import { Top10EvolutionView } from './Top10EvolutionView'
+import { ChartCard } from '../../SimpleCharts/shared'
 
 export function Top10Evolution() {
     const [data, setData] = useState<Top10EvolutionQueryResult[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await queryDBAsJSON<Top10EvolutionQueryResult>(
-                queryTop10Evolution()
-            )
-            setData(result)
+            try {
+                const result = await queryDBAsJSON<Top10EvolutionQueryResult>(
+                    queryTop10Evolution()
+                )
+                setData(result)
+            } finally {
+                setIsLoading(false)
+            }
         }
         fetchData()
     }, [])
 
-    if (data.length === 0) return null
-
     return (
-        <div className="group p-6 my-4 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
-            <Top10EvolutionPlot data={data} />
-        </div>
+        <ChartCard
+            title="Top 10 Evolution"
+            emoji="🏎️"
+            className="md:col-span-2 lg:col-span-3"
+            isLoading={isLoading}
+        >
+            {data.length > 0 && <Top10EvolutionView data={data} />}
+        </ChartCard>
     )
 }
