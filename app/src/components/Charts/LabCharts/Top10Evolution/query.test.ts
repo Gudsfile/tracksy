@@ -30,7 +30,8 @@ describe('Top10Evolution Query', () => {
                     a: Record<string, DuckDBValue>,
                     b: Record<string, DuckDBValue>
                 ) =>
-                    (a.stream_date_ts as number) - (b.stream_date_ts as number) ||
+                    (a.stream_date_ts as number) -
+                        (b.stream_date_ts as number) ||
                     (a.artist as string).localeCompare(b.artist as string)
             )
 
