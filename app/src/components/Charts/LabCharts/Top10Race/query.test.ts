@@ -1,12 +1,11 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryTop10Evolution } from './query'
+import { queryTop10Race } from './query'
 import { DuckDBConnection, type DuckDBValue } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
-const seedPath =
-    'src/components/Charts/LabCharts/Top10Evolution/fixtures/seed.json'
+const seedPath = 'src/components/Charts/LabCharts/Top10Race/fixtures/seed.json'
 let conn: DuckDBConnection
 
-describe('Top10Evolution Query', () => {
+describe('Top10Race Query', () => {
     beforeAll(async () => {
         conn = await DuckDBConnection.create()
     })
@@ -22,7 +21,7 @@ describe('Top10Evolution Query', () => {
     })
 
     it('should return cumulative stream counts per artist per day', async () => {
-        const result = await conn.runAndReadAll(queryTop10Evolution())
+        const result = await conn.runAndReadAll(queryTop10Race())
         const rows = result
             .getRowObjects()
             .toSorted(
