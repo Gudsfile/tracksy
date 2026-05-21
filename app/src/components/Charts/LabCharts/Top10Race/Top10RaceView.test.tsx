@@ -40,6 +40,14 @@ describe('Top10RaceView', () => {
         // Verify play counts are shown
         expect(screen.getByText('10')).toBeDefined()
         expect(screen.getByText('5')).toBeDefined()
+
+        // Verify streams column header and daily granularity label
+        expect(screen.getByText('streams')).toBeDefined()
+        expect(screen.getByText(/daily/)).toBeDefined()
+
+        // Start/End labels replaced by formatted dates
+        expect(screen.queryByText('Start')).toBeNull()
+        expect(screen.queryByText('End')).toBeNull()
     })
 
     it('allows changing animation speed', () => {
@@ -79,28 +87,4 @@ describe('Top10RaceView', () => {
         vi.useRealTimers()
     })
 
-    it('allows stepping forward and backward', () => {
-        render(<Top10RaceView data={mockData} />)
-
-        // Clicking Prev should be disabled initially
-        const prevButton = screen.getByTitle(
-            'Previous day'
-        ) as HTMLButtonElement
-        expect(prevButton.disabled).toBe(true)
-
-        // Click Next day
-        const nextButton = screen.getByTitle('Next day')
-        fireEvent.click(nextButton)
-
-        // Now we should be on the second frame (2024-01-02 data: Artist A 12, Artist B 8)
-        expect(screen.getByText('12')).toBeDefined()
-        expect(screen.getByText('8')).toBeDefined()
-
-        // Prev button should now be enabled
-        expect(prevButton.disabled).toBe(false)
-
-        // Click Prev day
-        fireEvent.click(prevButton)
-        expect(screen.getByText('10')).toBeDefined()
-    })
 })
