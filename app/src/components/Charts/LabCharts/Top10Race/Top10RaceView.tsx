@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
-import type { Top10EvolutionQueryResult } from './query'
+import type { Top10RaceQueryResult } from './query'
 
 type Props = {
-    data: Top10EvolutionQueryResult[]
+    data: Top10RaceQueryResult[]
 }
 
 type ArtistScore = {
@@ -30,7 +30,7 @@ const colors = [
     'bg-cyan-500',
 ]
 
-export function Top10EvolutionView({ data }: Props) {
+export function Top10RaceView({ data }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(true)
     const [speedMultiplier, setSpeedMultiplier] = useState(1) // 1x, 2x, 4x

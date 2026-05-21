@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
-import { Top10EvolutionView } from './Top10EvolutionView'
-import type { Top10EvolutionQueryResult } from './query'
+import { Top10RaceView } from './Top10RaceView'
+import type { Top10RaceQueryResult } from './query'
 
-const mockData: Top10EvolutionQueryResult[] = [
+const mockData: Top10RaceQueryResult[] = [
     {
         stream_date_ts: 1704067200000, // 2024-01-01
         artist: 'Artist A',
@@ -26,9 +26,9 @@ const mockData: Top10EvolutionQueryResult[] = [
     },
 ]
 
-describe('Top10EvolutionView', () => {
+describe('Top10RaceView', () => {
     it('renders and displays the first frame of data', () => {
-        render(<Top10EvolutionView data={mockData} />)
+        render(<Top10RaceView data={mockData} />)
 
         // Verify the date is rendered (2024-01-01 or local equivalent formatting)
         expect(screen.getByRole('heading', { level: 4 })).toBeDefined()
@@ -43,7 +43,7 @@ describe('Top10EvolutionView', () => {
     })
 
     it('allows changing animation speed', () => {
-        render(<Top10EvolutionView data={mockData} />)
+        render(<Top10RaceView data={mockData} />)
 
         // Initially speed 1x is selected
         const speed1xButton = screen.getByRole('button', { name: '1x' })
@@ -58,7 +58,7 @@ describe('Top10EvolutionView', () => {
 
     it('allows pausing/playing the animation', async () => {
         vi.useFakeTimers()
-        render(<Top10EvolutionView data={mockData} />)
+        render(<Top10RaceView data={mockData} />)
 
         // Initially it should be playing. Let's pause it.
         const pauseButton = screen.getByRole('button', { name: 'Pause' })
@@ -80,7 +80,7 @@ describe('Top10EvolutionView', () => {
     })
 
     it('allows stepping forward and backward', () => {
-        render(<Top10EvolutionView data={mockData} />)
+        render(<Top10RaceView data={mockData} />)
 
         // Clicking Prev should be disabled initially
         const prevButton = screen.getByTitle(
