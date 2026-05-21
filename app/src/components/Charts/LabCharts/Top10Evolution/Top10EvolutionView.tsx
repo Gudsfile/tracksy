@@ -109,14 +109,14 @@ export function Top10EvolutionView({ data }: Props) {
 
     return (
         <div className="flex flex-col gap-4 w-full">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-4">
                 <h4 className="text-2xl font-bold font-mono tracking-tight text-gray-800 dark:text-gray-100">
                     {new Date(currentFrame.dateTs).toLocaleDateString(
                         undefined,
                         { year: 'numeric', month: 'long', day: 'numeric' }
                     )}
                 </h4>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-wrap">
                     {/* Speed selector */}
                     <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
                         {([0.5, 1, 2, 4] as const).map((speed) => (
@@ -134,25 +134,79 @@ export function Top10EvolutionView({ data }: Props) {
                         ))}
                     </div>
 
-                    <button
-                        onClick={() => {
-                            if (currentFrameIdx >= frames.length - 1) {
-                                setCurrentFrameIdx(0)
-                                setIsPlaying(true)
-                            } else {
-                                setIsPlaying(!isPlaying)
-                            }
-                        }}
-                        className="px-4 py-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors"
-                    >
-                        {isPlaying
-                            ? 'Pause'
-                            : currentFrameIdx >= frames.length - 1
-                              ? 'Replay'
-                              : 'Play'}
-                    </button>
+                    {/* Controls (Prev, Play/Pause, Next) */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => {
+                                setIsPlaying(false)
+                                setCurrentFrameIdx((prev) =>
+                                    Math.max(0, prev - 1)
+                                )
+                            }}
+                            disabled={currentFrameIdx === 0}
+                            className="px-3 py-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors border border-gray-300/20"
+                            title="Previous day"
+                        >
+                            ◀
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                if (currentFrameIdx >= frames.length - 1) {
+                                    setCurrentFrameIdx(0)
+                                    setIsPlaying(true)
+                                } else {
+                                    setIsPlaying(!isPlaying)
+                                }
+                            }}
+                            className="px-4 py-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors min-w-[70px]"
+                        >
+                            {isPlaying
+                                ? 'Pause'
+                                : currentFrameIdx >= frames.length - 1
+                                  ? 'Replay'
+                                  : 'Play'}
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                setIsPlaying(false)
+                                setCurrentFrameIdx((prev) =>
+                                    Math.min(frames.length - 1, prev + 1)
+                                )
+                            }}
+                            disabled={currentFrameIdx >= frames.length - 1}
+                            className="px-3 py-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors border border-gray-300/20"
+                            title="Next day"
+                        >
+                            ▶
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            {/* Timeline slider */}
+            {frames.length > 1 && (
+                <div className="flex items-center gap-3 w-full bg-gray-50/50 dark:bg-slate-800/20 p-2.5 rounded-xl border border-gray-200/50 dark:border-slate-800/50">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
+                        Start
+                    </span>
+                    <input
+                        type="range"
+                        min={0}
+                        max={frames.length - 1}
+                        value={currentFrameIdx}
+                        onChange={(e) => {
+                            setIsPlaying(false)
+                            setCurrentFrameIdx(Number(e.target.value))
+                        }}
+                        className="flex-grow h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
+                        End
+                    </span>
+                </div>
+            )}
 
             <div className="relative h-[450px] w-full mt-4">
                 {currentFrame.top10.map((item, index) => {
