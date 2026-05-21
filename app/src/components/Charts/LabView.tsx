@@ -104,7 +104,7 @@ export function LabView() {
                 </p>
 
                 <Streaks />
-                <Top10Evolution />
+                <Top10Evolution year={debouncedYear} />
                 <Top10TracksEvolution />
                 <SessionAnalysisDetailed year={debouncedYear} />
             </section>

@@ -4,15 +4,16 @@ import { queryTop10Evolution, type Top10EvolutionQueryResult } from './query'
 import { Top10EvolutionView } from './Top10EvolutionView'
 import { ChartCard } from '../../SimpleCharts/shared'
 
-export function Top10Evolution() {
+export function Top10Evolution({ year }: { year: number | undefined }) {
     const [data, setData] = useState<Top10EvolutionQueryResult[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true)
             try {
                 const result = await queryDBAsJSON<Top10EvolutionQueryResult>(
-                    queryTop10Evolution()
+                    queryTop10Evolution(year)
                 )
                 setData(result)
             } finally {
@@ -20,7 +21,7 @@ export function Top10Evolution() {
             }
         }
         fetchData()
-    }, [])
+    }, [year])
 
     return (
         <ChartCard
