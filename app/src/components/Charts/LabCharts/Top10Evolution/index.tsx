@@ -15,7 +15,7 @@ export function Top10Evolution({ year }: { year: number | undefined }) {
                 const result = await queryDBAsJSON<Top10EvolutionQueryResult>(
                     queryTop10Evolution(year)
                 )
-                setData(result)
+                setData(result || [])
             } finally {
                 setIsLoading(false)
             }

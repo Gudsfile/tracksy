@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import type { Top10EvolutionQueryResult } from './query'
 
 type Props = {
@@ -34,6 +34,8 @@ export function Top10EvolutionView({ data }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(true)
     const [speedMultiplier, setSpeedMultiplier] = useState(1) // 1x, 2x, 4x
+    const [isVisible, setIsVisible] = useState(false)
+    const containerRef = useRef<HTMLDivElement>(null)
 
     // Base speed in ms
     const BASE_SPEED = 120
@@ -89,8 +91,29 @@ export function Top10EvolutionView({ data }: Props) {
 
     const currentFrame = frames[currentFrameIdx]
 
+    // IntersectionObserver to only animate when visible
     useEffect(() => {
-        if (!isPlaying || frames.length === 0) return
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsVisible(entry.isIntersecting)
+            },
+            { threshold: 0.1 }
+        )
+
+        const currentRef = containerRef.current
+        if (currentRef) {
+            observer.observe(currentRef)
+        }
+
+        return () => {
+            if (currentRef) {
+                observer.unobserve(currentRef)
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!isPlaying || !isVisible || frames.length === 0) return
 
         const interval = setInterval(() => {
             setCurrentFrameIdx((prev) => {
@@ -103,12 +126,12 @@ export function Top10EvolutionView({ data }: Props) {
         }, BASE_SPEED / speedMultiplier)
 
         return () => clearInterval(interval)
-    }, [isPlaying, frames.length, speedMultiplier])
+    }, [isPlaying, isVisible, frames.length, speedMultiplier])
 
     if (!currentFrame) return null
 
     return (
-        <div className="flex flex-col gap-4 w-full">
+        <div ref={containerRef} className="flex flex-col gap-4 w-full">
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <h4 className="text-2xl font-bold font-mono tracking-tight text-gray-800 dark:text-gray-100">
                     {new Date(currentFrame.dateTs).toLocaleDateString(

@@ -267,7 +267,10 @@ it('renders all Charts', async () => {
             return Promise.resolve(topArtistsResultMock)
         if (query === queryArtistDiscovery())
             return Promise.resolve(artistDiscoveryResultMock)
-        if (query === queryTop10Evolution())
+        if (
+            query === queryTop10Evolution(2024) ||
+            query === queryTop10Evolution(2006)
+        )
             return Promise.resolve(top10EvolutionResultMock)
         if (query === queryTop10AlbumsEvolution())
             return Promise.resolve(top10AlbumsEvolutionResultMock)
@@ -291,7 +294,7 @@ it('renders all Charts', async () => {
     await screen.findByRole('heading', { name: 'Top Tracks' })
     await screen.findByRole('heading', { name: 'Top Artists' })
     await screen.findByRole('heading', {
-        name: 'Global Top 10 Artists Evolution',
+        name: /Top 10 Evolution/,
     })
     await screen.findByRole('heading', {
         name: 'Stream per hour and day of week',
