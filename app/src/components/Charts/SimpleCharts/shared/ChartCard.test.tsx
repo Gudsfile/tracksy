@@ -102,4 +102,23 @@ describe('ChartCard', () => {
 
         expect(screen.getByText('Loading question?')).toBeDefined()
     })
+
+    it('should render headerActions when provided', () => {
+        render(
+            <ChartCard title="Test" headerActions={<button>Action</button>}>
+                Content
+            </ChartCard>
+        )
+
+        expect(screen.getByRole('button', { name: 'Action' })).toBeDefined()
+    })
+
+    it('should not render extra elements when headerActions is not provided', () => {
+        render(<ChartCard title="Test">Content</ChartCard>)
+
+        expect(screen.queryByRole('button')).toBeNull()
+        expect(
+            screen.getByRole('heading', { name: 'Test' })
+        ).toBeDefined()
+    })
 })
