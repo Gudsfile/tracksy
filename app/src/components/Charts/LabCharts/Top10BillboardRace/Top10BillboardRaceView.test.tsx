@@ -37,7 +37,7 @@ describe('Top10BillboardRaceView', () => {
     it('renders Ghost Leaderboard with longevity data', () => {
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
-        expect(screen.getByText('Ghost Leaderboard')).toBeDefined()
+        expect(screen.getByText('Longevity Leaderboard')).toBeDefined()
 
         // Ghost panel shows weeks in top 10 with "w" suffix
         expect(screen.getAllByText(/\dw$/).length).toBeGreaterThan(0)

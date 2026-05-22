@@ -13,7 +13,7 @@ export function GhostLeaderboard({ ranking, activeLabels }: Props) {
     return (
         <div className="flex flex-col">
             <span className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
-                Ghost Leaderboard
+                Longevity Leaderboard
             </span>
             <div className="flex flex-col gap-0.5">
                 {ranking.map((entry, index) => (
