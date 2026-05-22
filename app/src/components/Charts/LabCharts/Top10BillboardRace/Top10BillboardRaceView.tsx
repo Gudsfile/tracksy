@@ -378,14 +378,20 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                             <div className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
                                 🔥 Longest streak
                             </div>
-                            <div>
-                                <span className="font-bold">
-                                    {streakRecord.label}
-                                </span>
-                                <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                                    {streakRecord.weeks} consecutive weeks
-                                </span>
-                            </div>
+                            {currentFrameIdx >= frames.length - 1 ? (
+                                <div>
+                                    <span className="font-bold">
+                                        {streakRecord.label}
+                                    </span>
+                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                                        {streakRecord.weeks} consecutive weeks
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className="text-xs text-gray-400 dark:text-gray-500 italic">
+                                    Watch till the end to find out…
+                                </div>
+                            )}
                         </InsightCard>
                     )}
                 </div>
