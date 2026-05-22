@@ -264,6 +264,44 @@ Each item → separate PR or commit.
 
 ---
 
+## 11. Future Directions — "Billboard Race" POC
+
+### Concept
+
+A variant of Top10Race based not on **cumulative stream counts**, but on **time spent in the top 10** — inspired by the Billboard 200.
+
+Each period (weekly by default, to be validated — start by testing with 200 periods), compute the top 10 for that period. The chart animates the ranking evolution and displays on the right not a stream count but the **number of periods spent in the top 10**.
+
+### Metrics displayed per bar
+
+Two dimensions shown to the right of each bar:
+- **Total**: number of periods (weeks) the entity appeared in any top 10 since the start
+- **Streak**: current consecutive streak of periods in the top 10
+
+Example: `14 wks · 6 streak`
+
+### Differences vs current Top10Race
+
+| | Top10Race (current) | Billboard Race (POC) |
+|---|---|---|
+| Bar metric | cumulative streams since start | weeks in the top 10 |
+| Right value | stream count | total weeks + streak |
+| Frame granularity | 1 frame = 1 day | 1 frame = 1 period (week?) |
+| SQL | cumsum over daily_plays | count of periods where rank ≤ 10 |
+
+### Open questions for the POC
+
+- **Granularity**: week is the natural choice (Billboard), to be validated on real data. Test with 200 periods to assess readability.
+- **Streak**: current streak or all-time max streak? Both make sense depending on the viewing moment.
+- **Component**: dedicated new component (recommended) vs parameter on existing Top10Race. SQL logic and data model are different enough to justify a separate component.
+- **Entities**: artists only for the POC, extend to tracks/albums if successful.
+
+### Target component (provisional)
+
+`Top10BillboardRace` — new component in `LabCharts/`, independent of `Top10Race/`.
+
+---
+
 ## 10. Boundaries
 
 | | Rule |
