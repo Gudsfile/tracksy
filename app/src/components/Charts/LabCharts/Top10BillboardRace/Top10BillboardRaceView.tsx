@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import type { EntityType, Top10BillboardRaceQueryResult } from './query'
 import { GhostLeaderboard } from './GhostLeaderboard'
+import { InsightCard } from '../../SimpleCharts/shared'
 
 type Props = {
     data: Top10BillboardRaceQueryResult[]
@@ -53,7 +54,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
     const BASE_SPEED = 120
 
     // Precompute all frames from the event stream using exponential decay scoring
-    const { frames, entityColors } = useMemo(() => {
+    const { frames, entityColors, streakRecord } = useMemo(() => {
         const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
             (a, b) => a - b
         )
@@ -76,6 +77,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         const runningScores = new Map<string, number>()
         const periodsInTop10 = new Map<string, number>()
         const streakMap = new Map<string, number>()
+        const allTimeMaxStreakMap = new Map<string, number>()
         const colorMap = new Map<string, string>()
         let colorIdx = 0
         const allFrames: Frame[] = []
@@ -110,6 +112,10 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
             for (const [label] of ranked) {
                 periodsInTop10.set(label, (periodsInTop10.get(label) ?? 0) + 1)
                 streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
+                const cur = streakMap.get(label)!
+                if (cur > (allTimeMaxStreakMap.get(label) ?? 0)) {
+                    allTimeMaxStreakMap.set(label, cur)
+                }
             }
             for (const [label] of runningScores) {
                 if (!top10Set.has(label) && (streakMap.get(label) ?? 0) > 0) {
@@ -142,7 +148,12 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
             })
         }
 
-        return { frames: allFrames, entityColors: colorMap }
+        let streakRecord = { label: '', weeks: 0 }
+        for (const [label, weeks] of allTimeMaxStreakMap) {
+            if (weeks > streakRecord.weeks) streakRecord = { label, weeks }
+        }
+
+        return { frames: allFrames, entityColors: colorMap, streakRecord }
     }, [data, lambda])
 
     const currentFrame = frames[currentFrameIdx]
@@ -357,11 +368,26 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
             {/* Two-column layout: Ghost (1/3) | Race (2/3) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Ghost Leaderboard */}
-                <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700/50 pb-4 md:pb-0 md:pr-6">
+                <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700/50 pb-4 md:pb-0 md:pr-6 flex flex-col gap-4">
                     <GhostLeaderboard
                         ranking={currentFrame.ghostRanking}
                         activeLabels={activeLabels}
                     />
+                    {streakRecord.weeks > 1 && (
+                        <InsightCard>
+                            <div className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
+                                🔥 Longest streak
+                            </div>
+                            <div>
+                                <span className="font-bold">
+                                    {streakRecord.label}
+                                </span>
+                                <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                                    {streakRecord.weeks} consecutive weeks
+                                </span>
+                            </div>
+                        </InsightCard>
+                    )}
                 </div>
 
                 {/* Bar chart race */}
