@@ -8,8 +8,9 @@ type Props = {
 
 type EntityScore = {
     label: string
-    periodsInTop10: number
-    streak: number
+    score: number // decay score (bar width)
+    periodsInTop10: number // weeks charted (annotation)
+    streak: number // consecutive weeks in top 10
 }
 
 type Frame = {
@@ -35,81 +36,95 @@ const colors = [
 export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(true)
-    const [speedMultiplier, setSpeedMultiplier] = useState(1) // 1x, 2x, 4x
+    const [speedMultiplier, setSpeedMultiplier] = useState(1) // 0.5x, 1x, 2x, 4x
+    const [lambda, setLambda] = useState(0.4)
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
     // Base speed in ms
     const BASE_SPEED = 120
 
-    // Precompute all frames from the event stream
+    // Precompute all frames from the event stream using exponential decay scoring
     const { frames, entityColors } = useMemo(() => {
-        const uniquePeriods = Array.from(
-            new Set(data.map((d) => d.period_ts))
-        ).sort((a, b) => a - b)
+        const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
+            (a, b) => a - b
+        )
+        const decay = Math.exp(-lambda)
 
-        const currentScores = new Map<string, number>()
-        const streakMap = new Map<string, number>()
-        const allFrames: Frame[] = []
-        const colorMap = new Map<string, string>()
-        let colorIdx = 0
-
-        // Group data by period_ts
-        const dataByPeriod = new Map<number, typeof data>()
+        // Group data by period
+        const dataByPeriod = new Map<
+            number,
+            { label: string; plays: number }[]
+        >()
         for (const row of data) {
-            if (!dataByPeriod.has(row.period_ts)) {
+            if (!dataByPeriod.has(row.period_ts))
                 dataByPeriod.set(row.period_ts, [])
-            }
-            dataByPeriod.get(row.period_ts)!.push(row)
+            dataByPeriod.get(row.period_ts)!.push({
+                label: row.label,
+                plays: row.period_plays,
+            })
         }
 
-        // Generate a frame for each unique period
+        const runningScores = new Map<string, number>() // decay score per entity
+        const periodsInTop10 = new Map<string, number>() // cumulative weeks in top 10
+        const streakMap = new Map<string, number>()
+        const colorMap = new Map<string, string>()
+        let colorIdx = 0
+        const allFrames: Frame[] = []
+
         for (const periodTs of uniquePeriods) {
-            const periodEvents = dataByPeriod.get(periodTs) || []
+            // Decay all existing scores
+            for (const [label, score] of runningScores) {
+                runningScores.set(label, score * decay)
+            }
 
-            // Get the set of labels in the top 10 THIS period
-            const thisPeriodsLabels = new Set(periodEvents.map((e) => e.label))
-
-            // Assign colors to any new labels
-            for (const event of periodEvents) {
-                if (!colorMap.has(event.label)) {
-                    colorMap.set(event.label, colors[colorIdx % colors.length])
+            // Add this week's streams
+            for (const { label, plays } of dataByPeriod.get(periodTs) ?? []) {
+                runningScores.set(
+                    label,
+                    (runningScores.get(label) ?? 0) + plays
+                )
+                if (!colorMap.has(label)) {
+                    colorMap.set(label, colors[colorIdx % colors.length])
                     colorIdx++
                 }
             }
 
-            // For all labels currently tracked: if NOT in this period → reset streak to 0
-            for (const label of streakMap.keys()) {
-                if (!thisPeriodsLabels.has(label)) {
+            // Rank top 10 by decay score
+            const ranked = [...runningScores.entries()]
+                .filter(([, s]) => s > 0.01)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10)
+
+            const top10Set = new Set(ranked.map(([l]) => l))
+
+            // Update longevity counters
+            for (const [label] of ranked) {
+                periodsInTop10.set(label, (periodsInTop10.get(label) ?? 0) + 1)
+                streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
+            }
+            for (const [label] of runningScores) {
+                if (!top10Set.has(label) && (streakMap.get(label) ?? 0) > 0) {
                     streakMap.set(label, 0)
                 }
             }
 
-            // For all labels in this period: increment streak and update scores
-            for (const event of periodEvents) {
-                const prevStreak = streakMap.get(event.label) ?? 0
-                streakMap.set(event.label, prevStreak + 1)
-                currentScores.set(event.label, event.periods_in_top10)
-            }
-
-            // Sort by periods_in_top10 desc, take top 10
-            const sortedEntities = Array.from(currentScores.entries())
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10)
+            const maxScore = ranked[0]?.[1] ?? 1
 
             allFrames.push({
                 periodTs,
-                top10: sortedEntities.map(([label, periodsInTop10]) => ({
+                top10: ranked.map(([label, score]) => ({
                     label,
-                    periodsInTop10,
+                    score,
+                    periodsInTop10: periodsInTop10.get(label) ?? 0,
                     streak: streakMap.get(label) ?? 0,
                 })),
-                maxScore: Math.max(1, sortedEntities[0]?.[1] || 1),
+                maxScore,
             })
         }
 
         return { frames: allFrames, entityColors: colorMap }
-    }, [data])
+    }, [data, lambda])
 
     const currentFrame = frames[currentFrameIdx]
 
@@ -137,7 +152,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
     useEffect(() => {
         setCurrentFrameIdx(0)
         setIsPlaying(true)
-    }, [entityType])
+    }, [entityType, lambda])
 
     useEffect(() => {
         if (!isPlaying || !isVisible || frames.length === 0) return
@@ -175,6 +190,23 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     </span>
                 </h4>
                 <div className="flex items-center gap-4 flex-wrap">
+                    {/* λ selector */}
+                    <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
+                        {([0.3, 0.4, 0.5] as const).map((l) => (
+                            <button
+                                key={l}
+                                onClick={() => setLambda(l)}
+                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                                    lambda === l
+                                        ? 'bg-blue-500 text-white shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                }`}
+                            >
+                                λ{l}
+                            </button>
+                        ))}
+                    </div>
+
                     {/* Speed selector */}
                     <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
                         {([0.5, 1, 2, 4] as const).map((speed) => (
@@ -299,14 +331,14 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
             <div className="flex justify-end pr-[62px]">
                 <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
-                    weeks in top 10
+                    weeks charted
                 </span>
             </div>
 
             <div className="relative h-[450px] w-full mt-4">
                 {currentFrame.top10.map((item, index) => {
                     const widthPercent =
-                        (item.periodsInTop10 / currentFrame.maxScore) * 100
+                        (item.score / currentFrame.maxScore) * 100
                     // Position from top based on index
                     const topPos = index * 44 // 40px height + 4px gap
 
@@ -339,18 +371,17 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                                     {item.label}
                                 </div>
                             </div>
-                            <div className="ml-2 min-w-[80px] text-sm font-mono text-right">
-                                <span className="text-gray-600 dark:text-gray-300">
-                                    {item.periodsInTop10}
-                                </span>
-                                <span className="text-xs text-gray-400 dark:text-gray-500">
-                                    {' '}
-                                    wks
-                                </span>
-                                {item.streak > 1 && (
-                                    <span className="text-xs text-amber-400 ml-1">
-                                        ·{item.streak}↑
+                            <div className="ml-2 min-w-[80px] text-sm font-mono text-right leading-tight">
+                                <div className="text-gray-600 dark:text-gray-300">
+                                    {item.periodsInTop10}{' '}
+                                    <span className="text-xs text-gray-400">
+                                        wks
                                     </span>
+                                </div>
+                                {item.streak > 1 && (
+                                    <div className="text-xs text-amber-400">
+                                        ↑{item.streak}
+                                    </div>
                                 )}
                             </div>
                         </div>

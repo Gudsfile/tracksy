@@ -25,5 +25,5 @@ export function queryTop10BillboardRace(
 export type Top10BillboardRaceQueryResult = {
     period_ts: number
     label: string
-    periods_in_top10: number
+    period_plays: number
 }
