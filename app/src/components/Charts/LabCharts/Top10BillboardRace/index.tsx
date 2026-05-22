@@ -57,7 +57,7 @@ export function Top10BillboardRace({ year }: { year: number | undefined }) {
             emoji="🏎️"
             className="mt-4 md:col-span-2 lg:col-span-3"
             isLoading={isLoading}
-            question="Which artists dominated my listening week after week?"
+            question="Who stayed in the charts the longest week after week?"
             headerActions={entityTabs}
         >
             {data.length === 0 ? (
