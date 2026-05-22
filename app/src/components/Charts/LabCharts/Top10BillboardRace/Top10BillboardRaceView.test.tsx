@@ -23,9 +23,9 @@ describe('Top10BillboardRaceView', () => {
         expect(heading).toBeDefined()
         expect(heading.textContent).toContain('Week of')
 
-        // Verify the artists in the first frame are shown
-        expect(screen.getByText('Artist A')).toBeDefined()
-        expect(screen.getByText('Artist B')).toBeDefined()
+        // Verify the artists in the first frame are shown (may appear multiple times: bar + facts)
+        expect(screen.getAllByText('Artist A').length).toBeGreaterThan(0)
+        expect(screen.getAllByText('Artist B').length).toBeGreaterThan(0)
 
         // Verify weeks column header and weekly granularity label
         expect(screen.getByText('weeks charted')).toBeDefined()
@@ -43,10 +43,12 @@ describe('Top10BillboardRaceView', () => {
         expect(screen.getAllByText('wks').length).toBeGreaterThan(0)
     })
 
-    it('renders the lambda selector with three buttons', () => {
+    it('renders the lambda selector with five buttons', () => {
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
-        // All three lambda values should be present
+        // All five lambda values should be present
+        expect(screen.getByRole('button', { name: 'λ0.1' })).toBeDefined()
+        expect(screen.getByRole('button', { name: 'λ0.2' })).toBeDefined()
         expect(screen.getByRole('button', { name: 'λ0.3' })).toBeDefined()
         expect(screen.getByRole('button', { name: 'λ0.4' })).toBeDefined()
         expect(screen.getByRole('button', { name: 'λ0.5' })).toBeDefined()
