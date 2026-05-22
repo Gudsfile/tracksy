@@ -36,7 +36,7 @@ const colors = [
 
 export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
-    const [isPlaying, setIsPlaying] = useState(true)
+    const [isPlaying, setIsPlaying] = useState(false)
     const [speedMultiplier, setSpeedMultiplier] = useState(1) // 0.5x, 1x, 2x, 4x
     const [lambda, setLambda] = useState(0.4)
     const [isVisible, setIsVisible] = useState(false)
