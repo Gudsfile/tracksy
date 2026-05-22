@@ -65,9 +65,12 @@ export function Top10RaceView({ data, entityType }: Props) {
         for (const dateTs of uniqueDates) {
             const dayEvents = dataByDate.get(dateTs) || []
             for (const event of dayEvents) {
-                currentScores.set(event.label, event.play_count)
-                if (!colorMap.has(event.label)) {
-                    colorMap.set(event.label, colors[colorIdx % colors.length])
+                currentScores.set(event.entity_name, event.play_count)
+                if (!colorMap.has(event.entity_name)) {
+                    colorMap.set(
+                        event.entity_name,
+                        colors[colorIdx % colors.length]
+                    )
                     colorIdx++
                 }
             }

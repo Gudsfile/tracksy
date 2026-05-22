@@ -62,7 +62,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 if (!dataByPeriod.has(row.period_ts))
                     dataByPeriod.set(row.period_ts, [])
                 dataByPeriod.get(row.period_ts)!.push({
-                    label: row.label,
+                    label: row.entity_name,
                     plays: row.period_plays,
                 })
             }

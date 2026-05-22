@@ -2,17 +2,17 @@ with daily_streams as (
     select
         date_trunc('day', ts::datetime)::date as stream_date,
         count(*)::int as daily_plays,
-        track_name || ' — ' || artist_name as label
+        track_name || ' — ' || artist_name as entity_name
     from ${table}
     where track_name is not null and artist_name is not null
     ${yearFilter}
-    GROUP BY stream_date, label
+    GROUP BY stream_date, entity_name
 )
 
 select
-    label,
+    entity_name,
     sum(daily_plays) over (
-        partition by label
+        partition by entity_name
         order by stream_date asc
         rows between unbounded preceding and current row
     )::int as play_count,

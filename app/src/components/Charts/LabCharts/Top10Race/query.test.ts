@@ -31,43 +31,45 @@ describe('Top10Race Query', () => {
                 ) =>
                     (a.stream_date_ts as number) -
                         (b.stream_date_ts as number) ||
-                    (a.label as string).localeCompare(b.label as string)
+                    (a.entity_name as string).localeCompare(
+                        b.entity_name as string
+                    )
             )
 
         expect(rows).toEqual([
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                label: 'Artist A',
+                entity_name: 'Artist A',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                label: 'Artist C',
+                entity_name: 'Artist C',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-02').getTime(),
-                label: 'Artist A',
+                entity_name: 'Artist A',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2020-01-03').getTime(),
-                label: 'Artist B',
+                entity_name: 'Artist B',
                 play_count: 2,
             },
             {
                 stream_date_ts: new Date('2021-01-01').getTime(),
-                label: 'Artist B',
+                entity_name: 'Artist B',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2021-01-02').getTime(),
-                label: 'Artist B',
+                entity_name: 'Artist B',
                 play_count: 4,
             },
             {
                 stream_date_ts: new Date('2021-01-03').getTime(),
-                label: 'Artist A',
+                entity_name: 'Artist A',
                 play_count: 4,
             },
         ])
@@ -86,43 +88,45 @@ describe('Top10Race Query', () => {
                 ) =>
                     (a.stream_date_ts as number) -
                         (b.stream_date_ts as number) ||
-                    (a.label as string).localeCompare(b.label as string)
+                    (a.entity_name as string).localeCompare(
+                        b.entity_name as string
+                    )
             )
 
         expect(rows).toEqual([
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                label: 'Track A — Artist A',
+                entity_name: 'Track A — Artist A',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                label: 'Track C — Artist C',
+                entity_name: 'Track C — Artist C',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-02').getTime(),
-                label: 'Track A — Artist A',
+                entity_name: 'Track A — Artist A',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2020-01-03').getTime(),
-                label: 'Track B — Artist B',
+                entity_name: 'Track B — Artist B',
                 play_count: 2,
             },
             {
                 stream_date_ts: new Date('2021-01-01').getTime(),
-                label: 'Track B — Artist B',
+                entity_name: 'Track B — Artist B',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2021-01-02').getTime(),
-                label: 'Track B — Artist B',
+                entity_name: 'Track B — Artist B',
                 play_count: 4,
             },
             {
                 stream_date_ts: new Date('2021-01-03').getTime(),
-                label: 'Track A — Artist A',
+                entity_name: 'Track A — Artist A',
                 play_count: 4,
             },
         ])
@@ -141,43 +145,45 @@ describe('Top10Race Query', () => {
                 ) =>
                     (a.stream_date_ts as number) -
                         (b.stream_date_ts as number) ||
-                    (a.label as string).localeCompare(b.label as string)
+                    (a.entity_name as string).localeCompare(
+                        b.entity_name as string
+                    )
             )
 
         expect(rows).toEqual([
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                label: 'Album A',
+                entity_name: 'Album A',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                label: 'Album B',
+                entity_name: 'Album B',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-02').getTime(),
-                label: 'Album A',
+                entity_name: 'Album A',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2020-01-03').getTime(),
-                label: 'Album A',
+                entity_name: 'Album A',
                 play_count: 5,
             },
             {
                 stream_date_ts: new Date('2021-01-01').getTime(),
-                label: 'Album A',
+                entity_name: 'Album A',
                 play_count: 6,
             },
             {
                 stream_date_ts: new Date('2021-01-02').getTime(),
-                label: 'Album A',
+                entity_name: 'Album A',
                 play_count: 7,
             },
             {
                 stream_date_ts: new Date('2021-01-03').getTime(),
-                label: 'Album A',
+                entity_name: 'Album A',
                 play_count: 8,
             },
         ])
