@@ -423,25 +423,25 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 <div className="space-y-2 mt-6">
                     {presenceRecord.weeks > 0 && (
                         <InsightCard>
-                            Record présence ·{' '}
+                            Presence record ·{' '}
                             <span className="font-bold">
                                 {presenceRecord.label}
                             </span>{' '}
-                            — {presenceRecord.weeks} semaines dans le top
+                            — {presenceRecord.weeks} weeks in top 10
                         </InsightCard>
                     )}
                     {streakRecord.weeks > 0 && (
                         <InsightCard>
-                            Record consécutif ·{' '}
+                            Streak record ·{' '}
                             <span className="font-bold">
                                 {streakRecord.label}
                             </span>{' '}
-                            — {streakRecord.weeks} semaines d&apos;affilée
+                            — {streakRecord.weeks} consecutive weeks
                         </InsightCard>
                     )}
                     <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center">
-                        Score = Σ streams × e^(−λ×Δweeks) · λ élevé = déclin
-                        rapide
+                        Score = Σ streams × e^(−λ×Δweeks) · Higher λ = faster
+                        decay
                     </p>
                 </div>
             )}
