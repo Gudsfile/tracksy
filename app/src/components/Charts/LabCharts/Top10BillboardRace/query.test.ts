@@ -21,10 +21,15 @@ describe('Top10BillboardRace Query', () => {
         )
     })
 
-    it('should return cumulative weeks in top 10 per artist per week', async () => {
+    it('should return weekly play counts per artist per week', async () => {
         const result = await conn.runAndReadAll(queryTop10BillboardRace())
         const rows = result
             .getRowObjects()
+            .map((r: Record<string, DuckDBValue>) => ({
+                period_ts: r.period_ts,
+                label: r.label,
+                period_plays: r.period_plays,
+            }))
             .toSorted(
                 (
                     a: Record<string, DuckDBValue>,
@@ -36,27 +41,32 @@ describe('Top10BillboardRace Query', () => {
 
         // Seed data spans two weeks:
         //   Week of 2019-12-30 (Mon): dates 2020-01-01, 2020-01-02, 2020-01-03
-        //     Artist A: 3 plays, Artist B: 2 plays, Artist C: 1 play → all 3 in top 10
+        //     Artist A: 3 plays, Artist B: 2 plays, Artist C: 1 play
         //   Week of 2020-12-28 (Mon): dates 2021-01-01, 2021-01-02, 2021-01-03
-        //     Artist B: 3 plays, Artist A: 1 play → both in top 10
+        //     Artist B: 2 plays, Artist A: 1 play
         const week1Ts = 1577664000000 // 2019-12-30T00:00:00.000Z
         const week2Ts = 1609113600000 // 2020-12-28T00:00:00.000Z
 
         expect(rows).toEqual([
-            { period_ts: week1Ts, label: 'Artist A', periods_in_top10: 1 },
-            { period_ts: week1Ts, label: 'Artist B', periods_in_top10: 1 },
-            { period_ts: week1Ts, label: 'Artist C', periods_in_top10: 1 },
-            { period_ts: week2Ts, label: 'Artist A', periods_in_top10: 2 },
-            { period_ts: week2Ts, label: 'Artist B', periods_in_top10: 2 },
+            { period_ts: week1Ts, label: 'Artist A', period_plays: 3 },
+            { period_ts: week1Ts, label: 'Artist B', period_plays: 2 },
+            { period_ts: week1Ts, label: 'Artist C', period_plays: 1 },
+            { period_ts: week2Ts, label: 'Artist A', period_plays: 1 },
+            { period_ts: week2Ts, label: 'Artist B', period_plays: 2 },
         ])
     })
 
-    it('should return cumulative weeks in top 10 per track per week', async () => {
+    it('should return weekly play counts per track per week', async () => {
         const result = await conn.runAndReadAll(
             queryTop10BillboardRace(undefined, 'tracks')
         )
         const rows = result
             .getRowObjects()
+            .map((r: Record<string, DuckDBValue>) => ({
+                period_ts: r.period_ts,
+                label: r.label,
+                period_plays: r.period_plays,
+            }))
             .toSorted(
                 (
                     a: Record<string, DuckDBValue>,
@@ -73,37 +83,42 @@ describe('Top10BillboardRace Query', () => {
             {
                 period_ts: week1Ts,
                 label: 'Track A — Artist A',
-                periods_in_top10: 1,
+                period_plays: 3,
             },
             {
                 period_ts: week1Ts,
                 label: 'Track B — Artist B',
-                periods_in_top10: 1,
+                period_plays: 2,
             },
             {
                 period_ts: week1Ts,
                 label: 'Track C — Artist C',
-                periods_in_top10: 1,
+                period_plays: 1,
             },
             {
                 period_ts: week2Ts,
                 label: 'Track A — Artist A',
-                periods_in_top10: 2,
+                period_plays: 1,
             },
             {
                 period_ts: week2Ts,
                 label: 'Track B — Artist B',
-                periods_in_top10: 2,
+                period_plays: 2,
             },
         ])
     })
 
-    it('should return cumulative weeks in top 10 per album per week', async () => {
+    it('should return weekly play counts per album per week', async () => {
         const result = await conn.runAndReadAll(
             queryTop10BillboardRace(undefined, 'albums')
         )
         const rows = result
             .getRowObjects()
+            .map((r: Record<string, DuckDBValue>) => ({
+                period_ts: r.period_ts,
+                label: r.label,
+                period_plays: r.period_plays,
+            }))
             .toSorted(
                 (
                     a: Record<string, DuckDBValue>,
@@ -117,9 +132,9 @@ describe('Top10BillboardRace Query', () => {
         const week2Ts = 1609113600000
 
         expect(rows).toEqual([
-            { period_ts: week1Ts, label: 'Album A', periods_in_top10: 1 },
-            { period_ts: week1Ts, label: 'Album B', periods_in_top10: 1 },
-            { period_ts: week2Ts, label: 'Album A', periods_in_top10: 2 },
+            { period_ts: week1Ts, label: 'Album A', period_plays: 5 },
+            { period_ts: week1Ts, label: 'Album B', period_plays: 1 },
+            { period_ts: week2Ts, label: 'Album A', period_plays: 3 },
         ])
     })
 })
