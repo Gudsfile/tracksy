@@ -421,24 +421,34 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
             {(presenceRecord.weeks > 0 || streakRecord.weeks > 0) && (
                 <div className="space-y-2 mt-6">
-                    {presenceRecord.weeks > 0 && (
-                        <InsightCard>
-                            Presence record ·{' '}
-                            <span className="font-bold">
-                                {presenceRecord.label}
-                            </span>{' '}
-                            — {presenceRecord.weeks} weeks in top 10
-                        </InsightCard>
-                    )}
-                    {streakRecord.weeks > 0 && (
-                        <InsightCard>
-                            Streak record ·{' '}
-                            <span className="font-bold">
-                                {streakRecord.label}
-                            </span>{' '}
-                            — {streakRecord.weeks} consecutive weeks
-                        </InsightCard>
-                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                        {presenceRecord.weeks > 0 && (
+                            <InsightCard>
+                                <div>Presence record</div>
+                                <div>
+                                    <span className="font-bold">
+                                        {presenceRecord.label}
+                                    </span>
+                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                                        {presenceRecord.weeks} wks in top 10
+                                    </span>
+                                </div>
+                            </InsightCard>
+                        )}
+                        {streakRecord.weeks > 0 && (
+                            <InsightCard>
+                                <div>Streak record</div>
+                                <div>
+                                    <span className="font-bold">
+                                        {streakRecord.label}
+                                    </span>
+                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                                        {streakRecord.weeks} consecutive wks
+                                    </span>
+                                </div>
+                            </InsightCard>
+                        )}
+                    </div>
                     <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center">
                         Score = Σ streams × e^(−λ×Δweeks) · Higher λ = faster
                         decay
