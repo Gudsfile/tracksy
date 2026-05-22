@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import type { EntityType, Top10BillboardRaceQueryResult } from './query'
+import { InsightCard } from '../../SimpleCharts/shared'
 
 type Props = {
     data: Top10BillboardRaceQueryResult[]
@@ -45,86 +46,115 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
     const BASE_SPEED = 120
 
     // Precompute all frames from the event stream using exponential decay scoring
-    const { frames, entityColors } = useMemo(() => {
-        const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
-            (a, b) => a - b
-        )
-        const decay = Math.exp(-lambda)
+    const { frames, entityColors, presenceRecord, streakRecord } =
+        useMemo(() => {
+            const uniquePeriods = [
+                ...new Set(data.map((d) => d.period_ts)),
+            ].sort((a, b) => a - b)
+            const decay = Math.exp(-lambda)
 
-        // Group data by period
-        const dataByPeriod = new Map<
-            number,
-            { label: string; plays: number }[]
-        >()
-        for (const row of data) {
-            if (!dataByPeriod.has(row.period_ts))
-                dataByPeriod.set(row.period_ts, [])
-            dataByPeriod.get(row.period_ts)!.push({
-                label: row.label,
-                plays: row.period_plays,
-            })
-        }
-
-        const runningScores = new Map<string, number>() // decay score per entity
-        const periodsInTop10 = new Map<string, number>() // cumulative weeks in top 10
-        const streakMap = new Map<string, number>()
-        const colorMap = new Map<string, string>()
-        let colorIdx = 0
-        const allFrames: Frame[] = []
-
-        for (const periodTs of uniquePeriods) {
-            // Decay all existing scores
-            for (const [label, score] of runningScores) {
-                runningScores.set(label, score * decay)
+            // Group data by period
+            const dataByPeriod = new Map<
+                number,
+                { label: string; plays: number }[]
+            >()
+            for (const row of data) {
+                if (!dataByPeriod.has(row.period_ts))
+                    dataByPeriod.set(row.period_ts, [])
+                dataByPeriod.get(row.period_ts)!.push({
+                    label: row.label,
+                    plays: row.period_plays,
+                })
             }
 
-            // Add this week's streams
-            for (const { label, plays } of dataByPeriod.get(periodTs) ?? []) {
-                runningScores.set(
-                    label,
-                    (runningScores.get(label) ?? 0) + plays
-                )
-                if (!colorMap.has(label)) {
-                    colorMap.set(label, colors[colorIdx % colors.length])
-                    colorIdx++
+            const runningScores = new Map<string, number>() // decay score per entity
+            const periodsInTop10 = new Map<string, number>() // cumulative weeks in top 10
+            const streakMap = new Map<string, number>()
+            const allTimeMaxStreakMap = new Map<string, number>()
+            const colorMap = new Map<string, string>()
+            let colorIdx = 0
+            const allFrames: Frame[] = []
+
+            for (const periodTs of uniquePeriods) {
+                // Decay all existing scores
+                for (const [label, score] of runningScores) {
+                    runningScores.set(label, score * decay)
                 }
-            }
 
-            // Rank top 10 by decay score
-            const ranked = [...runningScores.entries()]
-                .filter(([, s]) => s > 0.01)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10)
-
-            const top10Set = new Set(ranked.map(([l]) => l))
-
-            // Update longevity counters
-            for (const [label] of ranked) {
-                periodsInTop10.set(label, (periodsInTop10.get(label) ?? 0) + 1)
-                streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
-            }
-            for (const [label] of runningScores) {
-                if (!top10Set.has(label) && (streakMap.get(label) ?? 0) > 0) {
-                    streakMap.set(label, 0)
+                // Add this week's streams
+                for (const { label, plays } of dataByPeriod.get(periodTs) ??
+                    []) {
+                    runningScores.set(
+                        label,
+                        (runningScores.get(label) ?? 0) + plays
+                    )
+                    if (!colorMap.has(label)) {
+                        colorMap.set(label, colors[colorIdx % colors.length])
+                        colorIdx++
+                    }
                 }
+
+                // Rank top 10 by decay score
+                const ranked = [...runningScores.entries()]
+                    .filter(([, s]) => s > 0.01)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10)
+
+                const top10Set = new Set(ranked.map(([l]) => l))
+
+                // Update longevity counters
+                for (const [label] of ranked) {
+                    periodsInTop10.set(
+                        label,
+                        (periodsInTop10.get(label) ?? 0) + 1
+                    )
+                    streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
+                    const cur = streakMap.get(label)!
+                    if (cur > (allTimeMaxStreakMap.get(label) ?? 0)) {
+                        allTimeMaxStreakMap.set(label, cur)
+                    }
+                }
+                for (const [label] of runningScores) {
+                    if (
+                        !top10Set.has(label) &&
+                        (streakMap.get(label) ?? 0) > 0
+                    ) {
+                        streakMap.set(label, 0)
+                    }
+                }
+
+                const maxScore = ranked[0]?.[1] ?? 1
+
+                allFrames.push({
+                    periodTs,
+                    top10: ranked.map(([label, score]) => ({
+                        label,
+                        score,
+                        periodsInTop10: periodsInTop10.get(label) ?? 0,
+                        streak: streakMap.get(label) ?? 0,
+                    })),
+                    maxScore,
+                })
             }
 
-            const maxScore = ranked[0]?.[1] ?? 1
+            let presenceRecord = { label: '', weeks: 0 }
+            for (const [label, weeks] of periodsInTop10) {
+                if (weeks > presenceRecord.weeks)
+                    presenceRecord = { label, weeks }
+            }
 
-            allFrames.push({
-                periodTs,
-                top10: ranked.map(([label, score]) => ({
-                    label,
-                    score,
-                    periodsInTop10: periodsInTop10.get(label) ?? 0,
-                    streak: streakMap.get(label) ?? 0,
-                })),
-                maxScore,
-            })
-        }
+            let streakRecord = { label: '', weeks: 0 }
+            for (const [label, weeks] of allTimeMaxStreakMap) {
+                if (weeks > streakRecord.weeks) streakRecord = { label, weeks }
+            }
 
-        return { frames: allFrames, entityColors: colorMap }
-    }, [data, lambda])
+            return {
+                frames: allFrames,
+                entityColors: colorMap,
+                presenceRecord,
+                streakRecord,
+            }
+        }, [data, lambda])
 
     const currentFrame = frames[currentFrameIdx]
 
@@ -388,6 +418,33 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     )
                 })}
             </div>
+
+            {(presenceRecord.weeks > 0 || streakRecord.weeks > 0) && (
+                <div className="space-y-2 mt-6">
+                    {presenceRecord.weeks > 0 && (
+                        <InsightCard>
+                            Record présence ·{' '}
+                            <span className="font-bold">
+                                {presenceRecord.label}
+                            </span>{' '}
+                            — {presenceRecord.weeks} semaines dans le top
+                        </InsightCard>
+                    )}
+                    {streakRecord.weeks > 0 && (
+                        <InsightCard>
+                            Record consécutif ·{' '}
+                            <span className="font-bold">
+                                {streakRecord.label}
+                            </span>{' '}
+                            — {streakRecord.weeks} semaines d&apos;affilée
+                        </InsightCard>
+                    )}
+                    <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center">
+                        Score = Σ streams × e^(−λ×Δweeks) · λ élevé = déclin
+                        rapide
+                    </p>
+                </div>
+            )}
         </div>
     )
 }
