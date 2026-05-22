@@ -192,7 +192,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 <div className="flex items-center gap-4 flex-wrap">
                     {/* λ selector */}
                     <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
-                        {([0.3, 0.4, 0.5] as const).map((l) => (
+                        {([0.1, 0.2, 0.3, 0.4, 0.5] as const).map((l) => (
                             <button
                                 key={l}
                                 onClick={() => setLambda(l)}
