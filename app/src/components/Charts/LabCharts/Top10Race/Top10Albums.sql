@@ -1,24 +1,21 @@
 with daily_streams as (
     select
         date_trunc('day', ts::datetime)::date as stream_date,
-        artist_name as label,
+        album_name as label,
         count(*)::int as daily_plays
     from ${table}
-    where artist_name is not null
+    where album_name is not null
     ${yearFilter}
     GROUP BY stream_date, label
 )
 
 select
     label,
-    sum(daily_plays)
-        over (
-            partition by label
-            order by
-                stream_date asc
-            rows between unbounded preceding and current row
-        )
-    ::int as play_count,
+    sum(daily_plays) over (
+        partition by label
+        order by stream_date asc
+        rows between unbounded preceding and current row
+    )::int as play_count,
     epoch(stream_date) * 1000 as stream_date_ts
 from daily_streams
 order by stream_date_ts asc
