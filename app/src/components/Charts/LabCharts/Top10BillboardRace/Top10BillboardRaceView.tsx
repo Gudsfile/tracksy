@@ -425,7 +425,14 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         {presenceRecord.weeks > 0 && (
                             <InsightCard>
                                 <div>Presence record</div>
-                                <div>
+                                <div
+                                    className={`transition-all duration-500 ${currentFrameIdx < frames.length - 1 ? 'blur-sm select-none' : ''}`}
+                                    title={
+                                        currentFrameIdx < frames.length - 1
+                                            ? 'Watch to the end to reveal'
+                                            : undefined
+                                    }
+                                >
                                     <span className="font-bold">
                                         {presenceRecord.label}
                                     </span>
@@ -438,7 +445,14 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         {streakRecord.weeks > 0 && (
                             <InsightCard>
                                 <div>Streak record</div>
-                                <div>
+                                <div
+                                    className={`transition-all duration-500 ${currentFrameIdx < frames.length - 1 ? 'blur-sm select-none' : ''}`}
+                                    title={
+                                        currentFrameIdx < frames.length - 1
+                                            ? 'Watch to the end to reveal'
+                                            : undefined
+                                    }
+                                >
                                     <span className="font-bold">
                                         {streakRecord.label}
                                     </span>
