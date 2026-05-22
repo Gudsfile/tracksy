@@ -36,7 +36,9 @@ describe('Top10BillboardRace Query', () => {
                     b: Record<string, DuckDBValue>
                 ) =>
                     (a.period_ts as number) - (b.period_ts as number) ||
-                    (a.entity_name as string).localeCompare(b.entity_name as string)
+                    (a.entity_name as string).localeCompare(
+                        b.entity_name as string
+                    )
             )
 
         // Seed data spans two weeks:
@@ -48,11 +50,11 @@ describe('Top10BillboardRace Query', () => {
         const week2Ts = 1609113600000 // 2020-12-28T00:00:00.000Z
 
         expect(rows).toEqual([
-            { period_ts: week1Ts, label: 'Artist A', period_plays: 3 },
-            { period_ts: week1Ts, label: 'Artist B', period_plays: 2 },
-            { period_ts: week1Ts, label: 'Artist C', period_plays: 1 },
-            { period_ts: week2Ts, label: 'Artist A', period_plays: 1 },
-            { period_ts: week2Ts, label: 'Artist B', period_plays: 2 },
+            { period_ts: week1Ts, entity_name: 'Artist A', period_plays: 3 },
+            { period_ts: week1Ts, entity_name: 'Artist B', period_plays: 2 },
+            { period_ts: week1Ts, entity_name: 'Artist C', period_plays: 1 },
+            { period_ts: week2Ts, entity_name: 'Artist A', period_plays: 1 },
+            { period_ts: week2Ts, entity_name: 'Artist B', period_plays: 2 },
         ])
     })
 
@@ -73,7 +75,9 @@ describe('Top10BillboardRace Query', () => {
                     b: Record<string, DuckDBValue>
                 ) =>
                     (a.period_ts as number) - (b.period_ts as number) ||
-                    (a.entity_name as string).localeCompare(b.entity_name as string)
+                    (a.entity_name as string).localeCompare(
+                        b.entity_name as string
+                    )
             )
 
         const week1Ts = 1577664000000
@@ -125,16 +129,18 @@ describe('Top10BillboardRace Query', () => {
                     b: Record<string, DuckDBValue>
                 ) =>
                     (a.period_ts as number) - (b.period_ts as number) ||
-                    (a.entity_name as string).localeCompare(b.entity_name as string)
+                    (a.entity_name as string).localeCompare(
+                        b.entity_name as string
+                    )
             )
 
         const week1Ts = 1577664000000
         const week2Ts = 1609113600000
 
         expect(rows).toEqual([
-            { period_ts: week1Ts, label: 'Album A', period_plays: 5 },
-            { period_ts: week1Ts, label: 'Album B', period_plays: 1 },
-            { period_ts: week2Ts, label: 'Album A', period_plays: 3 },
+            { period_ts: week1Ts, entity_name: 'Album A', period_plays: 5 },
+            { period_ts: week1Ts, entity_name: 'Album B', period_plays: 1 },
+            { period_ts: week2Ts, entity_name: 'Album A', period_plays: 3 },
         ])
     })
 })

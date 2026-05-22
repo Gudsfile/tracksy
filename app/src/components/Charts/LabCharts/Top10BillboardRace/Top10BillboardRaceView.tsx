@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import type { EntityType, Top10BillboardRaceQueryResult } from './query'
-import { InsightCard } from '../../SimpleCharts/shared'
+import { GhostLeaderboard } from './GhostLeaderboard'
 
 type Props = {
     data: Top10BillboardRaceQueryResult[]
@@ -10,14 +10,21 @@ type Props = {
 type EntityScore = {
     label: string
     score: number // decay score (bar width)
-    periodsInTop10: number // weeks charted (annotation)
-    streak: number // consecutive weeks in top 10
+    periodsInTop10: number
+    streak: number
+}
+
+type GhostEntry = {
+    label: string
+    periodsInTop10: number
+    streak: number
 }
 
 type Frame = {
     periodTs: number
     top10: EntityScore[]
     maxScore: number
+    ghostRanking: GhostEntry[]
 }
 
 // Helper to assign consistent colors to entities
@@ -46,117 +53,104 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
     const BASE_SPEED = 120
 
     // Precompute all frames from the event stream using exponential decay scoring
-    const { frames, entityColors, presenceRecord, streakRecord } =
-        useMemo(() => {
-            const uniquePeriods = [
-                ...new Set(data.map((d) => d.period_ts)),
-            ].sort((a, b) => a - b)
-            const decay = Math.exp(-lambda)
+    const { frames, entityColors } = useMemo(() => {
+        const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
+            (a, b) => a - b
+        )
+        const decay = Math.exp(-lambda)
 
-            // Group data by period
-            const dataByPeriod = new Map<
-                number,
-                { label: string; plays: number }[]
-            >()
-            for (const row of data) {
-                if (!dataByPeriod.has(row.period_ts))
-                    dataByPeriod.set(row.period_ts, [])
-                dataByPeriod.get(row.period_ts)!.push({
-                    label: row.entity_name,
-                    plays: row.period_plays,
-                })
+        // Group data by period
+        const dataByPeriod = new Map<
+            number,
+            { label: string; plays: number }[]
+        >()
+        for (const row of data) {
+            if (!dataByPeriod.has(row.period_ts))
+                dataByPeriod.set(row.period_ts, [])
+            dataByPeriod.get(row.period_ts)!.push({
+                label: row.entity_name,
+                plays: row.period_plays,
+            })
+        }
+
+        const runningScores = new Map<string, number>()
+        const periodsInTop10 = new Map<string, number>()
+        const streakMap = new Map<string, number>()
+        const colorMap = new Map<string, string>()
+        let colorIdx = 0
+        const allFrames: Frame[] = []
+
+        for (const periodTs of uniquePeriods) {
+            // Decay all existing scores
+            for (const [label, score] of runningScores) {
+                runningScores.set(label, score * decay)
             }
 
-            const runningScores = new Map<string, number>() // decay score per entity
-            const periodsInTop10 = new Map<string, number>() // cumulative weeks in top 10
-            const streakMap = new Map<string, number>()
-            const allTimeMaxStreakMap = new Map<string, number>()
-            const colorMap = new Map<string, string>()
-            let colorIdx = 0
-            const allFrames: Frame[] = []
-
-            for (const periodTs of uniquePeriods) {
-                // Decay all existing scores
-                for (const [label, score] of runningScores) {
-                    runningScores.set(label, score * decay)
+            // Add this week's streams
+            for (const { label, plays } of dataByPeriod.get(periodTs) ?? []) {
+                runningScores.set(
+                    label,
+                    (runningScores.get(label) ?? 0) + plays
+                )
+                if (!colorMap.has(label)) {
+                    colorMap.set(label, colors[colorIdx % colors.length])
+                    colorIdx++
                 }
+            }
 
-                // Add this week's streams
-                for (const { label, plays } of dataByPeriod.get(periodTs) ??
-                    []) {
-                    runningScores.set(
-                        label,
-                        (runningScores.get(label) ?? 0) + plays
-                    )
-                    if (!colorMap.has(label)) {
-                        colorMap.set(label, colors[colorIdx % colors.length])
-                        colorIdx++
-                    }
+            // Rank top 10 by decay score
+            const ranked = [...runningScores.entries()]
+                .filter(([, s]) => s > 0.01)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10)
+
+            const top10Set = new Set(ranked.map(([l]) => l))
+
+            // Update longevity counters
+            for (const [label] of ranked) {
+                periodsInTop10.set(label, (periodsInTop10.get(label) ?? 0) + 1)
+                streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
+            }
+            for (const [label] of runningScores) {
+                if (!top10Set.has(label) && (streakMap.get(label) ?? 0) > 0) {
+                    streakMap.set(label, 0)
                 }
-
-                // Rank top 10 by decay score
-                const ranked = [...runningScores.entries()]
-                    .filter(([, s]) => s > 0.01)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10)
-
-                const top10Set = new Set(ranked.map(([l]) => l))
-
-                // Update longevity counters
-                for (const [label] of ranked) {
-                    periodsInTop10.set(
-                        label,
-                        (periodsInTop10.get(label) ?? 0) + 1
-                    )
-                    streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
-                    const cur = streakMap.get(label)!
-                    if (cur > (allTimeMaxStreakMap.get(label) ?? 0)) {
-                        allTimeMaxStreakMap.set(label, cur)
-                    }
-                }
-                for (const [label] of runningScores) {
-                    if (
-                        !top10Set.has(label) &&
-                        (streakMap.get(label) ?? 0) > 0
-                    ) {
-                        streakMap.set(label, 0)
-                    }
-                }
-
-                const maxScore = ranked[0]?.[1] ?? 1
-
-                allFrames.push({
-                    periodTs,
-                    top10: ranked.map(([label, score]) => ({
-                        label,
-                        score,
-                        periodsInTop10: periodsInTop10.get(label) ?? 0,
-                        streak: streakMap.get(label) ?? 0,
-                    })),
-                    maxScore,
-                })
             }
 
-            let presenceRecord = { label: '', weeks: 0 }
-            for (const [label, weeks] of periodsInTop10) {
-                if (weeks > presenceRecord.weeks)
-                    presenceRecord = { label, weeks }
-            }
+            const maxScore = ranked[0]?.[1] ?? 1
 
-            let streakRecord = { label: '', weeks: 0 }
-            for (const [label, weeks] of allTimeMaxStreakMap) {
-                if (weeks > streakRecord.weeks) streakRecord = { label, weeks }
-            }
+            // Ghost ranking: top 10 by total weeks in top 10 at this frame
+            const ghostRanking = [...periodsInTop10.entries()]
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10)
+                .map(([label, weeks]) => ({
+                    label,
+                    periodsInTop10: weeks,
+                    streak: streakMap.get(label) ?? 0,
+                }))
 
-            return {
-                frames: allFrames,
-                entityColors: colorMap,
-                presenceRecord,
-                streakRecord,
-            }
-        }, [data, lambda])
+            allFrames.push({
+                periodTs,
+                top10: ranked.map(([label, score]) => ({
+                    label,
+                    score,
+                    periodsInTop10: periodsInTop10.get(label) ?? 0,
+                    streak: streakMap.get(label) ?? 0,
+                })),
+                maxScore,
+                ghostRanking,
+            })
+        }
+
+        return { frames: allFrames, entityColors: colorMap }
+    }, [data, lambda])
 
     const currentFrame = frames[currentFrameIdx]
+
+    const activeLabels = useMemo(
+        () => new Set(currentFrame?.top10.map((e) => e.label) ?? []),
+        [currentFrame]
+    )
 
     // IntersectionObserver to only animate when visible
     useEffect(() => {
@@ -204,6 +198,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
     return (
         <div ref={containerRef} className="flex flex-col gap-4 w-full">
+            {/* Controls row */}
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <h4 className="text-2xl font-bold font-mono tracking-tight text-gray-800 dark:text-gray-100">
                     {'Week of ' +
@@ -254,7 +249,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         ))}
                     </div>
 
-                    {/* Controls (Play/Pause) */}
+                    {/* Play/Pause */}
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => {
@@ -359,116 +354,76 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 </div>
             )}
 
-            <div className="flex justify-end pr-[62px]">
-                <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
-                    weeks charted
-                </span>
-            </div>
+            {/* Two-column layout: Ghost (1/3) | Race (2/3) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Ghost Leaderboard */}
+                <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700/50 pb-4 md:pb-0 md:pr-6">
+                    <GhostLeaderboard
+                        ranking={currentFrame.ghostRanking}
+                        activeLabels={activeLabels}
+                    />
+                </div>
 
-            <div className="relative h-[450px] w-full mt-4">
-                {currentFrame.top10.map((item, index) => {
-                    const widthPercent =
-                        (item.score / currentFrame.maxScore) * 100
-                    // Position from top based on index
-                    const topPos = index * 44 // 40px height + 4px gap
-
-                    return (
-                        <div
-                            key={item.label}
-                            className="absolute left-0 flex items-center w-full transition-all duration-300 ease-linear"
-                            style={{
-                                top: `${topPos}px`,
-                                zIndex: 10 - index, // Higher ranks stay on top during cross
-                            }}
-                        >
-                            {/* Bar */}
-                            <div className="w-full relative h-9">
-                                <div
-                                    className={`absolute top-0 left-0 h-full rounded-r-md transition-all duration-300 ease-linear ${entityColors.get(item.label)}`}
-                                    style={{
-                                        width: `${widthPercent}%`,
-                                        opacity: 0.8,
-                                    }}
-                                />
-                                {/* Label inside or right after bar depending on width */}
-                                <div
-                                    className="absolute left-2 h-full flex items-center font-medium text-sm text-gray-900 dark:text-white drop-shadow-md whitespace-nowrap overflow-hidden text-ellipsis"
-                                    style={{ width: 'calc(100% - 16px)' }}
-                                >
-                                    <span className="font-bold w-6 text-right mr-2 opacity-70">
-                                        #{index + 1}
-                                    </span>
-                                    {item.label}
-                                </div>
-                            </div>
-                            <div className="ml-2 min-w-[80px] text-sm font-mono text-right leading-tight">
-                                <div className="text-gray-600 dark:text-gray-300">
-                                    {item.periodsInTop10}{' '}
-                                    <span className="text-xs text-gray-400">
-                                        wks
-                                    </span>
-                                </div>
-                                {item.streak > 1 && (
-                                    <div className="text-xs text-amber-400">
-                                        ↑{item.streak}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )
-                })}
-            </div>
-
-            {(presenceRecord.weeks > 0 || streakRecord.weeks > 0) && (
-                <div className="space-y-2 mt-6">
-                    <div className="grid grid-cols-2 gap-2">
-                        {presenceRecord.weeks > 0 && (
-                            <InsightCard>
-                                <div>Presence record</div>
-                                <div
-                                    className={`transition-all duration-500 ${currentFrameIdx < frames.length - 1 ? 'blur-sm select-none' : ''}`}
-                                    title={
-                                        currentFrameIdx < frames.length - 1
-                                            ? 'Watch to the end to reveal'
-                                            : undefined
-                                    }
-                                >
-                                    <span className="font-bold">
-                                        {presenceRecord.label}
-                                    </span>
-                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                                        {presenceRecord.weeks} wks in top 10
-                                    </span>
-                                </div>
-                            </InsightCard>
-                        )}
-                        {streakRecord.weeks > 0 && (
-                            <InsightCard>
-                                <div>Streak record</div>
-                                <div
-                                    className={`transition-all duration-500 ${currentFrameIdx < frames.length - 1 ? 'blur-sm select-none' : ''}`}
-                                    title={
-                                        currentFrameIdx < frames.length - 1
-                                            ? 'Watch to the end to reveal'
-                                            : undefined
-                                    }
-                                >
-                                    <span className="font-bold">
-                                        {streakRecord.label}
-                                    </span>
-                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                                        {streakRecord.weeks} consecutive wks
-                                    </span>
-                                </div>
-                            </InsightCard>
-                        )}
+                {/* Bar chart race */}
+                <div className="md:col-span-2 flex flex-col">
+                    <div className="flex justify-end pr-[62px]">
+                        <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
+                            score
+                        </span>
                     </div>
-                    <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center">
+
+                    <div className="relative h-[450px] w-full mt-4">
+                        {currentFrame.top10.map((item, index) => {
+                            const widthPercent =
+                                (item.score / currentFrame.maxScore) * 100
+                            const topPos = index * 44
+
+                            return (
+                                <div
+                                    key={item.label}
+                                    title={`${item.periodsInTop10} weeks in top 10`}
+                                    className="absolute left-0 flex items-center w-full transition-all duration-300 ease-linear"
+                                    style={{
+                                        top: `${topPos}px`,
+                                        zIndex: 10 - index,
+                                    }}
+                                >
+                                    <div className="w-full relative h-9">
+                                        <div
+                                            className={`absolute top-0 left-0 h-full rounded-r-md transition-all duration-300 ease-linear ${entityColors.get(item.label)}`}
+                                            style={{
+                                                width: `${widthPercent}%`,
+                                                opacity: 0.8,
+                                            }}
+                                        />
+                                        <div
+                                            className="absolute left-2 h-full flex items-center font-medium text-sm text-gray-900 dark:text-white drop-shadow-md whitespace-nowrap overflow-hidden text-ellipsis"
+                                            style={{
+                                                width: 'calc(100% - 16px)',
+                                            }}
+                                        >
+                                            <span className="font-bold w-6 text-right mr-2 opacity-70">
+                                                #{index + 1}
+                                            </span>
+                                            {item.label}
+                                        </div>
+                                    </div>
+                                    <div className="ml-2 min-w-[62px] text-sm font-mono text-right text-gray-600 dark:text-gray-300 transition-all duration-300 ease-linear">
+                                        {Math.round(
+                                            item.score
+                                        ).toLocaleString()}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center mt-2">
                         Score = Σ streams × e^(−λ×Δweeks) · Higher λ = faster
                         decay
                     </p>
                 </div>
-            )}
+            </div>
         </div>
     )
 }
