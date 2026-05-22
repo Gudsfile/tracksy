@@ -1,18 +1,19 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
-import type { Top10RaceQueryResult } from './query'
+import type { EntityType, Top10RaceQueryResult } from './query'
 
 type Props = {
     data: Top10RaceQueryResult[]
+    entityType: EntityType
 }
 
-type ArtistScore = {
-    artist: string
+type EntityScore = {
+    label: string
     play_count: number
 }
 
 type Frame = {
     dateTs: number
-    top10: ArtistScore[]
+    top10: EntityScore[]
     maxScore: number
 }
 
@@ -30,7 +31,7 @@ const colors = [
     'bg-cyan-500',
 ]
 
-export function Top10RaceView({ data }: Props) {
+export function Top10RaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(true)
     const [speedMultiplier, setSpeedMultiplier] = useState(1) // 1x, 2x, 4x
@@ -41,7 +42,7 @@ export function Top10RaceView({ data }: Props) {
     const BASE_SPEED = 120
 
     // Precompute all frames from the event stream
-    const { frames, artistColors } = useMemo(() => {
+    const { frames, entityColors } = useMemo(() => {
         const uniqueDates = Array.from(
             new Set(data.map((d) => d.stream_date_ts))
         ).sort((a, b) => a - b)
@@ -64,29 +65,29 @@ export function Top10RaceView({ data }: Props) {
         for (const dateTs of uniqueDates) {
             const dayEvents = dataByDate.get(dateTs) || []
             for (const event of dayEvents) {
-                currentScores.set(event.artist, event.play_count)
-                if (!colorMap.has(event.artist)) {
-                    colorMap.set(event.artist, colors[colorIdx % colors.length])
+                currentScores.set(event.label, event.play_count)
+                if (!colorMap.has(event.label)) {
+                    colorMap.set(event.label, colors[colorIdx % colors.length])
                     colorIdx++
                 }
             }
 
             // Get top 10
-            const sortedArtists = Array.from(currentScores.entries())
+            const sortedEntities = Array.from(currentScores.entries())
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 10)
 
             allFrames.push({
                 dateTs,
-                top10: sortedArtists.map(([artist, play_count]) => ({
-                    artist,
+                top10: sortedEntities.map(([label, play_count]) => ({
+                    label,
                     play_count,
                 })),
-                maxScore: Math.max(1, sortedArtists[0]?.[1] || 1),
+                maxScore: Math.max(1, sortedEntities[0]?.[1] || 1),
             })
         }
 
-        return { frames: allFrames, artistColors: colorMap }
+        return { frames: allFrames, entityColors: colorMap }
     }, [data])
 
     const currentFrame = frames[currentFrameIdx]
@@ -111,6 +112,11 @@ export function Top10RaceView({ data }: Props) {
             }
         }
     }, [])
+
+    useEffect(() => {
+        setCurrentFrameIdx(0)
+        setIsPlaying(true)
+    }, [entityType])
 
     useEffect(() => {
         if (!isPlaying || !isVisible || frames.length === 0) return
@@ -280,7 +286,7 @@ export function Top10RaceView({ data }: Props) {
 
                     return (
                         <div
-                            key={item.artist}
+                            key={item.label}
                             className="absolute left-0 flex items-center w-full transition-all duration-300 ease-linear"
                             style={{
                                 top: `${topPos}px`,
@@ -290,7 +296,7 @@ export function Top10RaceView({ data }: Props) {
                             {/* Bar */}
                             <div className="w-full relative h-9">
                                 <div
-                                    className={`absolute top-0 left-0 h-full rounded-r-md transition-all duration-300 ease-linear ${artistColors.get(item.artist)}`}
+                                    className={`absolute top-0 left-0 h-full rounded-r-md transition-all duration-300 ease-linear ${entityColors.get(item.label)}`}
                                     style={{
                                         width: `${widthPercent}%`,
                                         opacity: 0.8,
@@ -304,7 +310,7 @@ export function Top10RaceView({ data }: Props) {
                                     <span className="font-bold w-6 text-right mr-2 opacity-70">
                                         #{index + 1}
                                     </span>
-                                    {item.artist}
+                                    {item.label}
                                 </div>
                             </div>
                             <div className="ml-2 min-w-[60px] text-sm font-mono text-gray-600 dark:text-gray-300 transition-all duration-300 ease-linear">

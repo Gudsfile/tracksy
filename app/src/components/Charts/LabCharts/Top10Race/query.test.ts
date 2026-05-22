@@ -31,44 +31,154 @@ describe('Top10Race Query', () => {
                 ) =>
                     (a.stream_date_ts as number) -
                         (b.stream_date_ts as number) ||
-                    (a.artist as string).localeCompare(b.artist as string)
+                    (a.label as string).localeCompare(b.label as string)
             )
 
         expect(rows).toEqual([
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                artist: 'Artist A',
+                label: 'Artist A',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                artist: 'Artist C',
+                label: 'Artist C',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-02').getTime(),
-                artist: 'Artist A',
+                label: 'Artist A',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2020-01-03').getTime(),
-                artist: 'Artist B',
+                label: 'Artist B',
                 play_count: 2,
             },
             {
                 stream_date_ts: new Date('2021-01-01').getTime(),
-                artist: 'Artist B',
+                label: 'Artist B',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2021-01-02').getTime(),
-                artist: 'Artist B',
+                label: 'Artist B',
                 play_count: 4,
             },
             {
                 stream_date_ts: new Date('2021-01-03').getTime(),
-                artist: 'Artist A',
+                label: 'Artist A',
                 play_count: 4,
+            },
+        ])
+    })
+
+    it('should return cumulative stream counts per track per day', async () => {
+        const result = await conn.runAndReadAll(
+            queryTop10Race(undefined, 'tracks')
+        )
+        const rows = result
+            .getRowObjects()
+            .toSorted(
+                (
+                    a: Record<string, DuckDBValue>,
+                    b: Record<string, DuckDBValue>
+                ) =>
+                    (a.stream_date_ts as number) -
+                        (b.stream_date_ts as number) ||
+                    (a.label as string).localeCompare(b.label as string)
+            )
+
+        expect(rows).toEqual([
+            {
+                stream_date_ts: new Date('2020-01-01').getTime(),
+                label: 'Track A — Artist A',
+                play_count: 1,
+            },
+            {
+                stream_date_ts: new Date('2020-01-01').getTime(),
+                label: 'Track C — Artist C',
+                play_count: 1,
+            },
+            {
+                stream_date_ts: new Date('2020-01-02').getTime(),
+                label: 'Track A — Artist A',
+                play_count: 3,
+            },
+            {
+                stream_date_ts: new Date('2020-01-03').getTime(),
+                label: 'Track B — Artist B',
+                play_count: 2,
+            },
+            {
+                stream_date_ts: new Date('2021-01-01').getTime(),
+                label: 'Track B — Artist B',
+                play_count: 3,
+            },
+            {
+                stream_date_ts: new Date('2021-01-02').getTime(),
+                label: 'Track B — Artist B',
+                play_count: 4,
+            },
+            {
+                stream_date_ts: new Date('2021-01-03').getTime(),
+                label: 'Track A — Artist A',
+                play_count: 4,
+            },
+        ])
+    })
+
+    it('should return cumulative stream counts per album per day', async () => {
+        const result = await conn.runAndReadAll(
+            queryTop10Race(undefined, 'albums')
+        )
+        const rows = result
+            .getRowObjects()
+            .toSorted(
+                (
+                    a: Record<string, DuckDBValue>,
+                    b: Record<string, DuckDBValue>
+                ) =>
+                    (a.stream_date_ts as number) -
+                        (b.stream_date_ts as number) ||
+                    (a.label as string).localeCompare(b.label as string)
+            )
+
+        expect(rows).toEqual([
+            {
+                stream_date_ts: new Date('2020-01-01').getTime(),
+                label: 'Album A',
+                play_count: 1,
+            },
+            {
+                stream_date_ts: new Date('2020-01-01').getTime(),
+                label: 'Album B',
+                play_count: 1,
+            },
+            {
+                stream_date_ts: new Date('2020-01-02').getTime(),
+                label: 'Album A',
+                play_count: 3,
+            },
+            {
+                stream_date_ts: new Date('2020-01-03').getTime(),
+                label: 'Album A',
+                play_count: 5,
+            },
+            {
+                stream_date_ts: new Date('2021-01-01').getTime(),
+                label: 'Album A',
+                play_count: 6,
+            },
+            {
+                stream_date_ts: new Date('2021-01-02').getTime(),
+                label: 'Album A',
+                play_count: 7,
+            },
+            {
+                stream_date_ts: new Date('2021-01-03').getTime(),
+                label: 'Album A',
+                play_count: 8,
             },
         ])
     })

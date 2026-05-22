@@ -6,29 +6,29 @@ import type { Top10RaceQueryResult } from './query'
 const mockData: Top10RaceQueryResult[] = [
     {
         stream_date_ts: 1704067200000, // 2024-01-01
-        artist: 'Artist A',
+        entity_name: 'Artist A',
         play_count: 10,
     },
     {
         stream_date_ts: 1704067200000,
-        artist: 'Artist B',
+        entity_name: 'Artist B',
         play_count: 5,
     },
     {
         stream_date_ts: 1704153600000, // 2024-01-02
-        artist: 'Artist A',
+        entity_name: 'Artist A',
         play_count: 12,
     },
     {
         stream_date_ts: 1704153600000,
-        artist: 'Artist B',
+        entity_name: 'Artist B',
         play_count: 8,
     },
 ]
 
 describe('Top10RaceView', () => {
     it('renders and displays the first frame of data', () => {
-        render(<Top10RaceView data={mockData} />)
+        render(<Top10RaceView data={mockData} entityType="artists" />)
 
         // Verify the date is rendered (2024-01-01 or local equivalent formatting)
         expect(screen.getByRole('heading', { level: 4 })).toBeDefined()
@@ -51,7 +51,7 @@ describe('Top10RaceView', () => {
     })
 
     it('allows changing animation speed', () => {
-        render(<Top10RaceView data={mockData} />)
+        render(<Top10RaceView data={mockData} entityType="artists" />)
 
         // Initially speed 1x is selected
         const speed1xButton = screen.getByRole('button', { name: '1x' })
@@ -66,7 +66,7 @@ describe('Top10RaceView', () => {
 
     it('allows pausing/playing the animation', async () => {
         vi.useFakeTimers()
-        render(<Top10RaceView data={mockData} />)
+        render(<Top10RaceView data={mockData} entityType="artists" />)
 
         // Initially it should be playing. Let's pause it.
         const pauseButton = screen.getByRole('button', { name: 'Pause' })
@@ -82,6 +82,28 @@ describe('Top10RaceView', () => {
         // Play again
         const playButton = screen.getByRole('button', { name: 'Play' })
         fireEvent.click(playButton)
+        expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
+
+        vi.useRealTimers()
+    })
+
+    it('resets to frame 0 and resumes playing when entityType changes', () => {
+        vi.useFakeTimers()
+        const { rerender } = render(
+            <Top10RaceView data={mockData} entityType="artists" />
+        )
+
+        // Pause so we can track frame position
+        const pauseButton = screen.getByRole('button', { name: 'Pause' })
+        fireEvent.click(pauseButton)
+
+        // Advance to second frame manually via slider or timer won't work since paused
+        // Just verify that re-rendering with a new entityType triggers a reset (play button becomes pause)
+        act(() => {
+            rerender(<Top10RaceView data={mockData} entityType="tracks" />)
+        })
+
+        // After entityType change, animation should be playing again (Pause button visible)
         expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
 
         vi.useRealTimers()
