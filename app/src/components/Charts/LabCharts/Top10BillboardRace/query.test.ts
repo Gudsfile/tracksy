@@ -27,7 +27,7 @@ describe('Top10BillboardRace Query', () => {
             .getRowObjects()
             .map((r: Record<string, DuckDBValue>) => ({
                 period_ts: r.period_ts,
-                label: r.label,
+                entity_name: r.entity_name,
                 period_plays: r.period_plays,
             }))
             .toSorted(
@@ -36,7 +36,7 @@ describe('Top10BillboardRace Query', () => {
                     b: Record<string, DuckDBValue>
                 ) =>
                     (a.period_ts as number) - (b.period_ts as number) ||
-                    (a.label as string).localeCompare(b.label as string)
+                    (a.entity_name as string).localeCompare(b.entity_name as string)
             )
 
         // Seed data spans two weeks:
@@ -64,7 +64,7 @@ describe('Top10BillboardRace Query', () => {
             .getRowObjects()
             .map((r: Record<string, DuckDBValue>) => ({
                 period_ts: r.period_ts,
-                label: r.label,
+                entity_name: r.entity_name,
                 period_plays: r.period_plays,
             }))
             .toSorted(
@@ -73,7 +73,7 @@ describe('Top10BillboardRace Query', () => {
                     b: Record<string, DuckDBValue>
                 ) =>
                     (a.period_ts as number) - (b.period_ts as number) ||
-                    (a.label as string).localeCompare(b.label as string)
+                    (a.entity_name as string).localeCompare(b.entity_name as string)
             )
 
         const week1Ts = 1577664000000
@@ -82,27 +82,27 @@ describe('Top10BillboardRace Query', () => {
         expect(rows).toEqual([
             {
                 period_ts: week1Ts,
-                label: 'Track A — Artist A',
+                entity_name: 'Track A — Artist A',
                 period_plays: 3,
             },
             {
                 period_ts: week1Ts,
-                label: 'Track B — Artist B',
+                entity_name: 'Track B — Artist B',
                 period_plays: 2,
             },
             {
                 period_ts: week1Ts,
-                label: 'Track C — Artist C',
+                entity_name: 'Track C — Artist C',
                 period_plays: 1,
             },
             {
                 period_ts: week2Ts,
-                label: 'Track A — Artist A',
+                entity_name: 'Track A — Artist A',
                 period_plays: 1,
             },
             {
                 period_ts: week2Ts,
-                label: 'Track B — Artist B',
+                entity_name: 'Track B — Artist B',
                 period_plays: 2,
             },
         ])
@@ -116,7 +116,7 @@ describe('Top10BillboardRace Query', () => {
             .getRowObjects()
             .map((r: Record<string, DuckDBValue>) => ({
                 period_ts: r.period_ts,
-                label: r.label,
+                entity_name: r.entity_name,
                 period_plays: r.period_plays,
             }))
             .toSorted(
@@ -125,7 +125,7 @@ describe('Top10BillboardRace Query', () => {
                     b: Record<string, DuckDBValue>
                 ) =>
                     (a.period_ts as number) - (b.period_ts as number) ||
-                    (a.label as string).localeCompare(b.label as string)
+                    (a.entity_name as string).localeCompare(b.entity_name as string)
             )
 
         const week1Ts = 1577664000000

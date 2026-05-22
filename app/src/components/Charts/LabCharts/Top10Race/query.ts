@@ -24,6 +24,6 @@ export function queryTop10Race(
 
 export type Top10RaceQueryResult = {
     stream_date_ts: number
-    label: string
+    entity_name: string
     play_count: number
 }
