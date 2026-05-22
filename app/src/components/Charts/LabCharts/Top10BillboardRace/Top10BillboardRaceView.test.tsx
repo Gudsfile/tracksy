@@ -52,21 +52,21 @@ describe('Top10BillboardRaceView', () => {
         expect(screen.getByRole('button', { name: 'λ0.4' })).toBeDefined()
         expect(screen.getByRole('button', { name: 'λ0.5' })).toBeDefined()
 
-        const defaultButton = screen.getByRole('button', { name: 'λ0.4' })
+        const defaultButton = screen.getByRole('button', { name: 'λ0.2' })
         expect(defaultButton.className).toContain('bg-blue-500')
     })
 
     it('allows changing lambda value', () => {
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
+        const lambda02 = screen.getByRole('button', { name: 'λ0.2' })
         const lambda03 = screen.getByRole('button', { name: 'λ0.3' })
-        const lambda04 = screen.getByRole('button', { name: 'λ0.4' })
 
-        expect(lambda04.className).toContain('bg-blue-500')
+        expect(lambda02.className).toContain('bg-blue-500')
 
         fireEvent.click(lambda03)
         expect(lambda03.className).toContain('bg-blue-500')
-        expect(lambda04.className).not.toContain('bg-blue-500')
+        expect(lambda02.className).not.toContain('bg-blue-500')
     })
 
     it('allows changing animation speed', () => {
