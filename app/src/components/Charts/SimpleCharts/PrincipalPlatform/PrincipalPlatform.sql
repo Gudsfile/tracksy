@@ -23,10 +23,14 @@ normalized_platforms as (
             when
                 lower(platform) like 'ios%'
                 or lower(platform) like '%partner ios%'
+                or lower(platform) = 'iphone'
                 then 'iOS'
             when
-                lower(platform) like 'osx%' or lower(platform) like 'os x%'
+                lower(platform) like 'osx%'
+                or lower(platform) like 'os x%'
+                or lower(platform) = 'macintosh'
                 then 'MacOS'
+            when lower(platform) = 'homepod' then 'HomePod'
             when
                 lower(platform) like 'sonos_%'
                 or lower(platform) like '%partner sonos%'
