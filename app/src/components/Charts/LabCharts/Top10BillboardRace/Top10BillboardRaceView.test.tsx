@@ -115,7 +115,7 @@ describe('Top10BillboardRaceView', () => {
         vi.useRealTimers()
     })
 
-    it('resets to frame 0 and resumes playing when lambda changes', () => {
+    it('resets to frame 0 but preserves play state when lambda changes', () => {
         vi.useFakeTimers()
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
@@ -124,7 +124,7 @@ describe('Top10BillboardRaceView', () => {
         const lambda05 = screen.getByRole('button', { name: 'λ0.5' })
         fireEvent.click(lambda05)
 
-        expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
+        expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
 
         vi.useRealTimers()
     })

@@ -13,7 +13,6 @@ type EntityScore = {
     label: string
     score: number
     periodsInTop10: number
-    streak: number
 }
 
 type Frame = {
@@ -104,13 +103,26 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
             const maxScore = ranked[0]?.[1] ?? 1
 
+            const prevGhostRanking =
+                allFrames.length > 0
+                    ? allFrames[allFrames.length - 1].ghostRanking
+                    : []
+            const prevRankMap = new Map(
+                prevGhostRanking.map((e, i) => [e.label, i])
+            )
+
             const ghostRanking = [...periodsInTop10.entries()]
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 10)
-                .map(([label, weeks]) => ({
+                .map(([label, weeks], i) => ({
                     label,
                     periodsInTop10: weeks,
-                    streak: streakMap.get(label) ?? 0,
+                    rankDelta:
+                        prevGhostRanking.length === 0
+                            ? null
+                            : prevRankMap.has(label)
+                              ? prevRankMap.get(label)! - i
+                              : null,
                 }))
 
             allFrames.push({
@@ -119,7 +131,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     label,
                     score,
                     periodsInTop10: periodsInTop10.get(label) ?? 0,
-                    streak: streakMap.get(label) ?? 0,
                 })),
                 maxScore,
                 ghostRanking,
@@ -161,15 +172,24 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         }
     }, [])
 
-    const hasInitialized = useRef(false)
+    const hasInitializedEntity = useRef(false)
     useEffect(() => {
-        if (!hasInitialized.current) {
-            hasInitialized.current = true
+        if (!hasInitializedEntity.current) {
+            hasInitializedEntity.current = true
             return
         }
         setCurrentFrameIdx(0)
         setIsPlaying(true)
-    }, [entityType, lambda])
+    }, [entityType])
+
+    const hasInitializedLambda = useRef(false)
+    useEffect(() => {
+        if (!hasInitializedLambda.current) {
+            hasInitializedLambda.current = true
+            return
+        }
+        setCurrentFrameIdx(0)
+    }, [lambda])
 
     useEffect(() => {
         if (!isPlaying || !isVisible || frames.length === 0) return
