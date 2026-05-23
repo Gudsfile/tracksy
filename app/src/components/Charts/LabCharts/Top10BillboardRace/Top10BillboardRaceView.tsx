@@ -23,6 +23,10 @@ type Frame = {
     ghostRanking: GhostEntry[]
 }
 
+const BASE_SPEED = 120
+const BAR_STRIDE = 44
+const SCORE_COL_WIDTH = 62
+
 export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(false)
@@ -30,9 +34,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [lambda, setLambda] = useState(0.2)
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
-
-    // Base speed in ms
-    const BASE_SPEED = 120
 
     // Precompute all frames from the event stream using exponential decay scoring
     const { frames, entityColors, streakRecord } = useMemo(() => {
@@ -387,17 +388,20 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
                 {/* Bar chart race */}
                 <div className="md:col-span-2 flex flex-col">
-                    <div className="flex justify-end pr-[62px]">
+                    <div
+                        className="flex justify-end"
+                        style={{ paddingRight: SCORE_COL_WIDTH }}
+                    >
                         <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
                             score
                         </span>
                     </div>
 
-                    <div className="relative h-[450px] w-full mt-4">
+                    <div className="relative w-full mt-4" style={{ height: currentFrame.top10.length * BAR_STRIDE }}>
                         {currentFrame.top10.map((item, index) => {
                             const widthPercent =
                                 (item.score / currentFrame.maxScore) * 100
-                            const topPos = index * 44
+                            const topPos = index * BAR_STRIDE
 
                             return (
                                 <div
@@ -429,7 +433,10 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                                             {item.label}
                                         </div>
                                     </div>
-                                    <div className="ml-2 min-w-[62px] text-sm font-mono text-right text-gray-600 dark:text-gray-300 transition-all duration-300 ease-linear">
+                                    <div
+                                        className="ml-2 text-sm font-mono text-right text-gray-600 dark:text-gray-300 transition-all duration-300 ease-linear"
+                                        style={{ minWidth: SCORE_COL_WIDTH }}
+                                    >
                                         {Math.round(
                                             item.score
                                         ).toLocaleString()}
