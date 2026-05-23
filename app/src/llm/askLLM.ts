@@ -6,8 +6,6 @@ import { isIntentName } from './intents'
 import { SYSTEM_PROMPT, FEW_SHOTS, CURRENT_DATE } from './prompt'
 import { resolveYear } from './resolveYear'
 import { LLMError, type ChatAnswer, type ChatMessage } from './types'
-import { devBus } from '../devToolbar/devBus'
-import { selectModelId } from './engine'
 
 function buildMessages(
     userText: string,
@@ -133,19 +131,11 @@ export async function askLLM(
 ): Promise<ChatAnswer> {
     const messages = buildMessages(userText, history)
     let response
-    const start = performance.now()
     try {
         response = await engine.chat.completions.create({
             messages,
             temperature: 0.1,
             max_tokens: 512,
-        })
-        const durationMs = performance.now() - start
-        const tokens = response.usage?.completion_tokens ?? 0
-        devBus.emit('webllm:inference', {
-            model: selectModelId(),
-            durationMs,
-            tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
         })
     } catch (e) {
         const reason = e instanceof Error ? e.message : String(e)

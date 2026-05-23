@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
-import { tracksyDevToolbar } from './src/devToolbar/integration.ts'
 
 // @duckdb/node-api (devDependency used for tests) ships platform-specific native binaries
 // that Rollup/Vite cannot bundle. We mark them as external so they are resolved at runtime
@@ -53,7 +52,5 @@ export default defineConfig({
             external: DUCKDB_EXTERNALS,
         },
     },
-    integrations: [
-        ...(process.env.VITEST ? [] : [react(), tracksyDevToolbar()]),
-    ],
+    integrations: [...(process.env.VITEST ? [] : [react()])],
 })
