@@ -41,9 +41,9 @@ export function Top10Race({ year }: { year: number | undefined }) {
                     }`}
                 >
                     {type === 'artists'
-                        ? 'Artistes'
+                        ? 'Artists'
                         : type === 'tracks'
-                          ? 'Titres'
+                          ? 'Tracks'
                           : 'Albums'}
                 </button>
             ))}

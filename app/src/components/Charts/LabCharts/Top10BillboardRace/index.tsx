@@ -42,9 +42,9 @@ export function Top10BillboardRace({ year }: { year: number | undefined }) {
                     }`}
                 >
                     {type === 'artists'
-                        ? 'Artistes'
+                        ? 'Artists'
                         : type === 'tracks'
-                          ? 'Titres'
+                          ? 'Tracks'
                           : 'Albums'}
                 </button>
             ))}
