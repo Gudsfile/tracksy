@@ -29,14 +29,17 @@ export function UploadError({ message, onDismiss }: UploadErrorProps) {
     return (
         <div
             role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg bg-rose-700 px-5 py-3 text-white shadow-lg"
         >
             <span className="select-text">{message}</span>
             <button
+                type="button"
                 onClick={onDismiss}
-                className="ml-1 rounded p-0.5 hover:bg-rose-600 transition-colors"
+                className="ml-1 rounded p-0.5 hover:bg-rose-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 aria-label="Dismiss error"
             >
                 ✕

@@ -17,6 +17,19 @@ describe('UploadError', () => {
         expect(screen.getByRole('alert').textContent).toContain('Upload failed')
     })
 
+    it('has aria-live="assertive" and aria-atomic="true"', () => {
+        render(<UploadError message="Error" onDismiss={vi.fn()} />)
+        const alert = screen.getByRole('alert')
+        expect(alert.getAttribute('aria-live')).toBe('assertive')
+        expect(alert.getAttribute('aria-atomic')).toBe('true')
+    })
+
+    it('close button has type="button"', () => {
+        render(<UploadError message="Error" onDismiss={vi.fn()} />)
+        const btn = screen.getByRole('button', { name: 'Dismiss error' })
+        expect(btn.getAttribute('type')).toBe('button')
+    })
+
     it('calls onDismiss when close button is clicked', () => {
         const onDismiss = vi.fn()
         render(<UploadError message="Error" onDismiss={onDismiss} />)
