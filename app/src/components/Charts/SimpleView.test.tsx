@@ -3,7 +3,7 @@ import {
     summarizeQuery,
 } from './Summarize/summarizeQuery'
 import { it, vi, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { SimpleView } from './SimpleView'
 import * as db from '../../db/queries/queryDB'
 import {
@@ -254,13 +254,19 @@ it('renders all SimpleView', async () => {
 
     render(<SimpleView />)
 
-    //range slider
-    const slider = (await screen.findByRole('slider')) as HTMLInputElement
+    // Year sidebar
+    const yearNav = await screen.findByRole('navigation', {
+        name: 'Filter by year',
+    })
 
+    within(yearNav).getByRole('button', { name: 'All time' })
+    within(yearNav).getByRole('button', { name: '2020' })
     await waitFor(() => {
-        expect(slider.getAttribute('min')).toBe('2019') // 2020 - 1 for the 'all' point
-        expect(slider.getAttribute('max')).toBe('2024')
-        expect(slider.getAttribute('value')).toBe('2024')
+        expect(
+            within(yearNav)
+                .getByRole('button', { name: '2024' })
+                .getAttribute('aria-pressed')
+        ).toBe('true')
     })
 
     await screen.findByText(
@@ -290,8 +296,10 @@ it('renders without crashing when queryDBAsJSON throws', async () => {
 
     render(<SimpleView />)
 
-    // Year slider must not appear (summarize stays undefined when DB throws)
+    // Year sidebar must not appear (summarize stays undefined when DB throws)
     await waitFor(() => {
-        expect(screen.queryByRole('slider')).toBeNull()
+        expect(
+            screen.queryByRole('navigation', { name: 'Filter by year' })
+        ).toBeNull()
     })
 })

@@ -3,7 +3,7 @@ import { TopStreak } from './LabCharts/TopStreak'
 import { SummaryPerYear } from './LabCharts/SummaryPerYear'
 import { TotalStreams } from './LabCharts/TotalStreams'
 import { TopArtist } from './LabCharts/TopArtist'
-import { RangeSlider } from '../RangeSlider/RangeSlider'
+import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { useState, useEffect, useCallback } from 'react'
 import {
     summarizeQuery,
@@ -57,6 +57,28 @@ export function LabView() {
             setYear(new Date(Number(summarize.max_datetime)).getFullYear())
     }, [summarize])
 
+    const wipSection = (
+        <section className="p-6 mt-12 border rounded-2xl border border-gray-300/60 dark:border-slate-700/50 shadow-lg">
+            <div className="relative mb-12">
+                <div className="border-t border-gray-300"></div>
+                <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-white px-3 py-1 text-sm font-medium rounded-full border">
+                    🚧 Work in Progress
+                </span>
+            </div>
+            <p className="mb-4 text-gray-900 dark:text-gray-100">
+                Experimental section: the graphs below are currently under
+                development and may contain errors.
+            </p>
+
+            <Streaks />
+            <Top10Evolution />
+            <Top10TracksEvolution />
+            <Top10Race year={debouncedYear} />
+            <Top10BillboardRace year={debouncedYear} />
+            <SessionAnalysisDetailed year={debouncedYear} />
+        </section>
+    )
+
     return (
         <>
             <div className="flex flex-col md:flex-row gap-4 items-stretch">
@@ -64,54 +86,35 @@ export function LabView() {
                 <TotalStreams />
                 <TopArtist />
             </div>
-            {summarize && (
-                <>
-                    <div className="sticky top-2 z-50">
-                        <RangeSlider
-                            value={year}
-                            onChange={setYear}
-                            min={new Date(
-                                Number(summarize.min_datetime)
-                            ).getFullYear()}
-                            max={new Date(
-                                Number(summarize.max_datetime)
-                            ).getFullYear()}
-                            step={1}
-                        />
-                    </div>
-                    <StreamPerMonth
-                        year={debouncedYear}
-                        maxValue={summarize.max_monthly_duration}
+            {summarize ? (
+                <div className="flex flex-col gap-4 md:flex-row">
+                    <YearSidebar
+                        value={year}
+                        onChange={setYear}
+                        min={new Date(
+                            Number(summarize.min_datetime)
+                        ).getFullYear()}
+                        max={new Date(
+                            Number(summarize.max_datetime)
+                        ).getFullYear()}
                     />
-                    <SummaryPerYear year={debouncedYear} />
-                    <TopTracks year={debouncedYear} />
-                    <TopArtists year={debouncedYear} />
-                    <TopAlbums year={debouncedYear} />
-                    <ArtistDiscovery />
-                    <StreamPerDayOfWeek year={debouncedYear} />
-                    <Top10AlbumsEvolution />
-                </>
+                    <div className="min-w-0 flex-1">
+                        <StreamPerMonth
+                            year={debouncedYear}
+                            maxValue={summarize.max_monthly_duration}
+                        />
+                        <SummaryPerYear year={debouncedYear} />
+                        <TopTracks year={debouncedYear} />
+                        <TopArtists year={debouncedYear} />
+                        <TopAlbums year={debouncedYear} />
+                        <ArtistDiscovery />
+                        <StreamPerDayOfWeek year={debouncedYear} />
+                        <Top10AlbumsEvolution />
+                        {wipSection}
+                    </div>
+            ) : (
+                wipSection
             )}
-
-            <section className="p-6 mt-12 border rounded-2xl border border-gray-300/60 dark:border-slate-700/50 shadow-lg">
-                <div className="relative mb-12">
-                    <div className="border-t border-gray-300"></div>
-                    <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-white px-3 py-1 text-sm font-medium rounded-full border">
-                        🚧 Work in Progress
-                    </span>
-                </div>
-                <p className="mb-4 text-gray-900 dark:text-gray-100">
-                    Experimental section: the graphs below are currently under
-                    development and may contain errors.
-                </p>
-
-                <Streaks />
-                <Top10Evolution />
-                <Top10TracksEvolution />
-                <Top10Race year={debouncedYear} />
-                <Top10BillboardRace year={debouncedYear} />
-                <SessionAnalysisDetailed year={debouncedYear} />
-            </section>
         </>
     )
 }
