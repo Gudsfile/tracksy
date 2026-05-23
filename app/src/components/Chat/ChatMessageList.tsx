@@ -1,4 +1,4 @@
-import type { ChatMessage } from '../../llm/types'
+import type { AssistantPayload, ChatMessage } from '../../llm/types'
 import type { SummarizeDataQueryResult } from '../Charts/Summarize/summarizeQuery'
 import type { DBRow } from '../../llm/inferChartType'
 import { ChatChartRouter } from './ChatChartRouter'
@@ -7,16 +7,35 @@ type ChatMessageListProps = {
     messages: ChatMessage[]
     summarize?: SummarizeDataQueryResult
     customRows: Map<string, DBRow[]>
+    streamingNarrative?: string
+    onRetry?: (userText: string) => void
+}
+
+function SqlBlock({ sql }: { sql: string }) {
+    return (
+        <details open className="text-xs mt-2">
+            <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
+                🔍 Generated SQL
+            </summary>
+            <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
+                {sql}
+            </pre>
+        </details>
+    )
 }
 
 function AssistantCard({
     msg,
     summarize,
     customRows,
+    onRetry,
+    precedingUserText,
 }: {
     msg: Extract<ChatMessage, { role: 'assistant' }>
     summarize?: SummarizeDataQueryResult
     customRows: Map<string, DBRow[]>
+    onRetry?: (userText: string) => void
+    precedingUserText?: string
 }) {
     const { payload } = msg
 
@@ -44,16 +63,7 @@ function AssistantCard({
                         {payload.reason}
                     </p>
                 </div>
-                {payload.answer.sql && (
-                    <details className="text-xs">
-                        <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                            See generated SQL
-                        </summary>
-                        <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
-                            {payload.answer.sql}
-                        </pre>
-                    </details>
-                )}
+                {payload.answer.sql && <SqlBlock sql={payload.answer.sql} />}
             </div>
         )
     }
@@ -68,21 +78,26 @@ function AssistantCard({
                     <p className="text-sm text-red-600 dark:text-red-400 mt-1">
                         {payload.error}
                     </p>
+                    {onRetry && precedingUserText && (
+                        <button
+                            type="button"
+                            onClick={() => onRetry(precedingUserText)}
+                            className="mt-3 px-3 py-1.5 text-xs font-medium rounded-lg bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-700/40 transition-colors"
+                        >
+                            ↺ Retry
+                        </button>
+                    )}
                 </div>
-                <details className="text-xs">
-                    <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                        See generated SQL
-                    </summary>
-                    <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
-                        {payload.answer.sql}
-                    </pre>
-                </details>
+                <SqlBlock sql={payload.answer.sql} />
             </div>
         )
     }
 
     // payload.kind === 'ok'
-    const { answer } = payload
+    const { answer, narrative } = payload as Extract<
+        AssistantPayload,
+        { kind: 'ok' }
+    >
     return (
         <div className="space-y-2">
             <ChatChartRouter
@@ -90,8 +105,13 @@ function AssistantCard({
                 rows={customRows.get(msg.id)}
                 summarize={summarize}
             />
-            <details className="text-xs">
-                <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            {narrative && (
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+                    {narrative}
+                </p>
+            )}
+            <details open className="text-xs">
+                <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
                     ℹ️ {answer.explanation}
                 </summary>
                 <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
@@ -106,6 +126,8 @@ export function ChatMessageList({
     messages,
     summarize,
     customRows,
+    streamingNarrative,
+    onRetry,
 }: ChatMessageListProps) {
     if (messages.length === 0) {
         return (
@@ -124,31 +146,47 @@ export function ChatMessageList({
 
     return (
         <div className="space-y-4">
-            {messages.map((msg) => (
-                <div
-                    key={msg.id}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                    {msg.role === 'user' ? (
-                        <div className="max-w-[75%] px-4 py-2 bg-gradient-brand text-white rounded-2xl rounded-br-sm text-sm shadow-glow">
-                            {msg.text}
-                        </div>
-                    ) : (
-                        <div className="w-full">
-                            <AssistantCard
-                                msg={
-                                    msg as Extract<
-                                        ChatMessage,
-                                        { role: 'assistant' }
-                                    >
-                                }
-                                summarize={summarize}
-                                customRows={customRows}
-                            />
-                        </div>
-                    )}
+            {messages.map((msg, i) => {
+                const prevMsg = i > 0 ? messages[i - 1] : undefined
+                const precedingUserText =
+                    prevMsg?.role === 'user' ? prevMsg.text : undefined
+
+                return (
+                    <div
+                        key={msg.id}
+                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                        {msg.role === 'user' ? (
+                            <div className="max-w-[75%] px-4 py-2 bg-gradient-brand text-white rounded-2xl rounded-br-sm text-sm shadow-glow">
+                                {msg.text}
+                            </div>
+                        ) : (
+                            <div className="w-full">
+                                <AssistantCard
+                                    msg={
+                                        msg as Extract<
+                                            ChatMessage,
+                                            { role: 'assistant' }
+                                        >
+                                    }
+                                    summarize={summarize}
+                                    customRows={customRows}
+                                    onRetry={onRetry}
+                                    precedingUserText={precedingUserText}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )
+            })}
+            {streamingNarrative && (
+                <div className="flex justify-start">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+                        {streamingNarrative}
+                        <span className="animate-pulse">▌</span>
+                    </p>
                 </div>
-            ))}
+            )}
         </div>
     )
 }

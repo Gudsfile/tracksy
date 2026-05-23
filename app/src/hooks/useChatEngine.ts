@@ -7,6 +7,8 @@ import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
 export type AskResult = {
     payload: AssistantPayload
     rows?: Record<string, string | number | null>[]
+    /** Call after rendering the chart to stream a narrative summary. Only present for successful custom queries. */
+    streamNarrator?: (onChunk: (delta: string) => void) => Promise<string>
 }
 
 export function useChatEngine() {
@@ -89,25 +91,66 @@ export function useChatEngine() {
                         },
                     }
                 }
+
+                let finalAnswer = { ...answer, sql: validation.sql }
+                let rows: Record<string, string | number | null>[]
                 try {
-                    const rows = await queryDBAsJSON<
+                    rows = await queryDBAsJSON<
                         Record<string, string | number | null>
                     >(validation.sql)
-                    return {
-                        payload: {
-                            kind: 'ok',
-                            answer: { ...answer, sql: validation.sql },
-                        },
-                        rows,
+                } catch (firstErr) {
+                    // Retry once: feed the error back to the LLM so it can correct the SQL
+                    try {
+                        const retried = await askLLMRef.current!.askLLM(
+                            engine,
+                            `${userText}\n\nPrevious SQL failed with: ${firstErr}`,
+                            history
+                        )
+                        const retryValidation = validateSql(retried.sql ?? '')
+                        if (!retryValidation.ok) {
+                            return {
+                                payload: {
+                                    kind: 'unsafe-sql',
+                                    answer: retried,
+                                    reason: retryValidation.reason,
+                                },
+                            }
+                        }
+                        finalAnswer = { ...retried, sql: retryValidation.sql }
+                        rows = await queryDBAsJSON<
+                            Record<string, string | number | null>
+                        >(retryValidation.sql)
+                    } catch (e) {
+                        return {
+                            payload: {
+                                kind: 'sql-error',
+                                answer: finalAnswer,
+                                error:
+                                    e instanceof Error ? e.message : String(e),
+                            },
+                        }
                     }
-                } catch (e) {
-                    return {
-                        payload: {
-                            kind: 'sql-error',
-                            answer: { ...answer, sql: validation.sql },
-                            error: e instanceof Error ? e.message : String(e),
-                        },
-                    }
+                }
+
+                const capturedEngine = engine
+                const capturedQuestion = userText
+                const capturedSql = finalAnswer.sql
+                const capturedRows = rows
+
+                return {
+                    payload: { kind: 'ok', answer: finalAnswer },
+                    rows,
+                    streamNarrator: async (onChunk) => {
+                        const { askNarrator } =
+                            await import('../llm/askNarrator')
+                        return askNarrator(
+                            capturedEngine,
+                            capturedQuestion,
+                            capturedSql,
+                            capturedRows,
+                            onChunk
+                        )
+                    },
                 }
             } catch (e) {
                 return {
