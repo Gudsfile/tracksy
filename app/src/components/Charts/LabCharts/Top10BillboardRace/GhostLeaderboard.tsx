@@ -1,4 +1,4 @@
-type GhostEntry = {
+export type GhostEntry = {
     label: string
     periodsInTop10: number
     streak: number
