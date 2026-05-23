@@ -1,7 +1,7 @@
 export type GhostEntry = {
     label: string
     periodsInTop10: number
-    streak: number
+    rankDelta: number | null
 }
 
 type Props = {
@@ -36,13 +36,23 @@ export function GhostLeaderboard({ ranking, activeLabels }: Props) {
                         <span className="text-xs font-mono text-gray-500 dark:text-gray-400 shrink-0">
                             {entry.periodsInTop10}w
                         </span>
-                        {entry.streak > 1 ? (
-                            <span className="text-xs text-amber-400 shrink-0 w-6 text-right">
-                                ↑{entry.streak}
-                            </span>
-                        ) : (
-                            <span className="w-6 shrink-0" />
-                        )}
+                        <span className="text-xs font-mono shrink-0 w-8 text-right">
+                            {entry.rankDelta === null ? (
+                                <span className="text-blue-400">new</span>
+                            ) : entry.rankDelta > 0 ? (
+                                <span className="text-emerald-400">
+                                    ↑{entry.rankDelta}
+                                </span>
+                            ) : entry.rankDelta < 0 ? (
+                                <span className="text-red-400">
+                                    ↓{Math.abs(entry.rankDelta)}
+                                </span>
+                            ) : (
+                                <span className="text-gray-400 opacity-40">
+                                    —
+                                </span>
+                            )}
+                        </span>
                     </div>
                 ))}
             </div>
