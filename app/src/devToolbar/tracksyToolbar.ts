@@ -8,36 +8,49 @@ type InferenceEntry = DevBusEventMap['webllm:inference'] & { ts: number }
 
 const MAX_QUERIES = 20
 
+// Styles for slot content inside astro-dev-toolbar-window.
+// Positioning, background, border, shadow, and z-index are all owned by the
+// window element itself — we only style the inner sections.
 const STYLES = `
-  :host { font-family: ui-monospace, monospace; font-size: 12px; color: #e2e8f0; }
-  .panel { display: flex; flex-direction: column; gap: 12px; padding: 12px; width: 420px; max-height: 480px; overflow-y: auto; background: #0f172a; border-radius: 8px; }
-  .section { border: 1px solid #1e293b; border-radius: 6px; overflow: hidden; }
-  .section-header { background: #1e293b; padding: 6px 10px; font-weight: 600; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: #94a3b8; }
-  .section-body { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .sections { display: flex; flex-direction: column; gap: 12px; font-family: ui-monospace, monospace; font-size: 12px; }
+  .section { border: 1px solid rgba(52, 56, 65, 1); border-radius: 6px; overflow: hidden; }
+  .section-header { background: rgba(27, 30, 36, 1); padding: 6px 10px; font-weight: 600; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: rgba(148, 163, 184, 1); }
+  .section-body { padding: 8px; display: flex; flex-direction: column; gap: 4px; max-height: 120px; overflow-y: auto; }
   .empty { color: #475569; font-style: italic; }
-  .row { display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 4px; background: #1e293b; }
+  .row { display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 4px; background: rgba(27, 30, 36, 1); }
   .sql { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #a5f3fc; }
   .badge { padding: 1px 5px; border-radius: 3px; font-size: 10px; white-space: nowrap; }
   .badge-time { background: #1d4ed8; color: #bfdbfe; }
   .badge-rows { background: #166534; color: #bbf7d0; }
   .badge-error { background: #991b1b; color: #fecaca; }
   .kv { display: flex; gap: 8px; align-items: center; }
-  .kv-label { color: #94a3b8; }
-  .kv-value { color: #f8fafc; font-weight: 600; }
-  .progress-bar { height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .kv-label { color: rgba(148, 163, 184, 1); }
+  .kv-value { color: #f8fafc; font-weight: 600; font-family: ui-monospace, monospace; }
+  .progress-bar { height: 6px; background: rgba(27, 30, 36, 1); border-radius: 3px; overflow: hidden; margin-top: 4px; }
   .progress-fill { height: 100%; background: #3b82f6; border-radius: 3px; transition: width .2s; }
 `
 
 // eslint-disable-next-line import/no-default-export -- Astro toolbar entrypoint requires default export
 export default defineToolbarApp({
-    init(canvas) {
+    init(canvas, eventTarget) {
+        // astro-dev-toolbar-window handles all positioning: fixed, bottom: 72px,
+        // z-index: 999999999, background, border, shadow. We own only slot content.
+        const win = document.createElement('astro-dev-toolbar-window')
+        win.setAttribute('placement', 'bottom-center')
+        canvas.appendChild(win)
+
         const style = document.createElement('style')
         style.textContent = STYLES
-        canvas.appendChild(style)
+        win.appendChild(style)
 
-        const panel = document.createElement('div')
-        panel.className = 'panel'
-        canvas.appendChild(panel)
+        const sections = document.createElement('div')
+        sections.className = 'sections'
+        win.appendChild(sections)
+
+        // Keep window placement in sync with toolbar position
+        eventTarget.onToolbarPlacementUpdated(({ placement }) => {
+            win.setAttribute('placement', placement)
+        })
 
         // --- State ---
         const queries: DuckDBEntry[] = []
@@ -57,7 +70,7 @@ export default defineToolbarApp({
                 return `<div class="empty">No queries yet.</div>`
             }
             return queries
-                .slice(-20)
+                .slice()
                 .reverse()
                 .map(
                     (q) => `
@@ -97,7 +110,7 @@ export default defineToolbarApp({
         }
 
         function render(): void {
-            panel.innerHTML = `
+            sections.innerHTML = `
           <div class="section">
             <div class="section-header">DuckDB — ${queries.length} queries</div>
             <div class="section-body">${renderDuckDB()}</div>
