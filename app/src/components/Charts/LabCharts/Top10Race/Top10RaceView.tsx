@@ -226,7 +226,6 @@ export function Top10RaceView({ data, entityType }: Props) {
                 </div>
             </div>
 
-            {/* Timeline slider */}
             {frames.length > 1 && (
                 <div className="flex items-center gap-3 w-full bg-gray-50/50 dark:bg-slate-800/20 p-2.5 rounded-xl border border-gray-200/50 dark:border-slate-800/50">
                     <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
@@ -237,6 +236,7 @@ export function Top10RaceView({ data, entityType }: Props) {
                     </span>
                     <input
                         type="range"
+                        aria-label="Animation timeline"
                         min={0}
                         max={frames.length - 1}
                         value={currentFrameIdx}
