@@ -7,7 +7,7 @@ import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
 export type AskResult = {
     payload: AssistantPayload
     rows?: Record<string, string | number | null>[]
-    /** Call after rendering the chart to stream a narrative summary. Only present for successful custom queries. */
+    /** Call after rendering the chart to stream a narrative summary. Present for all successful queries. */
     streamNarrator?: (onChunk: (delta: string) => void) => Promise<string>
 }
 
@@ -78,7 +78,24 @@ export function useChatEngine() {
                 )
 
                 if (answer.intent !== 'custom') {
-                    return { payload: { kind: 'ok', answer } }
+                    const capturedEngine = engine
+                    const capturedAnswer = answer
+                    const capturedQuestion = userText
+                    return {
+                        payload: { kind: 'ok', answer },
+                        streamNarrator: async (onChunk) => {
+                            const { askNarrator } =
+                                await import('../llm/askNarrator')
+                            return askNarrator(
+                                capturedEngine,
+                                capturedQuestion,
+                                capturedAnswer.sql,
+                                [],
+                                onChunk,
+                                capturedAnswer.explanation
+                            )
+                        },
+                    }
                 }
 
                 const validation = validateSql(answer.sql ?? '')

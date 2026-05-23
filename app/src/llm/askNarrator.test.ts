@@ -85,4 +85,25 @@ describe('askNarrator', () => {
             expect.objectContaining({ model: 'test-model' })
         )
     })
+
+    it('uses explanation as context when no rows are provided', async () => {
+        const engine = makeMockEngine(['ok'])
+
+        await askNarrator(
+            engine,
+            'question',
+            'SELECT 1',
+            [],
+            () => {},
+            'Bar chart of top artists'
+        )
+
+        const createCall = (
+            engine.chat.completions.create as ReturnType<typeof vi.fn>
+        ).mock.calls[0][0]
+        const userContent = createCall.messages[1].content as string
+        expect(userContent).toContain(
+            'Chart description: Bar chart of top artists'
+        )
+    })
 })

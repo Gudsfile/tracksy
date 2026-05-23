@@ -3,21 +3,28 @@ import type { DBRow } from './inferChartType'
 import { devBus } from '../devToolbar/devBus'
 import { selectModelId } from './engine'
 
-const NARRATOR_SYSTEM_PROMPT = `You are a music data analyst. Given a user's question, the SQL query used, and a sample of the results, write a concise 2-3 sentence answer that directly addresses the question. Be specific — mention actual values from the data. Write in a friendly, conversational tone. Do not repeat the question.`
+const NARRATOR_SYSTEM_PROMPT = `You are a music data analyst. Given a user's question and context about the visualization, write a concise 2-3 sentence answer that directly addresses the question. When result data is available, mention specific values. When only a chart description is available, describe what the visualization reveals. Write in a friendly, conversational tone. Do not repeat the question.`
 
 export async function askNarrator(
     engine: MLCEngineInterface,
     question: string,
     sql: string,
     rows: DBRow[],
-    onChunk: (delta: string) => void
+    onChunk: (delta: string) => void,
+    explanation?: string
 ): Promise<string> {
-    const sample = rows.slice(0, 10)
+    const dataContext =
+        rows.length > 0
+            ? `Results (${rows.length} rows total, showing up to 10):\n${JSON.stringify(rows.slice(0, 10), null, 2)}`
+            : explanation
+              ? `Chart description: ${explanation}`
+              : 'No result data available.'
+
     const messages = [
         { role: 'system' as const, content: NARRATOR_SYSTEM_PROMPT },
         {
             role: 'user' as const,
-            content: `Question: ${question}\n\nSQL:\n${sql}\n\nResults (${rows.length} rows total, showing up to 10):\n${JSON.stringify(sample, null, 2)}`,
+            content: `Question: ${question}\n\nSQL:\n${sql}\n\n${dataContext}`,
         },
     ]
 
