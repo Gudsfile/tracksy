@@ -1,12 +1,15 @@
 ---
-title: "Top10 Race Bar Chart Race"
+title: "Top10 Race & Top10 Billboard Race"
 date: 2026-05-22T01:00:21+02:00
 draft: true
 ---
 
 ## 1. Objective
 
-Improve the Top10Race bar chart race for clarity, usability, and extensibility.
+Add two animated, interactive chart components to the Lab View:
+
+- **Top10 Race**: day-by-day bar chart race of cumulative streams per artist, track, or album.
+- **Top10 Billboard Race**: week-by-week bar chart race using exponential decay scoring — recent plays count more than old ones.
 
 Target users: Tracksy users exploring their listening history over time.
 
@@ -26,7 +29,7 @@ Target users: Tracksy users exploring their listening history over time.
 
 ---
 
-## 3. In-Scope Changes (v1)
+## 3. In-Scope Changes (v1) — Top10 Race
 
 ### 3.0 Consistency with SimpleCharts
 
@@ -118,7 +121,7 @@ Add a control to switch the chart between three entity types:
 - Tabs visible in ChartCard header for all 3 entity types
 - Changing entity resets playback to start
 - Query re-runs on entity change
-- Labels in bars update correctly (artist name → track name → album name)
+- Labels in bars update correctly (artist name -> track name -> album name)
 
 ---
 
@@ -128,8 +131,8 @@ Replace generic `Start` / `End` labels with the actual first and last frame date
 Users currently have no idea what time range the slider covers.
 
 **Acceptance criteria:**
-- Left label = date of first frame (e.g., `janv. 2021`)
-- Right label = date of last frame (e.g., `déc. 2023`)
+- Left label = date of first frame (e.g., `Jan 2021`)
+- Right label = date of last frame (e.g., `Dec 2023`)
 - Format: short month + year (`MMM YYYY`)
 
 ---
@@ -141,24 +144,24 @@ Currently: 1 frame = 1 day that has data. Users don't know this.
 **Short-term fix (v1):** Add a small static label near the date display showing the current granularity.
 
 **Acceptance criteria:**
-- Granularity label visible next to date (e.g., `17 janvier 2021 · daily`)
+- Granularity label visible next to date (e.g., `17 January 2021 · daily`)
 
 ---
 
 ## 4. Target Layout (v1)
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│ 🏎️  Top 10 Race   [Artistes] [Titres] [Albums]               │  ← ChartCard header
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  17 janvier 2021 · daily    [0.5x | 1x | 2x | 4x]   ⏸      │
-│                                                              │
-│  janv. 2021 ───────────●──────────── déc. 2023             │
-│                                                   streams    │
-│  #1 Columbine ████████████████████████  1 722              │
-│  ...                                                        │
-└──────────────────────────────────────────────────────────────┘
++--------------------------------------------------------------+
+| 🏎️  Top 10 Race   [Artists] [Tracks] [Albums]               |  <- ChartCard header
++--------------------------------------------------------------+
+|                                                              |
+|  17 January 2021 · daily    [0.5x | 1x | 2x | 4x]   ⏸      |
+|                                                              |
+|  Jan 2021 ─────────────●────────────── Dec 2023             |
+|                                                   streams    |
+|  #1 Veridis P ████████████████████████  1 722              |
+|  ...                                                        |
++--------------------------------------------------------------+
 ```
 
 **Control hierarchy:**
@@ -189,7 +192,7 @@ Currently: 1 frame = 1 day that has data. Users don't know this.
 
 **Stream-by-stream:**
 - Pro: Maximum animation fluidity
-- Con: Could be 50,000+ frames for a year of history → perf analysis required
+- Con: Could be 50,000+ frames for a year of history -> perf analysis required
 - Must benchmark: frame computation time, React re-render rate at high speed
 
 **Configurable granularity (D / W / M / Y):**
@@ -205,7 +208,7 @@ Currently: 1 frame = 1 day that has data. Users don't know this.
 ## 6. Out of Scope (explicitly)
 
 - Minutes played as primary metric (v2)
-- Changing Top10 depth (N ≠ 10)
+- Changing Top10 depth (N != 10)
 - Custom color themes per artist
 - Export / share frame as image
 
@@ -213,16 +216,41 @@ Currently: 1 frame = 1 day that has data. Users don't know this.
 
 ## 7. Architecture
 
+### Top10 Race
+
 ```
 app/src/components/Charts/LabCharts/Top10Race/
   index.tsx                    # Orchestrator: fetch + ChartCard wrapper (with entity tabs)
   Top10RaceView.tsx            # Animated bar chart (parameterized by entityType)
   query.ts                     # Unified query builder (artists | tracks | albums)
-  Top10Race.sql                # Artists SQL (unchanged)
-  Top10Tracks.sql              # NEW — daily-granularity bar race SQL for tracks
-  Top10Albums.sql              # NEW — daily-granularity bar race SQL for albums
+  Top10Artists.sql             # Artists SQL
+  Top10Tracks.sql              # Daily-granularity bar race SQL for tracks
+  Top10Albums.sql              # Daily-granularity bar race SQL for albums
   Top10RaceView.test.tsx
   query.test.ts
+```
+
+### Top10 Billboard Race
+
+```
+app/src/components/Charts/LabCharts/Top10BillboardRace/
+  index.tsx                          # Orchestrator: fetch + ChartCard wrapper (with entity tabs)
+  Top10BillboardRaceView.tsx         # Animated bar chart with decay scoring
+  GhostLeaderboard.tsx               # Longevity Leaderboard side panel
+  query.ts                           # Unified query builder (artists | tracks | albums)
+  Top10BillboardRaceArtists.sql      # Artists SQL (weekly grouping)
+  Top10BillboardRaceTracks.sql       # Tracks SQL (weekly grouping)
+  Top10BillboardRaceAlbums.sql       # Albums SQL (weekly grouping)
+  Top10BillboardRaceView.test.tsx
+  query.test.ts
+```
+
+### Shared
+
+```
+app/src/components/Charts/LabCharts/
+  types.ts                     # Shared EntityType = 'artists' | 'tracks' | 'albums'
+  barChartColors.ts            # Shared Tailwind color palette
 ```
 
 `Top10AlbumsEvolution/` and `Top10TracksEvolution/` are separate charts showing different data (static rankings). They are untouched.
@@ -243,6 +271,12 @@ app/src/components/Charts/LabCharts/Top10Race/
   - Prev/Next buttons absent
   - `<ChartCardEmpty />` shown when data is empty
   - Question text visible below title
+- Component tests: `Top10BillboardRaceView` — render with fixture data, verify:
+  - Longevity Leaderboard visible with weeks suffix
+  - Lambda selector (5 buttons, default λ0.2)
+  - Frame advancement via fake timers
+  - Timeline slider scrubbing pauses and jumps to correct frame
+  - Lambda change preserves play/pause state
 - Use `vi.spyOn()` per project convention (never `vi.mock()`)
 - All existing tests must remain green
 
@@ -250,7 +284,7 @@ app/src/components/Charts/LabCharts/Top10Race/
 
 ## 9. Implementation Plan (proposed sequence)
 
-Each item → separate PR or commit.
+Each item -> separate PR or commit.
 
 1. **3.0.3** — `headerActions` slot in `ChartCard`: shared component change, no visual regression on existing charts
 2. **3.0.1 + 3.0.2** — `question` prop + `ChartCardEmpty` empty state: isolated, no logic change
@@ -260,45 +294,7 @@ Each item → separate PR or commit.
 6. **3.5** — Granularity label next to date: label-only, no logic
 7. **P5** — Entity switch tabs via `headerActions`: new state + query wiring
 8. **OQ-1** — Decision + implementation (missing days)
-9. **OQ-2** — Benchmark → decide granularity approach → implement
-
----
-
-## 11. Future Directions — "Billboard Race" POC
-
-### Concept
-
-A variant of Top10Race based not on **cumulative stream counts**, but on **time spent in the top 10** — inspired by the Billboard 200.
-
-Each period (weekly by default, to be validated — start by testing with 200 periods), compute the top 10 for that period. The chart animates the ranking evolution and displays on the right not a stream count but the **number of periods spent in the top 10**.
-
-### Metrics displayed per bar
-
-Two dimensions shown to the right of each bar:
-- **Total**: number of periods (weeks) the entity appeared in any top 10 since the start
-- **Streak**: current consecutive streak of periods in the top 10
-
-Example: `14 wks · 6 streak`
-
-### Differences vs current Top10Race
-
-| | Top10Race (current) | Billboard Race (POC) |
-|---|---|---|
-| Bar metric | cumulative streams since start | weeks in the top 10 |
-| Right value | stream count | total weeks + streak |
-| Frame granularity | 1 frame = 1 day | 1 frame = 1 period (week?) |
-| SQL | cumsum over daily_plays | count of periods where rank ≤ 10 |
-
-### Open questions for the POC
-
-- **Granularity**: week is the natural choice (Billboard), to be validated on real data. Test with 200 periods to assess readability.
-- **Streak**: current streak or all-time max streak? Both make sense depending on the viewing moment.
-- **Component**: dedicated new component (recommended) vs parameter on existing Top10Race. SQL logic and data model are different enough to justify a separate component.
-- **Entities**: artists only for the POC, extend to tracks/albums if successful.
-
-### Target component (provisional)
-
-`Top10BillboardRace` — new component in `LabCharts/`, independent of `Top10Race/`.
+9. **OQ-2** — Benchmark -> decide granularity approach -> implement
 
 ---
 
@@ -313,3 +309,57 @@ Example: `14 wks · 6 streak`
 | Never | Touch `Top10AlbumsEvolution/` or `Top10TracksEvolution/` — separate charts, different purpose |
 | Never | Server-side data processing |
 | Never | External API calls with user data |
+
+---
+
+## 11. Top10 Billboard Race — Implementation Notes
+
+### Scoring model
+
+Score per entity at period T: `score(T) = sum over all past periods P of plays(P) * e^(-lambda * (T - P))`
+
+Each new period: existing scores decay by factor `e^(-lambda)`, then current period plays are added.
+
+Lambda controls how fast old plays fade:
+- Low lambda (0.1): long memory, historical plays still count
+- High lambda (0.5): short memory, only recent weeks matter
+- Default: lambda = 0.2
+
+Lambda selector is currently exposed in the UI (0.1 to 0.5) as a temporary tuning tool. To be removed or hidden once a good default is validated on real data.
+
+### Longevity Leaderboard
+
+Side panel tracking cumulative weeks in top 10 per entity. Updated each frame. Shows:
+- Rank within the leaderboard (by total weeks in top 10)
+- Entity name (bold if currently in the live top 10)
+- Weeks in top 10 with `w` suffix
+- Rank delta vs previous frame: up (green), down (red), new entry (blue), stable (grey dash)
+
+### Streak InsightCard
+
+Tracks the longest consecutive streak of weeks in the top 10 per entity across the full animation. Revealed only at the last frame to avoid spoiling the result.
+
+### Layout
+
+```
++--------------------------------------------------------------+
+| 🏆  Top 10 Billboard Race   [Artists] [Tracks] [Albums]      |  <- ChartCard header
++--------------------------------------------------------------+
+|                                                              |
+|  Week of 17 Jan 2021 · weekly                               |
+|  [λ0.1|λ0.2|λ0.3|λ0.4|λ0.5]  [0.5x|1x|2x|4x]   ⏸         |
+|                                                              |
+|  Jan 2021 ─────────────●────────────── Dec 2023             |
+|                                                              |
+|  Longevity Leaderboard  |  score                            |
+|  1  Artist A    14w  ↑2 |  #1 Veridis P ████████  1 234    |
+|  2  Artist B    11w   — |  ...                              |
+|  ...            ...     |                                   |
+|  [🔥 Longest streak: Artist A — 6 consecutive weeks]        |
++--------------------------------------------------------------+
+```
+
+### Open questions
+
+- Lambda default: validate on real user data, then remove the selector from the UI.
+- SQL performance on large datasets (many artists, years of weekly data): not benchmarked. To review in a follow-up PR.
