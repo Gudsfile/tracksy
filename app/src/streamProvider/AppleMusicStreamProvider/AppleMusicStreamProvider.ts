@@ -31,7 +31,11 @@ export class AppleMusicStreamProvider extends StreamProvider<AppleMusicRawRecord
 
     transform(rawData: AppleMusicRawRecord[]): StreamRecord[] {
         return rawData
-            .filter((r) => r['Media Type'] === 'AUDIO')
+            .filter(
+                (r) =>
+                    r['Media Type'] === 'AUDIO' &&
+                    r['Container Origin Type'] !== 'STREAM_RADIO_STATION'
+            )
             .map((r) => {
                 const tsRaw = r['Event Start Timestamp']
                 const ts =

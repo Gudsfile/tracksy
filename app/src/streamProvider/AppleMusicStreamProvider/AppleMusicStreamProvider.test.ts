@@ -26,6 +26,7 @@ const RAW_AUDIO: AppleMusicRawRecord = {
     'Event Start Timestamp': new Date('2024-03-15T14:30:00.000Z'),
     'Play Duration Milliseconds': 213000,
     'Client Platform': 'FUSE',
+    'Container Origin Type': null,
 }
 
 const RAW_VIDEO: AppleMusicRawRecord = {
@@ -36,6 +37,7 @@ const RAW_VIDEO: AppleMusicRawRecord = {
     'Event Start Timestamp': new Date('2024-03-15T15:00:00.000Z'),
     'Play Duration Milliseconds': 120000,
     'Client Platform': 'FUSE',
+    'Container Origin Type': null,
 }
 
 describe('AppleMusicStreamProvider', () => {
@@ -147,6 +149,16 @@ describe('AppleMusicStreamProvider', () => {
             expect(result[0].track_uri).toBe(
                 'apple-music:Never Gonna Give You Up'
             )
+        })
+
+        it('should filter out STREAM_RADIO_STATION records', () => {
+            const radioRecord: AppleMusicRawRecord = {
+                ...RAW_AUDIO,
+                'Container Origin Type': 'STREAM_RADIO_STATION',
+            }
+            const result = provider.transform([RAW_AUDIO, radioRecord])
+            expect(result).toHaveLength(1)
+            expect(result[0].track_name).toBe('Never Gonna Give You Up')
         })
 
         it('should handle empty input array', () => {
