@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { Top10BillboardRaceView } from './Top10BillboardRaceView'
 import type { Top10BillboardRaceQueryResult } from './query'
 
@@ -113,6 +113,32 @@ describe('Top10BillboardRaceView', () => {
         expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
 
         vi.useRealTimers()
+    })
+
+    it('advances frames during playback', () => {
+        vi.useFakeTimers()
+        render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
+
+        fireEvent.click(screen.getByRole('button', { name: 'Play' }))
+
+        act(() => {
+            vi.advanceTimersByTime(500)
+        })
+
+        expect(screen.getByRole('button', { name: 'Replay' })).toBeDefined()
+
+        vi.useRealTimers()
+    })
+
+    it('allows scrubbing the timeline slider', () => {
+        render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
+
+        const slider = screen.getByRole('slider', {
+            name: 'Animation timeline',
+        })
+        fireEvent.change(slider, { target: { value: '1' } })
+
+        expect(screen.getByRole('button', { name: 'Replay' })).toBeDefined()
     })
 
     it('resets to frame 0 but preserves play state when lambda changes', () => {
