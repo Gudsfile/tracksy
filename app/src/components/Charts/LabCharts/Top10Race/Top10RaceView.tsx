@@ -29,7 +29,6 @@ export function Top10RaceView({ data, entityType }: Props) {
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
-    // Precompute all frames from the event stream
     const { frames, entityColors } = useMemo(() => {
         const uniqueDates = Array.from(
             new Set(data.map((d) => d.stream_date_ts))
@@ -40,7 +39,6 @@ export function Top10RaceView({ data, entityType }: Props) {
         const colorMap = new Map<string, string>()
         let colorIdx = 0
 
-        // Group data by date
         const dataByDate = new Map<number, typeof data>()
         for (const row of data) {
             if (!dataByDate.has(row.stream_date_ts)) {
@@ -49,7 +47,6 @@ export function Top10RaceView({ data, entityType }: Props) {
             dataByDate.get(row.stream_date_ts)!.push(row)
         }
 
-        // Generate a frame for each unique date
         for (const dateTs of uniqueDates) {
             const dayEvents = dataByDate.get(dateTs) || []
             for (const event of dayEvents) {
@@ -63,7 +60,6 @@ export function Top10RaceView({ data, entityType }: Props) {
                 }
             }
 
-            // Get top 10
             const sortedEntities = Array.from(currentScores.entries())
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 10)
@@ -83,7 +79,6 @@ export function Top10RaceView({ data, entityType }: Props) {
 
     const currentFrame = frames[currentFrameIdx]
 
-    // IntersectionObserver to only animate when visible
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
