@@ -18,15 +18,16 @@ type Frame = {
     maxScore: number
 }
 
+const BASE_SPEED = 120
+const BAR_STRIDE = 44
+const STREAMS_COL_WIDTH = 60
+
 export function Top10RaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(true)
-    const [speedMultiplier, setSpeedMultiplier] = useState(1) // 1x, 2x, 4x
+    const [speedMultiplier, setSpeedMultiplier] = useState(1)
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
-
-    // Base speed in ms
-    const BASE_SPEED = 120
 
     // Precompute all frames from the event stream
     const { frames, entityColors } = useMemo(() => {
@@ -261,18 +262,20 @@ export function Top10RaceView({ data, entityType }: Props) {
                 </div>
             )}
 
-            <div className="flex justify-end pr-[62px]">
+            <div
+                className="flex justify-end"
+                style={{ paddingRight: STREAMS_COL_WIDTH }}
+            >
                 <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
                     streams
                 </span>
             </div>
 
-            <div className="relative h-[450px] w-full mt-4">
+            <div className="relative w-full mt-4" style={{ height: currentFrame.top10.length * BAR_STRIDE }}>
                 {currentFrame.top10.map((item, index) => {
                     const widthPercent =
                         (item.play_count / currentFrame.maxScore) * 100
-                    // Position from top based on index
-                    const topPos = index * 44 // 40px height + 4px gap
+                    const topPos = index * BAR_STRIDE
 
                     return (
                         <div
@@ -280,10 +283,9 @@ export function Top10RaceView({ data, entityType }: Props) {
                             className="absolute left-0 flex items-center w-full transition-all duration-300 ease-linear"
                             style={{
                                 top: `${topPos}px`,
-                                zIndex: 10 - index, // Higher ranks stay on top during cross
+                                zIndex: 10 - index,
                             }}
                         >
-                            {/* Bar */}
                             <div className="w-full relative h-9">
                                 <div
                                     className={`absolute top-0 left-0 h-full rounded-r-md transition-all duration-300 ease-linear ${entityColors.get(item.label)}`}
@@ -292,7 +294,6 @@ export function Top10RaceView({ data, entityType }: Props) {
                                         opacity: 0.8,
                                     }}
                                 />
-                                {/* Label inside or right after bar depending on width */}
                                 <div
                                     className="absolute left-2 h-full flex items-center font-medium text-sm text-gray-900 dark:text-white drop-shadow-md whitespace-nowrap overflow-hidden text-ellipsis"
                                     style={{ width: 'calc(100% - 16px)' }}
@@ -303,7 +304,10 @@ export function Top10RaceView({ data, entityType }: Props) {
                                     {item.label}
                                 </div>
                             </div>
-                            <div className="ml-2 min-w-[60px] text-sm font-mono text-gray-600 dark:text-gray-300 transition-all duration-300 ease-linear">
+                            <div
+                                className="ml-2 text-sm font-mono text-gray-600 dark:text-gray-300 transition-all duration-300 ease-linear"
+                                style={{ minWidth: STREAMS_COL_WIDTH }}
+                            >
                                 {item.play_count.toLocaleString()}
                             </div>
                         </div>
