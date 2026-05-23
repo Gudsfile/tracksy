@@ -1,5 +1,6 @@
 import type { StreamRecord } from './types'
 import { isValidStreamRecord, isLongEnoughStream } from './validation'
+import { devBus } from '../devToolbar/devBus'
 
 /**
  * Abstract base class for stream provider adapters.
@@ -75,10 +76,16 @@ export abstract class StreamProvider<TRawData = unknown> {
      * @returns Promise resolving to validated and filtered stream records
      */
     async processFile(file: File): Promise<StreamRecord[]> {
+        const start = performance.now()
         const rawData = await this.readFile(file)
         const transformedData = this.transform(rawData)
         const validatedData = this.validate(transformedData)
         const filteredData = this.filter(validatedData)
+        devBus.emit('stream:parsed', {
+            provider: this.name,
+            recordCount: filteredData.length,
+            durationMs: performance.now() - start,
+        })
         return filteredData
     }
 }
