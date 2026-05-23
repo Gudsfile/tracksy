@@ -184,7 +184,12 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         }
     }, [])
 
+    const hasInitialized = useRef(false)
     useEffect(() => {
+        if (!hasInitialized.current) {
+            hasInitialized.current = true
+            return
+        }
         setCurrentFrameIdx(0)
         setIsPlaying(true)
     }, [entityType, lambda])
