@@ -322,6 +322,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     </span>
                     <input
                         type="range"
+                        aria-label="Animation timeline"
                         min={0}
                         max={frames.length - 1}
                         value={currentFrameIdx}
