@@ -68,7 +68,7 @@ export function SimpleView() {
             </div>
 
             {summarize && (
-                <div className="flex flex-col gap-4 md:flex-row">
+                <>
                     <YearSidebar
                         value={year}
                         min={new Date(
@@ -80,7 +80,7 @@ export function SimpleView() {
                         onChange={setYear}
                     />
 
-                    <div className="grid min-w-0 flex-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TopTracks year={debouncedYear} />
                         <TopArtists year={debouncedYear} />
                         <TopAlbums year={debouncedYear} />
@@ -112,7 +112,7 @@ export function SimpleView() {
                         <BingeListener year={debouncedYear} />
                         <VarietyDay year={debouncedYear} />
                     </div>
-                </div>
+                </>
             )}
         </>
     )

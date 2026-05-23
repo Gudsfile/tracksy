@@ -16,10 +16,10 @@ export function YearSidebar({ value, onChange, min, max }: YearSidebarProps) {
     for (let year = max; year >= min; year--) years.push(year)
 
     return (
-        <aside className="sticky top-2 z-40 shrink-0 md:w-32 md:self-start">
+        <aside className="sticky top-2 z-40 mb-4 xl:fixed xl:top-24 xl:left-8 xl:mb-0 xl:w-32 xl:max-h-[calc(100vh-7rem)]">
             <nav
                 aria-label="Filter by year"
-                className="flex flex-row gap-2 overflow-x-auto rounded-2xl border border-gray-300/60 bg-white/70 p-2 shadow-lg backdrop-blur-md md:max-h-[calc(100vh-1rem)] md:flex-col md:overflow-x-visible md:overflow-y-auto dark:border-slate-700/50 dark:bg-slate-900/70"
+                className="flex flex-row gap-2 overflow-x-auto rounded-2xl border border-gray-300/60 bg-white/70 p-2 shadow-lg backdrop-blur-md xl:flex-col xl:overflow-x-visible xl:overflow-y-auto dark:border-slate-700/50 dark:bg-slate-900/70"
             >
                 <button
                     type="button"
