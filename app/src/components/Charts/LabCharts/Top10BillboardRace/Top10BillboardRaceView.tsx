@@ -349,7 +349,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         ranking={currentFrame.ghostRanking}
                         activeLabels={activeLabels}
                     />
-                    {streakRecord.weeks > 1 && (
+                    {streakRecord.weeks > 0 && (
                         <InsightCard>
                             <div className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
                                 🔥 Longest streak
