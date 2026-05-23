@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import type { EntityType, Top10BillboardRaceQueryResult } from './query'
-import { GhostLeaderboard } from './GhostLeaderboard'
+import { GhostLeaderboard, type GhostEntry } from './GhostLeaderboard'
 import { InsightCard } from '../../SimpleCharts/shared'
 
 type Props = {
@@ -11,12 +11,6 @@ type Props = {
 type EntityScore = {
     label: string
     score: number // decay score (bar width)
-    periodsInTop10: number
-    streak: number
-}
-
-type GhostEntry = {
-    label: string
     periodsInTop10: number
     streak: number
 }
