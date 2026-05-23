@@ -30,19 +30,17 @@ const SCORE_COL_WIDTH = 62
 export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(false)
-    const [speedMultiplier, setSpeedMultiplier] = useState(1) // 0.5x, 1x, 2x, 4x
+    const [speedMultiplier, setSpeedMultiplier] = useState(1)
     const [lambda, setLambda] = useState(0.2)
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
-    // Precompute all frames from the event stream using exponential decay scoring
     const { frames, entityColors, streakRecord } = useMemo(() => {
         const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
             (a, b) => a - b
         )
         const decay = Math.exp(-lambda)
 
-        // Group data by period
         const dataByPeriod = new Map<
             number,
             { label: string; plays: number }[]
@@ -65,12 +63,10 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         const allFrames: Frame[] = []
 
         for (const periodTs of uniquePeriods) {
-            // Decay all existing scores
             for (const [label, score] of runningScores) {
                 runningScores.set(label, score * decay)
             }
 
-            // Add this week's streams
             for (const { label, plays } of dataByPeriod.get(periodTs) ?? []) {
                 runningScores.set(
                     label,
@@ -85,7 +81,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 }
             }
 
-            // Rank top 10 by decay score
             const ranked = [...runningScores.entries()]
                 .filter(([, s]) => s > 0.01)
                 .sort((a, b) => b[1] - a[1])
@@ -93,7 +88,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
             const top10Set = new Set(ranked.map(([l]) => l))
 
-            // Update longevity counters
             for (const [label] of ranked) {
                 periodsInTop10.set(label, (periodsInTop10.get(label) ?? 0) + 1)
                 streakMap.set(label, (streakMap.get(label) ?? 0) + 1)
@@ -110,7 +104,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
             const maxScore = ranked[0]?.[1] ?? 1
 
-            // Ghost ranking: top 10 by total weeks in top 10 at this frame
             const ghostRanking = [...periodsInTop10.entries()]
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 10)
@@ -148,7 +141,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         [currentFrame]
     )
 
-    // IntersectionObserver to only animate when visible
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -199,7 +191,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
     return (
         <div ref={containerRef} className="flex flex-col gap-4 w-full">
-            {/* Controls row */}
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <h4 className="text-2xl font-bold font-mono tracking-tight text-gray-800 dark:text-gray-100">
                     {'Week of ' +
@@ -216,7 +207,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     </span>
                 </h4>
                 <div className="flex items-center gap-4 flex-wrap">
-                    {/* λ selector */}
                     <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
                         {([0.1, 0.2, 0.3, 0.4, 0.5] as const).map((l) => (
                             <button
@@ -233,7 +223,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         ))}
                     </div>
 
-                    {/* Speed selector */}
                     <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
                         {([0.5, 1, 2, 4] as const).map((speed) => (
                             <button
@@ -250,7 +239,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         ))}
                     </div>
 
-                    {/* Play/Pause */}
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => {
@@ -324,7 +312,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 </div>
             </div>
 
-            {/* Timeline slider */}
             {frames.length > 1 && (
                 <div className="flex items-center gap-3 w-full bg-gray-50/50 dark:bg-slate-800/20 p-2.5 rounded-xl border border-gray-200/50 dark:border-slate-800/50">
                     <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
@@ -355,9 +342,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                 </div>
             )}
 
-            {/* Two-column layout: Ghost (1/3) | Race (2/3) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Ghost Leaderboard */}
                 <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700/50 pb-4 md:pb-0 md:pr-6 flex flex-col gap-4">
                     <GhostLeaderboard
                         ranking={currentFrame.ghostRanking}
@@ -386,7 +371,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     )}
                 </div>
 
-                {/* Bar chart race */}
                 <div className="md:col-span-2 flex flex-col">
                     <div
                         className="flex justify-end"
