@@ -4,7 +4,6 @@ import {
     type MLCEngineInterface,
 } from '@mlc-ai/web-llm'
 import { isMobileBrowser } from './deviceDetection'
-import { devBus } from '../devToolbar/devBus'
 
 export { isSafariIOS, isMobileBrowser } from './deviceDetection'
 
@@ -38,14 +37,7 @@ export async function getEngine(
     if (enginePromise) return enginePromise
 
     enginePromise = CreateMLCEngine(selectModelId(), {
-        initProgressCallback: (report) => {
-            onProgress?.(report)
-            devBus.emit('webllm:load', {
-                model: selectModelId(),
-                progress: report.progress,
-                text: report.text,
-            })
-        },
+        initProgressCallback: (report) => onProgress?.(report),
     }).catch((e) => {
         // Reset so a future attempt can retry
         enginePromise = null
