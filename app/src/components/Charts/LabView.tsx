@@ -16,12 +16,13 @@ import { TopTracks } from './LabCharts/TopTracks'
 import { TopArtists } from './LabCharts/TopArtists'
 import { TopAlbums } from './LabCharts/TopAlbums'
 import { Streaks } from './LabCharts/Streaks'
-import { Top10Race } from './LabCharts/Top10Race'
-import { Top10BillboardRace } from './LabCharts/Top10BillboardRace'
+import { Top10Evolution } from './LabCharts/Top10Evolution'
 import { Top10AlbumsEvolution } from './LabCharts/Top10AlbumsEvolution'
 import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
 import { StreamPerDayOfWeek } from './LabCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from './LabCharts/ArtistDiscovery'
+import { Top10Race } from './LabCharts/Top10Race'
+import { Top10BillboardRace } from './LabCharts/Top10BillboardRace'
 import { SessionAnalysis as SessionAnalysisDetailed } from './LabCharts/SessionAnalysis'
 
 export function LabView() {
@@ -105,9 +106,10 @@ export function LabView() {
                 </p>
 
                 <Streaks />
+                <Top10Evolution />
+                <Top10TracksEvolution />
                 <Top10Race year={debouncedYear} />
                 <Top10BillboardRace year={debouncedYear} />
-                <Top10TracksEvolution />
                 <SessionAnalysisDetailed year={debouncedYear} />
             </section>
         </>
