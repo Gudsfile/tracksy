@@ -9,7 +9,7 @@ type InferenceEntry = DevBusEventMap['webllm:inference'] & { ts: number }
 const MAX_QUERIES = 20
 
 const STYLES = `
-  :host { font-family: ui-monospace, monospace; font-size: 12px; color: #e2e8f0; }
+  :host { font-family: ui-monospace, monospace; font-size: 12px; color: #e2e8f0; z-index: 2147483647; position: relative; }
   .panel { display: flex; flex-direction: column; gap: 12px; padding: 12px; width: 420px; max-height: 480px; overflow-y: auto; background: #0f172a; border-radius: 8px; }
   .section { border: 1px solid #1e293b; border-radius: 6px; overflow: hidden; }
   .section-header { background: #1e293b; padding: 6px 10px; font-weight: 600; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: #94a3b8; }
@@ -57,7 +57,7 @@ export default defineToolbarApp({
                 return `<div class="empty">No queries yet.</div>`
             }
             return queries
-                .slice(-20)
+                .slice()
                 .reverse()
                 .map(
                     (q) => `
