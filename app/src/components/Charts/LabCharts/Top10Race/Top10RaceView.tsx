@@ -24,7 +24,7 @@ const STREAMS_COL_WIDTH = 60
 
 export function Top10RaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
-    const [isPlaying, setIsPlaying] = useState(true)
+    const [isPlaying, setIsPlaying] = useState(false)
     const [speedMultiplier, setSpeedMultiplier] = useState(1)
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -99,7 +99,12 @@ export function Top10RaceView({ data, entityType }: Props) {
         }
     }, [])
 
+    const hasInitialized = useRef(false)
     useEffect(() => {
+        if (!hasInitialized.current) {
+            hasInitialized.current = true
+            return
+        }
         setCurrentFrameIdx(0)
         setIsPlaying(true)
     }, [entityType])
@@ -266,7 +271,10 @@ export function Top10RaceView({ data, entityType }: Props) {
                 </span>
             </div>
 
-            <div className="relative w-full mt-4" style={{ height: currentFrame.top10.length * BAR_STRIDE }}>
+            <div
+                className="relative w-full mt-4"
+                style={{ height: currentFrame.top10.length * BAR_STRIDE }}
+            >
                 {currentFrame.top10.map((item, index) => {
                     const widthPercent =
                         (item.play_count / currentFrame.maxScore) * 100
