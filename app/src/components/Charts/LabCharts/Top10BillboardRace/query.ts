@@ -1,5 +1,5 @@
 import { TABLE } from '../../../../db/queries/constants'
-import sqlTop10Artists from './Top10BillboardRace.sql?raw'
+import sqlTop10Artists from './Top10BillboardRaceArtists.sql?raw'
 import sqlTop10Tracks from './Top10BillboardRaceTracks.sql?raw'
 import sqlTop10Albums from './Top10BillboardRaceAlbums.sql?raw'
 
