@@ -24,10 +24,12 @@ test("has title and can upload dataset", async ({ page }) => {
   // Assert it is active (selected)
   await expect(simpleViewTab).toHaveAttribute("aria-selected", "true");
 
-  // Select 2025 on slider
-  await expect(page.getByText("2025", { exact: true })).toHaveCount(0);
-  await page.getByRole("slider").fill("2025");
-  await expect(page.getByText("2025", { exact: true })).toHaveCount(1);
+  // Select 2025 in the year sidebar
+  const year2025Button = page
+    .getByRole("navigation", { name: "Filter by year" })
+    .getByRole("button", { name: "2025", exact: true });
+  await year2025Button.click();
+  await expect(year2025Button).toHaveAttribute("aria-pressed", "true");
 
   /* Top Tracks Card */
   const topTracksCard = page.locator(".group").filter({

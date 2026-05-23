@@ -1,5 +1,5 @@
 import { it, vi, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { LabView } from './LabView'
 import * as db from '../../db/queries/queryDB'
 import {
@@ -294,11 +294,17 @@ it('renders all Charts', async () => {
 
     render(<LabView />)
 
-    //range slider
-    const slider = await screen.findByRole('slider')
+    // Year sidebar
+    const yearNav = await screen.findByRole('navigation', {
+        name: 'Filter by year',
+    })
 
     await waitFor(() => {
-        expect(slider.getAttribute('value')).toEqual('2024')
+        expect(
+            within(yearNav)
+                .getByRole('button', { name: '2024' })
+                .getAttribute('aria-pressed')
+        ).toBe('true')
     })
 
     await screen.findByRole('heading', { name: 'Stream duration per month' })

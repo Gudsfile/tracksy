@@ -19,7 +19,7 @@ import { SessionAnalysis } from './SimpleCharts/SessionAnalysis'
 import { TopArtists } from './SimpleCharts/TopArtists'
 import { TopAlbums } from './SimpleCharts/TopAlbums'
 import { TopTracks } from './SimpleCharts/TopTracks'
-import { RangeSlider } from '../RangeSlider/RangeSlider'
+import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import {
     type SummarizeDataQueryResult,
@@ -68,22 +68,19 @@ export function SimpleView() {
             </div>
 
             {summarize && (
-                <>
-                    <div className="sticky top-2 z-50">
-                        <RangeSlider
-                            value={year}
-                            min={new Date(
-                                Number(summarize.min_datetime)
-                            ).getFullYear()}
-                            max={new Date(
-                                Number(summarize.max_datetime)
-                            ).getFullYear()}
-                            step={1}
-                            onChange={setYear}
-                        />
-                    </div>
+                <div className="flex flex-col gap-4 md:flex-row">
+                    <YearSidebar
+                        value={year}
+                        min={new Date(
+                            Number(summarize.min_datetime)
+                        ).getFullYear()}
+                        max={new Date(
+                            Number(summarize.max_datetime)
+                        ).getFullYear()}
+                        onChange={setYear}
+                    />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid min-w-0 flex-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TopTracks year={debouncedYear} />
                         <TopArtists year={debouncedYear} />
                         <TopAlbums year={debouncedYear} />
@@ -115,7 +112,7 @@ export function SimpleView() {
                         <BingeListener year={debouncedYear} />
                         <VarietyDay year={debouncedYear} />
                     </div>
-                </>
+                </div>
             )}
         </>
     )
