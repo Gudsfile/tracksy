@@ -52,7 +52,7 @@ export class AppleMusicStreamProvider extends StreamProvider<AppleMusicRawRecord
                     album_name: String(r['Album Name'] ?? ''),
                     ts,
                     ms_played: Math.max(0, msDuration),
-                    platform: String(r['Client Platform'] ?? ''),
+                    platform: String(r['Device Type'] ?? ''),
                 }
             })
     }

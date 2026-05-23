@@ -25,7 +25,7 @@ const RAW_AUDIO: AppleMusicRawRecord = {
     'Media Type': 'AUDIO',
     'Event Start Timestamp': new Date('2024-03-15T14:30:00.000Z'),
     'Play Duration Milliseconds': 213000,
-    'Client Platform': 'FUSE',
+    'Device Type': 'IPHONE',
     'Container Origin Type': null,
 }
 
@@ -36,7 +36,7 @@ const RAW_VIDEO: AppleMusicRawRecord = {
     'Media Type': 'VIDEO',
     'Event Start Timestamp': new Date('2024-03-15T15:00:00.000Z'),
     'Play Duration Milliseconds': 120000,
-    'Client Platform': 'FUSE',
+    'Device Type': 'IPHONE',
     'Container Origin Type': null,
 }
 
@@ -86,7 +86,7 @@ describe('AppleMusicStreamProvider', () => {
                 album_name: '',
                 ts: '2024-03-15T14:30:00.000Z',
                 ms_played: 213000,
-                platform: 'FUSE',
+                platform: 'IPHONE',
             }
             expect(result).toHaveLength(1)
             expect(result[0]).toEqual(expected)
