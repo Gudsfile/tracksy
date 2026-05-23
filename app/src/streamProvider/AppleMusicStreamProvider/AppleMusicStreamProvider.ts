@@ -11,6 +11,7 @@ export class AppleMusicStreamProvider extends StreamProvider<AppleMusicRawRecord
     readonly acceptedFormats = 'ZIP/CSV'
     readonly filePattern = /^Apple Music Play Activity\.csv$/i
     readonly fileContentType = 'text/csv'
+    readonly experimental = true
 
     async readFile(file: File): Promise<AppleMusicRawRecord[]> {
         const buffer = await file.arrayBuffer()

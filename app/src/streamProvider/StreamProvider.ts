@@ -22,6 +22,8 @@ export abstract class StreamProvider<TRawData = unknown> {
 
     abstract readonly fileContentType: string
 
+    readonly experimental: boolean = false
+
     /**
      * Validate if a file belongs to this provider
      *

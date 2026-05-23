@@ -59,8 +59,11 @@ Or bring your own data:
 
 
 <details>
-<summary>Apple Music</summary>
+<summary>Apple Music ⚠️ Experimental</summary>
 <br>
+
+> **Warning**
+> Apple Music support is experimental. The export format has significant limitations: artist name is not included in the data, which means artist-based charts will not populate. Some data quality issues may affect visualizations. Use at your own discretion.
 
 1. Sign in at [privacy.apple.com](https://privacy.apple.com) and request a copy of your data.
   - Click "_Request a copy of your data_"

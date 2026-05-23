@@ -51,10 +51,10 @@ describe('StreamProvider Factory', () => {
 
         it('returns one entry per registered provider with format hint', () => {
             const names = getSupportedProviderNames()
-            expect(names.length).toBe(3)
+            expect(names.length).toBe(2)
             expect(names).toContain('Spotify (ZIP/JSON)')
             expect(names).toContain('Deezer (XLSX)')
-            expect(names).toContain('Apple Music (ZIP/CSV)')
+            expect(names).not.toContain('Apple Music (ZIP/CSV)')
         })
     })
 
