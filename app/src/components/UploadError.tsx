@@ -14,11 +14,12 @@ export function UploadError({ message, onDismiss }: UploadErrorProps) {
 
     useEffect(() => {
         remainingRef.current = DISMISS_DELAY_MS
+        startRef.current = Date.now()
     }, [message])
 
     useEffect(() => {
         if (hovered) {
-            remainingRef.current -= Date.now() - startRef.current
+            remainingRef.current = Math.max(0, remainingRef.current - (Date.now() - startRef.current))
             return
         }
         startRef.current = Date.now()

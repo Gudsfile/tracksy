@@ -73,6 +73,28 @@ describe('UploadError', () => {
         expect(onDismiss).not.toHaveBeenCalled()
     })
 
+    it('resets timer to full delay when message changes while hovered', () => {
+        const onDismiss = vi.fn()
+        const { rerender } = render(<UploadError message="Error 1" onDismiss={onDismiss} />)
+        act(() => {
+            vi.advanceTimersByTime(7000)
+        })
+        fireEvent.mouseEnter(screen.getByRole('alert'))
+        act(() => {
+            vi.advanceTimersByTime(2000)
+        })
+        rerender(<UploadError message="Error 2" onDismiss={onDismiss} />)
+        fireEvent.mouseLeave(screen.getByRole('alert'))
+        act(() => {
+            vi.advanceTimersByTime(7999)
+        })
+        expect(onDismiss).not.toHaveBeenCalled()
+        act(() => {
+            vi.advanceTimersByTime(1)
+        })
+        expect(onDismiss).toHaveBeenCalledOnce()
+    })
+
     it('resumes timer with remaining time after hover ends', () => {
         const onDismiss = vi.fn()
         render(<UploadError message="Error" onDismiss={onDismiss} />)
