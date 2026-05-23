@@ -11,6 +11,7 @@ import type { DBRow } from '../../llm/inferChartType'
 import { ModelLoader } from '../Chat/ModelLoader'
 import { ChatInput } from '../Chat/ChatInput'
 import { ChatMessageList } from '../Chat/ChatMessageList'
+import { ChatShortcuts } from '../Chat/ChatShortcuts'
 
 function generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -25,6 +26,7 @@ export function ChatView() {
         SummarizeDataQueryResult | undefined
     >()
     const [isAsking, setIsAsking] = useState(false)
+    const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
 
     const { state, ensureLoaded, ask } = useChatEngine()
@@ -59,6 +61,15 @@ export function ChatView() {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
+    // Once the engine finishes loading, auto-send any question queued via a chip
+    useEffect(() => {
+        if (state.kind === 'ready' && pendingQuestion) {
+            const q = pendingQuestion
+            setPendingQuestion(null)
+            handleSubmit(q)
+        }
+    }, [state.kind, pendingQuestion])
+
     const handleEnable = useCallback(() => {
         ensureLoaded()
     }, [ensureLoaded])
@@ -66,6 +77,7 @@ export function ChatView() {
     const handleSubmit = useCallback(
         async (text: string) => {
             if (state.kind !== 'ready') {
+                setPendingQuestion(text)
                 await ensureLoaded()
                 return
             }
@@ -133,6 +145,12 @@ export function ChatView() {
                         />
                         <div ref={bottomRef} />
                     </div>
+                    {messages.length === 0 && (
+                        <ChatShortcuts
+                            onSelect={handleSubmit}
+                            disabled={isLoading}
+                        />
+                    )}
                     <ChatInput
                         disabled={isLoading}
                         placeholder={
