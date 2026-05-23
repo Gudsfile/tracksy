@@ -33,7 +33,7 @@ export function App() {
                         rel="noopener noreferrer"
                         className="hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
                     >
-                        Music stats made with ❤️ & 🔐
+                        Music stats made with ❤️ & 🔐 · View on GitHub
                     </a>
                 </footer>
             </div>
