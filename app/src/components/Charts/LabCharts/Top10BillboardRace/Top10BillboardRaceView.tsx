@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useRef } from 'react'
 import type { EntityType, Top10BillboardRaceQueryResult } from './query'
 import { GhostLeaderboard, type GhostEntry } from './GhostLeaderboard'
 import { InsightCard } from '../../SimpleCharts/shared'
+import { BAR_CHART_COLORS } from '../barChartColors'
 
 type Props = {
     data: Top10BillboardRaceQueryResult[]
@@ -10,7 +11,7 @@ type Props = {
 
 type EntityScore = {
     label: string
-    score: number // decay score (bar width)
+    score: number
     periodsInTop10: number
     streak: number
 }
@@ -21,20 +22,6 @@ type Frame = {
     maxScore: number
     ghostRanking: GhostEntry[]
 }
-
-// Helper to assign consistent colors to entities
-const colors = [
-    'bg-blue-500',
-    'bg-red-500',
-    'bg-green-500',
-    'bg-yellow-500',
-    'bg-purple-500',
-    'bg-pink-500',
-    'bg-indigo-500',
-    'bg-teal-500',
-    'bg-orange-500',
-    'bg-cyan-500',
-]
 
 export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
@@ -89,7 +76,10 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     (runningScores.get(label) ?? 0) + plays
                 )
                 if (!colorMap.has(label)) {
-                    colorMap.set(label, colors[colorIdx % colors.length])
+                    colorMap.set(
+                        label,
+                        BAR_CHART_COLORS[colorIdx % BAR_CHART_COLORS.length]
+                    )
                     colorIdx++
                 }
             }

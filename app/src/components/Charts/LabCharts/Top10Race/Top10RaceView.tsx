@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import type { EntityType, Top10RaceQueryResult } from './query'
+import { BAR_CHART_COLORS } from '../barChartColors'
 
 type Props = {
     data: Top10RaceQueryResult[]
@@ -16,20 +17,6 @@ type Frame = {
     top10: EntityScore[]
     maxScore: number
 }
-
-// Helper to assign consistent colors to artists
-const colors = [
-    'bg-blue-500',
-    'bg-red-500',
-    'bg-green-500',
-    'bg-yellow-500',
-    'bg-purple-500',
-    'bg-pink-500',
-    'bg-indigo-500',
-    'bg-teal-500',
-    'bg-orange-500',
-    'bg-cyan-500',
-]
 
 export function Top10RaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
@@ -69,7 +56,7 @@ export function Top10RaceView({ data, entityType }: Props) {
                 if (!colorMap.has(event.entity_name)) {
                     colorMap.set(
                         event.entity_name,
-                        colors[colorIdx % colors.length]
+                        BAR_CHART_COLORS[colorIdx % BAR_CHART_COLORS.length]
                     )
                     colorIdx++
                 }
