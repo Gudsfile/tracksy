@@ -14,28 +14,20 @@ describe('UploadError', () => {
 
     it('renders with role="alert" and displays the message', () => {
         render(<UploadError message="Upload failed" onDismiss={vi.fn()} />)
-        const alert = screen.getByRole('alert')
-        expect(alert.textContent).toBe('Upload failed')
+        expect(screen.getByRole('alert').textContent).toContain('Upload failed')
     })
 
-    it('calls onDismiss when clicked', () => {
+    it('calls onDismiss when close button is clicked', () => {
         const onDismiss = vi.fn()
         render(<UploadError message="Error" onDismiss={onDismiss} />)
-        fireEvent.click(screen.getByRole('alert'))
+        fireEvent.click(screen.getByRole('button', { name: 'Dismiss error' }))
         expect(onDismiss).toHaveBeenCalledOnce()
     })
 
-    it('calls onDismiss when Enter is pressed', () => {
+    it('does not dismiss when clicking the message text', () => {
         const onDismiss = vi.fn()
         render(<UploadError message="Error" onDismiss={onDismiss} />)
-        fireEvent.keyDown(screen.getByRole('alert'), { key: 'Enter' })
-        expect(onDismiss).toHaveBeenCalledOnce()
-    })
-
-    it('does not call onDismiss for non-Enter key presses', () => {
-        const onDismiss = vi.fn()
-        render(<UploadError message="Error" onDismiss={onDismiss} />)
-        fireEvent.keyDown(screen.getByRole('alert'), { key: 'Escape' })
+        fireEvent.click(screen.getByText('Error'))
         expect(onDismiss).not.toHaveBeenCalled()
     })
 
