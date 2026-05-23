@@ -52,25 +52,19 @@ export function Results() {
                             aria-selected={activeTab === tab.id}
                             title={tab.tooltip}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`group relative z-10 flex-1 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${
+                            className={`relative z-10 flex-1 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${
                                 activeTab === tab.id
                                     ? 'text-white'
                                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                             }`}
                         >
                             {tab.label}
-                            <span
-                                aria-hidden="true"
-                                className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-900 px-2 py-1 text-xs font-normal text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:bg-slate-700"
-                            >
-                                {tab.tooltip}
-                            </span>
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className="min-h-screen">
+            <div>
                 {activeTab === 'simple' ? (
                     <SimpleView />
                 ) : activeTab === 'lab' ? (
