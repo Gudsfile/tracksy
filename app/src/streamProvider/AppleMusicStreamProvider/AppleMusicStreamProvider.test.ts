@@ -82,8 +82,8 @@ describe('AppleMusicStreamProvider', () => {
             const expected: StreamRecord = {
                 track_uri: 'apple-music:Never Gonna Give You Up',
                 track_name: 'Never Gonna Give You Up',
-                artist_name: '',
-                album_name: '',
+                artist_name: 'Unknown Artist',
+                album_name: 'Unknown Album',
                 ts: '2024-03-15T14:30:00.000Z',
                 ms_played: 213000,
                 platform: 'IPHONE',
@@ -98,14 +98,23 @@ describe('AppleMusicStreamProvider', () => {
             expect(result[0].track_name).toBe('Never Gonna Give You Up')
         })
 
-        it('should set artist_name to empty string', () => {
+        it('should set artist_name to Unknown Artist', () => {
             const result = provider.transform([RAW_AUDIO])
-            expect(result[0].artist_name).toBe('')
+            expect(result[0].artist_name).toBe('Unknown Artist')
         })
 
-        it('should set album_name to empty string', () => {
+        it('should set album_name to Unknown Album when Album Name is null', () => {
             const result = provider.transform([RAW_AUDIO])
-            expect(result[0].album_name).toBe('')
+            expect(result[0].album_name).toBe('Unknown Album')
+        })
+
+        it('should set album_name when Album Name is present', () => {
+            const record: AppleMusicRawRecord = {
+                ...RAW_AUDIO,
+                'Album Name': 'Whenever You Need Somebody',
+            }
+            const result = provider.transform([record])
+            expect(result[0].album_name).toBe('Whenever You Need Somebody')
         })
 
         it('should guard against negative Play Duration Milliseconds', () => {

@@ -48,11 +48,17 @@ export class AppleMusicStreamProvider extends StreamProvider<AppleMusicRawRecord
                 return {
                     track_uri: `apple-music:${String(r['Song Name'] ?? '')}`,
                     track_name: String(r['Song Name'] ?? ''),
-                    artist_name: '',
-                    album_name: String(r['Album Name'] ?? ''),
+                    artist_name: 'Unknown Artist',
+                    album_name:
+                        r['Album Name'] != null
+                            ? String(r['Album Name'])
+                            : 'Unknown Album',
                     ts,
                     ms_played: Math.max(0, msDuration),
-                    platform: String(r['Device Type'] ?? ''),
+                    platform:
+                        r['Device Type'] != null
+                            ? String(r['Device Type'])
+                            : 'Unknown Device',
                 }
             })
     }
