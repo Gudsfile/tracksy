@@ -72,21 +72,20 @@ describe('Top10RaceView', () => {
         vi.useFakeTimers()
         render(<Top10RaceView data={mockData} entityType="artists" />)
 
-        // Initially it should be playing. Let's pause it.
+        expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
+
+        const playButton = screen.getByRole('button', { name: 'Play' })
+        fireEvent.click(playButton)
+        expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
+
         const pauseButton = screen.getByRole('button', { name: 'Pause' })
         fireEvent.click(pauseButton)
         expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
 
-        // Advance timers to see if it remains on frame 0
         act(() => {
             vi.advanceTimersByTime(1000)
         })
-        expect(screen.getByText('10')).toBeDefined() // Still first frame count
-
-        // Play again
-        const playButton = screen.getByRole('button', { name: 'Play' })
-        fireEvent.click(playButton)
-        expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
+        expect(screen.getByText('10')).toBeDefined()
 
         vi.useRealTimers()
     })
@@ -97,17 +96,10 @@ describe('Top10RaceView', () => {
             <Top10RaceView data={mockData} entityType="artists" />
         )
 
-        // Pause so we can track frame position
-        const pauseButton = screen.getByRole('button', { name: 'Pause' })
-        fireEvent.click(pauseButton)
-
-        // Advance to second frame manually via slider or timer won't work since paused
-        // Just verify that re-rendering with a new entityType triggers a reset (play button becomes pause)
         act(() => {
             rerender(<Top10RaceView data={mockData} entityType="tracks" />)
         })
 
-        // After entityType change, animation should be playing again (Pause button visible)
         expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
 
         vi.useRealTimers()
