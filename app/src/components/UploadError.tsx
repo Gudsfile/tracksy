@@ -16,13 +16,16 @@ export function UploadError({ message, onDismiss }: UploadErrorProps) {
     return (
         <div
             role="alert"
-            aria-label="Dismiss error"
-            tabIndex={0}
-            onClick={onDismiss}
-            onKeyDown={(e) => e.key === 'Enter' && onDismiss()}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 cursor-pointer rounded-lg bg-rose-700 px-5 py-3 text-white shadow-lg hover:bg-red-700 transition-colors"
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg bg-rose-700 px-5 py-3 text-white shadow-lg"
         >
-            {message}
+            <span>{message}</span>
+            <button
+                onClick={onDismiss}
+                className="ml-1 rounded p-0.5 hover:bg-rose-600 transition-colors"
+                aria-label="Dismiss error"
+            >
+                ✕
+            </button>
         </div>
     )
 }
