@@ -25,6 +25,17 @@ export function App() {
                         <TracksyWrapper />
                     </div>
                 </div>
+
+                <footer className="relative z-10 pb-6 text-center text-sm text-gray-400 dark:text-slate-500">
+                    <a
+                        href="https://github.com/Gudsfile/tracksy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
+                    >
+                        Music stats made with ❤️ & 🔐
+                    </a>
+                </footer>
             </div>
         </ThemeProvider>
     )
