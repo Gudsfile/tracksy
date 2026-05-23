@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { Top10RaceView } from './Top10RaceView'
 import type { Top10RaceQueryResult } from './query'
@@ -27,6 +27,10 @@ const mockData: Top10RaceQueryResult[] = [
 ]
 
 describe('Top10RaceView', () => {
+    afterEach(() => {
+        vi.clearAllTimers()
+    })
+
     it('renders and displays the first frame of data', () => {
         render(<Top10RaceView data={mockData} entityType="artists" />)
 
