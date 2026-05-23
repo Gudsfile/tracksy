@@ -1,10 +1,9 @@
 select
-    date_trunc('week', ts::datetime)::date as period_start,
     count(*)::int as period_plays,
     track_name || ' — ' || artist_name as entity_name,
     epoch(date_trunc('week', ts::datetime)::date) * 1000 as period_ts
 from ${table}
 where track_name is not null and artist_name is not null
 ${yearFilter}
-group by period_start, period_ts, entity_name
+group by period_ts, entity_name
 order by period_ts asc
