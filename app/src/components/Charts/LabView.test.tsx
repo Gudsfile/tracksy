@@ -23,6 +23,10 @@ import {
     queryTopArtistsByYear,
 } from './LabCharts/TopArtists/query'
 import {
+    type Top10EvolutionQueryResult,
+    queryTop10Evolution,
+} from './LabCharts/Top10Evolution/query'
+import {
     type Top10RaceQueryResult,
     queryTop10Race,
 } from './LabCharts/Top10Race/query'
@@ -200,6 +204,15 @@ const topArtistsResultMock: TopArtistsQueryResult[] = [
     },
 ]
 
+const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
+    {
+        year: 2024,
+        artist: 'Richard Snyder',
+        rank: 1,
+        play_count: 100,
+    },
+]
+
 const top10RaceResultMock: Top10RaceQueryResult[] = [
     {
         stream_date_ts: 1704067200000,
@@ -266,6 +279,8 @@ it('renders all Charts', async () => {
             return Promise.resolve(topArtistsResultMock)
         if (query === queryArtistDiscovery())
             return Promise.resolve(artistDiscoveryResultMock)
+        if (query === queryTop10Evolution())
+            return Promise.resolve(top10EvolutionResultMock)
         if (query === queryTop10Race(2024) || query === queryTop10Race(2006))
             return Promise.resolve(top10RaceResultMock)
         if (query === queryTop10AlbumsEvolution())
@@ -290,8 +305,9 @@ it('renders all Charts', async () => {
     await screen.findByRole('heading', { name: 'Top Tracks' })
     await screen.findByRole('heading', { name: 'Top Artists' })
     await screen.findByRole('heading', {
-        name: /Top 10 Race/,
+        name: 'Global Top 10 Artists Evolution',
     })
+    await screen.findByRole('heading', { name: /Top 10 Race/ })
     await screen.findByRole('heading', {
         name: 'Stream per hour and day of week',
     })
