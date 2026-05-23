@@ -85,13 +85,15 @@ describe('Top10BillboardRaceView', () => {
         vi.useFakeTimers()
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
-        const pauseButton = screen.getByRole('button', { name: 'Pause' })
-        fireEvent.click(pauseButton)
         expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
 
         const playButton = screen.getByRole('button', { name: 'Play' })
         fireEvent.click(playButton)
         expect(screen.getByRole('button', { name: 'Pause' })).toBeDefined()
+
+        const pauseButton = screen.getByRole('button', { name: 'Pause' })
+        fireEvent.click(pauseButton)
+        expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
 
         vi.useRealTimers()
     })
@@ -101,9 +103,6 @@ describe('Top10BillboardRaceView', () => {
         const { rerender } = render(
             <Top10BillboardRaceView data={mockData} entityType="artists" />
         )
-
-        const pauseButton = screen.getByRole('button', { name: 'Pause' })
-        fireEvent.click(pauseButton)
 
         rerender(<Top10BillboardRaceView data={mockData} entityType="tracks" />)
 
@@ -116,8 +115,6 @@ describe('Top10BillboardRaceView', () => {
         vi.useFakeTimers()
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
-        const pauseButton = screen.getByRole('button', { name: 'Pause' })
-        fireEvent.click(pauseButton)
         expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
 
         const lambda05 = screen.getByRole('button', { name: 'λ0.5' })
