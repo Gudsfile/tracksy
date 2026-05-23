@@ -23,7 +23,7 @@ type Frame = {
     ghostRanking: GhostEntry[]
 }
 
-const BASE_SPEED = 120
+const BASE_SPEED = 240
 const BAR_STRIDE = 44
 const SCORE_COL_WIDTH = 62
 
@@ -382,7 +382,12 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                         </span>
                     </div>
 
-                    <div className="relative w-full mt-4" style={{ height: currentFrame.top10.length * BAR_STRIDE }}>
+                    <div
+                        className="relative w-full mt-4"
+                        style={{
+                            height: currentFrame.top10.length * BAR_STRIDE,
+                        }}
+                    >
                         {currentFrame.top10.map((item, index) => {
                             const widthPercent =
                                 (item.score / currentFrame.maxScore) * 100
