@@ -216,7 +216,7 @@ const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
 const top10RaceResultMock: Top10RaceQueryResult[] = [
     {
         stream_date_ts: 1704067200000,
-        artist: 'Richard Snyder',
+        entity_name: 'Richard Snyder',
         play_count: 100,
     },
 ]
@@ -289,6 +289,7 @@ it('renders all Charts', async () => {
             return Promise.resolve(top10TracksEvolutionResultMock)
         if (query === streamPerDayOfWeekQueryByYear(2024))
             return Promise.resolve(streamPerDayOfWeekResultMock)
+        return Promise.resolve([])
     })
 
     render(<LabView />)
