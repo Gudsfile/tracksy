@@ -1,5 +1,4 @@
 import { StreamPerMonth } from './LabCharts/StreamPerMonth'
-import { TopStreak } from './LabCharts/TopStreak'
 import { SummaryPerYear } from './LabCharts/SummaryPerYear'
 import { TotalStreams } from './LabCharts/TotalStreams'
 import { TopArtist } from './LabCharts/TopArtist'
@@ -60,7 +59,6 @@ export function LabView() {
     return (
         <>
             <div className="flex flex-col md:flex-row gap-4 items-stretch">
-                <TopStreak />
                 <TotalStreams />
                 <TopArtist />
             </div>
