@@ -15,10 +15,6 @@ import {
     summarizePerYearQuery,
 } from './LabCharts/SummaryPerYear/query'
 import {
-    type TopTracksQueryResult,
-    queryTopTracksByYear,
-} from './LabCharts/TopTracks/query'
-import {
     type TopArtistsQueryResult,
     queryTopArtistsByYear,
 } from './LabCharts/TopArtists/query'
@@ -133,21 +129,6 @@ const summaryPerYearResultMock: SummaryPerYearQueryResult[] = [
         year: 2024,
         type: 'count_other_tracks_played',
         count_streams: 625,
-    },
-]
-
-const topTracksResultMock: TopTracksQueryResult[] = [
-    {
-        track_name: 'Ice Cream for Crow',
-        artist_name: 'Richard Snyder',
-        count_streams: 23n,
-        ms_played: BigInt(8557410),
-    },
-    {
-        track_name: 'In The Past',
-        artist_name: 'Tiffany Mitchell',
-        count_streams: 25n,
-        ms_played: BigInt(10607278),
     },
 ]
 
@@ -273,8 +254,6 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamPerMonthResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
-        if (query === queryTopTracksByYear(2024))
-            return Promise.resolve(topTracksResultMock)
         if (query === queryTopArtistsByYear(2024))
             return Promise.resolve(topArtistsResultMock)
         if (query === queryArtistDiscovery())
@@ -309,7 +288,6 @@ it('renders all Charts', async () => {
 
     await screen.findByRole('heading', { name: 'Stream duration per month' })
     await screen.findByRole('heading', { name: 'Distribution of streams' })
-    await screen.findByRole('heading', { name: 'Top Tracks' })
     await screen.findByRole('heading', { name: 'Top Artists' })
     await screen.findByRole('heading', {
         name: 'Global Top 10 Artists Evolution',

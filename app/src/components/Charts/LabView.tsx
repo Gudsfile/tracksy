@@ -9,7 +9,6 @@ import {
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
-import { TopTracks } from './LabCharts/TopTracks'
 import { TopArtists } from './LabCharts/TopArtists'
 import { TopAlbums } from './LabCharts/TopAlbums'
 import { Streaks } from './LabCharts/Streaks'
@@ -73,7 +72,6 @@ export function LabView() {
                         maxValue={summarize.max_monthly_duration}
                     />
                     <SummaryPerYear year={debouncedYear} />
-                    <TopTracks year={debouncedYear} />
                     <TopArtists year={debouncedYear} />
                     <TopAlbums year={debouncedYear} />
                     <ArtistDiscovery />
