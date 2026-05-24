@@ -15,10 +15,6 @@ import {
     summarizePerYearQuery,
 } from './LabCharts/SummaryPerYear/query'
 import {
-    type TopArtistsQueryResult,
-    queryTopArtistsByYear,
-} from './LabCharts/TopArtists/query'
-import {
     type Top10EvolutionQueryResult,
     queryTop10Evolution,
 } from './LabCharts/Top10Evolution/query'
@@ -132,59 +128,6 @@ const summaryPerYearResultMock: SummaryPerYearQueryResult[] = [
     },
 ]
 
-const topArtistsResultMock: TopArtistsQueryResult[] = [
-    {
-        artist_name: 'Rachel Johnson',
-        count_streams: 27n,
-        ms_played: BigInt(9926243),
-    },
-    {
-        artist_name: 'Tiffany Mitchell',
-        count_streams: 25n,
-        ms_played: BigInt(10607278),
-    },
-    {
-        artist_name: 'Richard Snyder',
-        count_streams: 27n,
-        ms_played: BigInt(9926243),
-    },
-    {
-        artist_name: 'Ruben Wheeler',
-        count_streams: 25n,
-        ms_played: BigInt(10607278),
-    },
-    {
-        artist_name: 'Brenda Tucker',
-        count_streams: 23n,
-        ms_played: BigInt(8557410),
-    },
-    {
-        artist_name: 'Robert Hill',
-        count_streams: 19n,
-        ms_played: BigInt(4125663),
-    },
-    {
-        artist_name: 'Leslie Wright',
-        count_streams: 19n,
-        ms_played: BigInt(7299586),
-    },
-    {
-        artist_name: 'Erica Gentry',
-        count_streams: 19n,
-        ms_played: BigInt(8076933),
-    },
-    {
-        artist_name: 'Cameron Carson',
-        count_streams: 18n,
-        ms_played: BigInt(7122097),
-    },
-    {
-        artist_name: 'Dr. Stephanie Hill',
-        count_streams: 17n,
-        ms_played: BigInt(6505425),
-    },
-]
-
 const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
     {
         year: 2024,
@@ -254,8 +197,6 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamPerMonthResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
-        if (query === queryTopArtistsByYear(2024))
-            return Promise.resolve(topArtistsResultMock)
         if (query === queryArtistDiscovery())
             return Promise.resolve(artistDiscoveryResultMock)
         if (query === queryTop10Evolution())
@@ -288,7 +229,6 @@ it('renders all Charts', async () => {
 
     await screen.findByRole('heading', { name: 'Stream duration per month' })
     await screen.findByRole('heading', { name: 'Distribution of streams' })
-    await screen.findByRole('heading', { name: 'Top Artists' })
     await screen.findByRole('heading', {
         name: 'Global Top 10 Artists Evolution',
     })
