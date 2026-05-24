@@ -227,7 +227,7 @@ it('renders all Charts', async () => {
         ).toBe('true')
     })
 
-    await screen.findByRole('heading', { name: 'Stream duration per month' })
+    await screen.findByRole('heading', { name: /Monthly Listening/ })
     await screen.findByRole('heading', { name: 'Distribution of streams' })
     await screen.findByRole('heading', {
         name: 'Global Top 10 Artists Evolution',

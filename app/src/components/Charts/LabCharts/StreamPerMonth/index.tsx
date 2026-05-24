@@ -1,10 +1,9 @@
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
-    type StreamPerMonthQueryResult,
     queryStreamsPerMonthByYear,
+    type StreamPerMonthQueryResult,
 } from './query'
-import { buildPlot } from './plot'
-import { Common } from '../Common'
-import { useCallback } from 'react'
+import { StreamPerMonth as StreamPerMonthView } from './StreamPerMonth'
 
 interface StreamPerMonthProps {
     year: number | undefined
@@ -12,15 +11,17 @@ interface StreamPerMonthProps {
 }
 
 export function StreamPerMonth({ year, maxValue }: StreamPerMonthProps) {
-    const plotBuilder = useCallback(
-        (data: StreamPerMonthQueryResult[], isDark: boolean | undefined) =>
-            buildPlot(data, maxValue, isDark),
-        [maxValue]
-    )
+    const { data, isLoading } = useDBQueryMany<StreamPerMonthQueryResult>({
+        query: queryStreamsPerMonthByYear(year),
+        year,
+    })
+
     return (
-        <Common<StreamPerMonthQueryResult>
-            query={queryStreamsPerMonthByYear(year)}
-            buildPlot={plotBuilder}
+        <StreamPerMonthView
+            data={data}
+            year={year}
+            maxValue={maxValue}
+            isLoading={isLoading}
         />
     )
 }
