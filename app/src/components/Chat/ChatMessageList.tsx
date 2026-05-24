@@ -103,11 +103,6 @@ function AssistantCard({
     >
     return (
         <div className="space-y-2">
-            <ChatChartRouter
-                answer={answer}
-                rows={customRows.get(msg.id)}
-                summarize={summarize}
-            />
             {narrative && (
                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
                     {narrative}
@@ -119,6 +114,11 @@ function AssistantCard({
                     <span className="animate-pulse">▌</span>
                 </p>
             )}
+            <ChatChartRouter
+                answer={answer}
+                rows={customRows.get(msg.id)}
+                summarize={summarize}
+            />
             <details open className="text-xs">
                 <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
                     ℹ️ {answer.explanation}
