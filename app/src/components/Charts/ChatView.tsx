@@ -28,6 +28,7 @@ export function ChatView() {
     const [isAsking, setIsAsking] = useState(false)
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const [streamingNarrative, setStreamingNarrative] = useState('')
+    const streamingMsgIdRef = useRef<string | null>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
 
     const { state, ensureLoaded, ask } = useChatEngine()
@@ -126,12 +127,14 @@ export function ChatView() {
             setMessages((prev) => [...prev, assistantMsg])
             setIsAsking(false)
 
-            // Stream narrative below the chart for custom queries
+            // Stream narrative below the chart
             if (result.streamNarrator) {
+                streamingMsgIdRef.current = assistantMsgId
                 setStreamingNarrative('')
                 const narrative = await result.streamNarrator((delta) =>
                     setStreamingNarrative((prev) => prev + delta)
                 )
+                streamingMsgIdRef.current = null
                 setStreamingNarrative('')
                 setMessages((prev) =>
                     prev.map((m) =>
@@ -166,6 +169,7 @@ export function ChatView() {
                             summarize={summarize}
                             customRows={customRows}
                             streamingNarrative={streamingNarrative}
+                            streamingMsgId={streamingMsgIdRef.current}
                             onRetry={handleSubmit}
                         />
                         <div ref={bottomRef} />

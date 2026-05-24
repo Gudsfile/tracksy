@@ -8,6 +8,7 @@ type ChatMessageListProps = {
     summarize?: SummarizeDataQueryResult
     customRows: Map<string, DBRow[]>
     streamingNarrative?: string
+    streamingMsgId?: string | null
     onRetry?: (userText: string) => void
 }
 
@@ -30,12 +31,14 @@ function AssistantCard({
     customRows,
     onRetry,
     precedingUserText,
+    streamingNarrative,
 }: {
     msg: Extract<ChatMessage, { role: 'assistant' }>
     summarize?: SummarizeDataQueryResult
     customRows: Map<string, DBRow[]>
     onRetry?: (userText: string) => void
     precedingUserText?: string
+    streamingNarrative?: string
 }) {
     const { payload } = msg
 
@@ -110,6 +113,12 @@ function AssistantCard({
                     {narrative}
                 </p>
             )}
+            {!narrative && streamingNarrative && (
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+                    {streamingNarrative}
+                    <span className="animate-pulse">▌</span>
+                </p>
+            )}
             <details open className="text-xs">
                 <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
                     ℹ️ {answer.explanation}
@@ -127,6 +136,7 @@ export function ChatMessageList({
     summarize,
     customRows,
     streamingNarrative,
+    streamingMsgId,
     onRetry,
 }: ChatMessageListProps) {
     if (messages.length === 0) {
@@ -173,20 +183,17 @@ export function ChatMessageList({
                                     customRows={customRows}
                                     onRetry={onRetry}
                                     precedingUserText={precedingUserText}
+                                    streamingNarrative={
+                                        msg.id === streamingMsgId
+                                            ? streamingNarrative
+                                            : undefined
+                                    }
                                 />
                             </div>
                         )}
                     </div>
                 )
             })}
-            {streamingNarrative && (
-                <div className="flex justify-start">
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
-                        {streamingNarrative}
-                        <span className="animate-pulse">▌</span>
-                    </p>
-                </div>
-            )}
         </div>
     )
 }
