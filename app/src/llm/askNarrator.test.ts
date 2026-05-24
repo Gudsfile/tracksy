@@ -71,8 +71,12 @@ describe('askNarrator', () => {
             engine.chat.completions.create as ReturnType<typeof vi.fn>
         ).mock.calls[0][0]
         const userContent = createCall.messages[1].content as string
-        const parsed = JSON.parse(userContent.split(':\n')[2])
-        expect(parsed).toHaveLength(10)
+        // Table has header + separator + N data rows; count data rows only
+        const tableLines = userContent
+            .split('\n')
+            .filter((l) => l.startsWith('|') && !l.includes('---'))
+        // subtract 1 for the header row
+        expect(tableLines.length - 1).toBe(10)
     })
 
     it('emits a webllm:inference devBus event on completion', async () => {
