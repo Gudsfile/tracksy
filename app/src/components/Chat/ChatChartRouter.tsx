@@ -21,7 +21,6 @@ import { StreamPerMonth } from '../Charts/LabCharts/StreamPerMonth'
 import { HourlyStreams } from '../Charts/SimpleCharts/HourlyStreams'
 import { StreamPerDayOfWeek } from '../Charts/LabCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from '../Charts/LabCharts/ArtistDiscovery'
-import { TotalStreams } from '../Charts/LabCharts/TotalStreams'
 import { UnbeatableStreak } from '../Charts/SimpleCharts/UnbeatableStreak'
 import { CustomChart } from './CustomChart'
 
@@ -73,7 +72,7 @@ export function ChatChartRouter({
         case 'favorite_weekday':
             return <FavoriteWeekday year={year} />
         case 'total_streams':
-            return <TotalStreams />
+            return <EvolutionOverTime year={year} />
         case 'concentration_score':
             return <ConcentrationScore year={year} />
         case 'evolution_over_time':

@@ -24,7 +24,6 @@ import * as HourlyStreamsModule from '../Charts/SimpleCharts/HourlyStreams'
 import * as StreamPerDayOfWeekModule from '../Charts/LabCharts/StreamPerDayOfWeek'
 import * as ArtistDiscoveryModule from '../Charts/LabCharts/ArtistDiscovery'
 import * as UnbeatableStreakModule from '../Charts/SimpleCharts/UnbeatableStreak'
-import * as TotalStreamsModule from '../Charts/LabCharts/TotalStreams'
 
 function makeAnswer(intent: ChatAnswer['intent'], year?: number): ChatAnswer {
     return {
@@ -98,9 +97,6 @@ describe('ChatChartRouter', () => {
         )
         vi.spyOn(UnbeatableStreakModule, 'UnbeatableStreak').mockReturnValue(
             <div data-testid="UnbeatableStreak" />
-        vi.spyOn(TotalStreamsModule, 'TotalStreams').mockReturnValue(
-            <div data-testid="TotalStreams" />
-        )
         )
     })
 
@@ -119,7 +115,7 @@ describe('ChatChartRouter', () => {
         ['streams_per_hour', 'HourlyStreams'],
         ['streams_per_day_of_week', 'StreamPerDayOfWeek'],
         ['artist_discovery', 'ArtistDiscovery'],
-        ['total_streams', 'TotalStreams'],
+        ['total_streams', 'EvolutionOverTime'],
         ['concentration_score', 'ConcentrationScore'],
         ['evolution_over_time', 'EvolutionOverTime'],
         ['principal_platform', 'PrincipalPlatform'],
