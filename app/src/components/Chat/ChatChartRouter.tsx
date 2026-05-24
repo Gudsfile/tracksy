@@ -22,7 +22,7 @@ import { HourlyStreams } from '../Charts/SimpleCharts/HourlyStreams'
 import { StreamPerDayOfWeek } from '../Charts/LabCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from '../Charts/LabCharts/ArtistDiscovery'
 import { TotalStreams } from '../Charts/LabCharts/TotalStreams'
-import { TopStreak } from '../Charts/LabCharts/TopStreak'
+import { UnbeatableStreak } from '../Charts/SimpleCharts/UnbeatableStreak'
 import { CustomChart } from './CustomChart'
 
 type ChatChartRouterProps = {
@@ -83,7 +83,7 @@ export function ChatChartRouter({
         case 'repeat_behavior':
             return <RepeatBehavior year={year} />
         case 'top_streak':
-            return <TopStreak />
+            return <UnbeatableStreak year={year} />
         case 'seasonal_patterns':
             return <SeasonalPatterns year={year} />
         case 'custom':
