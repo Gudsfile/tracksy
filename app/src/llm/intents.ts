@@ -136,7 +136,7 @@ export const INTENTS: Record<IntentName, IntentSpec> = {
     top_streak: {
         description:
             'Longest and most recent consecutive listening day streaks',
-        acceptsYear: false,
+        acceptsYear: true,
         acceptsLimit: false,
     },
     seasonal_patterns: {
