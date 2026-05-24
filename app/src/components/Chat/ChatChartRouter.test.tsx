@@ -23,8 +23,8 @@ import * as StreamPerMonthModule from '../Charts/LabCharts/StreamPerMonth'
 import * as HourlyStreamsModule from '../Charts/SimpleCharts/HourlyStreams'
 import * as StreamPerDayOfWeekModule from '../Charts/LabCharts/StreamPerDayOfWeek'
 import * as ArtistDiscoveryModule from '../Charts/LabCharts/ArtistDiscovery'
+import * as UnbeatableStreakModule from '../Charts/SimpleCharts/UnbeatableStreak'
 import * as TotalStreamsModule from '../Charts/LabCharts/TotalStreams'
-import * as TopStreakModule from '../Charts/LabCharts/TopStreak'
 
 function makeAnswer(intent: ChatAnswer['intent'], year?: number): ChatAnswer {
     return {
@@ -96,11 +96,11 @@ describe('ChatChartRouter', () => {
         vi.spyOn(ArtistDiscoveryModule, 'ArtistDiscovery').mockReturnValue(
             <div data-testid="ArtistDiscovery" />
         )
+        vi.spyOn(UnbeatableStreakModule, 'UnbeatableStreak').mockReturnValue(
+            <div data-testid="UnbeatableStreak" />
         vi.spyOn(TotalStreamsModule, 'TotalStreams').mockReturnValue(
             <div data-testid="TotalStreams" />
         )
-        vi.spyOn(TopStreakModule, 'TopStreak').mockReturnValue(
-            <div data-testid="TopStreak" />
         )
     })
 
@@ -124,7 +124,7 @@ describe('ChatChartRouter', () => {
         ['evolution_over_time', 'EvolutionOverTime'],
         ['principal_platform', 'PrincipalPlatform'],
         ['repeat_behavior', 'RepeatBehavior'],
-        ['top_streak', 'TopStreak'],
+        ['top_streak', 'UnbeatableStreak'],
         ['seasonal_patterns', 'SeasonalPatterns'],
     ] as const)('routes %s → %s', (intent, testId) => {
         render(
