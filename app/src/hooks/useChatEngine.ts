@@ -86,11 +86,27 @@ export function useChatEngine() {
                         streamNarrator: async (onChunk) => {
                             const { askNarrator } =
                                 await import('../llm/askNarrator')
+                            let narratorRows: Record<
+                                string,
+                                string | number | null
+                            >[] = []
+                            try {
+                                const validation = validateSql(
+                                    capturedAnswer.sql ?? ''
+                                )
+                                if (validation.ok) {
+                                    narratorRows = await queryDBAsJSON<
+                                        Record<string, string | number | null>
+                                    >(validation.sql)
+                                }
+                            } catch {
+                                // fall through — narrator uses explanation as fallback
+                            }
                             return askNarrator(
                                 capturedEngine,
                                 capturedQuestion,
                                 capturedAnswer.sql,
-                                [],
+                                narratorRows,
                                 onChunk,
                                 capturedAnswer.explanation
                             )
