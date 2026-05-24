@@ -86,21 +86,31 @@ export const StreamPerMonth: FC<Props> = ({
                         })}
                     </div>
 
-                    {year !== undefined && (
-                        <div className="flex gap-0.5 mb-4">
-                            {data.map((d) => (
+                    <div className="flex gap-0.5 mb-4">
+                        {data.map((d) => {
+                            const date = new Date(d.ts)
+                            const label =
+                                year !== undefined
+                                    ? date.toLocaleDateString(undefined, {
+                                          month: 'short',
+                                      })
+                                    : date.getUTCMonth() === 0
+                                      ? String(date.getUTCFullYear())
+                                      : ''
+                            return (
                                 <div
                                     key={d.ts}
-                                    className="flex-1 text-center text-[9px] text-gray-400 dark:text-gray-500 truncate"
+                                    className={`flex-1 text-[9px] text-gray-400 dark:text-gray-500 ${
+                                        year !== undefined
+                                            ? 'text-center truncate'
+                                            : 'overflow-visible whitespace-nowrap'
+                                    }`}
                                 >
-                                    {new Date(d.ts).toLocaleDateString(
-                                        undefined,
-                                        { month: 'short' }
-                                    )}
+                                    {label}
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            )
+                        })}
+                    </div>
 
                     <ul
                         className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
