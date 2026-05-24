@@ -82,16 +82,24 @@ describe('StreamPerMonth', () => {
         expect(labelRow).toHaveLength(twoMonths.length)
     })
 
-    it('hides month labels in all-time view', () => {
+    it('shows year boundaries and no month labels in all-time view', () => {
+        const multiYear: StreamPerMonthQueryResult[] = [
+            { ts: '2023-11-01', ms_played: MS_1H, count_streams: 3 },
+            { ts: '2023-12-01', ms_played: MS_1H, count_streams: 4 },
+            { ts: '2024-01-01', ms_played: MS_2H, count_streams: 8 },
+            { ts: '2024-02-01', ms_played: MS_1H, count_streams: 5 },
+        ]
         render(
             <StreamPerMonth
-                data={twoMonths}
+                data={multiYear}
                 year={undefined}
                 maxValue={MS_2H}
                 isLoading={false}
             />
         )
-        expect(screen.queryAllByText(/^[A-Z][a-z]{2}$/).length).toBe(0)
+        expect(screen.queryByText('Jan')).toBeNull()
+        screen.getByText('2024')
+        expect(screen.queryByText('2023')).toBeNull()
     })
 
     it('shows tooltip on bar hover and hides on mouse leave', () => {
