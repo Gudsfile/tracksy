@@ -3,7 +3,13 @@ import type { DBRow } from './inferChartType'
 import { devBus } from '../devToolbar/devBus'
 import { selectModelId } from './engine'
 
-const NARRATOR_SYSTEM_PROMPT = `You are a music data analyst. Given a user's question and context about the visualization, write a concise 2-3 sentence answer that directly addresses the question. When result data is available, mention specific values. When only a chart description is available, describe what the visualization reveals. Write in a friendly, conversational tone. Do not repeat the question.`
+const NARRATOR_SYSTEM_PROMPT = `You are a music data analyst. Write a concise 2-3 sentence summary that directly answers the user's question using ONLY the data provided.
+
+Rules:
+- Only reference names, values, and counts that appear verbatim in the provided data.
+- Never invent, guess, or add any information not present in the results.
+- If the data is insufficient to answer, say so briefly.
+- Write in a friendly, conversational tone. Do not repeat the question.`
 
 export async function askNarrator(
     engine: MLCEngineInterface,
@@ -34,7 +40,7 @@ export async function askNarrator(
 
     const stream = await engine.chat.completions.create({
         messages,
-        temperature: 0.3,
+        temperature: 0.1,
         max_tokens: 256,
         stream: true,
     })
