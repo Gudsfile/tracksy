@@ -1,6 +1,5 @@
 import { StreamPerMonth } from './LabCharts/StreamPerMonth'
 import { SummaryPerYear } from './LabCharts/SummaryPerYear'
-import { TotalStreams } from './LabCharts/TotalStreams'
 import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { useState, useEffect, useCallback } from 'react'
 import {
@@ -57,9 +56,6 @@ export function LabView() {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row gap-4 items-stretch">
-                <TotalStreams />
-            </div>
             {summarize && (
                 <>
                     <YearSidebar
