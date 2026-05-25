@@ -212,11 +212,11 @@ export const StreamDiscovery: FC<Props> = ({
                                         }}
                                     >
                                         <div
-                                            className="bg-rose-800"
+                                            className="bg-rose-500"
                                             style={{ flex: d.known_count }}
                                         />
                                         <div
-                                            className="bg-rose-500"
+                                            className="bg-rose-800"
                                             style={{ flex: d.new_count }}
                                         />
                                     </div>
@@ -254,11 +254,11 @@ export const StreamDiscovery: FC<Props> = ({
 
                     <div className="mt-1 mb-3 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1">
-                            <span className="inline-block w-2 h-2 rounded-sm bg-rose-500" />
+                            <span className="inline-block w-2 h-2 rounded-sm bg-rose-800" />
                             New
                         </span>
                         <span className="flex items-center gap-1">
-                            <span className="inline-block w-2 h-2 rounded-sm bg-rose-800" />
+                            <span className="inline-block w-2 h-2 rounded-sm bg-rose-500" />
                             Known
                         </span>
                     </div>
