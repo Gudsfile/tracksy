@@ -161,4 +161,31 @@ describe('StreamVariety', () => {
         fireEvent.mouseEnter(bars[0])
         expect(document.querySelector('.fixed.z-50')).toBeNull()
     })
+
+    it('hides name collision warning when entity is tracks', () => {
+        render(
+            <StreamVariety {...defaultProps} entity="tracks" data={twoMonths} />
+        )
+        expect(
+            screen.queryByText(/Artist and album counts rely on names/)
+        ).toBeNull()
+    })
+
+    it('shows name collision warning when entity is artists', () => {
+        render(
+            <StreamVariety
+                {...defaultProps}
+                entity="artists"
+                data={twoMonths}
+            />
+        )
+        screen.getByText(/Artist and album counts rely on names/)
+    })
+
+    it('shows name collision warning when entity is albums', () => {
+        render(
+            <StreamVariety {...defaultProps} entity="albums" data={twoMonths} />
+        )
+        screen.getByText(/Artist and album counts rely on names/)
+    })
 })
