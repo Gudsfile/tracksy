@@ -16,7 +16,7 @@ import { EvolutionOverTime } from '../Charts/SimpleCharts/EvolutionOverTime'
 import { PrincipalPlatform } from '../Charts/SimpleCharts/PrincipalPlatform'
 import { RepeatBehavior } from '../Charts/SimpleCharts/RepeatBehavior'
 import { SeasonalPatterns } from '../Charts/SimpleCharts/SeasonalPatterns'
-import { StreamPerMonth } from '../Charts/LabCharts/StreamPerMonth'
+import { StreamTimeline } from '../Charts/LabCharts/StreamTimeline'
 import { HourlyStreams } from '../Charts/SimpleCharts/HourlyStreams'
 import { StreamPerDayOfWeek } from '../Charts/LabCharts/StreamPerDayOfWeek'
 import { ArtistDiscovery } from '../Charts/LabCharts/ArtistDiscovery'
@@ -39,7 +39,7 @@ export function ChatChartRouter({ answer, rows }: ChatChartRouterProps) {
         case 'top_albums':
             return <TopAlbums year={year} />
         case 'streams_per_month':
-            return <StreamPerMonth year={year} />
+            return <StreamTimeline year={year} />
         case 'streams_per_hour':
             return <HourlyStreams year={year} />
         case 'streams_per_day_of_week':

@@ -3,7 +3,7 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 
 export type Granularity = 'year' | 'month' | 'week' | 'day'
 
-export type StreamPerMonthQueryResult = {
+export type StreamTimelineQueryResult = {
     ts: string
     ms_played: number
     count_streams: number
@@ -55,7 +55,7 @@ const GRAN_CONFIG: Record<Granularity, GranConfig> = {
     },
 }
 
-export function queryStreamsPerMonth(
+export function queryStreamTimeline(
     year: number | undefined,
     granularity: Granularity
 ): string {

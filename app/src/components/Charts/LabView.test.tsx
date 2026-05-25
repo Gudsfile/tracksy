@@ -7,9 +7,9 @@ import {
     summarizeQuery,
 } from './Summarize/summarizeQuery'
 import {
-    type StreamPerMonthQueryResult,
-    queryStreamsPerMonth,
-} from './LabCharts/StreamPerMonth/query'
+    type StreamTimelineQueryResult,
+    queryStreamTimeline,
+} from './LabCharts/StreamTimeline/query'
 import {
     type SummaryPerYearQueryResult,
     summarizePerYearQuery,
@@ -47,7 +47,7 @@ const summarizedDataMock: SummarizeDataQueryResult[] = [
     },
 ]
 
-const streamPerMonthResultMock: StreamPerMonthQueryResult[] = [
+const streamTimelineResultMock: StreamTimelineQueryResult[] = [
     {
         ts: 1704067200000,
         ms_played: 35379985,
@@ -193,8 +193,8 @@ it('renders all Charts', async () => {
     // @ts-expect-error
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
-        if (query === queryStreamsPerMonth(2024, 'month'))
-            return Promise.resolve(streamPerMonthResultMock)
+        if (query === queryStreamTimeline(2024, 'month'))
+            return Promise.resolve(streamTimelineResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
         if (query === queryArtistDiscovery())
@@ -227,7 +227,7 @@ it('renders all Charts', async () => {
         ).toBe('true')
     })
 
-    await screen.findByRole('heading', { name: /Monthly Listening/ })
+    await screen.findByRole('heading', { name: /Stream Timeline/ })
     await screen.findByRole('heading', { name: 'Distribution of streams' })
     await screen.findByRole('heading', {
         name: 'Global Top 10 Artists Evolution',

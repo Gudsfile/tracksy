@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { useState } from 'react'
-import type { Granularity, StreamPerMonthQueryResult } from './query'
+import type { Granularity, StreamTimelineQueryResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
 import {
     ChartCard,
@@ -17,7 +17,7 @@ type TooltipState = {
 }
 
 type Props = {
-    data: StreamPerMonthQueryResult[] | undefined
+    data: StreamTimelineQueryResult[] | undefined
     year: number | undefined
     granularity: Granularity
     availableGranularities: Granularity[]
@@ -48,9 +48,9 @@ function formatTooltipDate(date: Date, granularity: Granularity): string {
 }
 
 function getBarLabel(
-    d: StreamPerMonthQueryResult,
+    d: StreamTimelineQueryResult,
     index: number,
-    data: StreamPerMonthQueryResult[],
+    data: StreamTimelineQueryResult[],
     year: number | undefined,
     granularity: Granularity
 ): string {
@@ -79,7 +79,7 @@ function getBarLabel(
         : ''
 }
 
-export const StreamPerMonth: FC<Props> = ({
+export const StreamTimeline: FC<Props> = ({
     data,
     year,
     granularity,
@@ -98,10 +98,10 @@ export const StreamPerMonth: FC<Props> = ({
 
     return (
         <ChartCard
-            title="Monthly Listening"
+            title="Stream Timeline"
             emoji="📅"
             isLoading={isLoading}
-            question="How much did I listen each month?"
+            question="How did my listening evolve over time?"
         >
             <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30 self-start mb-3">
                 {(['year', 'month', 'week', 'day'] as const).map((g) => {

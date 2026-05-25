@@ -1,4 +1,4 @@
-import { StreamPerMonth } from './LabCharts/StreamPerMonth'
+import { StreamTimeline } from './LabCharts/StreamTimeline'
 import { SummaryPerYear } from './LabCharts/SummaryPerYear'
 import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { useState, useEffect, useCallback } from 'react'
@@ -65,7 +65,7 @@ export function LabView() {
                             Number(summarize.max_datetime)
                         ).getFullYear()}
                     />
-                    <StreamPerMonth year={debouncedYear} />
+                    <StreamTimeline year={debouncedYear} />
                     <SummaryPerYear year={debouncedYear} />
                     <ArtistDiscovery />
                     <StreamPerDayOfWeek year={debouncedYear} />
