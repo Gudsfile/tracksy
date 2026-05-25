@@ -18,40 +18,39 @@ type GranConfig = {
 
 const GRAN_CONFIG: Record<Granularity, GranConfig> = {
     year: {
-        periodTrunc: (col) => `date_trunc('year', ${col})`,
-        spineStart: (col) => `date_trunc('year', ${col})`,
-        spineEnd: (col) => `date_trunc('year', ${col})`,
+        periodTrunc: (col) => `make_date(year(${col}), 1, 1)`,
+        spineStart: (col) => `make_date(year(${col}), 1, 1)`,
+        spineEnd: (col) => `make_date(year(${col}), 1, 1)`,
         step: `interval 1 year`,
     },
     month: {
-        periodTrunc: (col) => `date_trunc('month', ${col})`,
+        periodTrunc: (col) => `make_date(year(${col}), month(${col}), 1)`,
         spineStart: (col, perYear) =>
             perYear
-                ? `date_trunc('year', ${col})`
-                : `date_trunc('month', ${col})`,
+                ? `make_date(year(${col}), 1, 1)`
+                : `make_date(year(${col}), month(${col}), 1)`,
         spineEnd: (col, perYear) =>
             perYear
-                ? `(date_trunc('year', ${col}) + interval '1 year' - interval '1 month')`
-                : `date_trunc('month', ${col})`,
+                ? `make_date(year(${col}), 12, 1)`
+                : `make_date(year(${col}), month(${col}), 1)`,
         step: `interval 1 month`,
     },
     week: {
         periodTrunc: (col) => `date_trunc('week', ${col})`,
         spineStart: (col, perYear) =>
             perYear
-                ? `date_trunc('week', date_trunc('year', ${col}))`
+                ? `date_trunc('week', make_date(year(${col}), 1, 1))`
                 : `date_trunc('week', ${col})`,
         spineEnd: (col, perYear) =>
             perYear
-                ? `date_trunc('week', date_trunc('year', ${col}) + interval '1 year' - interval '1 day')`
+                ? `date_trunc('week', make_date(year(${col}), 12, 31))`
                 : `date_trunc('week', ${col})`,
         step: `interval 7 days`,
     },
     day: {
         periodTrunc: (col) => `${col}::date`,
-        spineStart: (col) => `date_trunc('year', ${col})::date`,
-        spineEnd: (col) =>
-            `(date_trunc('year', ${col}) + interval '1 year' - interval '1 day')::date`,
+        spineStart: (col) => `make_date(year(${col}), 1, 1)`,
+        spineEnd: (col) => `make_date(year(${col}), 12, 31)`,
         step: `interval 1 day`,
     },
 }
