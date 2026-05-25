@@ -12,6 +12,7 @@ export function Top10Race({ year }: { year: number | undefined }) {
     const [data, setData] = useState<Top10RaceQueryResult[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [entityType, setEntityType] = useState<EntityType>('artists')
+    const [dataEntityType, setDataEntityType] = useState<EntityType>('artists')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,6 +22,7 @@ export function Top10Race({ year }: { year: number | undefined }) {
                     queryTop10Race(year, entityType)
                 )
                 setData(result || [])
+                setDataEntityType(entityType)
             } finally {
                 setIsLoading(false)
             }
@@ -50,19 +52,26 @@ export function Top10Race({ year }: { year: number | undefined }) {
         </div>
     )
 
+    const isInitialLoad = isLoading && data.length === 0
+
     return (
         <ChartCard
             title="Top 10 Race"
             emoji="🏎️"
             className="md:col-span-2 lg:col-span-3"
-            isLoading={isLoading}
+            isLoading={isInitialLoad}
             question="Who dominated my listening, and when did they rise?"
             headerActions={entityTabs}
         >
             {data.length === 0 ? (
                 <ChartCardEmpty />
             ) : (
-                <Top10RaceView data={data} entityType={entityType} />
+                <div
+                    className="transition-opacity duration-150"
+                    style={{ opacity: isLoading ? 0.4 : 1 }}
+                >
+                    <Top10RaceView data={data} entityType={dataEntityType} />
+                </div>
             )}
         </ChartCard>
     )
