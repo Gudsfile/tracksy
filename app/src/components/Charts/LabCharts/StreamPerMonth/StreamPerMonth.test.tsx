@@ -113,14 +113,24 @@ describe('StreamPerMonth', () => {
         expect(document.querySelector('.fixed.z-50')).toBeNull()
     })
 
-    it('renders granularity tabs with active state', () => {
+    it('renders all four granularity buttons regardless of available set', () => {
+        render(
+            <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
+        )
+        screen.getByRole('button', { name: 'Year' })
+        screen.getByRole('button', { name: 'Month' })
+        screen.getByRole('button', { name: 'Week' })
+        screen.getByRole('button', { name: 'Day' })
+    })
+
+    it('active button is highlighted, unavailable buttons are disabled', () => {
         render(
             <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
         )
         const monthBtn = screen.getByRole('button', { name: 'Month' })
-        const weekBtn = screen.getByRole('button', { name: 'Week' })
+        const yearBtn = screen.getByRole('button', { name: 'Year' })
         expect(monthBtn.className).toContain('bg-blue-500')
-        expect(weekBtn.className).not.toContain('bg-blue-500')
+        expect((yearBtn as HTMLButtonElement).disabled).toBe(true)
     })
 
     it('calls onGranularityChange when tab is clicked', () => {
