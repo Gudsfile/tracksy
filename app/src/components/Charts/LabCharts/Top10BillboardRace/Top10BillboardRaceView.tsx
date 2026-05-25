@@ -25,12 +25,12 @@ type Frame = {
 const BASE_SPEED = 240
 const BAR_STRIDE = 44
 const SCORE_COL_WIDTH = 62
+const LAMBDA = 0.2
 
 export function Top10BillboardRaceView({ data, entityType }: Props) {
     const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
     const [isPlaying, setIsPlaying] = useState(false)
     const [speedMultiplier, setSpeedMultiplier] = useState(1)
-    const [lambda, setLambda] = useState(0.2)
     const [isVisible, setIsVisible] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -38,7 +38,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
             (a, b) => a - b
         )
-        const decay = Math.exp(-lambda)
+        const decay = Math.exp(-LAMBDA)
 
         const dataByPeriod = new Map<
             number,
@@ -143,7 +143,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         }
 
         return { frames: allFrames, entityColors: colorMap, streakRecord }
-    }, [data, lambda])
+    }, [data])
 
     const currentFrame = frames[currentFrameIdx]
 
@@ -182,15 +182,6 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         setIsPlaying(true)
     }, [entityType])
 
-    const hasInitializedLambda = useRef(false)
-    useEffect(() => {
-        if (!hasInitializedLambda.current) {
-            hasInitializedLambda.current = true
-            return
-        }
-        setCurrentFrameIdx(0)
-    }, [lambda])
-
     useEffect(() => {
         if (!isPlaying || !isVisible || frames.length === 0) return
 
@@ -211,157 +202,20 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
 
     return (
         <div ref={containerRef} className="flex flex-col gap-4 w-full">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-                <h4 className="text-2xl font-bold font-mono tracking-tight text-gray-800 dark:text-gray-100">
-                    {'Week of ' +
-                        new Date(currentFrame.periodTs).toLocaleDateString(
-                            undefined,
-                            {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                            }
-                        )}
-                    <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-2 font-sans">
-                        · weekly
-                    </span>
-                </h4>
-                <div className="flex items-center gap-4 flex-wrap">
-                    <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
-                        {([0.1, 0.2, 0.3, 0.4, 0.5] as const).map((l) => (
-                            <button
-                                key={l}
-                                onClick={() => setLambda(l)}
-                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                                    lambda === l
-                                        ? 'bg-blue-500 text-white shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                }`}
-                            >
-                                λ{l}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
-                        {([0.5, 1, 2, 4] as const).map((speed) => (
-                            <button
-                                key={speed}
-                                onClick={() => setSpeedMultiplier(speed)}
-                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                                    speedMultiplier === speed
-                                        ? 'bg-blue-500 text-white shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                }`}
-                            >
-                                {speed}x
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => {
-                                if (currentFrameIdx >= frames.length - 1) {
-                                    setCurrentFrameIdx(0)
-                                    setIsPlaying(true)
-                                } else {
-                                    setIsPlaying(!isPlaying)
-                                }
-                            }}
-                            aria-label={
-                                isPlaying
-                                    ? 'Pause'
-                                    : currentFrameIdx >= frames.length - 1
-                                      ? 'Replay'
-                                      : 'Play'
-                            }
-                            title={
-                                isPlaying
-                                    ? 'Pause'
-                                    : currentFrameIdx >= frames.length - 1
-                                      ? 'Replay'
-                                      : 'Play'
-                            }
-                            className="p-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg transition-colors"
-                        >
-                            {isPlaying ? (
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="currentColor"
-                                >
-                                    <rect
-                                        x="3"
-                                        y="2"
-                                        width="4"
-                                        height="12"
-                                        rx="1"
-                                    />
-                                    <rect
-                                        x="9"
-                                        y="2"
-                                        width="4"
-                                        height="12"
-                                        rx="1"
-                                    />
-                                </svg>
-                            ) : currentFrameIdx >= frames.length - 1 ? (
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="currentColor"
-                                >
-                                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                                </svg>
-                            ) : (
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="currentColor"
-                                >
-                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                                </svg>
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {frames.length > 1 && (
-                <div className="flex items-center gap-3 w-full bg-gray-50/50 dark:bg-slate-800/20 p-2.5 rounded-xl border border-gray-200/50 dark:border-slate-800/50">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
-                        {new Date(frames[0].periodTs).toLocaleDateString(
-                            undefined,
-                            { year: 'numeric', month: 'short' }
-                        )}
-                    </span>
-                    <input
-                        type="range"
-                        aria-label="Animation timeline"
-                        min={0}
-                        max={frames.length - 1}
-                        value={currentFrameIdx}
-                        onChange={(e) => {
-                            setIsPlaying(false)
-                            setCurrentFrameIdx(Number(e.target.value))
-                        }}
-                        className="flex-grow h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                    />
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none">
-                        {new Date(
-                            frames[frames.length - 1].periodTs
-                        ).toLocaleDateString(undefined, {
+            <h4 className="text-2xl font-bold font-mono tracking-tight text-gray-800 dark:text-gray-100">
+                {'Week of ' +
+                    new Date(currentFrame.periodTs).toLocaleDateString(
+                        undefined,
+                        {
                             year: 'numeric',
-                            month: 'short',
-                        })}
-                    </span>
-                </div>
-            )}
+                            month: 'long',
+                            day: 'numeric',
+                        }
+                    )}
+                <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-2 font-sans">
+                    · weekly
+                </span>
+            </h4>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-gray-200 dark:border-slate-700/50 pb-4 md:pb-0 md:pr-6 flex flex-col gap-4">
@@ -457,11 +311,124 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     </div>
 
                     <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center mt-2">
-                        Score = Σ streams × e^(−λ×Δweeks) · Higher λ = faster
-                        decay
+                        Score = Σ streams × e^(−λ×Δweeks) · λ = 0.2
                     </p>
                 </div>
             </div>
+
+            {frames.length > 1 && (
+                <div className="flex items-center gap-2 w-full bg-gray-100/50 dark:bg-slate-800/60 p-2 rounded-xl border border-gray-200/30 dark:border-slate-700/40">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none shrink-0">
+                        {new Date(frames[0].periodTs).toLocaleDateString(
+                            undefined,
+                            { year: 'numeric', month: 'short' }
+                        )}
+                    </span>
+                    <input
+                        type="range"
+                        aria-label="Animation timeline"
+                        min={0}
+                        max={frames.length - 1}
+                        value={currentFrameIdx}
+                        onChange={(e) => {
+                            setIsPlaying(false)
+                            setCurrentFrameIdx(Number(e.target.value))
+                        }}
+                        className="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none shrink-0">
+                        {new Date(
+                            frames[frames.length - 1].periodTs
+                        ).toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                        })}
+                    </span>
+                    <div className="flex items-center bg-gray-200/80 dark:bg-slate-700/80 rounded-lg p-1 shrink-0">
+                        {([0.5, 1, 2, 4] as const).map((speed) => (
+                            <button
+                                key={speed}
+                                onClick={() => setSpeedMultiplier(speed)}
+                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                                    speedMultiplier === speed
+                                        ? 'bg-blue-500 text-white shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                }`}
+                            >
+                                {speed}x
+                            </button>
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => {
+                            if (currentFrameIdx >= frames.length - 1) {
+                                setCurrentFrameIdx(0)
+                                setIsPlaying(true)
+                            } else {
+                                setIsPlaying(!isPlaying)
+                            }
+                        }}
+                        aria-label={
+                            isPlaying
+                                ? 'Pause'
+                                : currentFrameIdx >= frames.length - 1
+                                  ? 'Replay'
+                                  : 'Play'
+                        }
+                        title={
+                            isPlaying
+                                ? 'Pause'
+                                : currentFrameIdx >= frames.length - 1
+                                  ? 'Replay'
+                                  : 'Play'
+                        }
+                        className="p-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg transition-colors shrink-0"
+                    >
+                        {isPlaying ? (
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="currentColor"
+                            >
+                                <rect
+                                    x="3"
+                                    y="2"
+                                    width="4"
+                                    height="12"
+                                    rx="1"
+                                />
+                                <rect
+                                    x="9"
+                                    y="2"
+                                    width="4"
+                                    height="12"
+                                    rx="1"
+                                />
+                            </svg>
+                        ) : currentFrameIdx >= frames.length - 1 ? (
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="currentColor"
+                            >
+                                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                            </svg>
+                        ) : (
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="currentColor"
+                            >
+                                <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                            </svg>
+                        )}
+                    </button>
+                </div>
+            )}
         </div>
     )
 }
