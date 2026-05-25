@@ -35,6 +35,12 @@ import {
     queryTop10AlbumsEvolution,
 } from './LabCharts/Top10AlbumsEvolution/query'
 import {
+    type StreamVarietyQueryResult,
+    type StreamVarietyStatsQueryResult,
+    queryStreamVariety,
+    queryStreamVarietyStats,
+} from './LabCharts/StreamVariety/query'
+import {
     type Top10TracksEvolutionQueryResult,
     queryTop10TracksEvolution,
 } from './LabCharts/Top10TracksEvolution/query'
@@ -106,6 +112,14 @@ const top10AlbumsEvolutionResultMock: Top10AlbumsEvolutionQueryResult[] = [
     },
 ]
 
+const streamVarietyResultMock: StreamVarietyQueryResult[] = [
+    { ts: '2024-01-01', distinct_count: 2, repeat_count: 1, total_count: 3 },
+]
+
+const streamVarietyStatsMock: StreamVarietyStatsQueryResult[] = [
+    { total_distinct: 2, total_repeat: 1, total_streams: 3 },
+]
+
 const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
     {
         year: 2024,
@@ -146,6 +160,10 @@ it('renders all Charts', async () => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
         if (query === queryStreamTimeline(2024, 'month'))
             return Promise.resolve(streamTimelineResultMock)
+        if (query === queryStreamVariety(2024, 'month', 'tracks'))
+            return Promise.resolve(streamVarietyResultMock)
+        if (query === queryStreamVarietyStats(2024, 'tracks'))
+            return Promise.resolve(streamVarietyStatsMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)
         if (query === queryArtistDiscovery())
