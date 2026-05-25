@@ -66,12 +66,14 @@ export function LabView() {
                             Number(summarize.max_datetime)
                         ).getFullYear()}
                     />
-                    <StreamTimeline year={debouncedYear} />
-                    <StreamVariety year={debouncedYear} />
-                    <SummaryPerYear year={debouncedYear} />
-                    <ArtistDiscovery />
-                    <StreamPerDayOfWeek year={debouncedYear} />
-                    <Top10AlbumsEvolution />
+                    <div className="flex flex-col gap-4">
+                        <StreamTimeline year={debouncedYear} />
+                        <StreamVariety year={debouncedYear} />
+                        <SummaryPerYear year={debouncedYear} />
+                        <ArtistDiscovery />
+                        <StreamPerDayOfWeek year={debouncedYear} />
+                        <Top10AlbumsEvolution />
+                    </div>
                 </>
             )}
 
@@ -87,12 +89,14 @@ export function LabView() {
                     development and may contain errors.
                 </p>
 
-                <Streaks />
-                <Top10Evolution />
-                <Top10TracksEvolution />
-                <Top10Race year={debouncedYear} />
-                <Top10BillboardRace year={debouncedYear} />
-                <SessionAnalysisDetailed year={debouncedYear} />
+                <div className="flex flex-col gap-4">
+                    <Streaks />
+                    <Top10Evolution />
+                    <Top10TracksEvolution />
+                    <Top10Race year={debouncedYear} />
+                    <Top10BillboardRace year={debouncedYear} />
+                    <SessionAnalysisDetailed year={debouncedYear} />
+                </div>
             </section>
         </>
     )
