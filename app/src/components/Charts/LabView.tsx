@@ -1,7 +1,6 @@
 import { StreamTimeline } from './LabCharts/StreamTimeline'
 import { StreamVariety } from './LabCharts/StreamVariety'
 import { StreamDiscovery } from './LabCharts/StreamDiscovery'
-import { SummaryPerYear } from './LabCharts/SummaryPerYear'
 import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { useState, useEffect, useCallback } from 'react'
 import {
@@ -16,7 +15,6 @@ import { Top10Evolution } from './LabCharts/Top10Evolution'
 import { Top10AlbumsEvolution } from './LabCharts/Top10AlbumsEvolution'
 import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
 import { StreamPerDayOfWeek } from './LabCharts/StreamPerDayOfWeek'
-import { ArtistDiscovery } from './LabCharts/ArtistDiscovery'
 import { Top10Race } from './LabCharts/Top10Race'
 import { Top10BillboardRace } from './LabCharts/Top10BillboardRace'
 import { SessionAnalysis as SessionAnalysisDetailed } from './LabCharts/SessionAnalysis'
@@ -71,8 +69,6 @@ export function LabView() {
                         <StreamTimeline year={debouncedYear} />
                         <StreamVariety year={debouncedYear} />
                         <StreamDiscovery year={debouncedYear} />
-                        <SummaryPerYear year={debouncedYear} />
-                        <ArtistDiscovery />
                         <StreamPerDayOfWeek year={debouncedYear} />
                         <Top10AlbumsEvolution />
                     </div>
