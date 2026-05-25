@@ -57,8 +57,8 @@ export function Top10BillboardRace({ year }: { year: number | undefined }) {
 
     return (
         <ChartCard
-            title="Top 10 Billboard Race"
-            emoji="🏎️"
+            title="Top 10 Billboard"
+            emoji="🏆"
             className="md:col-span-2 lg:col-span-3"
             isLoading={isInitialLoad}
             question="Who stayed in the charts the longest week after week?"
