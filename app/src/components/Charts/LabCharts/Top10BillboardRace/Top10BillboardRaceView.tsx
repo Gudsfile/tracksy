@@ -3,6 +3,7 @@ import type { EntityType, Top10BillboardRaceQueryResult } from './query'
 import { GhostLeaderboard, type GhostEntry } from './GhostLeaderboard'
 import { InsightCard } from '../../SimpleCharts/shared'
 import { BAR_CHART_COLORS } from '../barChartColors'
+import { RaceControlBar } from '../Common/RaceControlBar'
 
 type Props = {
     data: Top10BillboardRaceQueryResult[]
@@ -317,117 +318,27 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
             </div>
 
             {frames.length > 1 && (
-                <div className="flex items-center gap-2 w-full bg-gray-100/50 dark:bg-slate-800/60 p-2 rounded-xl border border-gray-200/30 dark:border-slate-700/40">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none shrink-0">
-                        {new Date(frames[0].periodTs).toLocaleDateString(
-                            undefined,
-                            { year: 'numeric', month: 'short' }
-                        )}
-                    </span>
-                    <input
-                        type="range"
-                        aria-label="Animation timeline"
-                        min={0}
-                        max={frames.length - 1}
-                        value={currentFrameIdx}
-                        onChange={(e) => {
-                            setIsPlaying(false)
-                            setCurrentFrameIdx(Number(e.target.value))
-                        }}
-                        className="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                    />
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono select-none shrink-0">
-                        {new Date(
-                            frames[frames.length - 1].periodTs
-                        ).toLocaleDateString(undefined, {
-                            year: 'numeric',
-                            month: 'short',
-                        })}
-                    </span>
-                    <div className="flex items-center bg-gray-200/80 dark:bg-slate-700/80 rounded-lg p-1 shrink-0">
-                        {([0.5, 1, 2, 4] as const).map((speed) => (
-                            <button
-                                key={speed}
-                                onClick={() => setSpeedMultiplier(speed)}
-                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                                    speedMultiplier === speed
-                                        ? 'bg-blue-500 text-white shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                }`}
-                            >
-                                {speed}x
-                            </button>
-                        ))}
-                    </div>
-                    <button
-                        onClick={() => {
-                            if (currentFrameIdx >= frames.length - 1) {
-                                setCurrentFrameIdx(0)
-                                setIsPlaying(true)
-                            } else {
-                                setIsPlaying(!isPlaying)
-                            }
-                        }}
-                        aria-label={
-                            isPlaying
-                                ? 'Pause'
-                                : currentFrameIdx >= frames.length - 1
-                                  ? 'Replay'
-                                  : 'Play'
+                <RaceControlBar
+                    frameCount={frames.length}
+                    startTs={frames[0].periodTs}
+                    endTs={frames[frames.length - 1].periodTs}
+                    currentFrameIdx={currentFrameIdx}
+                    speedMultiplier={speedMultiplier}
+                    isPlaying={isPlaying}
+                    onFrameChange={(idx) => {
+                        setIsPlaying(false)
+                        setCurrentFrameIdx(idx)
+                    }}
+                    onSpeedChange={setSpeedMultiplier}
+                    onPlayPause={() => {
+                        if (currentFrameIdx >= frames.length - 1) {
+                            setCurrentFrameIdx(0)
+                            setIsPlaying(true)
+                        } else {
+                            setIsPlaying(!isPlaying)
                         }
-                        title={
-                            isPlaying
-                                ? 'Pause'
-                                : currentFrameIdx >= frames.length - 1
-                                  ? 'Replay'
-                                  : 'Play'
-                        }
-                        className="p-2 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg transition-colors shrink-0"
-                    >
-                        {isPlaying ? (
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="currentColor"
-                            >
-                                <rect
-                                    x="3"
-                                    y="2"
-                                    width="4"
-                                    height="12"
-                                    rx="1"
-                                />
-                                <rect
-                                    x="9"
-                                    y="2"
-                                    width="4"
-                                    height="12"
-                                    rx="1"
-                                />
-                            </svg>
-                        ) : currentFrameIdx >= frames.length - 1 ? (
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="currentColor"
-                            >
-                                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
-                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                            </svg>
-                        ) : (
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="currentColor"
-                            >
-                                <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                            </svg>
-                        )}
-                    </button>
-                </div>
+                    }}
+                />
             )}
         </div>
     )
