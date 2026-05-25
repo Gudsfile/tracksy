@@ -11,10 +11,6 @@ import {
     queryStreamTimeline,
 } from './LabCharts/StreamTimeline/query'
 import {
-    type SummaryPerYearQueryResult,
-    summarizePerYearQuery,
-} from './LabCharts/SummaryPerYear/query'
-import {
     type Top10EvolutionQueryResult,
     queryTop10Evolution,
 } from './LabCharts/Top10Evolution/query'
@@ -26,10 +22,6 @@ import {
     type StreamPerDayOfWeekQueryResult,
     streamPerDayOfWeekQueryByYear,
 } from './LabCharts/StreamPerDayOfWeek/query'
-import {
-    type ArtistDiscoveryQueryResult,
-    queryArtistDiscovery,
-} from './LabCharts/ArtistDiscovery/query'
 import {
     type Top10AlbumsEvolutionQueryResult,
     queryTop10AlbumsEvolution,
@@ -71,24 +63,6 @@ const streamTimelineResultMock: StreamTimelineQueryResult[] = [
     { ts: '2024-10-01', ms_played: 37579102, count_streams: 100 },
     { ts: '2024-11-01', ms_played: 35533272, count_streams: 96 },
     { ts: '2024-12-01', ms_played: 17777800, count_streams: 48 },
-]
-
-const summaryPerYearResultMock: SummaryPerYearQueryResult[] = [
-    {
-        year: 2024,
-        type: 'count_new_tracks_played',
-        count_streams: 485,
-    },
-    {
-        year: 2024,
-        type: 'count_unique_track_played',
-        count_streams: 0,
-    },
-    {
-        year: 2024,
-        type: 'count_other_tracks_played',
-        count_streams: 625,
-    },
 ]
 
 const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
@@ -152,21 +126,6 @@ const streamPerDayOfWeekResultMock: StreamPerDayOfWeekQueryResult[] = [
     },
 ]
 
-const artistDiscoveryResultMock: ArtistDiscoveryQueryResult[] = [
-    {
-        year: 2023,
-        new_artists: 50,
-        cumulative_artists: 50,
-        avg_listens_per_artist: 25.5,
-    },
-    {
-        year: 2024,
-        new_artists: 30,
-        cumulative_artists: 80,
-        avg_listens_per_artist: 18.3,
-    },
-]
-
 it('renders all Charts', async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -182,10 +141,6 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamDiscoveryResultMock)
         if (query === queryStreamDiscoveryStats(2024, 'tracks'))
             return Promise.resolve(streamDiscoveryStatsMock)
-        if (query === summarizePerYearQuery(2024))
-            return Promise.resolve(summaryPerYearResultMock)
-        if (query === queryArtistDiscovery())
-            return Promise.resolve(artistDiscoveryResultMock)
         if (query === queryTop10Evolution())
             return Promise.resolve(top10EvolutionResultMock)
         if (query === queryTop10Race(2024) || query === queryTop10Race(2006))
@@ -215,7 +170,6 @@ it('renders all Charts', async () => {
     })
 
     await screen.findByRole('heading', { name: /Stream Timeline/ })
-    await screen.findByRole('heading', { name: 'Distribution of streams' })
     await screen.findByRole('heading', {
         name: 'Global Top 10 Artists Evolution',
     })
