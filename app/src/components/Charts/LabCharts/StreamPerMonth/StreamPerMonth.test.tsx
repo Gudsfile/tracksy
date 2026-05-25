@@ -13,14 +13,7 @@ const twoMonths: StreamPerMonthQueryResult[] = [
 
 describe('StreamPerMonth', () => {
     it('renders empty state when data is empty', () => {
-        render(
-            <StreamPerMonth
-                data={[]}
-                year={2024}
-                maxValue={100}
-                isLoading={false}
-            />
-        )
+        render(<StreamPerMonth data={[]} year={2024} isLoading={false} />)
         screen.getByText('No data for this year')
     })
 
@@ -29,7 +22,6 @@ describe('StreamPerMonth', () => {
             <StreamPerMonth
                 data={[{ ts: '2024-01-01', ms_played: 0, count_streams: 0 }]}
                 year={2024}
-                maxValue={100}
                 isLoading={false}
             />
         )
@@ -38,12 +30,7 @@ describe('StreamPerMonth', () => {
 
     it('renders chart heading and summary stats', () => {
         render(
-            <StreamPerMonth
-                data={twoMonths}
-                year={2024}
-                maxValue={MS_2H}
-                isLoading={false}
-            />
+            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
         )
         screen.getByRole('heading', { name: /Monthly Listening/ })
         screen.getByText('Total duration')
@@ -53,12 +40,7 @@ describe('StreamPerMonth', () => {
 
     it('highlights max bar with brand-purple', () => {
         render(
-            <StreamPerMonth
-                data={twoMonths}
-                year={2024}
-                maxValue={MS_2H}
-                isLoading={false}
-            />
+            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
         )
         const bars = document.querySelectorAll('.flex-1.rounded-t')
         const purpleBars = Array.from(bars).filter((b) =>
@@ -69,12 +51,7 @@ describe('StreamPerMonth', () => {
 
     it('shows one label per bar in per-year view', () => {
         render(
-            <StreamPerMonth
-                data={twoMonths}
-                year={2024}
-                maxValue={MS_2H}
-                isLoading={false}
-            />
+            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
         )
         const labelRow = document.querySelectorAll(
             '.flex.gap-0\\.5.mb-4 .flex-1'
@@ -93,7 +70,6 @@ describe('StreamPerMonth', () => {
             <StreamPerMonth
                 data={multiYear}
                 year={undefined}
-                maxValue={MS_2H}
                 isLoading={false}
             />
         )
@@ -104,12 +80,7 @@ describe('StreamPerMonth', () => {
 
     it('shows tooltip on bar hover and hides on mouse leave', () => {
         render(
-            <StreamPerMonth
-                data={twoMonths}
-                year={2024}
-                maxValue={MS_2H}
-                isLoading={false}
-            />
+            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
         )
         const bars = document.querySelectorAll('.flex-1.rounded-t')
         fireEvent.mouseEnter(bars[0])
@@ -126,12 +97,7 @@ describe('StreamPerMonth', () => {
             { ts: '2024-02-01', ms_played: MS_1H, count_streams: 3 },
         ]
         render(
-            <StreamPerMonth
-                data={dataWithZero}
-                year={2024}
-                maxValue={MS_1H}
-                isLoading={false}
-            />
+            <StreamPerMonth data={dataWithZero} year={2024} isLoading={false} />
         )
         const bars = document.querySelectorAll('.flex-1.rounded-t')
         fireEvent.mouseEnter(bars[0])

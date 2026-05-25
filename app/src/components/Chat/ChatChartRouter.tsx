@@ -46,10 +46,7 @@ export function ChatChartRouter({
             return <TopAlbums year={year} />
         case 'streams_per_month':
             return (
-                <StreamPerMonth
-                    year={year}
-                    maxValue={summarize?.max_monthly_duration ?? 0}
-                />
+                <StreamPerMonth year={year} />
             )
         case 'streams_per_hour':
             return <HourlyStreams year={year} />

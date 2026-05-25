@@ -65,10 +65,7 @@ export function LabView() {
                             Number(summarize.max_datetime)
                         ).getFullYear()}
                     />
-                    <StreamPerMonth
-                        year={debouncedYear}
-                        maxValue={summarize.max_monthly_duration}
-                    />
+                    <StreamPerMonth year={debouncedYear} />
                     <SummaryPerYear year={debouncedYear} />
                     <ArtistDiscovery />
                     <StreamPerDayOfWeek year={debouncedYear} />
