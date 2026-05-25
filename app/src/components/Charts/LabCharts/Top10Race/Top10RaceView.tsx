@@ -1,7 +1,8 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import type { EntityType, Top10RaceQueryResult } from './query'
 import { BAR_CHART_COLORS } from '../barChartColors'
 import { RaceControlBar } from '../Common/RaceControlBar'
+import { useRacePlayback } from '../Common/useRacePlayback'
 
 type Props = {
     data: Top10RaceQueryResult[]
@@ -24,12 +25,6 @@ const BAR_STRIDE = 44
 const STREAMS_COL_WIDTH = 60
 
 export function Top10RaceView({ data, entityType }: Props) {
-    const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
-    const [isPlaying, setIsPlaying] = useState(false)
-    const [speedMultiplier, setSpeedMultiplier] = useState(1)
-    const [isVisible, setIsVisible] = useState(false)
-    const containerRef = useRef<HTMLDivElement>(null)
-
     const { frames, entityColors } = useMemo(() => {
         const uniqueDates = Array.from(
             new Set(data.map((d) => d.stream_date_ts))
@@ -78,53 +73,21 @@ export function Top10RaceView({ data, entityType }: Props) {
         return { frames: allFrames, entityColors: colorMap }
     }, [data])
 
+    const {
+        containerRef,
+        currentFrameIdx,
+        isPlaying,
+        speedMultiplier,
+        onFrameChange,
+        onSpeedChange,
+        onPlayPause,
+    } = useRacePlayback({
+        frameCount: frames.length,
+        baseSpeed: BASE_SPEED,
+        entityType,
+    })
+
     const currentFrame = frames[currentFrameIdx]
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsVisible(entry.isIntersecting)
-            },
-            { threshold: 0.1 }
-        )
-
-        const currentRef = containerRef.current
-        if (currentRef) {
-            observer.observe(currentRef)
-        }
-
-        return () => {
-            if (currentRef) {
-                observer.unobserve(currentRef)
-            }
-        }
-    }, [])
-
-    const hasInitialized = useRef(false)
-    useEffect(() => {
-        if (!hasInitialized.current) {
-            hasInitialized.current = true
-            return
-        }
-        setCurrentFrameIdx(0)
-        setIsPlaying(true)
-    }, [entityType])
-
-    useEffect(() => {
-        if (!isPlaying || !isVisible || frames.length === 0) return
-
-        const interval = setInterval(() => {
-            setCurrentFrameIdx((prev) => {
-                if (prev >= frames.length - 1) {
-                    setIsPlaying(false)
-                    return prev
-                }
-                return prev + 1
-            })
-        }, BASE_SPEED / speedMultiplier)
-
-        return () => clearInterval(interval)
-    }, [isPlaying, isVisible, frames.length, speedMultiplier])
 
     if (!currentFrame) return null
 
@@ -205,19 +168,9 @@ export function Top10RaceView({ data, entityType }: Props) {
                     currentFrameIdx={currentFrameIdx}
                     speedMultiplier={speedMultiplier}
                     isPlaying={isPlaying}
-                    onFrameChange={(idx) => {
-                        setIsPlaying(false)
-                        setCurrentFrameIdx(idx)
-                    }}
-                    onSpeedChange={setSpeedMultiplier}
-                    onPlayPause={() => {
-                        if (currentFrameIdx >= frames.length - 1) {
-                            setCurrentFrameIdx(0)
-                            setIsPlaying(true)
-                        } else {
-                            setIsPlaying((prev) => !prev)
-                        }
-                    }}
+                    onFrameChange={onFrameChange}
+                    onSpeedChange={onSpeedChange}
+                    onPlayPause={onPlayPause}
                 />
             )}
         </div>
