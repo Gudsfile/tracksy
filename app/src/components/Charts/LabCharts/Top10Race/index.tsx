@@ -54,7 +54,7 @@ export function Top10Race({ year }: { year: number | undefined }) {
         <ChartCard
             title="Top 10 Race"
             emoji="🏎️"
-            className="mt-4 md:col-span-2 lg:col-span-3"
+            className="md:col-span-2 lg:col-span-3"
             isLoading={isLoading}
             question="Who dominated my listening, and when did they rise?"
             headerActions={entityTabs}
