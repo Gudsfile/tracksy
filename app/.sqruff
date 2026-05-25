@@ -45,3 +45,9 @@ order_condition = streaks desc
 # so this substitution is a no-op for linting but documents the expected type.
 year = 2024
 year_for_new = 2024
+# StreamTimeline granularity placeholders
+spineTimeTrunc = ts::date
+streamTimeTrunc = ts::date
+spineStart = '2024-01-01'::date
+spineEnd = '2024-12-31'::date
+step = interval 1 month

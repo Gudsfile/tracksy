@@ -1,5 +1,6 @@
 import { TABLE } from '../../../../db/queries/constants'
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
+import sqlQueryStreamTimeline from './StreamTimeline.sql?raw'
 
 export type Granularity = 'year' | 'month' | 'week' | 'day'
 
@@ -64,28 +65,13 @@ export function queryStreamTimeline(
     const { periodTrunc, spineStart, spineEnd, step } = GRAN_CONFIG[granularity]
     const minExpr = `(select min(ts::date) from ${TABLE} where ${yearCondition})`
     const maxExpr = `(select max(ts::date) from ${TABLE} where ${yearCondition})`
-    const streamTrunc = periodTrunc('ts::date')
 
-    return `
-with spine as (
-    select ${periodTrunc('t.period')} as ts
-    from generate_series(${spineStart(minExpr, perYear)}, ${spineEnd(maxExpr, perYear)}, ${step}) as t(period)
-),
-streams as (
-    select
-        ${streamTrunc} as ts,
-        sum(ms_played) as ms_played,
-        count(*) as count_streams
-    from ${TABLE}
-    where ${yearCondition}
-    group by ${streamTrunc}
-)
-select
-    spine.ts::varchar as ts,
-    coalesce(streams.ms_played, 0) as ms_played,
-    coalesce(streams.count_streams, 0)::int as count_streams
-from spine
-left join streams on spine.ts = streams.ts
-order by spine.ts
-`
+    return sqlQueryStreamTimeline
+        .replaceAll('${spineTimeTrunc}', periodTrunc('t.dt'))
+        .replaceAll('${streamTimeTrunc}', periodTrunc('ts::date'))
+        .replaceAll('${spineStart}', spineStart(minExpr, perYear))
+        .replaceAll('${spineEnd}', spineEnd(maxExpr, perYear))
+        .replaceAll('${step}', step)
+        .replaceAll('${table}', TABLE)
+        .replaceAll('${year_condition}', yearCondition)
 }
