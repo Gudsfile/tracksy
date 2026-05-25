@@ -1,8 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
-import type { StreamPerMonthQueryResult } from './query'
+import type { Granularity, StreamPerMonthQueryResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { formatMonthYear } from '../../../../utils/formatMonthYear'
 import {
     ChartCard,
     ChartCardEmpty,
@@ -20,16 +19,82 @@ type TooltipState = {
 type Props = {
     data: StreamPerMonthQueryResult[] | undefined
     year: number | undefined
+    granularity: Granularity
+    availableGranularities: Granularity[]
+    onGranularityChange: (g: Granularity) => void
     isLoading?: boolean
 }
 
-export const StreamPerMonth: FC<Props> = ({ data, year, isLoading }) => {
+const GRAN_LABELS: Record<Granularity, string> = {
+    year: 'Year',
+    month: 'Month',
+    week: 'Week',
+    day: 'Day',
+}
+
+function formatTooltipDate(date: Date, granularity: Granularity): string {
+    if (granularity === 'year')
+        return date.toLocaleDateString(undefined, { year: 'numeric' })
+    if (granularity === 'month')
+        return date.toLocaleDateString(undefined, {
+            month: 'long',
+            year: 'numeric',
+        })
+    return date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    })
+}
+
+function getBarLabel(
+    d: StreamPerMonthQueryResult,
+    index: number,
+    data: StreamPerMonthQueryResult[],
+    year: number | undefined,
+    granularity: Granularity
+): string {
+    const date = new Date(d.ts)
+
+    if (granularity === 'year') return String(date.getUTCFullYear())
+
+    if (granularity === 'month') {
+        if (year !== undefined)
+            return date.toLocaleDateString(undefined, { month: 'short' })
+        return date.getUTCMonth() === 0 ? String(date.getUTCFullYear()) : ''
+    }
+
+    if (granularity === 'week') {
+        if (index === 0)
+            return date.toLocaleDateString(undefined, { month: 'short' })
+        const prev = new Date(data[index - 1].ts)
+        return date.getUTCMonth() !== prev.getUTCMonth()
+            ? date.toLocaleDateString(undefined, { month: 'short' })
+            : ''
+    }
+
+    // day
+    return date.getUTCDate() === 1
+        ? date.toLocaleDateString(undefined, { month: 'short' })
+        : ''
+}
+
+export const StreamPerMonth: FC<Props> = ({
+    data,
+    year,
+    granularity,
+    availableGranularities,
+    onGranularityChange,
+    isLoading,
+}) => {
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
     const totalMs = data?.reduce((acc, d) => acc + d.ms_played, 0) ?? 0
     const totalStreams = data?.reduce((acc, d) => acc + d.count_streams, 0) ?? 0
     const maxMs = data?.length ? Math.max(...data.map((d) => d.ms_played)) : 0
     const maxDuration = maxMs || 1
+
+    const sparseLabelLayout = granularity !== 'month' || year === undefined
 
     return (
         <ChartCard
@@ -38,6 +103,22 @@ export const StreamPerMonth: FC<Props> = ({ data, year, isLoading }) => {
             isLoading={isLoading}
             question="How much did I listen each month?"
         >
+            <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30 self-start mb-3">
+                {availableGranularities.map((g) => (
+                    <button
+                        key={g}
+                        onClick={() => onGranularityChange(g)}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                            granularity === g
+                                ? 'bg-blue-500 text-white shadow-sm'
+                                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                        }`}
+                    >
+                        {GRAN_LABELS[g]}
+                    </button>
+                ))}
+            </div>
+
             {!data?.length || totalStreams === 0 ? (
                 <ChartCardEmpty
                     message={
@@ -81,23 +162,21 @@ export const StreamPerMonth: FC<Props> = ({ data, year, isLoading }) => {
                     </div>
 
                     <div className="flex gap-0.5 mb-4">
-                        {data.map((d) => {
-                            const date = new Date(d.ts)
-                            const label =
-                                year !== undefined
-                                    ? date.toLocaleDateString(undefined, {
-                                          month: 'short',
-                                      })
-                                    : date.getUTCMonth() === 0
-                                      ? String(date.getUTCFullYear())
-                                      : ''
+                        {data.map((d, i) => {
+                            const label = getBarLabel(
+                                d,
+                                i,
+                                data,
+                                year,
+                                granularity
+                            )
                             return (
                                 <div
                                     key={d.ts}
                                     className={`flex-1 text-[9px] text-gray-400 dark:text-gray-500 ${
-                                        year !== undefined
-                                            ? 'text-center truncate'
-                                            : 'overflow-visible whitespace-nowrap'
+                                        sparseLabelLayout
+                                            ? 'overflow-visible whitespace-nowrap'
+                                            : 'text-center truncate'
                                     }`}
                                 >
                                     {label}
@@ -138,7 +217,7 @@ export const StreamPerMonth: FC<Props> = ({ data, year, isLoading }) => {
             {tooltip && (
                 <ChartTooltip x={tooltip.x} y={tooltip.y}>
                     <div className="font-semibold">
-                        {formatMonthYear(new Date(tooltip.ts))}
+                        {formatTooltipDate(new Date(tooltip.ts), granularity)}
                     </div>
                     <div className="text-gray-300 dark:text-gray-400">
                         {formatDuration(tooltip.ms_played)}

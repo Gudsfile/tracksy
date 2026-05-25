@@ -8,7 +8,7 @@ import {
 } from './Summarize/summarizeQuery'
 import {
     type StreamPerMonthQueryResult,
-    queryStreamsPerMonthByYear,
+    queryStreamsPerMonth,
 } from './LabCharts/StreamPerMonth/query'
 import {
     type SummaryPerYearQueryResult,
@@ -193,7 +193,7 @@ it('renders all Charts', async () => {
     // @ts-expect-error
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
-        if (query === queryStreamsPerMonthByYear(2024))
+        if (query === queryStreamsPerMonth(2024, 'month'))
             return Promise.resolve(streamPerMonthResultMock)
         if (query === summarizePerYearQuery(2024))
             return Promise.resolve(summaryPerYearResultMock)

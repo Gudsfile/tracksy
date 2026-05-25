@@ -8,7 +8,7 @@ import {
     vi,
 } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { queryStreamsPerMonthByYear } from './query'
+import { queryStreamsPerMonth } from './query'
 import { TABLE } from '../../../../db/queries/constants'
 
 const seedPath =
@@ -54,10 +54,10 @@ function generateExpectedMonths(
     return result
 }
 
-describe('StreamPerMonth query', () => {
-    it('returns listening times by date for all years', async () => {
+describe('StreamPerMonth query — month granularity', () => {
+    it('returns listening times by month for all years', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonthByYear(undefined)
+            queryStreamsPerMonth(undefined, 'month')
         )
         const rows = result.getRowObjectsJson()
 
@@ -73,9 +73,9 @@ describe('StreamPerMonth query', () => {
         expect(rows).toEqual(expected)
     })
 
-    it('returns listening times by date for a specific year', async () => {
+    it('returns listening times by month for a specific year', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonthByYear(2006)
+            queryStreamsPerMonth(2006, 'month')
         )
         const rows = result.getRowObjectsJson()
 
@@ -93,5 +93,75 @@ describe('StreamPerMonth query', () => {
             { ts: '2006-11-01', ms_played: 0.0, count_streams: 0 },
             { ts: '2006-12-01', ms_played: 1.1, count_streams: 1 },
         ])
+    })
+})
+
+describe('StreamPerMonth query — year granularity', () => {
+    it('returns two rows for all-time with gap-filled zero years omitted (spine covers range)', async () => {
+        const result = await conn.runAndReadAll(
+            queryStreamsPerMonth(undefined, 'year')
+        )
+        const rows = result.getRowObjectsJson()
+
+        // spine from 2006 to 2025 = 20 rows
+        expect(rows).toHaveLength(20)
+
+        const row2006 = rows.find((r) => r.ts === '2006-01-01')
+        expect(row2006?.ms_played).toBeCloseTo(9.9)
+        expect(row2006?.count_streams).toBe(6)
+
+        const row2025 = rows.find((r) => r.ts === '2025-01-01')
+        expect(row2025?.ms_played).toBeCloseTo(1.1)
+        expect(row2025?.count_streams).toBe(1)
+
+        // gap year has 0
+        const row2010 = rows.find((r) => r.ts === '2010-01-01')
+        expect(row2010?.ms_played).toBe(0)
+        expect(row2010?.count_streams).toBe(0)
+    })
+})
+
+describe('StreamPerMonth query — week granularity', () => {
+    it('returns gap-filled weeks for a specific year', async () => {
+        const result = await conn.runAndReadAll(
+            queryStreamsPerMonth(2006, 'week')
+        )
+        const rows = result.getRowObjectsJson()
+
+        // all ts are Mondays (ISO week start)
+        for (const row of rows) {
+            const date = new Date(`${row.ts}T00:00:00Z`)
+            expect(date.getUTCDay()).toBe(1) // Monday
+        }
+
+        // known data: 2006-01-17 (Tue) → week 2006-01-16
+        const jan16 = rows.find((r) => r.ts === '2006-01-16')
+        expect(jan16?.ms_played).toBeCloseTo(3.3)
+        expect(jan16?.count_streams).toBe(1)
+
+        // gap week has 0
+        const gap = rows.find((r) => r.ts === '2006-02-06')
+        expect(gap?.ms_played).toBe(0)
+        expect(gap?.count_streams).toBe(0)
+    })
+})
+
+describe('StreamPerMonth query — day granularity', () => {
+    it('returns gap-filled days for a specific year', async () => {
+        const result = await conn.runAndReadAll(
+            queryStreamsPerMonth(2006, 'day')
+        )
+        const rows = result.getRowObjectsJson()
+
+        // 2006 has 365 days
+        expect(rows).toHaveLength(365)
+
+        const jan17 = rows.find((r) => r.ts === '2006-01-17')
+        expect(jan17?.ms_played).toBeCloseTo(3.3)
+        expect(jan17?.count_streams).toBe(1)
+
+        const jan18 = rows.find((r) => r.ts === '2006-01-18')
+        expect(jan18?.ms_played).toBe(0)
+        expect(jan18?.count_streams).toBe(0)
     })
 })
