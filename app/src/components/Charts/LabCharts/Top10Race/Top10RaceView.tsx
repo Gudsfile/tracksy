@@ -215,7 +215,7 @@ export function Top10RaceView({ data, entityType }: Props) {
                             setCurrentFrameIdx(0)
                             setIsPlaying(true)
                         } else {
-                            setIsPlaying(!isPlaying)
+                            setIsPlaying((prev) => !prev)
                         }
                     }}
                 />
