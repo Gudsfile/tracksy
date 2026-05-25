@@ -11,8 +11,8 @@ export type StreamPerMonthQueryResult = {
 
 type GranConfig = {
     periodTrunc: (col: string) => string
-    spineStart: (minCol: string) => string
-    spineEnd: (maxCol: string) => string
+    spineStart: (minCol: string, perYear: boolean) => string
+    spineEnd: (maxCol: string, perYear: boolean) => string
     step: string
 }
 
@@ -25,14 +25,26 @@ const GRAN_CONFIG: Record<Granularity, GranConfig> = {
     },
     month: {
         periodTrunc: (col) => `date_trunc('month', ${col})`,
-        spineStart: (col) => `date_trunc('month', ${col})`,
-        spineEnd: (col) => `date_trunc('month', ${col})`,
+        spineStart: (col, perYear) =>
+            perYear
+                ? `date_trunc('year', ${col})`
+                : `date_trunc('month', ${col})`,
+        spineEnd: (col, perYear) =>
+            perYear
+                ? `(date_trunc('year', ${col}) + interval '1 year' - interval '1 month')`
+                : `date_trunc('month', ${col})`,
         step: `interval 1 month`,
     },
     week: {
         periodTrunc: (col) => `date_trunc('week', ${col})`,
-        spineStart: (col) => `date_trunc('week', ${col})`,
-        spineEnd: (col) => `date_trunc('week', ${col})`,
+        spineStart: (col, perYear) =>
+            perYear
+                ? `date_trunc('week', date_trunc('year', ${col}))`
+                : `date_trunc('week', ${col})`,
+        spineEnd: (col, perYear) =>
+            perYear
+                ? `date_trunc('week', date_trunc('year', ${col}) + interval '1 year' - interval '1 day')`
+                : `date_trunc('week', ${col})`,
         step: `interval 7 days`,
     },
     day: {
@@ -49,6 +61,7 @@ export function queryStreamsPerMonth(
     granularity: Granularity
 ): string {
     const yearCondition = buildYearCondition(year)
+    const perYear = year !== undefined
     const { periodTrunc, spineStart, spineEnd, step } = GRAN_CONFIG[granularity]
     const minExpr = `(select min(ts::date) from ${TABLE} where ${yearCondition})`
     const maxExpr = `(select max(ts::date) from ${TABLE} where ${yearCondition})`
@@ -57,7 +70,7 @@ export function queryStreamsPerMonth(
     return `
 with spine as (
     select ${periodTrunc('t.period')} as ts
-    from generate_series(${spineStart(minExpr)}, ${spineEnd(maxExpr)}, ${step}) as t(period)
+    from generate_series(${spineStart(minExpr, perYear)}, ${spineEnd(maxExpr, perYear)}, ${step}) as t(period)
 ),
 streams as (
     select

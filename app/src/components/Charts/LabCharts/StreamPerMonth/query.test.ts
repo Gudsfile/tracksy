@@ -122,7 +122,7 @@ describe('StreamPerMonth query — year granularity', () => {
 })
 
 describe('StreamPerMonth query — week granularity', () => {
-    it('returns gap-filled weeks for a specific year', async () => {
+    it('returns gap-filled weeks for a specific year covering full year', async () => {
         const result = await conn.runAndReadAll(
             queryStreamsPerMonth(2006, 'week')
         )
@@ -131,8 +131,15 @@ describe('StreamPerMonth query — week granularity', () => {
         // all ts are Mondays (ISO week start)
         for (const row of rows) {
             const date = new Date(`${row.ts}T00:00:00Z`)
-            expect(date.getUTCDay()).toBe(1) // Monday
+            expect(date.getUTCDay()).toBe(1)
         }
+
+        // spine starts on or before Jan 1 2006 (first week covering the year)
+        // 2006-01-01 is Sunday → date_trunc('week') = 2005-12-26
+        expect(rows[0].ts).toBe('2005-12-26')
+
+        // spine ends on or after Dec 25 2006 (last Monday in the year)
+        expect(rows[rows.length - 1].ts).toBe('2006-12-25')
 
         // known data: 2006-01-17 (Tue) → week 2006-01-16
         const jan16 = rows.find((r) => r.ts === '2006-01-16')
@@ -143,6 +150,25 @@ describe('StreamPerMonth query — week granularity', () => {
         const gap = rows.find((r) => r.ts === '2006-02-06')
         expect(gap?.ms_played).toBe(0)
         expect(gap?.count_streams).toBe(0)
+    })
+})
+
+describe('StreamPerMonth query — full-year spine regression', () => {
+    it('per-year spine covers Jan–Dec even when data starts mid-year', async () => {
+        await conn.run(
+            `INSERT INTO ${TABLE} VALUES ('2020-06-15T12:00:00Z', 5.0)`
+        )
+
+        const rows = (
+            await conn.runAndReadAll(queryStreamsPerMonth(2020, 'month'))
+        ).getRowObjectsJson()
+
+        expect(rows).toHaveLength(12)
+        expect(rows.find((r) => r.ts === '2020-01-01')?.ms_played).toBe(0)
+        expect(rows.find((r) => r.ts === '2020-06-01')?.ms_played).toBeCloseTo(
+            5.0
+        )
+        expect(rows.find((r) => r.ts === '2020-12-01')?.ms_played).toBe(0)
     })
 })
 
