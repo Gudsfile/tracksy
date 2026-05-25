@@ -19,7 +19,7 @@ import { SeasonalPatterns } from '../Charts/SimpleCharts/SeasonalPatterns'
 import { StreamTimeline } from '../Charts/LabCharts/StreamTimeline'
 import { HourlyStreams } from '../Charts/SimpleCharts/HourlyStreams'
 import { StreamPerDayOfWeek } from '../Charts/LabCharts/StreamPerDayOfWeek'
-import { ArtistDiscovery } from '../Charts/LabCharts/ArtistDiscovery'
+import { StreamDiscovery } from '../Charts/LabCharts/StreamDiscovery'
 import { UnbeatableStreak } from '../Charts/SimpleCharts/UnbeatableStreak'
 import { CustomChart } from './CustomChart'
 
@@ -49,7 +49,7 @@ export function ChatChartRouter({ answer, rows }: ChatChartRouterProps) {
         case 'session_analysis':
             return <SessionAnalysis year={year} />
         case 'artist_discovery':
-            return <ArtistDiscovery />
+            return <StreamDiscovery year={year} />
         case 'listening_rhythm':
             return <ListeningRhythm year={year} />
         case 'skip_rate':
