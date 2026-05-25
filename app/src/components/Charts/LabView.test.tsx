@@ -48,66 +48,18 @@ const summarizedDataMock: SummarizeDataQueryResult[] = [
 ]
 
 const streamTimelineResultMock: StreamTimelineQueryResult[] = [
-    {
-        ts: 1704067200000,
-        ms_played: 35379985,
-        count_streams: 98,
-    },
-    {
-        ts: 1706745600000,
-        ms_played: 37831018,
-        count_streams: 103,
-    },
-    {
-        ts: 1709251200000,
-        ms_played: 39959692,
-        count_streams: 109,
-    },
-    {
-        ts: 1711929600000,
-        ms_played: 30708911,
-        count_streams: 85,
-    },
-    {
-        ts: 1714521600000,
-        ms_played: 29345960,
-        count_streams: 95,
-    },
-    {
-        ts: 1717200000000,
-        ms_played: 31586380,
-        count_streams: 90,
-    },
-    {
-        ts: 1719792000000,
-        ms_played: 31898499,
-        count_streams: 94,
-    },
-    {
-        ts: 1722470400000,
-        ms_played: 33018297,
-        count_streams: 97,
-    },
-    {
-        ts: 1725148800000,
-        ms_played: 34084620,
-        count_streams: 95,
-    },
-    {
-        ts: 1727740800000,
-        ms_played: 37579102,
-        count_streams: 100,
-    },
-    {
-        ts: 1730419200000,
-        ms_played: 35533272,
-        count_streams: 96,
-    },
-    {
-        ts: 1733011200000,
-        ms_played: 17777800,
-        count_streams: 48,
-    },
+    { ts: '2024-01-01', ms_played: 35379985, count_streams: 98 },
+    { ts: '2024-02-01', ms_played: 37831018, count_streams: 103 },
+    { ts: '2024-03-01', ms_played: 39959692, count_streams: 109 },
+    { ts: '2024-04-01', ms_played: 30708911, count_streams: 85 },
+    { ts: '2024-05-01', ms_played: 29345960, count_streams: 95 },
+    { ts: '2024-06-01', ms_played: 31586380, count_streams: 90 },
+    { ts: '2024-07-01', ms_played: 31898499, count_streams: 94 },
+    { ts: '2024-08-01', ms_played: 33018297, count_streams: 97 },
+    { ts: '2024-09-01', ms_played: 34084620, count_streams: 95 },
+    { ts: '2024-10-01', ms_played: 37579102, count_streams: 100 },
+    { ts: '2024-11-01', ms_played: 35533272, count_streams: 96 },
+    { ts: '2024-12-01', ms_played: 17777800, count_streams: 48 },
 ]
 
 const summaryPerYearResultMock: SummaryPerYearQueryResult[] = [
