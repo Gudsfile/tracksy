@@ -1,9 +1,10 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import type { EntityType, Top10BillboardRaceQueryResult } from './query'
 import { GhostLeaderboard, type GhostEntry } from './GhostLeaderboard'
 import { InsightCard } from '../../SimpleCharts/shared'
 import { BAR_CHART_COLORS } from '../barChartColors'
 import { RaceControlBar } from '../Common/RaceControlBar'
+import { useRacePlayback } from '../Common/useRacePlayback'
 
 type Props = {
     data: Top10BillboardRaceQueryResult[]
@@ -29,12 +30,6 @@ const SCORE_COL_WIDTH = 62
 const LAMBDA = 0.2
 
 export function Top10BillboardRaceView({ data, entityType }: Props) {
-    const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
-    const [isPlaying, setIsPlaying] = useState(false)
-    const [speedMultiplier, setSpeedMultiplier] = useState(1)
-    const [isVisible, setIsVisible] = useState(false)
-    const containerRef = useRef<HTMLDivElement>(null)
-
     const { frames, entityColors, streakRecord } = useMemo(() => {
         const uniquePeriods = [...new Set(data.map((d) => d.period_ts))].sort(
             (a, b) => a - b
@@ -146,58 +141,26 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
         return { frames: allFrames, entityColors: colorMap, streakRecord }
     }, [data])
 
+    const {
+        containerRef,
+        currentFrameIdx,
+        isPlaying,
+        speedMultiplier,
+        onFrameChange,
+        onSpeedChange,
+        onPlayPause,
+    } = useRacePlayback({
+        frameCount: frames.length,
+        baseSpeed: BASE_SPEED,
+        entityType,
+    })
+
     const currentFrame = frames[currentFrameIdx]
 
     const activeLabels = useMemo(
         () => new Set(currentFrame?.top10.map((e) => e.label) ?? []),
         [currentFrame]
     )
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsVisible(entry.isIntersecting)
-            },
-            { threshold: 0.1 }
-        )
-
-        const currentRef = containerRef.current
-        if (currentRef) {
-            observer.observe(currentRef)
-        }
-
-        return () => {
-            if (currentRef) {
-                observer.unobserve(currentRef)
-            }
-        }
-    }, [])
-
-    const hasInitializedEntity = useRef(false)
-    useEffect(() => {
-        if (!hasInitializedEntity.current) {
-            hasInitializedEntity.current = true
-            return
-        }
-        setCurrentFrameIdx(0)
-        setIsPlaying(true)
-    }, [entityType])
-
-    useEffect(() => {
-        if (!isPlaying || !isVisible || frames.length === 0) return
-
-        const interval = setInterval(() => {
-            setCurrentFrameIdx((prev) => {
-                if (prev >= frames.length - 1) {
-                    setIsPlaying(false)
-                    return prev
-                }
-                return prev + 1
-            })
-        }, BASE_SPEED / speedMultiplier)
-
-        return () => clearInterval(interval)
-    }, [isPlaying, isVisible, frames.length, speedMultiplier])
 
     if (!currentFrame) return null
 
@@ -312,7 +275,7 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     </div>
 
                     <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center mt-2">
-                        Score = Σ streams × e^(−λ×Δweeks) · λ = 0.2
+                        Score = Σ streams × e^(−0.2×Δweeks)
                     </p>
                 </div>
             </div>
@@ -325,19 +288,9 @@ export function Top10BillboardRaceView({ data, entityType }: Props) {
                     currentFrameIdx={currentFrameIdx}
                     speedMultiplier={speedMultiplier}
                     isPlaying={isPlaying}
-                    onFrameChange={(idx) => {
-                        setIsPlaying(false)
-                        setCurrentFrameIdx(idx)
-                    }}
-                    onSpeedChange={setSpeedMultiplier}
-                    onPlayPause={() => {
-                        if (currentFrameIdx >= frames.length - 1) {
-                            setCurrentFrameIdx(0)
-                            setIsPlaying(true)
-                        } else {
-                            setIsPlaying((prev) => !prev)
-                        }
-                    }}
+                    onFrameChange={onFrameChange}
+                    onSpeedChange={onSpeedChange}
+                    onPlayPause={onPlayPause}
                 />
             )}
         </div>
