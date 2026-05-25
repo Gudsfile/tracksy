@@ -17,7 +17,7 @@ export function SessionAnalysis({ year }: SessionAnalysisProps) {
 
     return (
         <div>
-            <p className="text-xs italic text-gray-400 dark:text-gray-500 px-6 pt-4 -mb-2">
+            <p className="text-xs italic text-gray-400 dark:text-gray-500 px-6 pt-4 mb-2">
                 How have my listening sessions evolved over time?
             </p>
             <Common<SessionAnalysisDetailedResult>
