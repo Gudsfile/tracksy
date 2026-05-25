@@ -61,10 +61,10 @@ describe('StreamDiscovery', () => {
         screen.getByText('67%')
     })
 
-    it('renders stacked bars with new (rose-500) and known (rose-800) segments', () => {
+    it('renders stacked bars with new and known segments', () => {
         render(<StreamDiscovery {...defaultProps} data={twoMonths} />)
-        const newSegments = document.querySelectorAll('.bg-rose-500')
-        const knownSegments = document.querySelectorAll('.bg-rose-800')
+        const newSegments = document.querySelectorAll('.bg-rose-800')
+        const knownSegments = document.querySelectorAll('.bg-rose-500')
         expect(newSegments.length).toBeGreaterThan(0)
         expect(knownSegments.length).toBeGreaterThan(0)
     })
@@ -83,7 +83,7 @@ describe('StreamDiscovery', () => {
                 ]}
             />
         )
-        const newSegment = document.querySelector('.bg-rose-500') as HTMLElement
+        const newSegment = document.querySelector('.bg-rose-800') as HTMLElement
         expect(newSegment.style.flexGrow).toBe('0')
     })
 
