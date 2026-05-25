@@ -1,0 +1,37 @@
+[
+    {
+        "ts": "2005-03-10T10:00:00Z",
+        "ms_played": 1.0,
+        "track_uri": "track_A",
+        "artist_name": "artist_X",
+        "album_name": "album_1"
+    },
+    {
+        "ts": "2006-01-15T10:00:00Z",
+        "ms_played": 1.0,
+        "track_uri": "track_A",
+        "artist_name": "artist_X",
+        "album_name": "album_1"
+    },
+    {
+        "ts": "2006-01-20T10:00:00Z",
+        "ms_played": 1.0,
+        "track_uri": "track_B",
+        "artist_name": "artist_Y",
+        "album_name": "album_2"
+    },
+    {
+        "ts": "2006-04-05T10:00:00Z",
+        "ms_played": 1.0,
+        "track_uri": "track_C",
+        "artist_name": "artist_Z",
+        "album_name": "album_3"
+    },
+    {
+        "ts": "2006-06-01T10:00:00Z",
+        "ms_played": 1.0,
+        "track_uri": "track_B",
+        "artist_name": "artist_Y",
+        "album_name": "album_2"
+    }
+]

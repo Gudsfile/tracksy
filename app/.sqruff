@@ -47,8 +47,10 @@ year = 2024
 year_for_new = 2024
 # StreamTimeline / StreamVariety granularity placeholders
 spineTimeTrunc = ts::date
-streamTimeTrunc = ts::date
+streamTimeTrunc = stream_date
 spineStart = '2024-01-01'::date
 spineEnd = '2024-12-31'::date
 step = interval 1 month
 entity_column = track_uri
+firstDateTrunc = first_date
+new_condition = true

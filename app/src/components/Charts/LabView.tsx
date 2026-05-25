@@ -1,5 +1,6 @@
 import { StreamTimeline } from './LabCharts/StreamTimeline'
 import { StreamVariety } from './LabCharts/StreamVariety'
+import { StreamDiscovery } from './LabCharts/StreamDiscovery'
 import { SummaryPerYear } from './LabCharts/SummaryPerYear'
 import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { useState, useEffect, useCallback } from 'react'
@@ -69,6 +70,7 @@ export function LabView() {
                     <div className="flex flex-col gap-4">
                         <StreamTimeline year={debouncedYear} />
                         <StreamVariety year={debouncedYear} />
+                        <StreamDiscovery year={debouncedYear} />
                         <SummaryPerYear year={debouncedYear} />
                         <ArtistDiscovery />
                         <StreamPerDayOfWeek year={debouncedYear} />
