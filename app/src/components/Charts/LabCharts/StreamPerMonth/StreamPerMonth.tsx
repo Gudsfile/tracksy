@@ -134,62 +134,68 @@ export const StreamPerMonth: FC<Props> = ({
                 />
             ) : (
                 <>
-                    <div
-                        className="flex items-end gap-0.5 h-24 mt-4 mb-1"
-                        onMouseLeave={() => setTooltip(null)}
-                    >
-                        {data.map((d) => {
-                            const height = (d.ms_played / maxDuration) * 100
-                            const isMax =
-                                d.ms_played === maxMs && d.ms_played > 0
-                            return (
-                                <div
-                                    key={d.ts}
-                                    className={`flex-1 rounded-t transition-colors duration-200 ${
-                                        isMax
-                                            ? 'bg-brand-purple'
-                                            : 'bg-brand-blue'
-                                    }`}
-                                    style={{ height: `${height}%` }}
-                                    onMouseEnter={(e) => {
-                                        if (d.ms_played === 0) return
-                                        const rect =
-                                            e.currentTarget.getBoundingClientRect()
-                                        setTooltip({
-                                            x: rect.left + rect.width / 2,
-                                            y: rect.top,
-                                            ts: d.ts,
-                                            ms_played: d.ms_played,
-                                            count_streams: d.count_streams,
-                                        })
-                                    }}
-                                />
-                            )
-                        })}
-                    </div>
+                    <div className="overflow-x-auto mt-4">
+                        <div
+                            className="flex items-end gap-0.5 h-24 mb-1"
+                            style={{ minWidth: `${data.length * 4}px` }}
+                            onMouseLeave={() => setTooltip(null)}
+                        >
+                            {data.map((d) => {
+                                const height = (d.ms_played / maxDuration) * 100
+                                const isMax =
+                                    d.ms_played === maxMs && d.ms_played > 0
+                                return (
+                                    <div
+                                        key={d.ts}
+                                        className={`flex-1 min-w-[3px] rounded-t transition-colors duration-200 ${
+                                            isMax
+                                                ? 'bg-brand-purple'
+                                                : 'bg-brand-blue'
+                                        }`}
+                                        style={{ height: `${height}%` }}
+                                        onMouseEnter={(e) => {
+                                            if (d.ms_played === 0) return
+                                            const rect =
+                                                e.currentTarget.getBoundingClientRect()
+                                            setTooltip({
+                                                x: rect.left + rect.width / 2,
+                                                y: rect.top,
+                                                ts: d.ts,
+                                                ms_played: d.ms_played,
+                                                count_streams: d.count_streams,
+                                            })
+                                        }}
+                                    />
+                                )
+                            })}
+                        </div>
 
-                    <div className="flex gap-0.5 mb-4">
-                        {data.map((d, i) => {
-                            const label = getBarLabel(
-                                d,
-                                i,
-                                data,
-                                year,
-                                granularity
-                            )
-                            return (
-                                <div
-                                    key={d.ts}
-                                    className={`flex-1 text-[9px] text-gray-400 dark:text-gray-500 ${
-                                        sparseLabelLayout
-                                            ? 'overflow-visible whitespace-nowrap'
-                                            : 'text-center truncate'
-                                    }`}
-                                >
-                                    {label}
-                                </div>
-                            )
-                        })}
+                        <div
+                            className="flex gap-0.5 mb-4"
+                            style={{ minWidth: `${data.length * 4}px` }}
+                        >
+                            {data.map((d, i) => {
+                                const label = getBarLabel(
+                                    d,
+                                    i,
+                                    data,
+                                    year,
+                                    granularity
+                                )
+                                return (
+                                    <div
+                                        key={d.ts}
+                                        className={`flex-1 min-w-[3px] text-[9px] text-gray-400 dark:text-gray-500 ${
+                                            sparseLabelLayout
+                                                ? 'overflow-visible whitespace-nowrap'
+                                                : 'text-center truncate'
+                                        }`}
+                                    >
+                                        {label}
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
 
                     <ul
