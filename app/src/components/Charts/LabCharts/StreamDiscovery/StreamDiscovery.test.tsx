@@ -170,4 +170,39 @@ describe('StreamDiscovery', () => {
         fireEvent.mouseEnter(bars[0])
         expect(document.querySelector('.fixed.z-50')).toBeNull()
     })
+
+    it('hides name collision warning when entity is tracks', () => {
+        render(
+            <StreamDiscovery
+                {...defaultProps}
+                entity="tracks"
+                data={twoMonths}
+            />
+        )
+        expect(
+            screen.queryByText(/Artist and album counts rely on names/)
+        ).toBeNull()
+    })
+
+    it('shows name collision warning when entity is artists', () => {
+        render(
+            <StreamDiscovery
+                {...defaultProps}
+                entity="artists"
+                data={twoMonths}
+            />
+        )
+        screen.getByText(/Artist and album counts rely on names/)
+    })
+
+    it('shows name collision warning when entity is albums', () => {
+        render(
+            <StreamDiscovery
+                {...defaultProps}
+                entity="albums"
+                data={twoMonths}
+            />
+        )
+        screen.getByText(/Artist and album counts rely on names/)
+    })
 })

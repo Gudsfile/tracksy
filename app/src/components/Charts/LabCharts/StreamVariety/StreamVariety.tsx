@@ -297,6 +297,13 @@ export const StreamVariety: FC<Props> = ({
                             <span className="font-bold">{varietyRate}%</span>
                         </li>
                     </ul>
+                    {entity !== 'tracks' && (
+                        <p className="mt-2 text-xs italic text-gray-400 dark:text-gray-500">
+                            Artist and album counts rely on names, not unique
+                            IDs. Two different artists or albums sharing the
+                            same name are counted as one.
+                        </p>
+                    )}
                 </>
             )}
             {tooltip && (
