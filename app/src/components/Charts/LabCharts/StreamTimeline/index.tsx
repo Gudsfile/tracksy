@@ -1,20 +1,20 @@
 import { useState } from 'react'
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
-    queryStreamsPerMonth,
+    queryStreamTimeline,
     type Granularity,
-    type StreamPerMonthQueryResult,
+    type StreamTimelineQueryResult,
 } from './query'
-import { StreamPerMonth as StreamPerMonthView } from './StreamPerMonth'
+import { StreamTimeline as StreamTimelineView } from './StreamTimeline'
 
 const ALL_TIME_GRANULARITIES: Granularity[] = ['year', 'month']
 const PER_YEAR_GRANULARITIES: Granularity[] = ['month', 'week', 'day']
 
-interface StreamPerMonthProps {
+interface StreamTimelineProps {
     year: number | undefined
 }
 
-export function StreamPerMonth({ year }: StreamPerMonthProps) {
+export function StreamTimeline({ year }: StreamTimelineProps) {
     const [granularity, setGranularity] = useState<Granularity>('month')
 
     const availableGranularities =
@@ -25,13 +25,13 @@ export function StreamPerMonth({ year }: StreamPerMonthProps) {
         ? granularity
         : 'month'
 
-    const { data, isLoading } = useDBQueryMany<StreamPerMonthQueryResult>({
-        query: queryStreamsPerMonth(year, effectiveGranularity),
+    const { data, isLoading } = useDBQueryMany<StreamTimelineQueryResult>({
+        query: queryStreamTimeline(year, effectiveGranularity),
         year,
     })
 
     return (
-        <StreamPerMonthView
+        <StreamTimelineView
             data={data}
             year={year}
             granularity={effectiveGranularity}

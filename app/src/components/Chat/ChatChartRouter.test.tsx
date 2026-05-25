@@ -19,7 +19,7 @@ import * as EvolutionOverTimeModule from '../Charts/SimpleCharts/EvolutionOverTi
 import * as PrincipalPlatformModule from '../Charts/SimpleCharts/PrincipalPlatform'
 import * as RepeatBehaviorModule from '../Charts/SimpleCharts/RepeatBehavior'
 import * as SeasonalPatternsModule from '../Charts/SimpleCharts/SeasonalPatterns'
-import * as StreamPerMonthModule from '../Charts/LabCharts/StreamPerMonth'
+import * as StreamTimelineModule from '../Charts/LabCharts/StreamTimeline'
 import * as HourlyStreamsModule from '../Charts/SimpleCharts/HourlyStreams'
 import * as StreamPerDayOfWeekModule from '../Charts/LabCharts/StreamPerDayOfWeek'
 import * as ArtistDiscoveryModule from '../Charts/LabCharts/ArtistDiscovery'
@@ -82,8 +82,8 @@ describe('ChatChartRouter', () => {
         vi.spyOn(SeasonalPatternsModule, 'SeasonalPatterns').mockReturnValue(
             <div data-testid="SeasonalPatterns" />
         )
-        vi.spyOn(StreamPerMonthModule, 'StreamPerMonth').mockReturnValue(
-            <div data-testid="StreamPerMonth" />
+        vi.spyOn(StreamTimelineModule, 'StreamTimeline').mockReturnValue(
+            <div data-testid="StreamTimeline" />
         )
         vi.spyOn(HourlyStreamsModule, 'HourlyStreams').mockReturnValue(
             <div data-testid="HourlyStreams" />
@@ -111,7 +111,7 @@ describe('ChatChartRouter', () => {
         ['regularity', 'Regularity'],
         ['new_vs_old', 'NewVsOld'],
         ['favorite_weekday', 'FavoriteWeekday'],
-        ['streams_per_month', 'StreamPerMonth'],
+        ['streams_per_month', 'StreamTimeline'],
         ['streams_per_hour', 'HourlyStreams'],
         ['streams_per_day_of_week', 'StreamPerDayOfWeek'],
         ['artist_discovery', 'ArtistDiscovery'],

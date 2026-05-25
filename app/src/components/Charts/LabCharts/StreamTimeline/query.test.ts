@@ -8,11 +8,11 @@ import {
     vi,
 } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { queryStreamsPerMonth } from './query'
+import { queryStreamTimeline } from './query'
 import { TABLE } from '../../../../db/queries/constants'
 
 const seedPath =
-    'src/components/Charts/LabCharts/StreamPerMonth/fixtures/seed.json'
+    'src/components/Charts/LabCharts/StreamTimeline/fixtures/seed.json'
 let conn: DuckDBConnection
 
 beforeAll(async () => {
@@ -54,10 +54,10 @@ function generateExpectedMonths(
     return result
 }
 
-describe('StreamPerMonth query — month granularity', () => {
+describe('StreamTimeline query — month granularity', () => {
     it('returns listening times by month for all years', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonth(undefined, 'month')
+            queryStreamTimeline(undefined, 'month')
         )
         const rows = result.getRowObjectsJson()
 
@@ -75,7 +75,7 @@ describe('StreamPerMonth query — month granularity', () => {
 
     it('returns listening times by month for a specific year', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonth(2006, 'month')
+            queryStreamTimeline(2006, 'month')
         )
         const rows = result.getRowObjectsJson()
 
@@ -96,10 +96,10 @@ describe('StreamPerMonth query — month granularity', () => {
     })
 })
 
-describe('StreamPerMonth query — year granularity', () => {
+describe('StreamTimeline query — year granularity', () => {
     it('returns two rows for all-time with gap-filled zero years omitted (spine covers range)', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonth(undefined, 'year')
+            queryStreamTimeline(undefined, 'year')
         )
         const rows = result.getRowObjectsJson()
 
@@ -121,10 +121,10 @@ describe('StreamPerMonth query — year granularity', () => {
     })
 })
 
-describe('StreamPerMonth query — week granularity', () => {
+describe('StreamTimeline query — week granularity', () => {
     it('returns gap-filled weeks for a specific year covering full year', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonth(2006, 'week')
+            queryStreamTimeline(2006, 'week')
         )
         const rows = result.getRowObjectsJson()
 
@@ -153,14 +153,14 @@ describe('StreamPerMonth query — week granularity', () => {
     })
 })
 
-describe('StreamPerMonth query — full-year spine regression', () => {
+describe('StreamTimeline query — full-year spine regression', () => {
     it('per-year spine covers Jan–Dec even when data starts mid-year', async () => {
         await conn.run(
             `INSERT INTO ${TABLE} VALUES ('2020-06-15T12:00:00Z', 5.0)`
         )
 
         const rows = (
-            await conn.runAndReadAll(queryStreamsPerMonth(2020, 'month'))
+            await conn.runAndReadAll(queryStreamTimeline(2020, 'month'))
         ).getRowObjectsJson()
 
         expect(rows).toHaveLength(12)
@@ -172,10 +172,10 @@ describe('StreamPerMonth query — full-year spine regression', () => {
     })
 })
 
-describe('StreamPerMonth query — day granularity', () => {
+describe('StreamTimeline query — day granularity', () => {
     it('returns gap-filled days for a specific year', async () => {
         const result = await conn.runAndReadAll(
-            queryStreamsPerMonth(2006, 'day')
+            queryStreamTimeline(2006, 'day')
         )
         const rows = result.getRowObjectsJson()
 
