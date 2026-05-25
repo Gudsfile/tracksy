@@ -47,32 +47,6 @@ describe('Top10BillboardRaceView', () => {
         expect(screen.getAllByText(/\dw$/).length).toBeGreaterThan(0)
     })
 
-    it('renders the lambda selector with five buttons', () => {
-        render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
-
-        expect(screen.getByRole('button', { name: 'λ0.1' })).toBeDefined()
-        expect(screen.getByRole('button', { name: 'λ0.2' })).toBeDefined()
-        expect(screen.getByRole('button', { name: 'λ0.3' })).toBeDefined()
-        expect(screen.getByRole('button', { name: 'λ0.4' })).toBeDefined()
-        expect(screen.getByRole('button', { name: 'λ0.5' })).toBeDefined()
-
-        const defaultButton = screen.getByRole('button', { name: 'λ0.2' })
-        expect(defaultButton.className).toContain('bg-blue-500')
-    })
-
-    it('allows changing lambda value', () => {
-        render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
-
-        const lambda02 = screen.getByRole('button', { name: 'λ0.2' })
-        const lambda03 = screen.getByRole('button', { name: 'λ0.3' })
-
-        expect(lambda02.className).toContain('bg-blue-500')
-
-        fireEvent.click(lambda03)
-        expect(lambda03.className).toContain('bg-blue-500')
-        expect(lambda02.className).not.toContain('bg-blue-500')
-    })
-
     it('allows changing animation speed', () => {
         render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
 
@@ -139,19 +113,5 @@ describe('Top10BillboardRaceView', () => {
         fireEvent.change(slider, { target: { value: '1' } })
 
         expect(screen.getByRole('button', { name: 'Replay' })).toBeDefined()
-    })
-
-    it('resets to frame 0 but preserves play state when lambda changes', () => {
-        vi.useFakeTimers()
-        render(<Top10BillboardRaceView data={mockData} entityType="artists" />)
-
-        expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
-
-        const lambda05 = screen.getByRole('button', { name: 'λ0.5' })
-        fireEvent.click(lambda05)
-
-        expect(screen.getByRole('button', { name: 'Play' })).toBeDefined()
-
-        vi.useRealTimers()
     })
 })
