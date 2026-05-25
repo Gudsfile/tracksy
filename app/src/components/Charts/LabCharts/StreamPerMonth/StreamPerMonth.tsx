@@ -20,22 +20,16 @@ type TooltipState = {
 type Props = {
     data: StreamPerMonthQueryResult[] | undefined
     year: number | undefined
-    maxValue: number
     isLoading?: boolean
 }
 
-export const StreamPerMonth: FC<Props> = ({
-    data,
-    year,
-    maxValue,
-    isLoading,
-}) => {
+export const StreamPerMonth: FC<Props> = ({ data, year, isLoading }) => {
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
     const totalMs = data?.reduce((acc, d) => acc + d.ms_played, 0) ?? 0
     const totalStreams = data?.reduce((acc, d) => acc + d.count_streams, 0) ?? 0
     const maxMs = data?.length ? Math.max(...data.map((d) => d.ms_played)) : 0
-    const maxDuration = maxValue || maxMs || 100
+    const maxDuration = maxMs || 1
 
     return (
         <ChartCard

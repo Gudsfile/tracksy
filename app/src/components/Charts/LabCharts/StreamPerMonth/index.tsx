@@ -7,21 +7,13 @@ import { StreamPerMonth as StreamPerMonthView } from './StreamPerMonth'
 
 interface StreamPerMonthProps {
     year: number | undefined
-    maxValue: number
 }
 
-export function StreamPerMonth({ year, maxValue }: StreamPerMonthProps) {
+export function StreamPerMonth({ year }: StreamPerMonthProps) {
     const { data, isLoading } = useDBQueryMany<StreamPerMonthQueryResult>({
         query: queryStreamsPerMonthByYear(year),
         year,
     })
 
-    return (
-        <StreamPerMonthView
-            data={data}
-            year={year}
-            maxValue={maxValue}
-            isLoading={isLoading}
-        />
-    )
+    return <StreamPerMonthView data={data} year={year} isLoading={isLoading} />
 }
