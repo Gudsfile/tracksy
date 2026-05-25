@@ -1,11 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 import { useChatEngine } from '../../hooks/useChatEngine'
-import {
-    summarizeQuery,
-    type SummarizeDataQueryResult,
-} from './Summarize/summarizeQuery'
 import type { ChatMessage, AssistantPayload } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
 import { ModelLoader } from '../Chat/ModelLoader'
@@ -22,39 +17,20 @@ export function ChatView() {
     const [customRows, setCustomRows] = useState<Map<string, DBRow[]>>(
         new Map()
     )
-    const [summarize, setSummarize] = useState<
-        SummarizeDataQueryResult | undefined
-    >()
     const [isAsking, setIsAsking] = useState(false)
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
 
     const { state, ensureLoaded, ask } = useChatEngine()
 
-    const loadSummarize = useCallback(async () => {
-        try {
-            const results =
-                await queryDBAsJSON<SummarizeDataQueryResult>(summarizeQuery)
-            setSummarize(results[0])
-        } catch {
-            // summarize unavailable — non-fatal; charts that need maxValue will use 0
-        }
-    }, [])
-
-    useEffect(() => {
-        loadSummarize()
-    }, [loadSummarize])
-
     useEffect(() => {
         const handler = () => {
-            setSummarize(undefined)
             setMessages([])
             setCustomRows(new Map())
-            loadSummarize()
         }
         window.addEventListener(DATA_LOADED_EVENT, handler)
         return () => window.removeEventListener(DATA_LOADED_EVENT, handler)
-    }, [loadSummarize])
+    }, [])
 
     // Scroll to bottom whenever messages change
     useEffect(() => {
@@ -140,7 +116,6 @@ export function ChatView() {
                     <div className="min-h-64">
                         <ChatMessageList
                             messages={messages}
-                            summarize={summarize}
                             customRows={customRows}
                         />
                         <div ref={bottomRef} />

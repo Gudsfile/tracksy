@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { StreamPerMonth } from './StreamPerMonth'
 import type { StreamPerMonthQueryResult } from './query'
@@ -11,18 +11,25 @@ const twoMonths: StreamPerMonthQueryResult[] = [
     { ts: '2024-02-01', ms_played: MS_2H, count_streams: 8 },
 ]
 
+const defaultProps = {
+    granularity: 'month' as const,
+    availableGranularities: ['month', 'week', 'day'] as const,
+    onGranularityChange: () => {},
+    isLoading: false,
+}
+
 describe('StreamPerMonth', () => {
     it('renders empty state when data is empty', () => {
-        render(<StreamPerMonth data={[]} year={2024} isLoading={false} />)
+        render(<StreamPerMonth {...defaultProps} data={[]} year={2024} />)
         screen.getByText('No data for this year')
     })
 
     it('renders empty state when all streams are zero', () => {
         render(
             <StreamPerMonth
+                {...defaultProps}
                 data={[{ ts: '2024-01-01', ms_played: 0, count_streams: 0 }]}
                 year={2024}
-                isLoading={false}
             />
         )
         screen.getByText('No data for this year')
@@ -30,7 +37,7 @@ describe('StreamPerMonth', () => {
 
     it('renders chart heading and summary stats', () => {
         render(
-            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
+            <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
         )
         screen.getByRole('heading', { name: /Monthly Listening/ })
         screen.getByText('Total duration')
@@ -40,7 +47,7 @@ describe('StreamPerMonth', () => {
 
     it('highlights max bar with brand-purple', () => {
         render(
-            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
+            <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
         )
         const bars = document.querySelectorAll('.flex-1.rounded-t')
         const purpleBars = Array.from(bars).filter((b) =>
@@ -49,9 +56,9 @@ describe('StreamPerMonth', () => {
         expect(purpleBars).toHaveLength(1)
     })
 
-    it('shows one label per bar in per-year view', () => {
+    it('shows one label per bar in per-year month view', () => {
         render(
-            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
+            <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
         )
         const labelRow = document.querySelectorAll(
             '.flex.gap-0\\.5.mb-4 .flex-1'
@@ -59,7 +66,7 @@ describe('StreamPerMonth', () => {
         expect(labelRow).toHaveLength(twoMonths.length)
     })
 
-    it('shows year boundaries and no month labels in all-time view', () => {
+    it('shows year boundaries and no month labels in all-time month view', () => {
         const multiYear: StreamPerMonthQueryResult[] = [
             { ts: '2023-11-01', ms_played: MS_1H, count_streams: 3 },
             { ts: '2023-12-01', ms_played: MS_1H, count_streams: 4 },
@@ -68,9 +75,10 @@ describe('StreamPerMonth', () => {
         ]
         render(
             <StreamPerMonth
+                {...defaultProps}
+                availableGranularities={['year', 'month']}
                 data={multiYear}
                 year={undefined}
-                isLoading={false}
             />
         )
         expect(screen.queryByText('Jan')).toBeNull()
@@ -80,7 +88,7 @@ describe('StreamPerMonth', () => {
 
     it('shows tooltip on bar hover and hides on mouse leave', () => {
         render(
-            <StreamPerMonth data={twoMonths} year={2024} isLoading={false} />
+            <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
         )
         const bars = document.querySelectorAll('.flex-1.rounded-t')
         fireEvent.mouseEnter(bars[0])
@@ -97,11 +105,35 @@ describe('StreamPerMonth', () => {
             { ts: '2024-02-01', ms_played: MS_1H, count_streams: 3 },
         ]
         render(
-            <StreamPerMonth data={dataWithZero} year={2024} isLoading={false} />
+            <StreamPerMonth {...defaultProps} data={dataWithZero} year={2024} />
         )
         const bars = document.querySelectorAll('.flex-1.rounded-t')
         fireEvent.mouseEnter(bars[0])
         expect(screen.queryByText('0 streams')).toBeNull()
         expect(document.querySelector('.fixed.z-50')).toBeNull()
+    })
+
+    it('renders granularity tabs with active state', () => {
+        render(
+            <StreamPerMonth {...defaultProps} data={twoMonths} year={2024} />
+        )
+        const monthBtn = screen.getByRole('button', { name: 'Month' })
+        const weekBtn = screen.getByRole('button', { name: 'Week' })
+        expect(monthBtn.className).toContain('bg-blue-500')
+        expect(weekBtn.className).not.toContain('bg-blue-500')
+    })
+
+    it('calls onGranularityChange when tab is clicked', () => {
+        const onChange = vi.fn()
+        render(
+            <StreamPerMonth
+                {...defaultProps}
+                onGranularityChange={onChange}
+                data={twoMonths}
+                year={2024}
+            />
+        )
+        fireEvent.click(screen.getByRole('button', { name: 'Week' }))
+        expect(onChange).toHaveBeenCalledWith('week')
     })
 })

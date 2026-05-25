@@ -1,21 +1,17 @@
 import type { ChatMessage } from '../../llm/types'
-import type { SummarizeDataQueryResult } from '../Charts/Summarize/summarizeQuery'
 import type { DBRow } from '../../llm/inferChartType'
 import { ChatChartRouter } from './ChatChartRouter'
 
 type ChatMessageListProps = {
     messages: ChatMessage[]
-    summarize?: SummarizeDataQueryResult
     customRows: Map<string, DBRow[]>
 }
 
 function AssistantCard({
     msg,
-    summarize,
     customRows,
 }: {
     msg: Extract<ChatMessage, { role: 'assistant' }>
-    summarize?: SummarizeDataQueryResult
     customRows: Map<string, DBRow[]>
 }) {
     const { payload } = msg
@@ -85,11 +81,7 @@ function AssistantCard({
     const { answer } = payload
     return (
         <div className="space-y-2">
-            <ChatChartRouter
-                answer={answer}
-                rows={customRows.get(msg.id)}
-                summarize={summarize}
-            />
+            <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
             <details className="text-xs">
                 <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                     ℹ️ {answer.explanation}
@@ -104,7 +96,6 @@ function AssistantCard({
 
 export function ChatMessageList({
     messages,
-    summarize,
     customRows,
 }: ChatMessageListProps) {
     if (messages.length === 0) {
@@ -142,7 +133,6 @@ export function ChatMessageList({
                                         { role: 'assistant' }
                                     >
                                 }
-                                summarize={summarize}
                                 customRows={customRows}
                             />
                         </div>

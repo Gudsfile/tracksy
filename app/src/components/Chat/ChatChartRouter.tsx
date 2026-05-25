@@ -1,4 +1,3 @@
-import type { SummarizeDataQueryResult } from '../Charts/Summarize/summarizeQuery'
 import type { ChatAnswer } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
 
@@ -27,14 +26,9 @@ import { CustomChart } from './CustomChart'
 type ChatChartRouterProps = {
     answer: ChatAnswer
     rows?: DBRow[]
-    summarize?: SummarizeDataQueryResult
 }
 
-export function ChatChartRouter({
-    answer,
-    rows,
-    summarize,
-}: ChatChartRouterProps) {
+export function ChatChartRouter({ answer, rows }: ChatChartRouterProps) {
     const year = answer.params.year
 
     switch (answer.intent) {
@@ -45,9 +39,7 @@ export function ChatChartRouter({
         case 'top_albums':
             return <TopAlbums year={year} />
         case 'streams_per_month':
-            return (
-                <StreamPerMonth year={year} />
-            )
+            return <StreamPerMonth year={year} />
         case 'streams_per_hour':
             return <HourlyStreams year={year} />
         case 'streams_per_day_of_week':
