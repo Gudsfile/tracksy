@@ -1,4 +1,4 @@
-type Props = {
+export type RaceControlBarProps = {
     frameCount: number
     startTs: number
     endTs: number
@@ -20,7 +20,7 @@ export function RaceControlBar({
     onFrameChange,
     onSpeedChange,
     onPlayPause,
-}: Props) {
+}: RaceControlBarProps) {
     const atEnd = currentFrameIdx >= frameCount - 1
 
     return (
@@ -53,6 +53,7 @@ export function RaceControlBar({
                 {([0.5, 1, 2, 4] as const).map((speed) => (
                     <button
                         key={speed}
+                        type="button"
                         onClick={() => onSpeedChange(speed)}
                         className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             speedMultiplier === speed
@@ -65,6 +66,7 @@ export function RaceControlBar({
                 ))}
                 <div className="w-px h-4 bg-gray-300/50 dark:bg-slate-600/50 mx-1" />
                 <button
+                    type="button"
                     onClick={onPlayPause}
                     aria-label={isPlaying ? 'Pause' : atEnd ? 'Replay' : 'Play'}
                     title={isPlaying ? 'Pause' : atEnd ? 'Replay' : 'Play'}
