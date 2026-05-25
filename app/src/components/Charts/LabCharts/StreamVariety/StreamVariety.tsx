@@ -327,6 +327,14 @@ export const StreamVariety: FC<Props> = ({
                             : 0}
                         % variety
                     </div>
+                    <div className="text-gray-300 dark:text-gray-400">
+                        {tooltip.distinct_count > 0
+                            ? Math.round(
+                                  tooltip.total_count / tooltip.distinct_count
+                              )
+                            : 0}{' '}
+                        avg listens/{ENTITY_SINGULAR[entity]}
+                    </div>
                 </ChartTooltip>
             )}
         </ChartCard>

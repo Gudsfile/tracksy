@@ -136,6 +136,7 @@ describe('StreamVariety', () => {
         fireEvent.mouseEnter(bars[0])
         expect(screen.getByText('2 distinct')).toBeDefined()
         expect(screen.getByText('1 re-listens')).toBeDefined()
+        expect(screen.getByText(/avg listens\/track/)).toBeDefined()
 
         fireEvent.mouseLeave(bars[0].closest('.flex.items-end')!)
         expect(screen.queryByText('2 distinct')).toBeNull()
