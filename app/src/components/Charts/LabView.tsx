@@ -69,6 +69,7 @@ export function LabView() {
                         <StreamTimeline year={debouncedYear} />
                         <StreamVariety year={debouncedYear} />
                         <StreamDiscovery year={debouncedYear} />
+                        <Top10Race year={debouncedYear} />
                         <StreamPerDayOfWeek year={debouncedYear} />
                     </div>
                 </>
@@ -91,7 +92,6 @@ export function LabView() {
                     <Top10Evolution />
                     <Top10TracksEvolution />
                     <Top10AlbumsEvolution />
-                    <Top10Race year={debouncedYear} />
                     <Top10BillboardRace year={debouncedYear} />
                     <SessionAnalysisDetailed year={debouncedYear} />
                 </div>
