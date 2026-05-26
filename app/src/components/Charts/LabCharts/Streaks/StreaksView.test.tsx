@@ -37,7 +37,7 @@ describe('StreaksView', () => {
         screen.getByText(/Best streak/)
         screen.getByText(/3 days/)
         // date range should mention Mar
-        const bestCard = screen.getByText(/Best streak/).closest('div')
+        const bestCard = screen.getByText(/Best streak/).closest('li')
         expect(bestCard?.textContent).toContain('Mar')
     })
 
@@ -84,7 +84,7 @@ describe('StreaksView', () => {
                 isLatestYear={true}
             />
         )
-        const card = screen.getByText(/Best streak/).closest('div')!
+        const card = screen.getByText(/Best streak/).closest('li')!
         expect(card.textContent).toContain('1 day')
         expect(card.textContent).not.toContain('1 days')
     })
@@ -171,10 +171,10 @@ describe('StreaksView', () => {
 
     it('single date: best streak = 1 day, start equals end', () => {
         render(<StreaksView {...defaultProps} data={[row('2024-06-15')]} />)
-        const card = screen.getByText(/Best streak/).closest('div')!
+        const card = screen.getByText(/Best streak/).closest('li')!
         expect(card.textContent).toContain('1 day')
         expect(card.textContent).not.toContain('1 days')
-        const bestCard = screen.getByText(/Best streak/).closest('div')
+        const bestCard = screen.getByText(/Best streak/).closest('li')
         // start = end = Jun 15 → both dates in text
         expect(bestCard?.textContent?.match(/Jun/g)?.length).toBeGreaterThan(0)
     })
