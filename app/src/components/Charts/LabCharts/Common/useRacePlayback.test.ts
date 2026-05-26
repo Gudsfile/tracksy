@@ -169,5 +169,14 @@ describe('useRacePlayback', () => {
             expect(result.current.currentFrameIdx).toBe(0)
             expect(result.current.isPlaying).toBe(false)
         })
+
+        it('does not auto-reset on mount when entityType is omitted', () => {
+            const { result } = renderHook(() =>
+                useRacePlayback({ frameCount: 5, baseSpeed: 100 })
+            )
+
+            expect(result.current.currentFrameIdx).toBe(0)
+            expect(result.current.isPlaying).toBe(false)
+        })
     })
 })
