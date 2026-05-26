@@ -76,6 +76,19 @@ describe('StreaksView', () => {
         screen.getByText(/0 days/)
     })
 
+    it('uses singular "day" for a streak of 1', () => {
+        render(
+            <StreaksView
+                {...defaultProps}
+                data={[row('2024-06-01')]}
+                isLatestYear={true}
+            />
+        )
+        const card = screen.getByText(/Best streak/).closest('div')!
+        expect(card.textContent).toContain('1 day')
+        expect(card.textContent).not.toContain('1 days')
+    })
+
     it('renders colored cells for streak days', () => {
         const data = [row('2024-03-01'), row('2024-03-02'), row('2024-03-03')]
         render(<StreaksView {...defaultProps} data={data} />)
@@ -158,7 +171,9 @@ describe('StreaksView', () => {
 
     it('single date: best streak = 1 day, start equals end', () => {
         render(<StreaksView {...defaultProps} data={[row('2024-06-15')]} />)
-        screen.getByText(/1 days/)
+        const card = screen.getByText(/Best streak/).closest('div')!
+        expect(card.textContent).toContain('1 day')
+        expect(card.textContent).not.toContain('1 days')
         const bestCard = screen.getByText(/Best streak/).closest('div')
         // start = end = Jun 15 → both dates in text
         expect(bestCard?.textContent?.match(/Jun/g)?.length).toBeGreaterThan(0)
