@@ -1,6 +1,6 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { StreamPerDayOfWeekQueryResult } from './query'
-import { ChartCard } from '../../SimpleCharts/shared'
+import { ChartCard, ChartTooltip } from '../../SimpleCharts/shared'
 import { RaceControlBar } from '../Common/RaceControlBar'
 import { useRacePlayback } from '../Common/useRacePlayback'
 
@@ -29,6 +29,15 @@ type BingoFrame = {
     cells: Map<string, number>
 }
 
+type TooltipState = {
+    x: number
+    y: number
+    day: number
+    hour: number
+    count: number
+    firstPlayedTs: number
+}
+
 type Props = {
     data: StreamPerDayOfWeekQueryResult[] | undefined
     year: number | undefined
@@ -41,6 +50,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
         maxCount,
         topDay,
         topHour,
+        firstPlayedByCell,
         firstCompleteHourFrame,
         firstCompleteHourLabel,
         firstCompleteDayFrame,
@@ -54,6 +64,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                 maxCount: 1,
                 topDay: -1,
                 topHour: -1,
+                firstPlayedByCell: new Map<string, number>(),
                 firstCompleteHourFrame: null,
                 firstCompleteHourLabel: '',
                 firstCompleteDayFrame: null,
@@ -76,6 +87,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
         const cellState = new Map<string, number>()
         const allFrames: BingoFrame[] = []
 
+        const firstPlayedByCell = new Map<string, number>()
         const hourSeenDays = new Map<number, Set<number>>()
         const daySeenHours = new Map<number, Set<number>>()
         let totalRevealed = 0
@@ -93,6 +105,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
             for (const row of rows) {
                 const key = `${row.day_of_week},${row.play_hour}`
                 if (!cellState.has(key)) {
+                    firstPlayedByCell.set(key, dateTs)
                     totalRevealed++
 
                     const d = row.day_of_week
@@ -158,6 +171,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
             maxCount: computedMax,
             topDay: topDayIdx,
             topHour: topHourIdx,
+            firstPlayedByCell,
             firstCompleteHourFrame,
             firstCompleteHourLabel,
             firstCompleteDayFrame,
@@ -202,6 +216,8 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
         return { dayTotals: dt, hourTotals: ht }
     }, [currentCells])
 
+    const [tooltip, setTooltip] = useState<TooltipState | null>(null)
+
     return (
         <div ref={containerRef}>
             <ChartCard
@@ -219,6 +235,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                                 gap: `${CELL_GAP}px`,
                                 minWidth: `${LABEL_WIDTH + 24 * (CELL_GAP + MIN_CELL_WIDTH) + TOTAL_WIDTH}px`,
                             }}
+                            onMouseLeave={() => setTooltip(null)}
                         >
                             {/* Hour labels row */}
                             <div />
@@ -256,6 +273,28 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                                                     }),
                                                 }}
                                                 className={`rounded-xs ${revealed ? '' : 'bg-slate-200/50 dark:bg-slate-700/30'}`}
+                                                onMouseEnter={
+                                                    revealed
+                                                        ? (e) => {
+                                                              const rect =
+                                                                  e.currentTarget.getBoundingClientRect()
+                                                              setTooltip({
+                                                                  x:
+                                                                      rect.left +
+                                                                      rect.width /
+                                                                          2,
+                                                                  y: rect.top,
+                                                                  day: d,
+                                                                  hour: h,
+                                                                  count,
+                                                                  firstPlayedTs:
+                                                                      firstPlayedByCell.get(
+                                                                          `${d},${h}`
+                                                                      ) ?? 0,
+                                                              })
+                                                          }
+                                                        : undefined
+                                                }
                                             />
                                         )
                                     })}
@@ -354,6 +393,22 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                         </li>
                     </ul>
                 </div>
+                {tooltip && (
+                    <ChartTooltip x={tooltip.x} y={tooltip.y}>
+                        <div className="font-semibold">
+                            {DAY_NAMES[tooltip.day]} {tooltip.hour}h
+                        </div>
+                        <div className="text-gray-300 dark:text-gray-400">
+                            {tooltip.count.toLocaleString()} streams
+                        </div>
+                        <div className="text-gray-300 dark:text-gray-400">
+                            first played{' '}
+                            {new Date(
+                                tooltip.firstPlayedTs
+                            ).toLocaleDateString()}
+                        </div>
+                    </ChartTooltip>
+                )}
             </ChartCard>
         </div>
     )
