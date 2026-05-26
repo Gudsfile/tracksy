@@ -113,11 +113,13 @@ export function StreamPerDayOfWeekView({ data, isLoading }: Props) {
                                         const revealed = count > 0
                                         return (
                                             <div
-                                                key={h}
+                                                key={`${h}-${count}`}
                                                 style={{
                                                     aspectRatio: '1',
                                                     ...(revealed && {
                                                         backgroundColor: `rgba(20, 184, 166, ${Math.max(0.15, count / maxCount)})`,
+                                                        animation:
+                                                            'cellPop 0.2s ease-out',
                                                     }),
                                                 }}
                                                 className={`rounded-xs ${revealed ? '' : 'bg-slate-200/50 dark:bg-slate-700/30'}`}
