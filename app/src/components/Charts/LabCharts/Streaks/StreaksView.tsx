@@ -39,11 +39,13 @@ function addDays(date: Date, n: number): Date {
     return d
 }
 
-function cellColor(cell: StreakCell, maxStreak: number): string {
+function cellColor(cell: StreakCell, maxStreak: number): string | null {
     if (cell.streak > 0)
         return `rgba(34,197,94,${Math.max(0.2, cell.streak / maxStreak)})`
     if (cell.streak === 0 && cell.prevStreak > 0 && cell.inRange)
         return 'rgba(239,68,68,0.45)'
+    // in-range non-played: null signals "use gray class"
+    if (cell.inRange) return null
     return 'transparent'
 }
 
@@ -282,6 +284,9 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                                                   ? 'streak-cell-break'
                                                   : undefined
                                             : undefined
+                                        const color = cell
+                                            ? cellColor(cell, maxStreak)
+                                            : 'transparent'
                                         return (
                                             <div
                                                 key={`${wi}-${di}`}
@@ -290,14 +295,10 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                                                     gridColumn: wi + 2,
                                                     gridRow: di + 1,
                                                     aspectRatio: '1',
-                                                    backgroundColor: cell
-                                                        ? cellColor(
-                                                              cell,
-                                                              maxStreak
-                                                          )
-                                                        : 'transparent',
+                                                    backgroundColor:
+                                                        color ?? undefined,
                                                 }}
-                                                className="rounded-xs"
+                                                className={`rounded-xs ${color === null ? 'bg-gray-100 dark:bg-slate-700/50' : ''}`}
                                                 onMouseEnter={
                                                     cell && isVisible(cell)
                                                         ? (e) => {
