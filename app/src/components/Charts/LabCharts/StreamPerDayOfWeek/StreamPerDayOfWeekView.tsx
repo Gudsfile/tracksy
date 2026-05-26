@@ -10,7 +10,6 @@ const MIN_CELL_WIDTH = 10
 const TOTAL_WIDTH = 40
 const BASE_SPEED = 120
 
-const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']
 // Jan 5, 2025 is a Sunday (dayofweek=0); UTC timezone avoids offset edge cases
 const DAY_NAMES = Array.from({ length: 7 }, (_, i) =>
     new Date(Date.UTC(2025, 0, 5 + i)).toLocaleDateString(undefined, {
@@ -366,10 +365,12 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                             </div>
 
                             {/* Day rows */}
-                            {DAY_LABELS.map((dayLabel, d) => (
+                            {DAY_SHORT_NAMES.map((shortName, d) => (
                                 <Fragment key={d}>
                                     <div className="text-[8px] flex items-center justify-end pr-1 text-gray-400 dark:text-gray-600">
-                                        {dayLabel}
+                                        {d === 1 || d === 3 || d === 5
+                                            ? shortName
+                                            : ''}
                                     </div>
                                     {Array.from({ length: 24 }, (_, h) => {
                                         const count =
