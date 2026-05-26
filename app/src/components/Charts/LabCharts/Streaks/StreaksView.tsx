@@ -327,7 +327,7 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                         <InsightCard>
                             Best streak:{' '}
                             <span className="font-semibold text-green-500">
-                                {maxStreak} days
+                                {maxStreak} day{maxStreak === 1 ? '' : 's'}
                             </span>
                             {bestStreakStart && bestStreakEnd && (
                                 <span className="font-normal text-gray-500 dark:text-gray-400">
@@ -344,7 +344,8 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                             <InsightCard>
                                 Current streak:{' '}
                                 <span className="font-semibold text-green-500">
-                                    {currentStreak} days
+                                    {currentStreak} day
+                                    {currentStreak === 1 ? '' : 's'}
                                 </span>
                             </InsightCard>
                         )}
