@@ -29,34 +29,40 @@ describe('StreamPerDayOfWeekView', () => {
         screen.getByText('Have you listened at every hour of every day?')
     })
 
-    it('renders empty state when data is empty', () => {
-        render(<StreamPerDayOfWeekView data={[]} />)
-        screen.getByText('No data for this year')
+    it('renders grid even when data is empty', () => {
+        const { container } = render(<StreamPerDayOfWeekView data={[]} />)
+        const cells = container.querySelectorAll('[style*="aspect-ratio"]')
+        expect(cells).toHaveLength(168)
     })
 
-    it('renders empty state when data is undefined', () => {
-        render(<StreamPerDayOfWeekView data={undefined} />)
-        screen.getByText('No data for this year')
+    it('renders grid when data is undefined', () => {
+        const { container } = render(
+            <StreamPerDayOfWeekView data={undefined} />
+        )
+        const cells = container.querySelectorAll('[style*="aspect-ratio"]')
+        expect(cells).toHaveLength(168)
     })
 
-    it('renders 7 day labels', () => {
+    it('renders sparse day labels', () => {
         render(<StreamPerDayOfWeekView data={sampleData} />)
-        for (const day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']) {
-            screen.getByText(day)
-        }
+        screen.getByText('Mon')
+        screen.getByText('Wed')
+        screen.getByText('Fri')
     })
 
-    it('renders 24 hour labels', () => {
+    it('renders sparse hour labels at multiples of 6', () => {
         render(<StreamPerDayOfWeekView data={sampleData} />)
-        expect(screen.getAllByText('0').length).toBeGreaterThanOrEqual(1)
-        expect(screen.queryByText('24')).toBeNull()
+        screen.getByText('0')
+        screen.getByText('6')
+        screen.getByText('12')
+        screen.getByText('18')
     })
 
     it('renders 168 cells (7 days x 24 hours)', () => {
         const { container } = render(
             <StreamPerDayOfWeekView data={sampleData} />
         )
-        const cells = container.querySelectorAll('.aspect-square')
+        const cells = container.querySelectorAll('[style*="aspect-ratio"]')
         expect(cells).toHaveLength(168)
     })
 })
