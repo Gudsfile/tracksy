@@ -21,10 +21,11 @@ type BingoFrame = {
 
 type Props = {
     data: StreamPerDayOfWeekQueryResult[] | undefined
+    year: number | undefined
     isLoading?: boolean
 }
 
-export function StreamPerDayOfWeekView({ data, isLoading }: Props) {
+export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
     const { frames, maxCount } = useMemo(() => {
         if (!data || data.length === 0)
             return { frames: [] as BingoFrame[], maxCount: 1 }
@@ -67,7 +68,11 @@ export function StreamPerDayOfWeekView({ data, isLoading }: Props) {
         onFrameChange,
         onSpeedChange,
         onPlayPause,
-    } = useRacePlayback({ frameCount: frames.length, baseSpeed: BASE_SPEED })
+    } = useRacePlayback({
+        frameCount: frames.length,
+        baseSpeed: BASE_SPEED,
+        entityType: String(year),
+    })
 
     const currentCells =
         frames[currentFrameIdx]?.cells ?? new Map<string, number>()
