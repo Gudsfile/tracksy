@@ -57,12 +57,13 @@ describe('StreaksView', () => {
         render(
             <StreaksView {...defaultProps} data={data} isLatestYear={true} />
         )
-        screen.getByText(/Current streak/)
-        screen.getByText(/2 days/)
+        const li = screen.getByText(/Current streak/).closest('li')!
+        expect(li.textContent).toContain('2 days')
     })
 
-    it('current streak is 0 when last day of range was a miss', () => {
-        // year=2024 → range Jan 1 – Dec 31, last cell Dec 31 not played → streak 0
+    it('current streak reflects streak at last played date, not end of range', () => {
+        // year=2024 → range Jan 1 – Dec 31, last played Mar 2 with streak 2
+        // Dec 31 is not played but current streak should still be 2
         const data = [row('2024-03-01'), row('2024-03-02')]
         render(
             <StreaksView
@@ -72,8 +73,8 @@ describe('StreaksView', () => {
                 isLatestYear={true}
             />
         )
-        screen.getByText(/Current streak/)
-        screen.getByText(/0 days/)
+        const li = screen.getByText(/Current streak/).closest('li')!
+        expect(li.textContent).toContain('2 days')
     })
 
     it('uses singular "day" for a streak of 1', () => {
