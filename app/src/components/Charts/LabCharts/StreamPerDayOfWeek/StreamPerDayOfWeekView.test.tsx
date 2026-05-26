@@ -111,6 +111,14 @@ const twoDatesData: StreamPerDayOfWeekQueryResult[] = [
     },
 ]
 
+// Same logic as the component — locale-aware day names
+function localeDayName(dayOfWeek: number) {
+    return new Date(Date.UTC(2025, 0, 5 + dayOfWeek)).toLocaleDateString(
+        undefined,
+        { weekday: 'long', timeZone: 'UTC' }
+    )
+}
+
 function getCells(container: HTMLElement) {
     return Array.from(
         container.querySelectorAll<HTMLElement>('[style*="aspect-ratio"]')
@@ -445,19 +453,18 @@ describe('StreamPerDayOfWeekView', () => {
         it('hides first complete day value before milestone frame', () => {
             // sampleData has no complete day
             render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
-            expect(
-                screen.queryByText(
-                    /Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday/
-                )
-            ).toBeNull()
+            const allDayNames = Array.from({ length: 7 }, (_, i) =>
+                localeDayName(i)
+            ).join('|')
+            expect(screen.queryByText(new RegExp(allDayNames))).toBeNull()
         })
 
         it('shows first complete day value when milestone frame reached', () => {
             render(
                 <StreamPerDayOfWeekView data={completeDayData} year={2024} />
             )
-            // day 1 = Monday, milestone at frame 0
-            expect(screen.getByText(/Monday/)).toBeTruthy()
+            // completeDayData uses day_of_week=1 (Monday-equivalent in locale)
+            expect(screen.getByText(new RegExp(localeDayName(1)))).toBeTruthy()
         })
     })
 
@@ -482,9 +489,9 @@ describe('StreamPerDayOfWeekView', () => {
             const { container } = render(
                 <StreamPerDayOfWeekView data={sampleData} year={2024} />
             )
-            // sampleData: (0,10) = Sunday 10h
+            // sampleData: (0,10) = day 0 (Sunday-equivalent in locale), hour 10
             fireEvent.mouseEnter(getCell(container, 0, 10))
-            expect(document.body.textContent).toContain('Sunday')
+            expect(document.body.textContent).toContain(localeDayName(0))
             expect(document.body.textContent).toContain('10h')
         })
 
