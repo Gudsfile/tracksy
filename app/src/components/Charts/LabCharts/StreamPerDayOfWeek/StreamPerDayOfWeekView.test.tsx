@@ -39,6 +39,56 @@ const sampleData: StreamPerDayOfWeekQueryResult[] = [
     },
 ]
 
+// 7 rows: same hour (10) across all 7 days → firstCompleteHour at frame 0
+const completeHourData: StreamPerDayOfWeekQueryResult[] = Array.from(
+    { length: 7 },
+    (_, d) => ({
+        stream_date_ts: 1000,
+        day_of_week: d,
+        play_hour: 10,
+        cumulative_count: 1,
+    })
+)
+
+// 24 rows: same day (Mon=1) across all 24 hours → firstCompleteDay at frame 0
+const completeDayData: StreamPerDayOfWeekQueryResult[] = Array.from(
+    { length: 24 },
+    (_, h) => ({
+        stream_date_ts: 1000,
+        day_of_week: 1,
+        play_hour: h,
+        cumulative_count: 1,
+    })
+)
+
+// 168 rows: all cells → bingo at frame 0
+const bingoData: StreamPerDayOfWeekQueryResult[] = Array.from(
+    { length: 7 },
+    (_, d) =>
+        Array.from({ length: 24 }, (_, h) => ({
+            stream_date_ts: 1000,
+            day_of_week: d,
+            play_hour: h,
+            cumulative_count: 1,
+        }))
+).flat()
+
+// hour 10 gets all 7 days spread over 2 dates; milestone at frame 1
+const completeHourTwoDatesData: StreamPerDayOfWeekQueryResult[] = [
+    ...Array.from({ length: 6 }, (_, d) => ({
+        stream_date_ts: 1000,
+        day_of_week: d,
+        play_hour: 10,
+        cumulative_count: 1,
+    })),
+    {
+        stream_date_ts: 2000,
+        day_of_week: 6,
+        play_hour: 10,
+        cumulative_count: 1,
+    },
+]
+
 // Two dates: frame 0 reveals (1,10), frame 1 adds (3,14)
 const twoDatesData: StreamPerDayOfWeekQueryResult[] = [
     {
@@ -297,6 +347,92 @@ describe('StreamPerDayOfWeekView', () => {
                     'text-teal-500'
                 )
             })
+        })
+    })
+
+    describe('achievements panel', () => {
+        it('renders all three achievement labels', () => {
+            render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
+            screen.getByText('First complete hour')
+            screen.getByText('First complete day')
+            screen.getByText('Bingo')
+        })
+
+        it('shows "N cells uncovered" for bingo when fewer than 168 cells', () => {
+            render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
+            screen.getByText('166 cells uncovered')
+        })
+
+        it('hides first complete hour value at frame 0 when not yet reached', () => {
+            render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
+            // sampleData has only 2 cells; no hour has all 7 days covered
+            expect(screen.queryByText(/h · /)).toBeNull()
+        })
+
+        it('shows first complete hour value when milestone frame reached', () => {
+            render(
+                <StreamPerDayOfWeekView data={completeHourData} year={2024} />
+            )
+            // milestone at frame 0, currentFrameIdx=0 → value should be visible
+            expect(screen.getByText(/10h/)).toBeTruthy()
+        })
+
+        it('hides first complete hour value before milestone frame', () => {
+            // completeHourTwoDatesData: milestone at frame 1; mock at frame 0
+            render(
+                <StreamPerDayOfWeekView
+                    data={completeHourTwoDatesData}
+                    year={2024}
+                />
+            )
+            expect(screen.queryByText(/10h/)).toBeNull()
+        })
+
+        it('shows first complete hour value at milestone frame', () => {
+            vi.spyOn(useRacePlaybackModule, 'useRacePlayback').mockReturnValue(
+                makePlaybackMock(1)
+            )
+            render(
+                <StreamPerDayOfWeekView
+                    data={completeHourTwoDatesData}
+                    year={2024}
+                />
+            )
+            expect(screen.getByText(/10h/)).toBeTruthy()
+        })
+
+        it('shows bingo date when all 168 cells reached at frame 0', () => {
+            render(<StreamPerDayOfWeekView data={bingoData} year={2024} />)
+            expect(screen.queryByText(/cells uncovered/)).toBeNull()
+            // bingo date should be rendered (toLocaleDateString of ts=1000)
+            const bingoDate = new Date(1000).toLocaleDateString()
+            expect(screen.getByText(bingoDate)).toBeTruthy()
+        })
+
+        it('shows "N cells uncovered" when bingo is never reached', () => {
+            // completeHourData has only 7 cells → 161 uncovered
+            render(
+                <StreamPerDayOfWeekView data={completeHourData} year={2024} />
+            )
+            screen.getByText('161 cells uncovered')
+        })
+
+        it('hides first complete day value before milestone frame', () => {
+            // sampleData has no complete day
+            render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
+            expect(
+                screen.queryByText(
+                    /Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday/
+                )
+            ).toBeNull()
+        })
+
+        it('shows first complete day value when milestone frame reached', () => {
+            render(
+                <StreamPerDayOfWeekView data={completeDayData} year={2024} />
+            )
+            // day 1 = Monday, milestone at frame 0
+            expect(screen.getByText(/Monday/)).toBeTruthy()
         })
     })
 })
