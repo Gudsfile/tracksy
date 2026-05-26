@@ -107,6 +107,7 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
             let streak = 0
             let maxStreak = 0
             let bestStreakEnd = ''
+            let currentStreak = 0
 
             while (cur <= end) {
                 const day = formatDateStr(cur)
@@ -121,10 +122,11 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                     maxStreak = streak
                     bestStreakEnd = day
                 }
+                // Track streak at the last played date, not the last day of range.
+                // The range may extend past the last session (e.g. Dec 31 for a year view).
+                if (playedSet.has(day)) currentStreak = streak
                 cur.setDate(cur.getDate() + 1)
             }
-
-            const currentStreak = cells[cells.length - 1]?.streak ?? 0
 
             let bestStreakStart = ''
             if (bestStreakEnd && maxStreak > 0) {
