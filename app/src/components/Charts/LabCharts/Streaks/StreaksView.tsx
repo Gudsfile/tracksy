@@ -10,7 +10,16 @@ const CELL_GAP = 3
 const LABEL_WIDTH = 24
 const MIN_CELL = 10
 
-const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']
+// Jan 5, 2025 is a Sunday — matches getDay() convention (0=Sun, 6=Sat)
+// Every other row is labeled: Mon, Wed, Fri. Sun/Tue/Thu/Sat are blank.
+const DAY_LABELS = Array.from({ length: 7 }, (_, i) =>
+    i % 2 === 0
+        ? ''
+        : new Date(Date.UTC(2025, 0, 5 + i)).toLocaleDateString(undefined, {
+              weekday: 'short',
+              timeZone: 'UTC',
+          })
+)
 
 type StreakCell = {
     day: string
