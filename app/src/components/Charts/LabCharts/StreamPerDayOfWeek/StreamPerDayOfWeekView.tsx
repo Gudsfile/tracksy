@@ -385,11 +385,11 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                                         ).toLocaleDateString()}
                                     </span>
                                 ) : null
-                            ) : (
+                            ) : currentFrameIdx >= frames.length - 1 ? (
                                 <span className="text-sm text-gray-500">
                                     {uncoveredCells} cells uncovered
                                 </span>
-                            )}
+                            ) : null}
                         </li>
                     </ul>
                 </div>
