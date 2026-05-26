@@ -10,5 +10,4 @@ export function queryStreaks(year?: number) {
 
 export type StreaksQueryResult = {
     stream_date: string
-    played: number
 }

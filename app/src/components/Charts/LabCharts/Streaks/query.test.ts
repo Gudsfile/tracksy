@@ -35,26 +35,11 @@ describe('Streaks Query', () => {
             )
 
         expect(rows).toEqual([
-            {
-                stream_date: '2020-01-01',
-                played: 1,
-            },
-            {
-                stream_date: '2020-01-02',
-                played: 1,
-            },
-            {
-                stream_date: '2020-01-03',
-                played: 1,
-            },
-            {
-                stream_date: '2020-01-10',
-                played: 1,
-            },
-            {
-                stream_date: '2020-01-11',
-                played: 1,
-            },
+            { stream_date: '2020-01-01' },
+            { stream_date: '2020-01-02' },
+            { stream_date: '2020-01-03' },
+            { stream_date: '2020-01-10' },
+            { stream_date: '2020-01-11' },
         ])
     })
 
@@ -63,11 +48,11 @@ describe('Streaks Query', () => {
         const rows = result.getRowObjects()
 
         expect(rows).toEqual([
-            { stream_date: '2020-01-01', played: 1 },
-            { stream_date: '2020-01-02', played: 1 },
-            { stream_date: '2020-01-03', played: 1 },
-            { stream_date: '2020-01-10', played: 1 },
-            { stream_date: '2020-01-11', played: 1 },
+            { stream_date: '2020-01-01' },
+            { stream_date: '2020-01-02' },
+            { stream_date: '2020-01-03' },
+            { stream_date: '2020-01-10' },
+            { stream_date: '2020-01-11' },
         ])
     })
 
