@@ -33,7 +33,7 @@ type TooltipState = {
     day: number
     hour: number
     count: number
-    firstPlayedTs: number
+    firstPlayedTs: number | null
 }
 
 type Props = {
@@ -290,28 +290,24 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                                                     }),
                                                 }}
                                                 className={`rounded-xs ${revealed ? '' : 'bg-slate-200/50 dark:bg-slate-700/30'}`}
-                                                onMouseEnter={
-                                                    revealed
-                                                        ? (e) => {
-                                                              const rect =
-                                                                  e.currentTarget.getBoundingClientRect()
-                                                              setTooltip({
-                                                                  x:
-                                                                      rect.left +
-                                                                      rect.width /
-                                                                          2,
-                                                                  y: rect.top,
-                                                                  day: d,
-                                                                  hour: h,
-                                                                  count,
-                                                                  firstPlayedTs:
-                                                                      firstPlayedByCell.get(
-                                                                          `${d},${h}`
-                                                                      ) ?? 0,
-                                                              })
-                                                          }
-                                                        : undefined
-                                                }
+                                                onMouseEnter={(e) => {
+                                                    const rect =
+                                                        e.currentTarget.getBoundingClientRect()
+                                                    setTooltip({
+                                                        x:
+                                                            rect.left +
+                                                            rect.width / 2,
+                                                        y: rect.top,
+                                                        day: d,
+                                                        hour: h,
+                                                        count,
+                                                        firstPlayedTs: revealed
+                                                            ? (firstPlayedByCell.get(
+                                                                  `${d},${h}`
+                                                              ) ?? null)
+                                                            : null,
+                                                    })
+                                                }}
                                             />
                                         )
                                     })}
@@ -406,12 +402,14 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                         <div className="text-gray-300 dark:text-gray-400">
                             {tooltip.count.toLocaleString()} streams
                         </div>
-                        <div className="text-gray-300 dark:text-gray-400">
-                            first played{' '}
-                            {new Date(
-                                tooltip.firstPlayedTs
-                            ).toLocaleDateString()}
-                        </div>
+                        {tooltip.firstPlayedTs !== null && (
+                            <div className="text-gray-300 dark:text-gray-400">
+                                first played{' '}
+                                {new Date(
+                                    tooltip.firstPlayedTs
+                                ).toLocaleDateString()}
+                            </div>
+                        )}
                     </ChartTooltip>
                 )}
             </ChartCard>
