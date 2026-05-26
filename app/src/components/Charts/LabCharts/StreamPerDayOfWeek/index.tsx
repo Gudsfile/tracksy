@@ -15,5 +15,7 @@ export function StreamPerDayOfWeek({ year }: StreamPerDayOfWeekProps) {
         year,
     })
 
-    return <StreamPerDayOfWeekView data={data} isLoading={isLoading} />
+    return (
+        <StreamPerDayOfWeekView data={data} year={year} isLoading={isLoading} />
+    )
 }

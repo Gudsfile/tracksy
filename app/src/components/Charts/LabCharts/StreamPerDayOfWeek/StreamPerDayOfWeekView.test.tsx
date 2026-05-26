@@ -78,36 +78,38 @@ function isRevealed(cell: HTMLElement) {
 
 describe('StreamPerDayOfWeekView', () => {
     it('renders chart title', () => {
-        render(<StreamPerDayOfWeekView data={sampleData} />)
+        render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
         screen.getByText(/Listening Bingo/)
     })
 
     it('renders the question subtitle', () => {
-        render(<StreamPerDayOfWeekView data={sampleData} />)
+        render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
         screen.getByText('Have you listened at every hour of every day?')
     })
 
     it('renders grid when data is empty', () => {
-        const { container } = render(<StreamPerDayOfWeekView data={[]} />)
+        const { container } = render(
+            <StreamPerDayOfWeekView data={[]} year={2024} />
+        )
         expect(getCells(container)).toHaveLength(168)
     })
 
     it('renders grid when data is undefined', () => {
         const { container } = render(
-            <StreamPerDayOfWeekView data={undefined} />
+            <StreamPerDayOfWeekView data={undefined} year={2024} />
         )
         expect(getCells(container)).toHaveLength(168)
     })
 
     it('renders sparse day labels', () => {
-        render(<StreamPerDayOfWeekView data={sampleData} />)
+        render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
         screen.getByText('Mon')
         screen.getByText('Wed')
         screen.getByText('Fri')
     })
 
     it('renders sparse hour labels at multiples of 6', () => {
-        render(<StreamPerDayOfWeekView data={sampleData} />)
+        render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
         screen.getByText('0')
         screen.getByText('6')
         screen.getByText('12')
@@ -116,28 +118,28 @@ describe('StreamPerDayOfWeekView', () => {
 
     it('renders 168 cells (7 days x 24 hours)', () => {
         const { container } = render(
-            <StreamPerDayOfWeekView data={sampleData} />
+            <StreamPerDayOfWeekView data={sampleData} year={2024} />
         )
         expect(getCells(container)).toHaveLength(168)
     })
 
     describe('animation controls', () => {
         it('no RaceControlBar when data is empty', () => {
-            render(<StreamPerDayOfWeekView data={[]} />)
+            render(<StreamPerDayOfWeekView data={[]} year={2024} />)
             expect(
                 screen.queryByRole('slider', { name: /timeline/i })
             ).toBeNull()
         })
 
         it('no RaceControlBar when data spans a single date', () => {
-            render(<StreamPerDayOfWeekView data={sampleData} />)
+            render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
             expect(
                 screen.queryByRole('slider', { name: /timeline/i })
             ).toBeNull()
         })
 
         it('RaceControlBar rendered when data spans multiple dates', () => {
-            render(<StreamPerDayOfWeekView data={twoDatesData} />)
+            render(<StreamPerDayOfWeekView data={twoDatesData} year={2024} />)
             screen.getByRole('slider', { name: /timeline/i })
         })
     })
@@ -145,7 +147,7 @@ describe('StreamPerDayOfWeekView', () => {
     describe('cell state at frame 0', () => {
         it('revealed cells have teal background color', () => {
             const { container } = render(
-                <StreamPerDayOfWeekView data={sampleData} />
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
             )
             // sampleData frame 0: (0,10) and (3,22) revealed
             expect(isRevealed(getCell(container, 0, 10))).toBe(true)
@@ -154,7 +156,7 @@ describe('StreamPerDayOfWeekView', () => {
 
         it('unrevealed cells have no background color', () => {
             const { container } = render(
-                <StreamPerDayOfWeekView data={sampleData} />
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
             )
             expect(isRevealed(getCell(container, 0, 0))).toBe(false)
             expect(isRevealed(getCell(container, 6, 23))).toBe(false)
@@ -162,7 +164,7 @@ describe('StreamPerDayOfWeekView', () => {
 
         it('at frame 0 of two-date data: only first-date cell revealed', () => {
             const { container } = render(
-                <StreamPerDayOfWeekView data={twoDatesData} />
+                <StreamPerDayOfWeekView data={twoDatesData} year={2024} />
             )
             // frame 0 has (1,10), NOT (3,14)
             expect(isRevealed(getCell(container, 1, 10))).toBe(true)
@@ -179,7 +181,7 @@ describe('StreamPerDayOfWeekView', () => {
 
         it('at frame 1 of two-date data: both cells revealed', () => {
             const { container } = render(
-                <StreamPerDayOfWeekView data={twoDatesData} />
+                <StreamPerDayOfWeekView data={twoDatesData} year={2024} />
             )
             expect(isRevealed(getCell(container, 1, 10))).toBe(true)
             expect(isRevealed(getCell(container, 3, 14))).toBe(true)
@@ -187,7 +189,7 @@ describe('StreamPerDayOfWeekView', () => {
 
         it('previously revealed cell remains revealed at frame 1', () => {
             const { container } = render(
-                <StreamPerDayOfWeekView data={twoDatesData} />
+                <StreamPerDayOfWeekView data={twoDatesData} year={2024} />
             )
             expect(isRevealed(getCell(container, 1, 10))).toBe(true)
         })
