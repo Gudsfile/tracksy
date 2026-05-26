@@ -11,6 +11,15 @@ const TOTAL_WIDTH = 40
 const BASE_SPEED = 120
 
 const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']
+const DAY_NAMES = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+]
 const HOUR_LABELS = Array.from({ length: 24 }, (_, h) =>
     h % 6 === 0 ? String(h) : ''
 )
@@ -27,13 +36,30 @@ type Props = {
 }
 
 export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
-    const { frames, maxCount, topDay, topHour } = useMemo(() => {
+    const {
+        frames,
+        maxCount,
+        topDay,
+        topHour,
+        firstCompleteHourFrame,
+        firstCompleteHourLabel,
+        firstCompleteDayFrame,
+        firstCompleteDayLabel,
+        bingoFrame,
+        uncoveredCells,
+    } = useMemo(() => {
         if (!data || data.length === 0)
             return {
                 frames: [] as BingoFrame[],
                 maxCount: 1,
                 topDay: -1,
                 topHour: -1,
+                firstCompleteHourFrame: null,
+                firstCompleteHourLabel: '',
+                firstCompleteDayFrame: null,
+                firstCompleteDayLabel: '',
+                bingoFrame: null,
+                uncoveredCells: 168,
             }
 
         const uniqueDates = [
@@ -50,15 +76,65 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
         const cellState = new Map<string, number>()
         const allFrames: BingoFrame[] = []
 
-        for (const dateTs of uniqueDates) {
-            for (const row of byDate.get(dateTs) ?? []) {
-                cellState.set(
-                    `${row.day_of_week},${row.play_hour}`,
-                    row.cumulative_count
-                )
+        const hourSeenDays = new Map<number, Set<number>>()
+        const daySeenHours = new Map<number, Set<number>>()
+        let totalRevealed = 0
+
+        let firstCompleteHourFrame: number | null = null
+        let firstCompleteHourLabel = ''
+        let firstCompleteDayFrame: number | null = null
+        let firstCompleteDayLabel = ''
+        let bingoFrame: number | null = null
+
+        for (let fi = 0; fi < uniqueDates.length; fi++) {
+            const dateTs = uniqueDates[fi]
+            const rows = byDate.get(dateTs) ?? []
+
+            for (const row of rows) {
+                const key = `${row.day_of_week},${row.play_hour}`
+                if (!cellState.has(key)) {
+                    totalRevealed++
+
+                    const d = row.day_of_week
+                    const h = row.play_hour
+
+                    if (!hourSeenDays.has(h)) hourSeenDays.set(h, new Set())
+                    hourSeenDays.get(h)!.add(d)
+
+                    if (!daySeenHours.has(d)) daySeenHours.set(d, new Set())
+                    daySeenHours.get(d)!.add(h)
+                }
+                cellState.set(key, row.cumulative_count)
             }
+
             allFrames.push({ dateTs, cells: new Map(cellState) })
+
+            if (firstCompleteHourFrame === null) {
+                for (const [h, days] of hourSeenDays) {
+                    if (days.size === 7) {
+                        firstCompleteHourFrame = fi
+                        firstCompleteHourLabel = `${h}h · ${new Date(dateTs).toLocaleDateString()}`
+                        break
+                    }
+                }
+            }
+
+            if (firstCompleteDayFrame === null) {
+                for (const [d, hours] of daySeenHours) {
+                    if (hours.size === 24) {
+                        firstCompleteDayFrame = fi
+                        firstCompleteDayLabel = `${DAY_NAMES[d]} · ${new Date(dateTs).toLocaleDateString()}`
+                        break
+                    }
+                }
+            }
+
+            if (bingoFrame === null && totalRevealed === 168) {
+                bingoFrame = fi
+            }
         }
+
+        const uncoveredCells = 168 - totalRevealed
 
         const lastCells = allFrames[allFrames.length - 1].cells
         const computedMax = Math.max(1, ...lastCells.values())
@@ -82,6 +158,12 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
             maxCount: computedMax,
             topDay: topDayIdx,
             topHour: topHourIdx,
+            firstCompleteHourFrame,
+            firstCompleteHourLabel,
+            firstCompleteDayFrame,
+            firstCompleteDayLabel,
+            bingoFrame,
+            uncoveredCells,
         }
     }, [data])
 
@@ -216,6 +298,61 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                             onPlayPause={onPlayPause}
                         />
                     )}
+
+                    <ul
+                        className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
+                        role="list"
+                    >
+                        <li
+                            className="flex justify-between items-center"
+                            role="listitem"
+                        >
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                First complete hour
+                            </span>
+                            {firstCompleteHourFrame !== null &&
+                                currentFrameIdx >= firstCompleteHourFrame && (
+                                    <span className="font-bold text-sm">
+                                        {firstCompleteHourLabel}
+                                    </span>
+                                )}
+                        </li>
+                        <li
+                            className="flex justify-between items-center mt-1"
+                            role="listitem"
+                        >
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                First complete day
+                            </span>
+                            {firstCompleteDayFrame !== null &&
+                                currentFrameIdx >= firstCompleteDayFrame && (
+                                    <span className="font-bold text-sm">
+                                        {firstCompleteDayLabel}
+                                    </span>
+                                )}
+                        </li>
+                        <li
+                            className="flex justify-between items-center mt-1"
+                            role="listitem"
+                        >
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                Bingo
+                            </span>
+                            {bingoFrame !== null ? (
+                                currentFrameIdx >= bingoFrame ? (
+                                    <span className="font-bold text-sm">
+                                        {new Date(
+                                            frames[bingoFrame].dateTs
+                                        ).toLocaleDateString()}
+                                    </span>
+                                ) : null
+                            ) : (
+                                <span className="text-sm text-gray-500">
+                                    {uncoveredCells} cells uncovered
+                                </span>
+                            )}
+                        </li>
+                    </ul>
                 </div>
             </ChartCard>
         </div>
