@@ -4,7 +4,6 @@ import {
     ChartCard,
     ChartCardEmpty,
     ChartTooltip,
-    InsightCard,
 } from '../../SimpleCharts/shared'
 
 const CELL_GAP = 3
@@ -323,33 +322,47 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex gap-3 mt-4">
-                        <InsightCard>
-                            Best streak:{' '}
-                            <span className="font-semibold text-green-500">
-                                {maxStreak} day{maxStreak === 1 ? '' : 's'}
+                    <ul
+                        className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
+                        role="list"
+                    >
+                        <li
+                            className="flex justify-between items-center"
+                            role="listitem"
+                        >
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                Best streak
                             </span>
-                            {bestStreakStart && bestStreakEnd && (
-                                <span className="font-normal text-gray-500 dark:text-gray-400">
-                                    {' '}
-                                    &middot;{' '}
-                                    {formatDisplayDate(
-                                        bestStreakStart
-                                    )} &ndash;{' '}
-                                    {formatDisplayDate(bestStreakEnd)}
-                                </span>
-                            )}
-                        </InsightCard>
+                            <span className="font-bold text-sm">
+                                {maxStreak} day{maxStreak === 1 ? '' : 's'}
+                                {bestStreakStart && bestStreakEnd && (
+                                    <span className="font-normal text-gray-500 dark:text-gray-400">
+                                        {' '}
+                                        &middot;{' '}
+                                        {formatDisplayDate(
+                                            bestStreakStart
+                                        )}{' '}
+                                        &ndash;{' '}
+                                        {formatDisplayDate(bestStreakEnd)}
+                                    </span>
+                                )}
+                            </span>
+                        </li>
                         {isLatestYear && (
-                            <InsightCard>
-                                Current streak:{' '}
-                                <span className="font-semibold text-green-500">
+                            <li
+                                className="flex justify-between items-center mt-1"
+                                role="listitem"
+                            >
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    Current streak
+                                </span>
+                                <span className="font-bold text-sm">
                                     {currentStreak} day
                                     {currentStreak === 1 ? '' : 's'}
                                 </span>
-                            </InsightCard>
+                            </li>
                         )}
-                    </div>
+                    </ul>
                 </>
             )}
             {tooltip && (
