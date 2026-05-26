@@ -57,4 +57,22 @@ describe('Streaks Query', () => {
             },
         ])
     })
+
+    it('should return streaks for a specific year', async () => {
+        const result = await conn.runAndReadAll(queryStreaks(2020))
+        const rows = result.getRowObjects()
+
+        expect(rows).toEqual([
+            { stream_date: '2020-01-01', played: 1 },
+            { stream_date: '2020-01-02', played: 1 },
+            { stream_date: '2020-01-03', played: 1 },
+            { stream_date: '2020-01-10', played: 1 },
+            { stream_date: '2020-01-11', played: 1 },
+        ])
+    })
+
+    it('should return empty for a year with no data', async () => {
+        const result = await conn.runAndReadAll(queryStreaks(2019))
+        expect(result.getRowObjects()).toEqual([])
+    })
 })
