@@ -10,7 +10,8 @@ export function streamPerDayOfWeekQueryByYear(year: number | undefined) {
 }
 
 export type StreamPerDayOfWeekQueryResult = {
-    day_of_week: number
-    play_hour: number
-    count_streams: number
+    stream_date_ts: number // epoch ms, consistent with Top10Race
+    day_of_week: number // 0 = Sun, 1 = Mon, ..., 6 = Sat (DuckDB dayofweek convention)
+    play_hour: number // 0-23
+    cumulative_count: number
 }
