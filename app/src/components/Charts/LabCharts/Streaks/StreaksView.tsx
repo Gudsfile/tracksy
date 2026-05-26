@@ -274,36 +274,50 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                                 ))}
 
                                 {weeks.flatMap((week, wi) =>
-                                    week.map((cell, di) => (
-                                        <div
-                                            key={`${wi}-${di}`}
-                                            style={{
-                                                gridColumn: wi + 2,
-                                                gridRow: di + 1,
-                                                aspectRatio: '1',
-                                                backgroundColor: cell
-                                                    ? cellColor(cell, maxStreak)
-                                                    : 'transparent',
-                                            }}
-                                            className="rounded-xs"
-                                            onMouseEnter={
-                                                cell && isVisible(cell)
-                                                    ? (e) => {
-                                                          const rect =
-                                                              e.currentTarget.getBoundingClientRect()
-                                                          setTooltip({
+                                    week.map((cell, di) => {
+                                        const testId = cell
+                                            ? cell.streak > 0
+                                                ? 'streak-cell-active'
+                                                : cell.prevStreak > 0 &&
+                                                    cell.inRange
+                                                  ? 'streak-cell-break'
+                                                  : undefined
+                                            : undefined
+                                        return (
+                                            <div
+                                                key={`${wi}-${di}`}
+                                                data-testid={testId}
+                                                style={{
+                                                    gridColumn: wi + 2,
+                                                    gridRow: di + 1,
+                                                    aspectRatio: '1',
+                                                    backgroundColor: cell
+                                                        ? cellColor(
                                                               cell,
-                                                              x:
-                                                                  rect.left +
-                                                                  rect.width /
-                                                                      2,
-                                                              y: rect.top,
-                                                          })
-                                                      }
-                                                    : undefined
-                                            }
-                                        />
-                                    ))
+                                                              maxStreak
+                                                          )
+                                                        : 'transparent',
+                                                }}
+                                                className="rounded-xs"
+                                                onMouseEnter={
+                                                    cell && isVisible(cell)
+                                                        ? (e) => {
+                                                              const rect =
+                                                                  e.currentTarget.getBoundingClientRect()
+                                                              setTooltip({
+                                                                  cell,
+                                                                  x:
+                                                                      rect.left +
+                                                                      rect.width /
+                                                                          2,
+                                                                  y: rect.top,
+                                                              })
+                                                          }
+                                                        : undefined
+                                                }
+                                            />
+                                        )
+                                    })
                                 )}
                             </div>
                         </div>
