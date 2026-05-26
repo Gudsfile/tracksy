@@ -8,7 +8,7 @@
 
 ## 🎹 Proposal
 
-<!-- Details concerning the technical solution chosen and implemented. -->
+<!-- Approach in plain language. No commit lists, no "X files changed", no "X tests added". Describe what changed and why, not how the work was organized. -->
 
 ## 🎶 Comments
 
