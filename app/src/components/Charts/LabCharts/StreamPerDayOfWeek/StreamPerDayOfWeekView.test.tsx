@@ -417,6 +417,31 @@ describe('StreamPerDayOfWeekView', () => {
             screen.getByText('161 cells uncovered')
         })
 
+        it('hides "N cells uncovered" before the final frame', () => {
+            // completeHourTwoDatesData spans 2 frames; bingo never reached
+            // at frame 0 (not final), "N cells uncovered" should not appear
+            render(
+                <StreamPerDayOfWeekView
+                    data={completeHourTwoDatesData}
+                    year={2024}
+                />
+            )
+            expect(screen.queryByText(/cells uncovered/)).toBeNull()
+        })
+
+        it('shows "N cells uncovered" at the final frame when bingo never reached', () => {
+            vi.spyOn(useRacePlaybackModule, 'useRacePlayback').mockReturnValue(
+                makePlaybackMock(1)
+            )
+            render(
+                <StreamPerDayOfWeekView
+                    data={completeHourTwoDatesData}
+                    year={2024}
+                />
+            )
+            screen.getByText(/cells uncovered/)
+        })
+
         it('hides first complete day value before milestone frame', () => {
             // sampleData has no complete day
             render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
