@@ -505,14 +505,22 @@ describe('StreamPerDayOfWeekView', () => {
             expect(document.body.textContent).toContain('10h')
         })
 
-        it('no tooltip on unrevealed cell', () => {
+        it('unrevealed cell shows tooltip with 0 streams', () => {
             const { container } = render(
                 <StreamPerDayOfWeekView data={sampleData} year={2024} />
             )
             const cell = getCell(container, 0, 0)
             expect(isRevealed(cell)).toBe(false)
             fireEvent.mouseEnter(cell)
-            expect(document.body.textContent).not.toContain('streams')
+            expect(document.body.textContent).toContain('0 streams')
+        })
+
+        it('unrevealed cell tooltip has no first played line', () => {
+            const { container } = render(
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
+            )
+            fireEvent.mouseEnter(getCell(container, 0, 0))
+            expect(document.body.textContent).not.toContain('first played')
         })
 
         it('tooltip disappears on mouseleave of grid', () => {
