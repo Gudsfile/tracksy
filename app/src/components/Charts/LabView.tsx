@@ -51,6 +51,14 @@ export function LabView() {
             setYear(new Date(Number(summarize.max_datetime)).getFullYear())
     }, [summarize])
 
+    const latestYear = summarize
+        ? new Date(Number(summarize.max_datetime)).getFullYear()
+        : undefined
+
+    const isLatestYear =
+        debouncedYear === undefined ||
+        (latestYear !== undefined && debouncedYear === latestYear)
+
     return (
         <>
             {summarize && (
@@ -70,6 +78,10 @@ export function LabView() {
                         <StreamVariety year={debouncedYear} />
                         <StreamDiscovery year={debouncedYear} />
                         <Top10Race year={debouncedYear} />
+                        <Streaks
+                            year={debouncedYear}
+                            isLatestYear={isLatestYear}
+                        />
                         <StreamPerDayOfWeek year={debouncedYear} />
                     </div>
                 </>
@@ -88,7 +100,6 @@ export function LabView() {
                 </p>
 
                 <div className="flex flex-col gap-4">
-                    <Streaks />
                     <Top10Evolution />
                     <Top10TracksEvolution />
                     <Top10AlbumsEvolution />
