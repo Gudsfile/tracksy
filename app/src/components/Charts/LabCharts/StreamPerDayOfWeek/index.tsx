@@ -1,25 +1,19 @@
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     type StreamPerDayOfWeekQueryResult,
     streamPerDayOfWeekQueryByYear,
 } from './query'
-import { buildPlot } from './plot'
-import { Common } from '../Common'
-import { useCallback } from 'react'
+import { StreamPerDayOfWeekView } from './StreamPerDayOfWeekView'
 
 interface StreamPerDayOfWeekProps {
     year: number | undefined
 }
 
 export function StreamPerDayOfWeek({ year }: StreamPerDayOfWeekProps) {
-    const plotBuilder = useCallback(
-        (data: StreamPerDayOfWeekQueryResult[], isDark: boolean | undefined) =>
-            buildPlot(data, isDark),
-        []
-    )
-    return (
-        <Common<StreamPerDayOfWeekQueryResult>
-            query={streamPerDayOfWeekQueryByYear(year)}
-            buildPlot={plotBuilder}
-        />
-    )
+    const { data, isLoading } = useDBQueryMany<StreamPerDayOfWeekQueryResult>({
+        query: streamPerDayOfWeekQueryByYear(year),
+        year,
+    })
+
+    return <StreamPerDayOfWeekView data={data} isLoading={isLoading} />
 }

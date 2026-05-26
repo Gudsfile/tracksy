@@ -120,9 +120,10 @@ const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
 
 const streamPerDayOfWeekResultMock: StreamPerDayOfWeekQueryResult[] = [
     {
-        dayOfWeek: 1,
-        hour: 12,
-        count_streams: 10,
+        stream_date_ts: 1704067200000,
+        day_of_week: 1,
+        play_hour: 12,
+        cumulative_count: 10,
     },
 ]
 
@@ -174,7 +175,5 @@ it('renders all Charts', async () => {
         name: 'Global Top 10 Artists Evolution',
     })
     await screen.findByRole('heading', { name: /Top 10 Race/ })
-    await screen.findByRole('heading', {
-        name: 'Stream per hour and day of week',
-    })
+    await screen.findByRole('heading', { name: /Listening Bingo/ })
 })
