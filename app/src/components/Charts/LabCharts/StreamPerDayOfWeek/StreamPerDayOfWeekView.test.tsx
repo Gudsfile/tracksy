@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { StreamPerDayOfWeekView } from './StreamPerDayOfWeekView'
 import type { StreamPerDayOfWeekQueryResult } from './query'
 import * as useRacePlaybackModule from '../Common/useRacePlayback'
@@ -171,17 +171,19 @@ describe('StreamPerDayOfWeekView', () => {
 
     it('renders sparse day labels', () => {
         render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
-        screen.getByText('Mon')
-        screen.getByText('Wed')
-        screen.getByText('Fri')
+        const grid = screen.getByTestId('bingo-grid-desktop')
+        within(grid).getByText('Mon')
+        within(grid).getByText('Wed')
+        within(grid).getByText('Fri')
     })
 
     it('renders sparse hour labels at multiples of 6', () => {
         render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
-        screen.getByText('0')
-        screen.getByText('6')
-        screen.getByText('12')
-        screen.getByText('18')
+        const grid = screen.getByTestId('bingo-grid-desktop')
+        within(grid).getByText('0')
+        within(grid).getByText('6')
+        within(grid).getByText('12')
+        within(grid).getByText('18')
     })
 
     it('renders 168 cells (7 days x 24 hours)', () => {
@@ -270,12 +272,14 @@ describe('StreamPerDayOfWeekView', () => {
     describe('marginal totals', () => {
         it('renders TOTAL header label', () => {
             render(<StreamPerDayOfWeekView data={twoDatesData} year={2024} />)
-            screen.getByText('TOTAL')
+            const grid = screen.getByTestId('bingo-grid-desktop')
+            within(grid).getByText('TOTAL')
         })
 
         it('renders TOT row label', () => {
             render(<StreamPerDayOfWeekView data={twoDatesData} year={2024} />)
-            screen.getByText('TOT')
+            const grid = screen.getByTestId('bingo-grid-desktop')
+            within(grid).getByText('TOT')
         })
 
         it('shows correct day total at frame 0', () => {
@@ -529,9 +533,7 @@ describe('StreamPerDayOfWeekView', () => {
             )
             fireEvent.mouseEnter(getCell(container, 0, 10))
             expect(document.body.textContent).toContain('streams')
-            const grid = container.querySelector<HTMLElement>(
-                '[style*="display: grid"]'
-            )!
+            const grid = screen.getByTestId('bingo-grid-desktop')
             fireEvent.mouseLeave(grid)
             expect(document.body.textContent).not.toContain('streams')
         })
