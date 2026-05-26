@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { StreamPerDayOfWeekView } from './StreamPerDayOfWeekView'
 import type { StreamPerDayOfWeekQueryResult } from './query'
 import * as useRacePlaybackModule from '../Common/useRacePlayback'
@@ -433,6 +433,57 @@ describe('StreamPerDayOfWeekView', () => {
             )
             // day 1 = Monday, milestone at frame 0
             expect(screen.getByText(/Monday/)).toBeTruthy()
+        })
+    })
+
+    describe('tooltip', () => {
+        it('no tooltip initially', () => {
+            render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
+            expect(document.body.textContent).not.toContain('streams')
+        })
+
+        it('tooltip appears on mouseenter of revealed cell', () => {
+            const { container } = render(
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
+            )
+            const cell = getCell(container, 0, 10)
+            expect(isRevealed(cell)).toBe(true)
+            fireEvent.mouseEnter(cell)
+            expect(document.body.textContent).toContain('streams')
+            expect(document.body.textContent).toContain('first played')
+        })
+
+        it('tooltip shows day name and hour', () => {
+            const { container } = render(
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
+            )
+            // sampleData: (0,10) = Sunday 10h
+            fireEvent.mouseEnter(getCell(container, 0, 10))
+            expect(document.body.textContent).toContain('Sunday')
+            expect(document.body.textContent).toContain('10h')
+        })
+
+        it('no tooltip on unrevealed cell', () => {
+            const { container } = render(
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
+            )
+            const cell = getCell(container, 0, 0)
+            expect(isRevealed(cell)).toBe(false)
+            fireEvent.mouseEnter(cell)
+            expect(document.body.textContent).not.toContain('streams')
+        })
+
+        it('tooltip disappears on mouseleave of grid', () => {
+            const { container } = render(
+                <StreamPerDayOfWeekView data={sampleData} year={2024} />
+            )
+            fireEvent.mouseEnter(getCell(container, 0, 10))
+            expect(document.body.textContent).toContain('streams')
+            const grid = container.querySelector<HTMLElement>(
+                '[style*="display: grid"]'
+            )!
+            fireEvent.mouseLeave(grid)
+            expect(document.body.textContent).not.toContain('streams')
         })
     })
 })
