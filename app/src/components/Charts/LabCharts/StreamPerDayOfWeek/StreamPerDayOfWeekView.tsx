@@ -18,6 +18,12 @@ const DAY_NAMES = Array.from({ length: 7 }, (_, i) =>
         timeZone: 'UTC',
     })
 )
+const DAY_SHORT_NAMES = Array.from({ length: 7 }, (_, i) =>
+    new Date(Date.UTC(2025, 0, 5 + i)).toLocaleDateString(undefined, {
+        weekday: 'short',
+        timeZone: 'UTC',
+    })
+)
 const HOUR_LABELS = Array.from({ length: 24 }, (_, h) =>
     h % 6 === 0 ? String(h) : ''
 )
@@ -244,8 +250,99 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                 isLoading={isLoading}
             >
                 <div className="flex flex-col gap-3">
-                    <div className="overflow-x-auto">
+                    <div className="md:hidden" data-testid="bingo-grid-mobile">
                         <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: `${LABEL_WIDTH}px repeat(7, 1fr) ${TOTAL_WIDTH}px`,
+                                gap: `${CELL_GAP}px`,
+                            }}
+                            onMouseLeave={() => setTooltip(null)}
+                        >
+                            {/* Day labels header */}
+                            <div />
+                            {DAY_SHORT_NAMES.map((label, d) => (
+                                <div
+                                    key={d}
+                                    className="text-[8px] text-center text-gray-400 dark:text-gray-600"
+                                >
+                                    {label}
+                                </div>
+                            ))}
+                            <div className="text-[8px] text-right text-gray-400 dark:text-gray-600 pl-1 border-l border-gray-200 dark:border-gray-700">
+                                TOTAL
+                            </div>
+
+                            {/* Hour rows */}
+                            {Array.from({ length: 24 }, (_, h) => (
+                                <Fragment key={h}>
+                                    <div className="text-[8px] flex items-center justify-end pr-1 text-gray-400 dark:text-gray-600">
+                                        {HOUR_LABELS[h]}
+                                    </div>
+                                    {Array.from({ length: 7 }, (_, d) => {
+                                        const count =
+                                            currentCells.get(`${d},${h}`) ?? 0
+                                        const revealed = count > 0
+                                        return (
+                                            <div
+                                                key={`${d}-${count}`}
+                                                style={{
+                                                    height: 12,
+                                                    ...(revealed && {
+                                                        backgroundColor: `rgba(20, 184, 166, ${Math.max(0.15, count / maxCount)})`,
+                                                        animation:
+                                                            'cellPop 0.2s ease-out',
+                                                    }),
+                                                }}
+                                                className={`rounded-xs ${revealed ? '' : 'bg-slate-200/50 dark:bg-slate-700/30'}`}
+                                                onMouseEnter={(e) => {
+                                                    const rect =
+                                                        e.currentTarget.getBoundingClientRect()
+                                                    setTooltip({
+                                                        x:
+                                                            rect.left +
+                                                            rect.width / 2,
+                                                        y: rect.top,
+                                                        day: d,
+                                                        hour: h,
+                                                        count,
+                                                        firstPlayedTs: revealed
+                                                            ? (firstPlayedByCell.get(
+                                                                  `${d},${h}`
+                                                              ) ?? null)
+                                                            : null,
+                                                    })
+                                                }}
+                                            />
+                                        )
+                                    })}
+                                    <div
+                                        className={`text-[8px] text-right flex items-center justify-end pl-1 border-l border-gray-200 dark:border-gray-700 font-medium ${h === topHour ? 'text-teal-500' : 'text-gray-500 dark:text-gray-400'}`}
+                                    >
+                                        {hourTotals[h] > 0 ? hourTotals[h] : ''}
+                                    </div>
+                                </Fragment>
+                            ))}
+
+                            {/* Day totals footer */}
+                            <div className="text-[8px] flex items-center justify-end pr-1 text-gray-400 dark:text-gray-600">
+                                TOT
+                            </div>
+                            {dayTotals.map((total, d) => (
+                                <div
+                                    key={d}
+                                    className={`text-[8px] text-center font-medium ${d === topDay ? 'text-teal-500' : 'text-gray-500 dark:text-gray-400'}`}
+                                >
+                                    {total > 0 ? total : ''}
+                                </div>
+                            ))}
+                            <div />
+                        </div>
+                    </div>
+
+                    <div className="hidden md:block overflow-x-auto">
+                        <div
+                            data-testid="bingo-grid-desktop"
                             style={{
                                 display: 'grid',
                                 gridTemplateColumns: `${LABEL_WIDTH}px repeat(24, 1fr) ${TOTAL_WIDTH}px`,
