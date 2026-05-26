@@ -222,7 +222,7 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                 <>
                     <div
                         ref={scrollRef}
-                        className="overflow-x-auto"
+                        className="overflow-x-auto overflow-y-hidden"
                         onMouseLeave={() => setTooltip(null)}
                     >
                         <div style={{ minWidth: `${minGridWidth}px` }}>
