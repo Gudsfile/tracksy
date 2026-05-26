@@ -11,15 +11,13 @@ const TOTAL_WIDTH = 40
 const BASE_SPEED = 120
 
 const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']
-const DAY_NAMES = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-]
+// Jan 5, 2025 is a Sunday (dayofweek=0); UTC timezone avoids offset edge cases
+const DAY_NAMES = Array.from({ length: 7 }, (_, i) =>
+    new Date(Date.UTC(2025, 0, 5 + i)).toLocaleDateString(undefined, {
+        weekday: 'long',
+        timeZone: 'UTC',
+    })
+)
 const HOUR_LABELS = Array.from({ length: 24 }, (_, h) =>
     h % 6 === 0 ? String(h) : ''
 )
