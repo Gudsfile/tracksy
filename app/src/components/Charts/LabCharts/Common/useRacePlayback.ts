@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 type Options = {
     frameCount: number
     baseSpeed: number
-    entityType: string
+    entityType?: string
 }
 
 type RacePlayback = {
