@@ -159,6 +159,16 @@ describe('StreamPerDayOfWeekView', () => {
         expect(getCells(container)).toHaveLength(168)
     })
 
+    it('does not show "cells uncovered" when data is empty', () => {
+        render(<StreamPerDayOfWeekView data={[]} year={2024} />)
+        expect(screen.queryByText(/cells uncovered/)).toBeNull()
+    })
+
+    it('does not show "cells uncovered" when data is undefined', () => {
+        render(<StreamPerDayOfWeekView data={undefined} year={2024} />)
+        expect(screen.queryByText(/cells uncovered/)).toBeNull()
+    })
+
     it('renders sparse day labels', () => {
         render(<StreamPerDayOfWeekView data={sampleData} year={2024} />)
         screen.getByText('Mon')

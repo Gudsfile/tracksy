@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, type ReactNode, useMemo, useState } from 'react'
 import type { StreamPerDayOfWeekQueryResult } from './query'
 import { ChartCard, ChartTooltip } from '../../SimpleCharts/shared'
 import { RaceControlBar } from '../Common/RaceControlBar'
@@ -216,6 +216,25 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
 
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
+    let bingoValue: ReactNode = null
+    if (bingoFrame !== null && currentFrameIdx >= bingoFrame) {
+        bingoValue = (
+            <span className="font-bold text-sm">
+                {new Date(frames[bingoFrame].dateTs).toLocaleDateString()}
+            </span>
+        )
+    } else if (
+        bingoFrame === null &&
+        frames.length > 0 &&
+        currentFrameIdx >= frames.length - 1
+    ) {
+        bingoValue = (
+            <span className="text-sm text-gray-500">
+                {uncoveredCells} cells uncovered
+            </span>
+        )
+    }
+
     return (
         <div ref={containerRef}>
             <ChartCard
@@ -375,19 +394,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                             <span className="text-sm text-gray-600 dark:text-gray-400">
                                 Bingo
                             </span>
-                            {bingoFrame !== null ? (
-                                currentFrameIdx >= bingoFrame ? (
-                                    <span className="font-bold text-sm">
-                                        {new Date(
-                                            frames[bingoFrame].dateTs
-                                        ).toLocaleDateString()}
-                                    </span>
-                                ) : null
-                            ) : currentFrameIdx >= frames.length - 1 ? (
-                                <span className="text-sm text-gray-500">
-                                    {uncoveredCells} cells uncovered
-                                </span>
-                            ) : null}
+                            {bingoValue}
                         </li>
                     </ul>
                 </div>
