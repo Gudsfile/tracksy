@@ -48,21 +48,18 @@ function addDays(date: Date, n: number): Date {
     return d
 }
 
+const isActive = (cell: StreakCell) => cell.streak > 0
+const isBreak = (cell: StreakCell) =>
+    cell.streak === 0 && cell.prevStreak > 0 && cell.inRange
+const isVisible = (cell: StreakCell) => isActive(cell) || isBreak(cell)
+
 function cellColor(cell: StreakCell, maxStreak: number): string | null {
-    if (cell.streak > 0)
+    if (isActive(cell))
         return `rgba(34,197,94,${Math.max(0.2, cell.streak / maxStreak)})`
-    if (cell.streak === 0 && cell.prevStreak > 0 && cell.inRange)
-        return 'rgba(239,68,68,0.45)'
+    if (isBreak(cell)) return 'rgba(239,68,68,0.45)'
     // in-range non-played: null signals "use gray class"
     if (cell.inRange) return null
     return 'transparent'
-}
-
-function isVisible(cell: StreakCell): boolean {
-    return (
-        cell.streak > 0 ||
-        (cell.streak === 0 && cell.prevStreak > 0 && cell.inRange)
-    )
 }
 
 function formatDisplayDate(day: string): string {
@@ -286,10 +283,9 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                                 {weeks.flatMap((week, wi) =>
                                     week.map((cell, di) => {
                                         const testId = cell
-                                            ? cell.streak > 0
+                                            ? isActive(cell)
                                                 ? 'streak-cell-active'
-                                                : cell.prevStreak > 0 &&
-                                                    cell.inRange
+                                                : isBreak(cell)
                                                   ? 'streak-cell-break'
                                                   : undefined
                                             : undefined
