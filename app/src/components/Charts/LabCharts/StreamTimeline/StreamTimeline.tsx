@@ -5,11 +5,9 @@ import type { Granularity } from '../shared/types'
 import { formatDuration } from '../../../../utils/formatDuration'
 import { formatTooltipDate } from '../shared/formatTooltipDate'
 import { formatBarLabel } from '../shared/formatBarLabel'
-import {
-    ChartCard,
-    ChartCardEmpty,
-    ChartTooltip,
-} from '../../SimpleCharts/shared'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
+import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { GranularityTabs } from '../shared/GranularityTabs'
 import { InsightList, InsightRow } from '../shared/InsightList'
 

@@ -1,10 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import type { StreaksQueryResult } from './query'
-import {
-    ChartCard,
-    ChartCardEmpty,
-    ChartTooltip,
-} from '../../SimpleCharts/shared'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
+import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { InsightList, InsightRow } from '../shared/InsightList'
 
 const CELL_GAP = 3

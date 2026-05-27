@@ -3,7 +3,8 @@ import { queryTop10Race, type Top10RaceQueryResult } from './query'
 import type { EntityType } from '../shared/types'
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { Top10RaceView } from './Top10RaceView'
-import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 import { EntityTabs } from '../shared/EntityTabs'
 
 export function Top10Race({ year }: { year: number | undefined }) {
