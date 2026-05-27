@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useEffect, useRef, useState } from 'react'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     queryTop10BillboardRace,
     type Top10BillboardRaceQueryResult,
@@ -10,27 +10,27 @@ import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
 import { EntityTabs } from '../shared/EntityTabs'
 
 export function Top10BillboardRace({ year }: { year: number | undefined }) {
-    const [data, setData] = useState<Top10BillboardRaceQueryResult[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [entityType, setEntityType] = useState<EntityType>('artists')
-    const [dataEntityType, setDataEntityType] = useState<EntityType>('artists')
 
+    const { data: rawData, isLoading } =
+        useDBQueryMany<Top10BillboardRaceQueryResult>({
+            query: queryTop10BillboardRace(year, entityType),
+            year,
+        })
+
+    const data = rawData ?? []
+
+    // Syncs committedEntityType only after new data arrives, preventing the race view
+    // from rendering a stale entity label while the fetch is in flight.
+    const prevDataRef = useRef(rawData)
+    const [committedEntityType, setCommittedEntityType] =
+        useState<EntityType>('artists')
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true)
-            try {
-                const result =
-                    await queryDBAsJSON<Top10BillboardRaceQueryResult>(
-                        queryTop10BillboardRace(year, entityType)
-                    )
-                setData(result || [])
-                setDataEntityType(entityType)
-            } finally {
-                setIsLoading(false)
-            }
+        if (rawData !== prevDataRef.current) {
+            prevDataRef.current = rawData
+            setCommittedEntityType(entityType)
         }
-        fetchData()
-    }, [year, entityType])
+    }, [rawData, entityType])
 
     const isInitialLoad = isLoading && data.length === 0
 
@@ -54,7 +54,7 @@ export function Top10BillboardRace({ year }: { year: number | undefined }) {
                 >
                     <Top10BillboardRaceView
                         data={data}
-                        entityType={dataEntityType}
+                        entityType={committedEntityType}
                     />
                 </div>
             )}
