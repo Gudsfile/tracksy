@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
+import { useCommittedValue } from '../shared/useCommittedValue'
 import {
     queryTop10BillboardRace,
     type Top10BillboardRaceQueryResult,
@@ -20,18 +21,7 @@ export function Top10BillboardRace({ year }: { year: number | undefined }) {
         })
 
     const data = rawData ?? []
-
-    // Syncs committedEntityType only after new data arrives, preventing the race view
-    // from rendering a stale entity label while the fetch is in flight.
-    const prevDataRef = useRef(rawData)
-    const [committedEntityType, setCommittedEntityType] =
-        useState<EntityType>('artists')
-    useEffect(() => {
-        if (rawData !== prevDataRef.current) {
-            prevDataRef.current = rawData
-            setCommittedEntityType(entityType)
-        }
-    }, [rawData, entityType])
+    const committedEntityType = useCommittedValue(rawData, entityType)
 
     const isInitialLoad = isLoading && data.length === 0
 
