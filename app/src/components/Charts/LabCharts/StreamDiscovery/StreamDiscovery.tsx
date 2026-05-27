@@ -11,6 +11,7 @@ import {
     ChartCardEmpty,
     ChartTooltip,
 } from '../../SimpleCharts/shared'
+import { EntityTabs } from '../shared/EntityTabs'
 
 type TooltipState = {
     x: number
@@ -38,12 +39,6 @@ const GRAN_LABELS: Record<Granularity, string> = {
     month: 'Month',
     week: 'Week',
     day: 'Day',
-}
-
-const ENTITY_LABELS: Record<Entity, string> = {
-    tracks: 'Tracks',
-    artists: 'Artists',
-    albums: 'Albums',
 }
 
 const ENTITY_SINGULAR: Record<Entity, string> = {
@@ -124,31 +119,15 @@ export const StreamDiscovery: FC<Props> = ({
         : 0
     const sparseLabelLayout = granularity !== 'month' || year === undefined
 
-    const entityTabs = (
-        <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
-            {(['tracks', 'artists', 'albums'] as const).map((e) => (
-                <button
-                    key={e}
-                    onClick={() => onEntityChange(e)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                        entity === e
-                            ? 'bg-blue-500 text-white shadow-sm'
-                            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                >
-                    {ENTITY_LABELS[e]}
-                </button>
-            ))}
-        </div>
-    )
-
     return (
         <ChartCard
             title="Stream Discovery"
             emoji="🔭"
             isLoading={isLoading}
             question="How many new artists, tracks, or albums did I discover?"
-            headerActions={entityTabs}
+            headerActions={
+                <EntityTabs value={entity} onChange={onEntityChange} />
+            }
         >
             <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30 self-start mb-3">
                 {(['year', 'month', 'week', 'day'] as const).map((g) => {
