@@ -1,4 +1,4 @@
-import type { Granularity } from './useGranularity'
+import type { Granularity } from './types'
 
 const GRAN_LABELS: Record<Granularity, string> = {
     year: 'Year',

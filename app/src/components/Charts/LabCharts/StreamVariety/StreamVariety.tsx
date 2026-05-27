@@ -4,8 +4,7 @@ import type {
     StreamVarietyQueryResult,
     StreamVarietyStatsQueryResult,
 } from './query'
-import type { Granularity } from '../shared/useGranularity'
-import type { EntityType } from '../types'
+import type { Granularity, EntityType } from '../shared/types'
 import {
     ChartCard,
     ChartCardEmpty,

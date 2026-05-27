@@ -2,8 +2,7 @@ import { TABLE } from '../../../../db/queries/constants'
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamVariety from './StreamVariety.sql?raw'
 import sqlQueryStreamVarietyStats from './StreamVarietyStats.sql?raw'
-import type { Granularity } from '../shared/useGranularity'
-import type { EntityType } from '../types'
+import type { Granularity, EntityType } from '../shared/types'
 
 export type StreamVarietyQueryResult = {
     ts: string

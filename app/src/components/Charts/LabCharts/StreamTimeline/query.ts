@@ -1,7 +1,7 @@
 import { TABLE } from '../../../../db/queries/constants'
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamTimeline from './StreamTimeline.sql?raw'
-import type { Granularity } from '../shared/useGranularity'
+import type { Granularity } from '../shared/types'
 
 export type StreamTimelineQueryResult = {
     ts: string

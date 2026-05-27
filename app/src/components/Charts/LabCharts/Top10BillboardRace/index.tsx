@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import {
     queryTop10BillboardRace,
-    type EntityType,
     type Top10BillboardRaceQueryResult,
 } from './query'
+import type { EntityType } from '../shared/types'
 import { Top10BillboardRaceView } from './Top10BillboardRaceView'
 import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
 import { EntityTabs } from '../shared/EntityTabs'
