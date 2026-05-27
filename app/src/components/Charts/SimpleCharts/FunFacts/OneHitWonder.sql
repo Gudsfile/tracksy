@@ -32,6 +32,6 @@ select
     track_name as main_text,
     percentage as fact_value,
     '%' as unit,
-    'of total streams of ' || artist_name as context
+    'of your streams of ' || artist_name as context
 from track_stats
 USING SAMPLE 1

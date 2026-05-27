@@ -36,7 +36,7 @@ export const facts = [
     },
     {
         fact_type: 'afternoon_favorite',
-        title: '☀️ Afternoon Boost',
+        title: '🏞️ Afternoon Boost',
         emoji: '⚡️',
         sql: build(sqlQueryAfternoonFavorite),
     },
@@ -48,37 +48,37 @@ export const facts = [
     },
     {
         fact_type: 'night_favorite',
-        title: '🌙 Musical Insomnia',
+        title: '🌌 Musical Insomnia',
         emoji: '💤',
         sql: build(sqlQueryNightFavorite),
     },
     {
         fact_type: 'weekend_favorite',
-        title: '🎉 Weekend Vibes',
+        title: '🧉 Weekend Vibes',
         emoji: '🕺',
         sql: build(sqlQueryWeekendFavorite),
     },
     {
         fact_type: 'nostalgic_return',
-        title: '🕰️ Nostalgic Return',
-        emoji: '📼',
+        title: '📻 Signal Found',
+        emoji: '🛰️',
         sql: build(sqlQueryNostalgicReturn),
     },
     {
         fact_type: 'forgotten_artist',
-        title: '🕰️ Forgotten Artist',
-        emoji: '💔',
+        title: '🥀 Fading Away',
+        emoji: '🌫️',
         sql: build(sqlQueryForgottenArtist),
     },
     {
         fact_type: 'absolute_loyalty',
-        title: '❤️ Absolute Loyalty',
+        title: '💎 Absolute Loyalty',
         emoji: '💍',
         sql: build(sqlQueryAbsoluteLoyalty),
     },
     {
         fact_type: 'subscribed_artist',
-        title: '🎸 Monthly Subscription',
+        title: '🎟️ Monthly Subscription',
         emoji: '📬',
         sql: build(sqlQuerySubscribedArtist),
     },
@@ -90,14 +90,14 @@ export const facts = [
     },
     {
         fact_type: 'first_artist',
-        title: '🦖 The Very First',
-        emoji: '1️⃣',
+        title: '1️⃣ The Very First',
+        emoji: '🦖',
         sql: build(sqlQueryFirstArtist),
     },
     {
         fact_type: 'one_hit_wonder',
-        title: '⭐ One-Hit Wonder',
-        emoji: '🎵',
+        title: '⭐ One Hit Wonder',
+        emoji: '📼',
         sql: build(sqlQueryOneHitWonder),
     },
     {
@@ -108,7 +108,7 @@ export const facts = [
     },
     {
         fact_type: 'recent_discovery',
-        title: '🎵 Recent Discovery',
+        title: '🔍 Recent Discovery',
         emoji: '✨',
         sql: build(sqlQueryRecentDiscovery),
     },
@@ -120,8 +120,8 @@ export const facts = [
     },
     {
         fact_type: 'track_proposition',
-        title: '🔮 Listening Proposition',
-        emoji: '🐙',
+        title: '▶️ Up Next',
+        emoji: '🔮',
         sql: build(sqlQueryTrackProposition),
     },
     {

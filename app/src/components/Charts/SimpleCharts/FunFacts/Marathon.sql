@@ -31,7 +31,7 @@ select
     artist_name as main_text,
     stream_count::double as fact_value,
     'streams in a row' as unit,
-    'on ' || listen_date::varchar as context
+    'one uninterrupted run on ' || listen_date::varchar as context
 from group_sizes
 order by stream_count desc
 limit 1

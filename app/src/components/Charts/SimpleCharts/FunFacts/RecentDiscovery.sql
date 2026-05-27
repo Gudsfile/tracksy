@@ -17,7 +17,7 @@ select
     artist_name as main_text,
     count(*)::integer as fact_value,
     'streams' as unit,
-    'discovered during the last 3 months' as context
+    'discovered in the last 3 months' as context
 from ${table}
 inner join artist_first_listen using (artist_name)
 where

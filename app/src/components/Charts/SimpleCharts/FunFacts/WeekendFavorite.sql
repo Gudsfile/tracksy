@@ -2,7 +2,7 @@ select
     artist_name as main_text,
     count(*) as fact_value,
     'streams' as unit,
-    'during the weekend' as context
+    'on weekends' as context
 from ${table}
 where
     (

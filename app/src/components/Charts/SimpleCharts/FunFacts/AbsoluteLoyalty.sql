@@ -12,9 +12,6 @@ artist_counts as (
     select
         artist_name,
         count(*) filter (where reason_end = 'trackdone') as completed_count,
-        count(*) filter (
-            where reason_end in ('fwdbtn', 'click-row', 'clickrow')
-        ) as skipped_count,
         count(*) as total_events
     from ${table}
     where artist_name is not null
@@ -25,8 +22,6 @@ artist_counts as (
 artist_loyalty as (
     select
         artist_name,
-        completed_count,
-        skipped_count,
         total_events,
         completed_count::double precision
         / nullif(total_events, 0) as loyalty_ratio
@@ -37,11 +32,7 @@ select
     artist_name as main_text,
     (loyalty_ratio * 100)::integer as fact_value,
     '%' as unit,
-    'of your completed ('
-    || completed_count
-    || ') vs skipped ('
-    || skipped_count
-    || ')' as context
+    'of your plays went all the way' as context
 from artist_loyalty
 order by fact_value desc
 limit 1

@@ -54,11 +54,6 @@ select
         'day', last_listen, (select max_date from recent_date)
     )::integer as fact_value,
     'days' as unit,
-    'without listening to artist with more than '
-    || (
-        select limit_streams
-        from threshold
-    )
-    || ' streams' as context
+    'off your radar' as context
 from artist_stats
 USING SAMPLE 1
