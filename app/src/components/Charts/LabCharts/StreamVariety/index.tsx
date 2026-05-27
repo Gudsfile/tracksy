@@ -8,7 +8,7 @@ import {
 } from './query'
 import { StreamVariety as StreamVarietyView } from './StreamVariety'
 import { useGranularity } from '../shared/useGranularity'
-import type { EntityType } from '../types'
+import type { EntityType } from '../shared/types'
 
 interface StreamVarietyProps {
     year: number | undefined

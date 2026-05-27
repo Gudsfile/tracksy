@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-export type Granularity = 'year' | 'month' | 'week' | 'day'
+import type { Granularity } from './types'
 
 const ALL_TIME_GRANULARITIES: Granularity[] = ['year', 'month']
 const PER_YEAR_GRANULARITIES: Granularity[] = ['month', 'week', 'day']

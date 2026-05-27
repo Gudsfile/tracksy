@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import type { EntityType, Top10BillboardRaceQueryResult } from './query'
+import type { Top10BillboardRaceQueryResult } from './query'
+import type { EntityType } from '../shared/types'
 import { GhostLeaderboard, type GhostEntry } from './GhostLeaderboard'
 import { InsightCard } from '../../SimpleCharts/shared'
 import { BAR_CHART_COLORS } from '../barChartColors'

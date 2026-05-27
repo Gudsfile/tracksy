@@ -8,7 +8,7 @@ import {
 } from './query'
 import { StreamDiscovery as StreamDiscoveryView } from './StreamDiscovery'
 import { useGranularity } from '../shared/useGranularity'
-import type { EntityType } from '../types'
+import type { EntityType } from '../shared/types'
 
 interface StreamDiscoveryProps {
     year: number | undefined

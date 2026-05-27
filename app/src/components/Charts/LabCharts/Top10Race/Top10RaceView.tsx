@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import type { EntityType, Top10RaceQueryResult } from './query'
+import type { Top10RaceQueryResult } from './query'
+import type { EntityType } from '../shared/types'
 import { BAR_CHART_COLORS } from '../barChartColors'
 import { RaceControlBar } from '../Common/RaceControlBar'
 import { useRacePlayback } from '../Common/useRacePlayback'

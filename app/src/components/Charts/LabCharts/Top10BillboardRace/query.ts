@@ -3,8 +3,7 @@ import sqlTop10Artists from './Top10BillboardRaceArtists.sql?raw'
 import sqlTop10Tracks from './Top10BillboardRaceTracks.sql?raw'
 import sqlTop10Albums from './Top10BillboardRaceAlbums.sql?raw'
 
-import type { EntityType } from '../types'
-export type { EntityType }
+import type { EntityType } from '../shared/types'
 
 const sqlByEntity: Record<EntityType, string> = {
     artists: sqlTop10Artists,

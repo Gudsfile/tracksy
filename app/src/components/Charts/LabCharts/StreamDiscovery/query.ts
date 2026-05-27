@@ -2,8 +2,7 @@ import { TABLE } from '../../../../db/queries/constants'
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamDiscovery from './StreamDiscovery.sql?raw'
 import sqlQueryStreamDiscoveryStats from './StreamDiscoveryStats.sql?raw'
-import type { Granularity } from '../shared/useGranularity'
-import type { EntityType } from '../types'
+import type { Granularity, EntityType } from '../shared/types'
 
 export type StreamDiscoveryQueryResult = {
     ts: string

@@ -1,4 +1,4 @@
-import type { EntityType } from '../types'
+import type { EntityType } from './types'
 
 const LABELS: Record<EntityType, string> = {
     artists: 'Artists',
