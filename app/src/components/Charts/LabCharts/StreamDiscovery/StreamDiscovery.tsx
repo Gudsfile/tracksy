@@ -13,6 +13,7 @@ import {
 } from '../../SimpleCharts/shared'
 import { EntityTabs } from '../shared/EntityTabs'
 import { GranularityTabs } from '../shared/GranularityTabs'
+import { InsightList, InsightRow } from '../shared/InsightList'
 
 type TooltipState = {
     x: number
@@ -219,34 +220,23 @@ export const StreamDiscovery: FC<Props> = ({
                         </span>
                     </div>
 
-                    <ul
-                        className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-                        role="list"
-                    >
-                        <li
-                            className="flex justify-between items-center"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                New {ENTITY_SINGULAR[entity]}s discovered
-                            </span>
-                            <span className="font-bold">
-                                {totalNew.toLocaleString()}
-                            </span>
-                        </li>
-                        <li
-                            className="flex justify-between items-center mt-1"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Discovery rate
-                                <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">
-                                    (new / total distinct)
-                                </span>
-                            </span>
-                            <span className="font-bold">{discoveryRate}%</span>
-                        </li>
-                    </ul>
+                    <InsightList>
+                        <InsightRow
+                            label={`New ${ENTITY_SINGULAR[entity]}s discovered`}
+                            value={totalNew.toLocaleString()}
+                        />
+                        <InsightRow
+                            label={
+                                <>
+                                    Discovery rate
+                                    <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">
+                                        (new / total distinct)
+                                    </span>
+                                </>
+                            }
+                            value={`${discoveryRate}%`}
+                        />
+                    </InsightList>
                     {entity !== 'tracks' && (
                         <p className="mt-2 text-xs italic text-gray-400 dark:text-gray-500">
                             Artist and album counts rely on names, not unique

@@ -13,6 +13,7 @@ import {
 } from '../../SimpleCharts/shared'
 import { EntityTabs } from '../shared/EntityTabs'
 import { GranularityTabs } from '../shared/GranularityTabs'
+import { InsightList, InsightRow } from '../shared/InsightList'
 
 type TooltipState = {
     x: number
@@ -225,34 +226,23 @@ export const StreamVariety: FC<Props> = ({
                         </span>
                     </div>
 
-                    <ul
-                        className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-                        role="list"
-                    >
-                        <li
-                            className="flex justify-between items-center"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Unique {ENTITY_SINGULAR[entity]}s listened
-                            </span>
-                            <span className="font-bold">
-                                {totalDistinct.toLocaleString()}
-                            </span>
-                        </li>
-                        <li
-                            className="flex justify-between items-center mt-1"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Variety rate
-                                <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">
-                                    (unique / total streams)
-                                </span>
-                            </span>
-                            <span className="font-bold">{varietyRate}%</span>
-                        </li>
-                    </ul>
+                    <InsightList>
+                        <InsightRow
+                            label={`Unique ${ENTITY_SINGULAR[entity]}s listened`}
+                            value={totalDistinct.toLocaleString()}
+                        />
+                        <InsightRow
+                            label={
+                                <>
+                                    Variety rate
+                                    <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">
+                                        (unique / total streams)
+                                    </span>
+                                </>
+                            }
+                            value={`${varietyRate}%`}
+                        />
+                    </InsightList>
                     {entity !== 'tracks' && (
                         <p className="mt-2 text-xs italic text-gray-400 dark:text-gray-500">
                             Artist and album counts rely on names, not unique
