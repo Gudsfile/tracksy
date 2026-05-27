@@ -1,32 +1,32 @@
-import { useEffect, useState } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useEffect, useState, useRef } from 'react'
 import { queryTop10Race, type Top10RaceQueryResult } from './query'
 import type { EntityType } from '../shared/types'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { Top10RaceView } from './Top10RaceView'
 import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
 import { EntityTabs } from '../shared/EntityTabs'
 
 export function Top10Race({ year }: { year: number | undefined }) {
-    const [data, setData] = useState<Top10RaceQueryResult[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [entityType, setEntityType] = useState<EntityType>('artists')
-    const [dataEntityType, setDataEntityType] = useState<EntityType>('artists')
 
+    const { data: rawData, isLoading } = useDBQueryMany<Top10RaceQueryResult>({
+        query: queryTop10Race(year, entityType),
+        year,
+    })
+
+    const data = rawData ?? []
+
+    // Syncs committedEntityType only after new data arrives, preventing the race view
+    // from rendering a stale entity label while the fetch is in flight.
+    const prevDataRef = useRef(rawData)
+    const [committedEntityType, setCommittedEntityType] =
+        useState<EntityType>('artists')
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true)
-            try {
-                const result = await queryDBAsJSON<Top10RaceQueryResult>(
-                    queryTop10Race(year, entityType)
-                )
-                setData(result || [])
-                setDataEntityType(entityType)
-            } finally {
-                setIsLoading(false)
-            }
+        if (rawData !== prevDataRef.current) {
+            prevDataRef.current = rawData
+            setCommittedEntityType(entityType)
         }
-        fetchData()
-    }, [year, entityType])
+    }, [rawData, entityType])
 
     const isInitialLoad = isLoading && data.length === 0
 
@@ -48,7 +48,10 @@ export function Top10Race({ year }: { year: number | undefined }) {
                     className="transition-opacity duration-150"
                     style={{ opacity: isLoading ? 0.4 : 1 }}
                 >
-                    <Top10RaceView data={data} entityType={dataEntityType} />
+                    <Top10RaceView
+                        data={data}
+                        entityType={committedEntityType}
+                    />
                 </div>
             )}
         </ChartCard>
