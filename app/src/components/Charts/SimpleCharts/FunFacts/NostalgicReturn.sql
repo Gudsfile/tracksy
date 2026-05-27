@@ -40,8 +40,6 @@ previous_listens as (
 artist_gaps as (
     select
         artist,
-        recent_artists.last_listen,
-        previous_listens.previous_listen,
         date_diff(
             'day', previous_listens.previous_listen, recent_artists.last_listen
         ) as gap
@@ -55,10 +53,6 @@ select
     artist as main_text,
     gap::integer as fact_value,
     'days' as unit,
-    'days since last listen ('
-    || previous_listen
-    || ' - '
-    || last_listen
-    || ')' as context
+    'later, it''s back' as context
 from artist_gaps
 USING SAMPLE 1

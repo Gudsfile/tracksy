@@ -125,7 +125,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('consecutive_stream_artist')
             expect(row.fact_value).toBe(3)
             expect(row.unit).toBe('streams in a row')
-            expect(row.context).toBe('on 2024-01-01')
+            expect(row.context).toBe('one uninterrupted run on 2024-01-01')
         })
     })
 
@@ -145,9 +145,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('hit_track')
             expect(row.fact_value).toBe(100)
             expect(row.unit).toBe('%')
-            expect(row.context).toBe(
-                'of total streams of one_hit_wonder_artist'
-            )
+            expect(row.context).toBe('of your streams of one_hit_wonder_artist')
         })
     })
 
@@ -174,7 +172,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('weekend_artist')
             expect(row.fact_value).toBe('2')
             expect(row.unit).toBe('streams')
-            expect(row.context).toBe('during the weekend')
+            expect(row.context).toBe('on weekends')
         })
     })
 
@@ -201,7 +199,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('loyal_artist')
             expect(row.fact_value).toBe(75)
             expect(row.unit).toBe('%')
-            expect(row.context).toBe('of your completed (3) vs skipped (1)')
+            expect(row.context).toBe('of your plays went all the way')
         })
     })
 
@@ -225,9 +223,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('nostalgic_artist')
             expect(row.fact_value).toBe(366)
             expect(row.unit).toBe('days')
-            expect(row.context).toBe(
-                'days since last listen (2024-01-01 - 2025-01-01)'
-            )
+            expect(row.context).toBe("later, it's back")
         })
     })
 
@@ -280,7 +276,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('recent_discovery_artist')
             expect(row.fact_value).toBe(1)
             expect(row.unit).toBe('streams')
-            expect(row.context).toBe('discovered during the last 3 months')
+            expect(row.context).toBe('discovered in the last 3 months')
         })
     })
 
@@ -306,7 +302,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('subscribed_artist')
             expect(row.fact_value).toBe(3)
             expect(row.unit).toBe('months')
-            expect(row.context).toBe('of presence')
+            expect(row.context).toBe('in your rotation')
         })
     })
 
@@ -329,7 +325,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('first_artist')
             expect(row.fact_value).toBe('2006')
             expect(row.unit).toBeUndefined()
-            expect(row.context).toBe('Do you still listen to it?')
+            expect(row.context).toBe('still in your rotation today?')
         })
 
         it('queryMusicalAnniversary returns artist listened to for longest time', async () => {
@@ -342,7 +338,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBeDefined()
             expect(row.fact_value).toBeDefined()
             expect(row.unit).toBe('years')
-            expect(row.context).toBe('with you')
+            expect(row.context).toBe('strong')
         })
     })
 
@@ -368,9 +364,7 @@ describe('FunFacts queries', () => {
             expect(row.main_text).toBe('forgotten_artist')
             expect(row.fact_value).toBe(366)
             expect(row.unit).toBe('days')
-            expect(row.context).toBe(
-                'without listening to artist with more than 1 streams'
-            )
+            expect(row.context).toBe('off your radar')
         })
     })
 
@@ -389,9 +383,10 @@ describe('FunFacts queries', () => {
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.main_text).toBeOneOf(['track1', 'track2'])
-            expect(row.fact_value).toBeOneOf(['by artist1', 'by artist2'])
+            expect(row.fact_value).toBeUndefined()
+            expect(row.second_text).toBeOneOf(['artist1', 'artist2'])
             expect(row.unit).toBeUndefined()
-            expect(row.context).toBeUndefined()
+            expect(row.context).toBe('your next listen is already waiting')
         })
     })
 

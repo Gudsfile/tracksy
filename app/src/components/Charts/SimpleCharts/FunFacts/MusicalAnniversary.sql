@@ -38,6 +38,6 @@ select
     artist_years.artist_name as main_text,
     year(recent_date.max_date) - artist_years.first_year as fact_value,
     'years' as unit,
-    'with you' as context
+    'strong' as context
 from artist_years, recent_date
 USING SAMPLE 1

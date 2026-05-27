@@ -11,7 +11,7 @@ export const ConcentrationScore: FC<Props> = ({ data, isLoading }) => {
     return (
         <ChartCard
             title="Focus Mode"
-            emoji="🔥"
+            emoji="🎯"
             isLoading={isLoading}
             question="Is my listening concentrated on just a few artists?"
         >
