@@ -27,4 +27,8 @@ describe('formatTooltipDate', () => {
         expect(result).toContain('2024')
         expect(result).toContain('15')
     })
+
+    it('does not throw on invalid timestamp', () => {
+        expect(() => formatTooltipDate('not-a-date', 'month')).not.toThrow()
+    })
 })

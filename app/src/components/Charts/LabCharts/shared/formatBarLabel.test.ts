@@ -121,4 +121,12 @@ describe('formatBarLabel', () => {
             ).toBe('')
         })
     })
+
+    describe('invalid timestamp', () => {
+        it('does not throw', () => {
+            expect(() =>
+                formatBarLabel('not-a-date', 0, [], undefined, 'month')
+            ).not.toThrow()
+        })
+    })
 })
