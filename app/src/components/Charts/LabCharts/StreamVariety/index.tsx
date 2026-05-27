@@ -4,30 +4,20 @@ import {
     queryStreamVariety,
     queryStreamVarietyStats,
     type Entity,
-    type Granularity,
     type StreamVarietyQueryResult,
     type StreamVarietyStatsQueryResult,
 } from './query'
 import { StreamVariety as StreamVarietyView } from './StreamVariety'
-
-const ALL_TIME_GRANULARITIES: Granularity[] = ['year', 'month']
-const PER_YEAR_GRANULARITIES: Granularity[] = ['month', 'week', 'day']
+import { useGranularity } from '../shared/useGranularity'
 
 interface StreamVarietyProps {
     year: number | undefined
 }
 
 export function StreamVariety({ year }: StreamVarietyProps) {
-    const [granularity, setGranularity] = useState<Granularity>('month')
+    const { setGranularity, availableGranularities, effectiveGranularity } =
+        useGranularity(year)
     const [entity, setEntity] = useState<Entity>('tracks')
-
-    const availableGranularities =
-        year !== undefined ? PER_YEAR_GRANULARITIES : ALL_TIME_GRANULARITIES
-
-    // Avoids double-fetch: derived fallback instead of useEffect resetting granularity.
-    const effectiveGranularity = availableGranularities.includes(granularity)
-        ? granularity
-        : availableGranularities[0]
 
     const { data, isLoading } = useDBQueryMany<StreamVarietyQueryResult>({
         query: queryStreamVariety(year, effectiveGranularity, entity),
