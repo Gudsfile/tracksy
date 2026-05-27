@@ -7,6 +7,7 @@ import type {
 import type { Granularity, EntityType } from '../shared/types'
 import { formatTooltipDate } from '../shared/formatTooltipDate'
 import { formatBarLabel } from '../shared/formatBarLabel'
+import { ChartLegend } from '../shared/ChartLegend'
 import {
     ChartCard,
     ChartCardEmpty,
@@ -163,16 +164,12 @@ export const StreamDiscovery: FC<Props> = ({
                         </div>
                     </div>
 
-                    <div className="mt-1 mb-3 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-                        <span className="flex items-center gap-1">
-                            <span className="inline-block w-2 h-2 rounded-sm bg-rose-800" />
-                            New
-                        </span>
-                        <span className="flex items-center gap-1">
-                            <span className="inline-block w-2 h-2 rounded-sm bg-rose-500" />
-                            Known
-                        </span>
-                    </div>
+                    <ChartLegend
+                        items={[
+                            { color: 'bg-rose-800', label: 'New' },
+                            { color: 'bg-rose-500', label: 'Known' },
+                        ]}
+                    />
 
                     <InsightList>
                         <InsightRow
