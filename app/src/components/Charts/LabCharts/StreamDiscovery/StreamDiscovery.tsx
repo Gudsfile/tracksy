@@ -12,6 +12,7 @@ import {
     ChartTooltip,
 } from '../../SimpleCharts/shared'
 import { EntityTabs } from '../shared/EntityTabs'
+import { GranularityTabs } from '../shared/GranularityTabs'
 
 type TooltipState = {
     x: number
@@ -32,13 +33,6 @@ type Props = {
     entity: Entity
     onEntityChange: (e: Entity) => void
     isLoading?: boolean
-}
-
-const GRAN_LABELS: Record<Granularity, string> = {
-    year: 'Year',
-    month: 'Month',
-    week: 'Week',
-    day: 'Day',
 }
 
 const ENTITY_SINGULAR: Record<Entity, string> = {
@@ -129,28 +123,11 @@ export const StreamDiscovery: FC<Props> = ({
                 <EntityTabs value={entity} onChange={onEntityChange} />
             }
         >
-            <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30 self-start mb-3">
-                {(['year', 'month', 'week', 'day'] as const).map((g) => {
-                    const available = availableGranularities.includes(g)
-                    const active = granularity === g
-                    return (
-                        <button
-                            key={g}
-                            onClick={() => available && onGranularityChange(g)}
-                            disabled={!available}
-                            className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                                active
-                                    ? 'bg-blue-500 text-white shadow-sm'
-                                    : available
-                                      ? 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                      : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                            }`}
-                        >
-                            {GRAN_LABELS[g]}
-                        </button>
-                    )
-                })}
-            </div>
+            <GranularityTabs
+                value={granularity}
+                available={availableGranularities}
+                onChange={onGranularityChange}
+            />
 
             {!data?.length || (stats?.total_distinct ?? 0) === 0 ? (
                 <ChartCardEmpty
