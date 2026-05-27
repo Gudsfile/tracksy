@@ -6,7 +6,8 @@ import {
 } from './query'
 import type { EntityType } from '../shared/types'
 import { Top10BillboardRaceView } from './Top10BillboardRaceView'
-import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 import { EntityTabs } from '../shared/EntityTabs'
 
 export function Top10BillboardRace({ year }: { year: number | undefined }) {

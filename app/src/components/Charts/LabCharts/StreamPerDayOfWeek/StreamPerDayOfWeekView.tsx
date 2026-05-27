@@ -1,6 +1,7 @@
 import { Fragment, type ReactNode, useMemo, useState } from 'react'
 import type { StreamPerDayOfWeekQueryResult } from './query'
-import { ChartCard, ChartTooltip } from '../../SimpleCharts/shared'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { InsightList, InsightRow } from '../shared/InsightList'
 import { RaceControlBar } from '../Common/RaceControlBar'
 import { useRacePlayback } from '../Common/useRacePlayback'

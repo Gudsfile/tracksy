@@ -8,11 +8,9 @@ import type { Granularity, EntityType } from '../shared/types'
 import { formatTooltipDate } from '../shared/formatTooltipDate'
 import { formatBarLabel } from '../shared/formatBarLabel'
 import { ChartLegend } from '../shared/ChartLegend'
-import {
-    ChartCard,
-    ChartCardEmpty,
-    ChartTooltip,
-} from '../../SimpleCharts/shared'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
+import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { EntityTabs } from '../shared/EntityTabs'
 import { GranularityTabs } from '../shared/GranularityTabs'
 import { InsightList, InsightRow } from '../shared/InsightList'
