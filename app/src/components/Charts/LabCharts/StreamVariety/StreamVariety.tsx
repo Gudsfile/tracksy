@@ -5,6 +5,7 @@ import type {
     StreamVarietyStatsQueryResult,
 } from './query'
 import type { Granularity, EntityType } from '../shared/types'
+import { formatTooltipDate } from '../shared/formatTooltipDate'
 import {
     ChartCard,
     ChartCardEmpty,
@@ -39,21 +40,6 @@ const ENTITY_SINGULAR: Record<EntityType, string> = {
     tracks: 'track',
     artists: 'artist',
     albums: 'album',
-}
-
-function formatTooltipDate(date: Date, granularity: Granularity): string {
-    if (granularity === 'year')
-        return date.toLocaleDateString(undefined, { year: 'numeric' })
-    if (granularity === 'month')
-        return date.toLocaleDateString(undefined, {
-            month: 'long',
-            year: 'numeric',
-        })
-    return date.toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    })
 }
 
 function getBarLabel(

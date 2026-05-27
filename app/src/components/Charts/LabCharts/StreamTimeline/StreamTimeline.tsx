@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { StreamTimelineQueryResult } from './query'
 import type { Granularity } from '../shared/types'
 import { formatDuration } from '../../../../utils/formatDuration'
+import { formatTooltipDate } from '../shared/formatTooltipDate'
 import {
     ChartCard,
     ChartCardEmpty,
@@ -26,21 +27,6 @@ type Props = {
     availableGranularities: Granularity[]
     onGranularityChange: (g: Granularity) => void
     isLoading?: boolean
-}
-
-function formatTooltipDate(date: Date, granularity: Granularity): string {
-    if (granularity === 'year')
-        return date.toLocaleDateString(undefined, { year: 'numeric' })
-    if (granularity === 'month')
-        return date.toLocaleDateString(undefined, {
-            month: 'long',
-            year: 'numeric',
-        })
-    return date.toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    })
 }
 
 function getBarLabel(
