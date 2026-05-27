@@ -3,8 +3,6 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamTimeline from './StreamTimeline.sql?raw'
 import type { Granularity } from '../shared/useGranularity'
 
-export type { Granularity }
-
 export type StreamTimelineQueryResult = {
     ts: string
     ms_played: number

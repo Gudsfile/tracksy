@@ -5,9 +5,6 @@ import sqlQueryStreamVarietyStats from './StreamVarietyStats.sql?raw'
 import type { Granularity } from '../shared/useGranularity'
 import type { EntityType } from '../types'
 
-export type { Granularity }
-export type { EntityType }
-
 export type StreamVarietyQueryResult = {
     ts: string
     distinct_count: number

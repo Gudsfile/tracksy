@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
-import type { Granularity, StreamTimelineQueryResult } from './query'
+import type { StreamTimelineQueryResult } from './query'
+import type { Granularity } from '../shared/useGranularity'
 import { formatDuration } from '../../../../utils/formatDuration'
 import {
     ChartCard,
