@@ -7,6 +7,7 @@ import {
 } from './query'
 import { Top10RaceView } from './Top10RaceView'
 import { ChartCard, ChartCardEmpty } from '../../SimpleCharts/shared'
+import { EntityTabs } from '../shared/EntityTabs'
 
 export function Top10Race({ year }: { year: number | undefined }) {
     const [data, setData] = useState<Top10RaceQueryResult[]>([])
@@ -30,28 +31,6 @@ export function Top10Race({ year }: { year: number | undefined }) {
         fetchData()
     }, [year, entityType])
 
-    const entityTabs = (
-        <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-lg p-1 border border-gray-300/30">
-            {(['artists', 'tracks', 'albums'] as const).map((type) => (
-                <button
-                    key={type}
-                    onClick={() => setEntityType(type)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                        entityType === type
-                            ? 'bg-blue-500 text-white shadow-sm'
-                            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                >
-                    {type === 'artists'
-                        ? 'Artists'
-                        : type === 'tracks'
-                          ? 'Tracks'
-                          : 'Albums'}
-                </button>
-            ))}
-        </div>
-    )
-
     const isInitialLoad = isLoading && data.length === 0
 
     return (
@@ -61,7 +40,9 @@ export function Top10Race({ year }: { year: number | undefined }) {
             className="md:col-span-2 lg:col-span-3"
             isLoading={isInitialLoad}
             question="Who dominated my listening, and when did they rise?"
-            headerActions={entityTabs}
+            headerActions={
+                <EntityTabs value={entityType} onChange={setEntityType} />
+            }
         >
             {data.length === 0 ? (
                 <ChartCardEmpty />
