@@ -6,6 +6,7 @@ import type {
 } from './query'
 import type { Granularity, EntityType } from '../shared/types'
 import { formatTooltipDate } from '../shared/formatTooltipDate'
+import { formatBarLabel } from '../shared/formatBarLabel'
 import {
     ChartCard,
     ChartCardEmpty,
@@ -40,38 +41,6 @@ const ENTITY_SINGULAR: Record<EntityType, string> = {
     tracks: 'track',
     artists: 'artist',
     albums: 'album',
-}
-
-function getBarLabel(
-    d: StreamVarietyQueryResult,
-    index: number,
-    data: StreamVarietyQueryResult[],
-    year: number | undefined,
-    granularity: Granularity
-): string {
-    const date = new Date(d.ts)
-
-    if (granularity === 'year') return String(date.getUTCFullYear())
-
-    if (granularity === 'month') {
-        if (year !== undefined)
-            return date.toLocaleDateString(undefined, { month: 'short' })
-        return date.getUTCMonth() === 0 ? String(date.getUTCFullYear()) : ''
-    }
-
-    if (granularity === 'week') {
-        if (index === 0)
-            return date.toLocaleDateString(undefined, { month: 'short' })
-        const prev = new Date(data[index - 1].ts)
-        return date.getUTCMonth() !== prev.getUTCMonth()
-            ? date.toLocaleDateString(undefined, { month: 'short' })
-            : ''
-    }
-
-    // day
-    return date.getUTCDate() === 1
-        ? date.toLocaleDateString(undefined, { month: 'short' })
-        : ''
 }
 
 export const StreamVariety: FC<Props> = ({
@@ -177,7 +146,7 @@ export const StreamVariety: FC<Props> = ({
                             style={{ minWidth: `${data.length * 4}px` }}
                         >
                             {data.map((d, i) => {
-                                const label = getBarLabel(
+                                const label = formatBarLabel(
                                     d,
                                     i,
                                     data,
