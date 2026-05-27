@@ -110,7 +110,7 @@ export const StreamTimeline: FC<Props> = ({
                         >
                             {data.map((d, i) => {
                                 const label = formatBarLabel(
-                                    d,
+                                    d.ts,
                                     i,
                                     data,
                                     year,
@@ -147,7 +147,7 @@ export const StreamTimeline: FC<Props> = ({
             {tooltip && (
                 <ChartTooltip x={tooltip.x} y={tooltip.y}>
                     <div className="font-semibold">
-                        {formatTooltipDate(new Date(tooltip.ts), granularity)}
+                        {formatTooltipDate(tooltip.ts, granularity)}
                     </div>
                     <div className="text-gray-300 dark:text-gray-400">
                         {formatDuration(tooltip.ms_played)}
