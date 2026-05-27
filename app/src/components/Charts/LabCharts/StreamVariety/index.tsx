@@ -3,7 +3,7 @@ import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     queryStreamVariety,
     queryStreamVarietyStats,
-    type Entity,
+    type EntityType,
     type StreamVarietyQueryResult,
     type StreamVarietyStatsQueryResult,
 } from './query'
@@ -17,7 +17,7 @@ interface StreamVarietyProps {
 export function StreamVariety({ year }: StreamVarietyProps) {
     const { setGranularity, availableGranularities, effectiveGranularity } =
         useGranularity(year)
-    const [entity, setEntity] = useState<Entity>('tracks')
+    const [entity, setEntity] = useState<EntityType>('tracks')
 
     const { data, isLoading } = useDBQueryMany<StreamVarietyQueryResult>({
         query: queryStreamVariety(year, effectiveGranularity, entity),

@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import type {
-    Entity,
+    EntityType,
     Granularity,
     StreamDiscoveryQueryResult,
     StreamDiscoveryStatsQueryResult,
@@ -31,12 +31,12 @@ type Props = {
     granularity: Granularity
     availableGranularities: Granularity[]
     onGranularityChange: (g: Granularity) => void
-    entity: Entity
-    onEntityChange: (e: Entity) => void
+    entity: EntityType
+    onEntityChange: (e: EntityType) => void
     isLoading?: boolean
 }
 
-const ENTITY_SINGULAR: Record<Entity, string> = {
+const ENTITY_SINGULAR: Record<EntityType, string> = {
     tracks: 'track',
     artists: 'artist',
     albums: 'album',

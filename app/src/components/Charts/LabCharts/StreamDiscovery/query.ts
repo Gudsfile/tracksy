@@ -3,10 +3,10 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamDiscovery from './StreamDiscovery.sql?raw'
 import sqlQueryStreamDiscoveryStats from './StreamDiscoveryStats.sql?raw'
 import type { Granularity } from '../shared/useGranularity'
+import type { EntityType } from '../types'
 
 export type { Granularity }
-
-export type Entity = 'tracks' | 'artists' | 'albums'
+export type { EntityType }
 
 export type StreamDiscoveryQueryResult = {
     ts: string
@@ -21,7 +21,7 @@ export type StreamDiscoveryStatsQueryResult = {
     total_distinct: number
 }
 
-const ENTITY_COLUMN: Record<Entity, string> = {
+const ENTITY_COLUMN: Record<EntityType, string> = {
     tracks: 'track_uri',
     artists: 'artist_name',
     albums: 'album_name',
@@ -75,7 +75,7 @@ const GRAN_CONFIG: Record<Granularity, GranConfig> = {
 
 export function queryStreamDiscoveryStats(
     year: number | undefined,
-    entity: Entity
+    entity: EntityType
 ): string {
     const yearCondition = buildYearCondition(year)
     const newCondition =
@@ -90,7 +90,7 @@ export function queryStreamDiscoveryStats(
 export function queryStreamDiscovery(
     year: number | undefined,
     granularity: Granularity,
-    entity: Entity
+    entity: EntityType
 ): string {
     const yearCondition = buildYearCondition(year)
     const perYear = year !== undefined

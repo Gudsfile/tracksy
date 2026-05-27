@@ -3,10 +3,10 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamVariety from './StreamVariety.sql?raw'
 import sqlQueryStreamVarietyStats from './StreamVarietyStats.sql?raw'
 import type { Granularity } from '../shared/useGranularity'
+import type { EntityType } from '../types'
 
 export type { Granularity }
-
-export type Entity = 'tracks' | 'artists' | 'albums'
+export type { EntityType }
 
 export type StreamVarietyQueryResult = {
     ts: string
@@ -15,7 +15,7 @@ export type StreamVarietyQueryResult = {
     total_count: number
 }
 
-const ENTITY_COLUMN: Record<Entity, string> = {
+const ENTITY_COLUMN: Record<EntityType, string> = {
     tracks: 'track_uri',
     artists: 'artist_name',
     albums: 'album_name',
@@ -75,7 +75,7 @@ export type StreamVarietyStatsQueryResult = {
 
 export function queryStreamVarietyStats(
     year: number | undefined,
-    entity: Entity
+    entity: EntityType
 ): string {
     const yearCondition = buildYearCondition(year)
     return sqlQueryStreamVarietyStats
@@ -87,7 +87,7 @@ export function queryStreamVarietyStats(
 export function queryStreamVariety(
     year: number | undefined,
     granularity: Granularity,
-    entity: Entity
+    entity: EntityType
 ): string {
     const yearCondition = buildYearCondition(year)
     const perYear = year !== undefined

@@ -3,7 +3,7 @@ import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     queryStreamDiscovery,
     queryStreamDiscoveryStats,
-    type Entity,
+    type EntityType,
     type StreamDiscoveryQueryResult,
     type StreamDiscoveryStatsQueryResult,
 } from './query'
@@ -17,7 +17,7 @@ interface StreamDiscoveryProps {
 export function StreamDiscovery({ year }: StreamDiscoveryProps) {
     const { setGranularity, availableGranularities, effectiveGranularity } =
         useGranularity(year)
-    const [entity, setEntity] = useState<Entity>('tracks')
+    const [entity, setEntity] = useState<EntityType>('tracks')
 
     const { data, isLoading } = useDBQueryMany<StreamDiscoveryQueryResult>({
         query: queryStreamDiscovery(year, effectiveGranularity, entity),
