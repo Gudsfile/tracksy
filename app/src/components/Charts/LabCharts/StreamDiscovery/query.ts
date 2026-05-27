@@ -2,8 +2,9 @@ import { TABLE } from '../../../../db/queries/constants'
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamDiscovery from './StreamDiscovery.sql?raw'
 import sqlQueryStreamDiscoveryStats from './StreamDiscoveryStats.sql?raw'
+import type { Granularity } from '../shared/useGranularity'
 
-export type Granularity = 'year' | 'month' | 'week' | 'day'
+export type { Granularity }
 
 export type Entity = 'tracks' | 'artists' | 'albums'
 
