@@ -8,6 +8,7 @@ import {
     ChartTooltip,
 } from '../../SimpleCharts/shared'
 import { GranularityTabs } from '../shared/GranularityTabs'
+import { InsightList, InsightRow } from '../shared/InsightList'
 
 type TooltipState = {
     x: number
@@ -175,33 +176,16 @@ export const StreamTimeline: FC<Props> = ({
                         </div>
                     </div>
 
-                    <ul
-                        className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-                        role="list"
-                    >
-                        <li
-                            className="flex justify-between items-center"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Total duration
-                            </span>
-                            <span className="font-bold">
-                                {formatDuration(totalMs)}
-                            </span>
-                        </li>
-                        <li
-                            className="flex justify-between items-center mt-1"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Total streams
-                            </span>
-                            <span className="font-bold">
-                                {totalStreams.toLocaleString()}
-                            </span>
-                        </li>
-                    </ul>
+                    <InsightList>
+                        <InsightRow
+                            label="Total duration"
+                            value={formatDuration(totalMs)}
+                        />
+                        <InsightRow
+                            label="Total streams"
+                            value={totalStreams.toLocaleString()}
+                        />
+                    </InsightList>
                 </>
             )}
             {tooltip && (

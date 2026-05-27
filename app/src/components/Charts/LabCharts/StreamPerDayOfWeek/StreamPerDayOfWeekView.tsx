@@ -1,6 +1,7 @@
 import { Fragment, type ReactNode, useMemo, useState } from 'react'
 import type { StreamPerDayOfWeekQueryResult } from './query'
 import { ChartCard, ChartTooltip } from '../../SimpleCharts/shared'
+import { InsightList, InsightRow } from '../shared/InsightList'
 import { RaceControlBar } from '../Common/RaceControlBar'
 import { useRacePlayback } from '../Common/useRacePlayback'
 
@@ -449,48 +450,27 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                         />
                     )}
 
-                    <ul
-                        className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-                        role="list"
-                    >
-                        <li
-                            className="flex justify-between items-center"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                First complete hour
-                            </span>
-                            {firstCompleteHourFrame !== null &&
-                                currentFrameIdx >= firstCompleteHourFrame && (
-                                    <span className="font-bold text-sm">
-                                        {firstCompleteHourLabel}
-                                    </span>
-                                )}
-                        </li>
-                        <li
-                            className="flex justify-between items-center mt-1"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                First complete day
-                            </span>
-                            {firstCompleteDayFrame !== null &&
-                                currentFrameIdx >= firstCompleteDayFrame && (
-                                    <span className="font-bold text-sm">
-                                        {firstCompleteDayLabel}
-                                    </span>
-                                )}
-                        </li>
-                        <li
-                            className="flex justify-between items-center mt-1"
-                            role="listitem"
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                Bingo
-                            </span>
-                            {bingoValue}
-                        </li>
-                    </ul>
+                    <InsightList>
+                        <InsightRow
+                            label="First complete hour"
+                            value={
+                                firstCompleteHourFrame !== null &&
+                                currentFrameIdx >= firstCompleteHourFrame
+                                    ? firstCompleteHourLabel
+                                    : null
+                            }
+                        />
+                        <InsightRow
+                            label="First complete day"
+                            value={
+                                firstCompleteDayFrame !== null &&
+                                currentFrameIdx >= firstCompleteDayFrame
+                                    ? firstCompleteDayLabel
+                                    : null
+                            }
+                        />
+                        <InsightRow label="Bingo" value={bingoValue} />
+                    </InsightList>
                 </div>
                 {tooltip && (
                     <ChartTooltip x={tooltip.x} y={tooltip.y}>
