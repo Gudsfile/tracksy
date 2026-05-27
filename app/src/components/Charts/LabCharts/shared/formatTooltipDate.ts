@@ -1,9 +1,11 @@
 import type { Granularity } from './types'
 
 export function formatTooltipDate(
-    date: Date,
-    granularity: Granularity
+    timestamp: string,
+    granularity: Granularity,
+    locale: string | undefined = undefined
 ): string {
+    const date = new Date(timestamp)
     if (granularity === 'year')
         return date.toLocaleDateString(locale, { year: 'numeric' })
     if (granularity === 'month')

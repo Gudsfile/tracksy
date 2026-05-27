@@ -1,14 +1,14 @@
 import type { Granularity } from './types'
 
 export function formatBarLabel(
-    d: { ts: string },
+    timestamp: string,
     index: number,
     data: { ts: string }[],
     year: number | undefined,
     granularity: Granularity,
     locale: string | undefined = undefined
 ): string {
-    const date = new Date(d.ts)
+    const date = new Date(timestamp)
 
     if (granularity === 'year') return String(date.getUTCFullYear())
 
