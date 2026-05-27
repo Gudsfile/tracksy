@@ -3,12 +3,12 @@ import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     queryStreamDiscovery,
     queryStreamDiscoveryStats,
-    type EntityType,
     type StreamDiscoveryQueryResult,
     type StreamDiscoveryStatsQueryResult,
 } from './query'
 import { StreamDiscovery as StreamDiscoveryView } from './StreamDiscovery'
 import { useGranularity } from '../shared/useGranularity'
+import type { EntityType } from '../types'
 
 interface StreamDiscoveryProps {
     year: number | undefined

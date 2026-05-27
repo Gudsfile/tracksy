@@ -5,9 +5,6 @@ import sqlQueryStreamDiscoveryStats from './StreamDiscoveryStats.sql?raw'
 import type { Granularity } from '../shared/useGranularity'
 import type { EntityType } from '../types'
 
-export type { Granularity }
-export type { EntityType }
-
 export type StreamDiscoveryQueryResult = {
     ts: string
     new_count: number

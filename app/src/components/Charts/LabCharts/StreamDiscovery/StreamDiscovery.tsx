@@ -1,11 +1,11 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import type {
-    EntityType,
-    Granularity,
     StreamDiscoveryQueryResult,
     StreamDiscoveryStatsQueryResult,
 } from './query'
+import type { Granularity } from '../shared/useGranularity'
+import type { EntityType } from '../types'
 import {
     ChartCard,
     ChartCardEmpty,

@@ -3,12 +3,12 @@ import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import {
     queryStreamVariety,
     queryStreamVarietyStats,
-    type EntityType,
     type StreamVarietyQueryResult,
     type StreamVarietyStatsQueryResult,
 } from './query'
 import { StreamVariety as StreamVarietyView } from './StreamVariety'
 import { useGranularity } from '../shared/useGranularity'
+import type { EntityType } from '../types'
 
 interface StreamVarietyProps {
     year: number | undefined
