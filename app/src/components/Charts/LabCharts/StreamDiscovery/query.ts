@@ -3,6 +3,7 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamDiscovery from './StreamDiscovery.sql?raw'
 import sqlQueryStreamDiscoveryStats from './StreamDiscoveryStats.sql?raw'
 import type { Granularity, EntityType } from '../shared/types'
+import { ENTITY_COLUMN } from '../shared/entityColumns'
 
 export type StreamDiscoveryQueryResult = {
     ts: string
@@ -15,12 +16,6 @@ export type StreamDiscoveryStatsQueryResult = {
     total_new: number
     total_known: number
     total_distinct: number
-}
-
-const ENTITY_COLUMN: Record<EntityType, string> = {
-    tracks: 'track_uri',
-    artists: 'artist_name',
-    albums: 'album_name',
 }
 
 type GranConfig = {

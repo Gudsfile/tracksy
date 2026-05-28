@@ -3,18 +3,13 @@ import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
 import sqlQueryStreamVariety from './StreamVariety.sql?raw'
 import sqlQueryStreamVarietyStats from './StreamVarietyStats.sql?raw'
 import type { Granularity, EntityType } from '../shared/types'
+import { ENTITY_COLUMN } from '../shared/entityColumns'
 
 export type StreamVarietyQueryResult = {
     ts: string
     distinct_count: number
     repeat_count: number
     total_count: number
-}
-
-const ENTITY_COLUMN: Record<EntityType, string> = {
-    tracks: 'track_uri',
-    artists: 'artist_name',
-    albums: 'album_name',
 }
 
 type GranConfig = {
