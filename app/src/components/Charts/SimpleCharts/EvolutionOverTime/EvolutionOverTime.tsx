@@ -128,6 +128,8 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                     rows={[
                         `${tooltip.count.toLocaleString()} streams`,
                         formatDuration(tooltip.ms_played),
+                    ]}
+                    secondaryRows={[
                         `${totalStreams.toLocaleString()} total streams`,
                         `${formatDuration(totalMsPlayed)} total listening`,
                     ]}
