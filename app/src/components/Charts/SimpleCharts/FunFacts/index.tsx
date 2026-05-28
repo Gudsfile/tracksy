@@ -40,10 +40,10 @@ export function FunFacts() {
                 title: factDefinition.title,
                 emoji: factDefinition.emoji,
                 fact_type: factDefinition.fact_type,
-                main_text: result?.entity ?? undefined,
-                second_text: result?.parent_entity,
-                value: result?.metric,
-                unit: result?.unit,
+                entity: result?.entity ?? undefined,
+                parent_entity: result?.parent_entity,
+                metric: result?.metric,
+                unit: factDefinition.unit,
                 context: [factDefinition.context, result?.context_suffix]
                     .filter(Boolean)
                     .join(' '),

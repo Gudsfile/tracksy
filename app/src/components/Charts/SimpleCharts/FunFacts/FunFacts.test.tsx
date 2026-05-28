@@ -211,7 +211,7 @@ describe('FunFacts Component', () => {
         })
     })
 
-    it('should show empty state when query returns null main_text and no other content', async () => {
+    it('should show empty state when query returns null entity', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 entity: null as unknown as string,
@@ -226,7 +226,7 @@ describe('FunFacts Component', () => {
         expect(hasAnyTitle).toBe(true)
     })
 
-    it('should render content when query returns main_text and value', async () => {
+    it('should render entity and metric when query returns data', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 entity: 'Cozy Album',
@@ -239,6 +239,7 @@ describe('FunFacts Component', () => {
         await waitFor(() => {
             expect(screen.getByText('Cozy Album')).toBeDefined()
         })
+        expect(screen.getByText('Cozy Artist')).toBeDefined()
         expect(
             screen.getByText((content) => content.includes('10'))
         ).toBeDefined()
@@ -254,7 +255,7 @@ describe('FunFacts Component', () => {
         })
     })
 
-    it('displays numeric value when query returns fact_value', async () => {
+    it('displays numeric metric when query returns metric', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
                 entity: 'Some Artist',
