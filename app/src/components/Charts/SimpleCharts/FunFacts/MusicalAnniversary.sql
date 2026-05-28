@@ -35,9 +35,7 @@ artist_years as (
 )
 
 select
-    artist_years.artist_name as main_text,
-    year(recent_date.max_date) - artist_years.first_year as fact_value,
-    'years' as unit,
-    'strong' as context
+    artist_years.artist_name as entity,
+    year(recent_date.max_date) - artist_years.first_year as metric
 from artist_years, recent_date
 USING SAMPLE 1

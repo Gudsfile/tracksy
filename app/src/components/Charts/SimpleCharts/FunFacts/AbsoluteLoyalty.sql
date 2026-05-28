@@ -29,10 +29,8 @@ artist_loyalty as (
 )
 
 select
-    artist_name as main_text,
-    (loyalty_ratio * 100)::integer as fact_value,
-    '%' as unit,
-    'of your plays went all the way' as context
+    artist_name as entity,
+    (loyalty_ratio * 100)::integer as metric
 from artist_loyalty
-order by fact_value desc
+order by metric desc
 limit 1

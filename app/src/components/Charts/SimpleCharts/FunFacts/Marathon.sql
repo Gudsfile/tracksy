@@ -28,10 +28,9 @@ group_sizes as (
 )
 
 select
-    artist_name as main_text,
-    stream_count::double as fact_value,
-    'streams in a row' as unit,
-    'one uninterrupted run on ' || listen_date::varchar as context
+    artist_name as entity,
+    stream_count::integer as metric,
+    listen_date::text as context_suffix
 from group_sizes
 order by stream_count desc
 limit 1

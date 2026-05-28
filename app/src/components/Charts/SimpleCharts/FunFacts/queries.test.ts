@@ -28,6 +28,8 @@ describe('FunFacts queries', () => {
             expect(fact.fact_type).toBeTruthy()
             expect(fact.title).toBeTruthy()
             expect(fact.emoji).toBeTruthy()
+            expect(fact).toHaveProperty('unit')
+            expect(fact.context).toBeTruthy()
             expect(fact.sql).toBeTruthy()
             expect(fact.sql).not.toContain('$')
             expect(fact.sql).not.toContain('{')
@@ -59,10 +61,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('morning_favorite').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('top_morning_artist')
-            expect(row.fact_value).toBe('2')
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('between 6am and 12pm')
+            expect(row.entity).toBe('top_morning_artist')
+            expect(row.metric).toBe(2)
+            expect(row.context_suffix).toBeUndefined()
         })
 
         it('queryAfternoonFavorite returns artist with most afternoon streams', async () => {
@@ -72,10 +73,9 @@ describe('FunFacts queries', () => {
             )
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('top_afternoon_artist')
-            expect(row.fact_value).toBe('2')
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('between 12pm and 6pm')
+            expect(row.entity).toBe('top_afternoon_artist')
+            expect(row.metric).toBe(2)
+            expect(row.context_suffix).toBeUndefined()
         })
 
         it('queryEveningFavorite returns artist with most evening streams', async () => {
@@ -85,10 +85,9 @@ describe('FunFacts queries', () => {
             const rows = result.getRowObjectsJson()
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('top_evening_artist')
-            expect(row.fact_value).toBe('2')
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('between 6pm and 0am')
+            expect(row.entity).toBe('top_evening_artist')
+            expect(row.metric).toBe(2)
+            expect(row.context_suffix).toBeUndefined()
         })
 
         it('queryNightFavorite returns artist with most night streams', async () => {
@@ -98,10 +97,9 @@ describe('FunFacts queries', () => {
             const rows = result.getRowObjectsJson()
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('top_night_artist')
-            expect(row.fact_value).toBe('2')
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('between 0am and 6am')
+            expect(row.entity).toBe('top_night_artist')
+            expect(row.metric).toBe(2)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -122,10 +120,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('marathon').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('consecutive_stream_artist')
-            expect(row.fact_value).toBe(3)
-            expect(row.unit).toBe('streams in a row')
-            expect(row.context).toBe('one uninterrupted run on 2024-01-01')
+            expect(row.entity).toBe('consecutive_stream_artist')
+            expect(row.metric).toBe(3)
+            expect(row.context_suffix).toBe('2024-01-01')
         })
     })
 
@@ -142,10 +139,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('one_hit_wonder').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('hit_track')
-            expect(row.fact_value).toBe(100)
-            expect(row.unit).toBe('%')
-            expect(row.context).toBe('of your streams of one_hit_wonder_artist')
+            expect(row.entity).toBe('hit_track')
+            expect(row.metric).toBe(100)
+            expect(row.context_suffix).toBe('one_hit_wonder_artist')
         })
     })
 
@@ -169,10 +165,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('weekend_favorite').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('weekend_artist')
-            expect(row.fact_value).toBe('2')
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('on weekends')
+            expect(row.entity).toBe('weekend_artist')
+            expect(row.metric).toBe(2)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -196,10 +191,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('absolute_loyalty').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('loyal_artist')
-            expect(row.fact_value).toBe(75)
-            expect(row.unit).toBe('%')
-            expect(row.context).toBe('of your plays went all the way')
+            expect(row.entity).toBe('loyal_artist')
+            expect(row.metric).toBe(75)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -220,10 +214,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('nostalgic_return').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('nostalgic_artist')
-            expect(row.fact_value).toBe(366)
-            expect(row.unit).toBe('days')
-            expect(row.context).toBe("later, it's back")
+            expect(row.entity).toBe('nostalgic_artist')
+            expect(row.metric).toBe(366)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -248,10 +241,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('current_obsession').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('current_hit')
-            expect(row.fact_value).toBe(2)
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('in the last 30 days')
+            expect(row.entity).toBe('current_hit')
+            expect(row.metric).toBe(2)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -273,10 +265,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('recent_discovery').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('recent_discovery_artist')
-            expect(row.fact_value).toBe(1)
-            expect(row.unit).toBe('streams')
-            expect(row.context).toBe('discovered in the last 3 months')
+            expect(row.entity).toBe('recent_discovery_artist')
+            expect(row.metric).toBe(1)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -299,10 +290,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('subscribed_artist').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('subscribed_artist')
-            expect(row.fact_value).toBe(3)
-            expect(row.unit).toBe('months')
-            expect(row.context).toBe('in your rotation')
+            expect(row.entity).toBe('subscribed_artist')
+            expect(row.metric).toBe(3)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -322,10 +312,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('first_artist').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('first_artist')
-            expect(row.fact_value).toBe('2006')
-            expect(row.unit).toBeUndefined()
-            expect(row.context).toBe('still in your rotation today?')
+            expect(row.entity).toBe('first_artist')
+            expect(row.metric).toBe(2006)
+            expect(row.context_suffix).toBeUndefined()
         })
 
         it('queryMusicalAnniversary returns artist listened to for longest time', async () => {
@@ -335,10 +324,9 @@ describe('FunFacts queries', () => {
             )
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBeDefined()
-            expect(row.fact_value).toBeDefined()
-            expect(row.unit).toBe('years')
-            expect(row.context).toBe('strong')
+            expect(row.entity).toBeDefined()
+            expect(row.metric).toBeDefined()
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -361,10 +349,9 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('forgotten_artist').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBe('forgotten_artist')
-            expect(row.fact_value).toBe(366)
-            expect(row.unit).toBe('days')
-            expect(row.context).toBe('off your radar')
+            expect(row.entity).toBe('forgotten_artist')
+            expect(row.metric).toBe(366)
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -382,11 +369,10 @@ describe('FunFacts queries', () => {
             const rows = await testQuery(conn, getFact('track_proposition').sql)
             expect(rows.length).toBe(1)
             const row = rows[0]
-            expect(row.main_text).toBeOneOf(['track1', 'track2'])
-            expect(row.fact_value).toBeUndefined()
-            expect(row.second_text).toBeOneOf(['artist1', 'artist2'])
-            expect(row.unit).toBeUndefined()
-            expect(row.context).toBe('your next listen is already waiting')
+            expect(row.entity).toBeOneOf(['track1', 'track2'])
+            expect(row.metric).toBeUndefined()
+            expect(row.parent_entity).toBeOneOf(['artist1', 'artist2'])
+            expect(row.context_suffix).toBeUndefined()
         })
     })
 
@@ -416,13 +402,11 @@ describe('FunFacts queries', () => {
 
                 const rows = await testQuery(conn, getFact('cozy_album').sql)
                 expect(rows.length).toBe(1)
-                expect(rows[0].main_text).toBe('album1')
-                expect(rows[0].second_text).toBe('artist1')
-                expect(rows[0].fact_value).toBeUndefined()
+                expect(rows[0].entity).toBe('album1')
+                expect(rows[0].parent_entity).toBe('artist1')
+                expect(rows[0].metric).toBeUndefined()
                 expect(rows[0].unit).toBeUndefined()
-                expect(rows[0].context).toBe(
-                    'the album that wraps your Sundays in musical coziness'
-                )
+                expect(rows[0].context_suffix).toBeUndefined()
             })
         })
 
@@ -452,7 +436,7 @@ describe('FunFacts queries', () => {
                 await createTestTable(conn, testData)
                 const rows = await testQuery(conn, getFact('cozy_album').sql)
                 expect(rows.length).toBe(1)
-                expect(rows[0].main_text).toBe('album1')
+                expect(rows[0].entity).toBe('album1')
             })
         })
 
@@ -482,7 +466,7 @@ describe('FunFacts queries', () => {
                 await createTestTable(conn, testData)
                 const rows = await testQuery(conn, getFact('cozy_album').sql)
                 expect(rows.length).toBe(1)
-                expect(rows[0].main_text).toBe('album2')
+                expect(rows[0].entity).toBe('album2')
             })
         })
 
@@ -511,7 +495,7 @@ describe('FunFacts queries', () => {
                 await createTestTable(conn, testData)
                 const rows = await testQuery(conn, getFact('cozy_album').sql)
                 expect(rows.length).toBe(1)
-                expect(rows[0].main_text).toBe('album2')
+                expect(rows[0].entity).toBe('album2')
             })
         })
 

@@ -49,11 +49,9 @@ artist_stats as (
 )
 
 select
-    artist as main_text,
+    artist as entity,
     date_diff(
         'day', last_listen, (select max_date from recent_date)
-    )::integer as fact_value,
-    'days' as unit,
-    'off your radar' as context
+    )::integer as metric
 from artist_stats
 USING SAMPLE 1

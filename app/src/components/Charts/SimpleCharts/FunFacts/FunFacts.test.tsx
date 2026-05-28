@@ -5,7 +5,7 @@ import { FunFacts } from '.'
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
-import { FunFactResult, facts } from './queries'
+import { FunFactData, facts } from './queries'
 
 const EMPTY_MESSAGE = 'Not enough data for this fun fact — keep listening!'
 const ERROR_MESSAGE = 'Something went wrong while loading fun facts'
@@ -22,12 +22,11 @@ describe('FunFacts Component', () => {
             i++
             return [
                 {
-                    fact_type: fact.fact_type,
-                    main_text: `main_text_for_${fact.fact_type}`,
-                    fact_value: i % 2 === 0 ? 1 : 'one',
-                    context: i % 2 === 0 ? undefined : 'dummy_context',
+                    entity: `entity_for_${fact.fact_type}`,
+                    metric: i % 2 === 0 ? 1 : undefined,
+                    context_suffix: i % 2 === 0 ? undefined : 'dummy_context',
                 },
-            ] as FunFactResult[]
+            ] as FunFactData[]
         })
 
         vi.spyOn(db, 'getDB').mockResolvedValue({
@@ -63,11 +62,10 @@ describe('FunFacts Component', () => {
                 callIndex++
                 return [
                     {
-                        main_text: `Test fact #${callIndex}`,
-                        fact_value: callIndex,
-                        unit: 'streams',
+                        entity: `Test fact #${callIndex}`,
+                        metric: callIndex,
                     },
-                ] as FunFactResult[]
+                ] as FunFactData[]
             })
         const { container } = render(<FunFacts />)
 
@@ -199,12 +197,10 @@ describe('FunFacts Component', () => {
 
         spy.mockResolvedValue([
             {
-                fact_type: 'morning_favorite',
-                main_text: 'Test morning_favorite',
-                fact_value: 1,
-                unit: 'streams',
+                entity: 'Test morning_favorite',
+                metric: 1,
             },
-        ] as FunFactResult[])
+        ] as FunFactData[])
 
         fireEvent.click(screen.getByTitle('New fact'))
 
@@ -218,10 +214,9 @@ describe('FunFacts Component', () => {
     it('should show empty state when query returns null main_text and no other content', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
-                fact_type: 'dummy_fact_type',
-                main_text: null,
+                entity: null as unknown as string,
             },
-        ] as FunFactResult[])
+        ] as FunFactData[])
         render(<FunFacts />)
 
         await waitFor(() => {
@@ -234,15 +229,11 @@ describe('FunFacts Component', () => {
     it('should render content when query returns main_text and value', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
-                fact_type: 'cozy_album',
-                main_text: 'Cozy Album',
-                second_text: 'Cozy Artist',
-                fact_value: 10,
-                unit: 'streams',
-                context:
-                    'the album that wraps your Sundays in musical coziness',
+                entity: 'Cozy Album',
+                parent_entity: 'Cozy Artist',
+                metric: 10,
             },
-        ] as FunFactResult[])
+        ] as FunFactData[])
         render(<FunFacts />)
 
         await waitFor(() => {
@@ -266,12 +257,10 @@ describe('FunFacts Component', () => {
     it('displays numeric value when query returns fact_value', async () => {
         vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
             {
-                fact_type: 'morning_favorite',
-                main_text: 'Some Artist',
-                fact_value: 42,
-                unit: 'streams',
+                entity: 'Some Artist',
+                metric: 42,
             },
-        ] as FunFactResult[])
+        ] as FunFactData[])
         render(<FunFacts />)
 
         await waitFor(() => {

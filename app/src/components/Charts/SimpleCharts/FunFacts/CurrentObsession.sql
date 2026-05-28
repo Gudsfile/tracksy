@@ -5,14 +5,12 @@ recent_date as (
 )
 
 select
-    t.track_name as main_text,
-    count(*)::integer as fact_value,
-    'streams' as unit,
-    'in the last 30 days' as context
+    t.track_name as entity,
+    count(*)::integer as metric
 from ${table} as t, recent_date
 where
     t.ts::date >= recent_date.max_date - interval 30 day
     and t.track_name is not null
 group by t.track_name
-order by fact_value desc
+order by metric desc
 limit 1
