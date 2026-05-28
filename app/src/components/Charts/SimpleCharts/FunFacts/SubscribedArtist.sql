@@ -1,10 +1,8 @@
 select
-    artist_name as main_text,
-    count(distinct strftime(ts::date, '%Y-%m'))::integer as fact_value,
-    'months' as unit,
-    'in your rotation' as context
+    artist_name as entity,
+    count(distinct strftime(ts::date, '%Y-%m'))::integer as metric
 from ${table}
 where artist_name is not null
 group by artist_name
-order by fact_value desc
+order by metric desc
 limit 1

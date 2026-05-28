@@ -29,9 +29,8 @@ track_stats as (
 )
 
 select
-    track_name as main_text,
-    percentage as fact_value,
-    '%' as unit,
-    'of your streams of ' || artist_name as context
+    track_name as entity,
+    percentage as metric,
+    artist_name as context_suffix
 from track_stats
 USING SAMPLE 1

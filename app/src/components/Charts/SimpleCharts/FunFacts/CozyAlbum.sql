@@ -22,7 +22,6 @@ sunday_album_listening as (
 )
 
 select
-    album_name as main_text,
-    artist_name as second_text,
-    'the album that wraps your Sundays in musical coziness' as context
+    album_name as entity,
+    artist_name as parent_entity
 from sunday_album_listening

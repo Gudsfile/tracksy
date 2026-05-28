@@ -1,8 +1,6 @@
 select
-    artist_name as main_text,
-    count(*) as fact_value,
-    'streams' as unit,
-    'on weekends' as context
+    artist_name as entity,
+    count(*)::integer as metric
 from ${table}
 where
     (
@@ -11,5 +9,5 @@ where
     )
     and artist_name is not null
 group by artist_name
-order by fact_value desc
+order by metric desc
 limit 1

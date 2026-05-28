@@ -50,9 +50,7 @@ artist_gaps as (
 )
 
 select
-    artist as main_text,
-    gap::integer as fact_value,
-    'days' as unit,
-    'later, it''s back' as context
+    artist as entity,
+    gap::integer as metric
 from artist_gaps
 USING SAMPLE 1

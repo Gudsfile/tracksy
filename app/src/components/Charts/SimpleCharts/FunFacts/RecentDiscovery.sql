@@ -14,10 +14,8 @@ artist_first_listen as (
 )
 
 select
-    artist_name as main_text,
-    count(*)::integer as fact_value,
-    'streams' as unit,
-    'discovered in the last 3 months' as context
+    artist_name as entity,
+    count(*)::integer as metric
 from ${table}
 inner join artist_first_listen using (artist_name)
 where
@@ -25,5 +23,5 @@ where
     >= (select max_date - interval 90 day from recent_date)
     and artist_name is not null
 group by artist_name
-order by fact_value desc
+order by metric desc
 limit 1

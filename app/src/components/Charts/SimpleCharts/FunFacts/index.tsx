@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { type FunFactResult, facts } from './queries'
+import { type FunFactData, facts } from './queries'
 import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { DATA_LOADED_EVENT } from '../../../../db/dataSignal'
 import { FunFacts as FunFactsView, type FunFactProps } from './FunFacts'
@@ -33,18 +33,20 @@ export function FunFacts() {
 
             seenFactsRef.current.add(factDefinition.fact_type)
 
-            const [result] = await queryDBAsJSON<FunFactResult>(
+            const [result] = await queryDBAsJSON<FunFactData>(
                 factDefinition.sql
             )
             setFact({
                 title: factDefinition.title,
                 emoji: factDefinition.emoji,
                 fact_type: factDefinition.fact_type,
-                main_text: result?.main_text ?? undefined,
-                second_text: result?.second_text,
-                value: result?.fact_value,
+                main_text: result?.entity ?? undefined,
+                second_text: result?.parent_entity,
+                value: result?.metric,
                 unit: result?.unit,
-                context: result?.context,
+                context: [factDefinition.context, result?.context_suffix]
+                    .filter(Boolean)
+                    .join(' '),
             })
         } catch (error) {
             console.error('Error loading fun fact:', error)
