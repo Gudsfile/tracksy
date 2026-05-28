@@ -199,17 +199,15 @@ export const HourlyStreams: FC<Props> = ({
                 <ChartCardEmpty />
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">
-                        {String(tooltip.hour).padStart(2, '0')}h
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.count} streams
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {formatDuration(tooltip.ms)}
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={`${String(tooltip.hour).padStart(2, '0')}h`}
+                    rows={[
+                        `${tooltip.count} streams`,
+                        formatDuration(tooltip.ms),
+                    ]}
+                />
             )}
         </ChartCard>
     )

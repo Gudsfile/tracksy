@@ -196,35 +196,17 @@ export const StreamVariety: FC<Props> = ({
                 </>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">
-                        {formatTooltipDate(tooltip.ts, granularity)}
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.distinct_count.toLocaleString()} distinct
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.repeat_count.toLocaleString()} re-listens
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.total_count > 0
-                            ? Math.round(
-                                  (tooltip.distinct_count /
-                                      tooltip.total_count) *
-                                      100
-                              )
-                            : 0}
-                        % variety
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.distinct_count > 0
-                            ? Math.round(
-                                  tooltip.total_count / tooltip.distinct_count
-                              )
-                            : 0}{' '}
-                        avg listens/{ENTITY_SINGULAR[entity]}
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={formatTooltipDate(tooltip.ts, granularity)}
+                    rows={[
+                        `${tooltip.distinct_count.toLocaleString()} distinct`,
+                        `${tooltip.repeat_count.toLocaleString()} re-listens`,
+                        `${tooltip.total_count > 0 ? Math.round((tooltip.distinct_count / tooltip.total_count) * 100) : 0}% variety`,
+                        `${tooltip.distinct_count > 0 ? Math.round(tooltip.total_count / tooltip.distinct_count) : 0} avg listens/${ENTITY_SINGULAR[entity]}`,
+                    ]}
+                />
             )}
         </ChartCard>
     )

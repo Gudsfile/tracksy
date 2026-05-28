@@ -121,22 +121,17 @@ export const EvolutionOverTime: FC<Props> = ({ data, year, isLoading }) => {
                 </>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">{tooltip.year}</div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.count.toLocaleString()} streams
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {formatDuration(tooltip.ms_played)}
-                    </div>
-                    <div className="border-t border-gray-700 my-1.5" />
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {totalStreams.toLocaleString()} total streams
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {formatDuration(totalMsPlayed)} total listening
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={String(tooltip.year)}
+                    rows={[
+                        `${tooltip.count.toLocaleString()} streams`,
+                        formatDuration(tooltip.ms_played),
+                        `${totalStreams.toLocaleString()} total streams`,
+                        `${formatDuration(totalMsPlayed)} total listening`,
+                    ]}
+                />
             )}
         </ChartCard>
     )
