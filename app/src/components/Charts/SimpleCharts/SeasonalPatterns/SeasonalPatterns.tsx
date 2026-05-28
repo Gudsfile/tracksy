@@ -1,7 +1,9 @@
 import type { FC } from 'react'
 import type { SeasonalResult } from './query'
 import { ChartCard } from '../shared/ChartCard'
-import { ChartCardEmpty, ChartHero, LabeledProgressBar } from '../shared'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartHero } from '../shared/ChartHero'
+import { LabeledProgressBar } from '../shared/LabeledProgressBar'
 
 type Props = {
     data: SeasonalResult | undefined

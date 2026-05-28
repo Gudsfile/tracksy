@@ -1,6 +1,9 @@
 import type { FC } from 'react'
 import type { NewVsOldResult } from './query'
-import { ChartCard, ChartCardEmpty, ChartHero, InsightCard } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartHero } from '../shared/ChartHero'
+import { InsightCard } from '../shared/InsightCard'
 
 type Props = {
     data: NewVsOldResult | undefined

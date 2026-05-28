@@ -1,6 +1,8 @@
 import type { FC } from 'react'
 import type { ArtistLoyaltyResult } from './query'
-import { ChartCard, ChartCardEmpty, ChartHero } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartHero } from '../shared/ChartHero'
 import { classifyArtistLoyalty } from './classifyArtistLoyalty'
 
 type Props = {

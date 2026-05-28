@@ -1,7 +1,9 @@
 import type { FC } from 'react'
 import type { RepeatResult } from './query'
 import { classifyRepeatBehavior } from './classifyRepeatBehavior'
-import { ChartCard, ChartCardEmpty, ChartHero } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartHero } from '../shared/ChartHero'
 
 type Props = {
     data: RepeatResult | undefined

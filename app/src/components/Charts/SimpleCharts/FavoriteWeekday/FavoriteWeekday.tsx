@@ -2,7 +2,10 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import type { FavoriteWeekdayResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { ChartCard, ChartCardEmpty, ChartHero, ChartTooltip } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartHero } from '../shared/ChartHero'
+import { ChartTooltip } from '../shared/ChartTooltip'
 
 type TooltipState = {
     x: number
