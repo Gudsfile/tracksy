@@ -142,17 +142,15 @@ export const StreamTimeline: FC<Props> = ({
                 </>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">
-                        {formatTooltipDate(tooltip.ts, granularity)}
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {formatDuration(tooltip.ms_played)}
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.count_streams.toLocaleString()} streams
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={formatTooltipDate(tooltip.ts, granularity)}
+                    rows={[
+                        formatDuration(tooltip.ms_played),
+                        `${tooltip.count_streams.toLocaleString()} streams`,
+                    ]}
+                />
             )}
         </ChartCard>
     )

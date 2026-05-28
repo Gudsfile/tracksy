@@ -149,14 +149,12 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
                 </div>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">
-                        {formatDate(tooltip.cell.date)}
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.cell.stream_count} streams
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={formatDate(tooltip.cell.date)}
+                    rows={[`${tooltip.cell.stream_count} streams`]}
+                />
             )}
         </ChartCard>
     )

@@ -190,26 +190,16 @@ export const StreamDiscovery: FC<Props> = ({
                 </>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">
-                        {formatTooltipDate(tooltip.ts, granularity)}
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.new_count.toLocaleString()} new
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.known_count.toLocaleString()} known
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.total_count > 0
-                            ? Math.round(
-                                  (tooltip.new_count / tooltip.total_count) *
-                                      100
-                              )
-                            : 0}
-                        % discovery
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={formatTooltipDate(tooltip.ts, granularity)}
+                    rows={[
+                        `${tooltip.new_count.toLocaleString()} new`,
+                        `${tooltip.known_count.toLocaleString()} known`,
+                        `${tooltip.total_count > 0 ? Math.round((tooltip.new_count / tooltip.total_count) * 100) : 0}% discovery`,
+                    ]}
+                />
             )}
         </ChartCard>
     )

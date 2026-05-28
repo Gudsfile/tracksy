@@ -359,16 +359,16 @@ export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
                 </>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">
-                        {formatDisplayDate(tooltip.cell.day)}
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.cell.streak > 0
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={formatDisplayDate(tooltip.cell.day)}
+                    rows={[
+                        tooltip.cell.streak > 0
                             ? `Day ${tooltip.cell.streak} of streak`
-                            : 'Streak broken'}
-                    </div>
-                </ChartTooltip>
+                            : 'Streak broken',
+                    ]}
+                />
             )}
         </ChartCard>
     )

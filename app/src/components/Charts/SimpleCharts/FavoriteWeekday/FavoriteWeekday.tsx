@@ -105,15 +105,15 @@ export const FavoriteWeekday: FC<Props> = ({ data, isLoading }) => {
                 </>
             )}
             {tooltip && (
-                <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                    <div className="font-semibold">{tooltip.day_name}</div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {tooltip.stream_count.toLocaleString()} streams
-                    </div>
-                    <div className="text-gray-300 dark:text-gray-400">
-                        {formatDuration(tooltip.ms_played)}
-                    </div>
-                </ChartTooltip>
+                <ChartTooltip
+                    x={tooltip.x}
+                    y={tooltip.y}
+                    title={tooltip.day_name}
+                    rows={[
+                        `${tooltip.stream_count.toLocaleString()} streams`,
+                        formatDuration(tooltip.ms_played),
+                    ]}
+                />
             )}
         </ChartCard>
     )

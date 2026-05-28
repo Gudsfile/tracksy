@@ -474,22 +474,17 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
                     </InsightList>
                 </div>
                 {tooltip && (
-                    <ChartTooltip x={tooltip.x} y={tooltip.y}>
-                        <div className="font-semibold">
-                            {DAY_NAMES[tooltip.day]} {tooltip.hour}h
-                        </div>
-                        <div className="text-gray-300 dark:text-gray-400">
-                            {tooltip.count.toLocaleString()} streams
-                        </div>
-                        {tooltip.firstPlayedTs !== null && (
-                            <div className="text-gray-300 dark:text-gray-400">
-                                first played{' '}
-                                {new Date(
-                                    tooltip.firstPlayedTs
-                                ).toLocaleDateString()}
-                            </div>
-                        )}
-                    </ChartTooltip>
+                    <ChartTooltip
+                        x={tooltip.x}
+                        y={tooltip.y}
+                        title={`${DAY_NAMES[tooltip.day]} ${tooltip.hour}h`}
+                        rows={[
+                            `${tooltip.count.toLocaleString()} streams`,
+                            tooltip.firstPlayedTs !== null
+                                ? `first played ${new Date(tooltip.firstPlayedTs).toLocaleDateString()}`
+                                : null,
+                        ]}
+                    />
                 )}
             </ChartCard>
         </div>
