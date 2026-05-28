@@ -2,11 +2,10 @@ import type { Granularity } from './types'
 
 export function formatBarLabel(
     timestamp: string,
-    index: number,
-    data: { ts: string }[],
+    prevTimestamp: string | undefined,
     year: number | undefined,
     granularity: Granularity,
-    locale: string | undefined = undefined
+    locale?: string
 ): string {
     const date = new Date(timestamp)
 
@@ -19,9 +18,8 @@ export function formatBarLabel(
     }
 
     if (granularity === 'week') {
-        if (index === 0)
-            return date.toLocaleDateString(locale, { month: 'short' })
-        const prev = new Date(data[index - 1].ts)
+        const prev = prevTimestamp ? new Date(prevTimestamp) : null
+        if (!prev) return date.toLocaleDateString(locale, { month: 'short' })
         return date.getUTCMonth() !== prev.getUTCMonth()
             ? date.toLocaleDateString(locale, { month: 'short' })
             : ''
