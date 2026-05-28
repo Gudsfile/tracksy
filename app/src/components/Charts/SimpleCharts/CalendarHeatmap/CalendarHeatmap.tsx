@@ -2,7 +2,9 @@ import type { FC } from 'react'
 import type { CalendarHeatmapQueryResult } from './query'
 import { buildCells } from './buildCells'
 import { useState } from 'react'
-import { ChartCard, ChartCardEmpty, ChartTooltip } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartTooltip } from '../shared/ChartTooltip'
 
 const MIN_CELL = 10
 const LABEL_WIDTH = 24

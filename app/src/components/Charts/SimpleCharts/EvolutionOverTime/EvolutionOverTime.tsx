@@ -2,7 +2,9 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import type { EvolutionResult } from './query'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { ChartCard, ChartCardEmpty, ChartTooltip } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartTooltip } from '../shared/ChartTooltip'
 
 type TooltipState = {
     x: number

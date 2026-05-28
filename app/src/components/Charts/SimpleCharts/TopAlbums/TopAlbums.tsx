@@ -1,7 +1,9 @@
 import type { FC } from 'react'
 import type { TopAlbumsResult } from './query'
 import { memo } from 'react'
-import { ChartCard, ChartCardEmpty, RankedList } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { RankedList } from '../shared/RankedList'
 
 type Props = {
     data: TopAlbumsResult[] | undefined

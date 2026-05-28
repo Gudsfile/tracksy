@@ -2,7 +2,9 @@ import type { FC } from 'react'
 import type { TopArtistsResult } from './query'
 import { memo } from 'react'
 import { formatDuration } from '../../../../utils/formatDuration'
-import { ChartCard, ChartCardEmpty, RankedList } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { RankedList } from '../shared/RankedList'
 
 type Props = {
     data: TopArtistsResult[] | undefined

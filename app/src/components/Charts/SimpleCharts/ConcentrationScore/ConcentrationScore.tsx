@@ -1,6 +1,8 @@
 import type { FC } from 'react'
 import type { ConcentrationResult } from './query'
-import { ChartCard, ChartCardEmpty, LabeledProgressBar } from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { LabeledProgressBar } from '../shared/LabeledProgressBar'
 
 type Props = {
     data: ConcentrationResult | undefined

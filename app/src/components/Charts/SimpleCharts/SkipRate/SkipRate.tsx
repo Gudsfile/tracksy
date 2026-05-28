@@ -1,13 +1,11 @@
 import type { FC } from 'react'
 import type { SkipRateResult } from './query'
 import { classifySkipRate } from './classifySkipRate'
-import {
-    ChartCard,
-    ChartCardEmpty,
-    ChartHero,
-    ProgressBar,
-    InsightCard,
-} from '../shared'
+import { ChartCard } from '../shared/ChartCard'
+import { ChartCardEmpty } from '../shared/ChartCardEmpty'
+import { ChartHero } from '../shared/ChartHero'
+import { ProgressBar } from '../shared/ProgressBar'
+import { InsightCard } from '../shared/InsightCard'
 
 type Props = {
     data: SkipRateResult | undefined
