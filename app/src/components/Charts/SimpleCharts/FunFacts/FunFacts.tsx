@@ -4,9 +4,9 @@ export type FunFactProps = {
     fact_type: string
     title: string
     emoji: string
-    main_text: string | undefined
-    second_text?: string
-    value?: number | string
+    entity: string | undefined
+    parent_entity?: string
+    metric?: number
     unit?: string
     context?: string
 }
@@ -31,7 +31,7 @@ const EmptyFunFact: FC = () => (
 )
 
 const FunFactContent: FC<ContentProps> = ({ fact, error, isLoading }) => {
-    if (isLoading && !fact) {
+    if (isLoading && !fact?.entity) {
         return (
             <div className="space-y-2 animate-pulse">
                 <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4" />
@@ -49,33 +49,29 @@ const FunFactContent: FC<ContentProps> = ({ fact, error, isLoading }) => {
         )
     }
 
-    // type guard — unreachable in practice: skeleton renders while fact is null
-    if (!fact) return <EmptyFunFact />
+    if (!fact?.entity) return <EmptyFunFact />
 
-    if (!(fact.main_text || fact.value !== undefined || fact.second_text)) {
-        return <EmptyFunFact />
-    }
-
-    const { main_text, second_text, value, unit, context } = fact
-    const valueDisplayed =
-        typeof value === 'number' ? value.toLocaleString() : value
+    const { entity, parent_entity, metric, unit, context } = fact
 
     return (
         <>
-            {main_text && (
-                <div className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 break-words text-balance">
-                    {main_text}
+            <div className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1 break-words text-balance">
+                {entity}
+            </div>
+            {parent_entity && (
+                <div className="text-base text-gray-500 dark:text-gray-400 mb-1">
+                    {parent_entity}
                 </div>
             )}
-            <div className="text-lg text-gray-600 dark:text-gray-300">
-                {second_text} {second_text && valueDisplayed ? '(' : undefined}
-                <span className="font-bold text-blue-600 dark:text-blue-400">
-                    {valueDisplayed}
-                    {unit === '%' ? unit : undefined}
-                </span>{' '}
-                {unit !== '%' ? unit : undefined}
-                {second_text && valueDisplayed ? ')' : undefined}
-            </div>
+            {metric !== undefined && (
+                <div className="text-lg text-gray-600 dark:text-gray-300">
+                    <span className="font-bold text-blue-600 dark:text-blue-400">
+                        {metric.toLocaleString()}
+                        {unit === '%' ? unit : ''}
+                    </span>
+                    {unit && unit !== '%' && ` ${unit}`}
+                </div>
+            )}
             {context && (
                 <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 italic">
                     {context}
