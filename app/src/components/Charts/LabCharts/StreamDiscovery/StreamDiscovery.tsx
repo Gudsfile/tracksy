@@ -141,8 +141,7 @@ export const StreamDiscovery: FC<Props> = ({
                             {data.map((d, i) => {
                                 const label = formatBarLabel(
                                     d.ts,
-                                    i,
-                                    data,
+                                    data[i - 1]?.ts,
                                     year,
                                     granularity
                                 )
