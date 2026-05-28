@@ -14,6 +14,7 @@ import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { EntityTabs } from '../shared/EntityTabs'
 import { GranularityTabs } from '../shared/GranularityTabs'
 import { InsightList, InsightRow } from '../shared/InsightList'
+import { ENTITY_SINGULAR } from '../shared/entityLabels'
 
 type TooltipState = {
     x: number
@@ -34,12 +35,6 @@ type Props = {
     entity: EntityType
     onEntityChange: (e: EntityType) => void
     isLoading?: boolean
-}
-
-const ENTITY_SINGULAR: Record<EntityType, string> = {
-    tracks: 'track',
-    artists: 'artist',
-    albums: 'album',
 }
 
 export const StreamDiscovery: FC<Props> = ({
