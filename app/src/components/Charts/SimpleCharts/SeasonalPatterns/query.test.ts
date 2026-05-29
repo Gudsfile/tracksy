@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { querySeasonalPatterns } from './query'
+import { type SeasonalResult, querySeasonalPatterns } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -35,7 +35,10 @@ describe('SeasonalPatterns Query', () => {
     })
 
     it('should return seasonal metrics', async () => {
-        const rows = await testQuery(conn, querySeasonalPatterns(2022))
+        const rows = await testQuery<SeasonalResult>(
+            conn,
+            querySeasonalPatterns(2022)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -48,7 +51,10 @@ describe('SeasonalPatterns Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, querySeasonalPatterns(undefined))
+        const rows = await testQuery<SeasonalResult>(
+            conn,
+            querySeasonalPatterns(undefined)
+        )
         // 2023-08-01 (summer) is also included, total becomes 7
         expect(rows.length).toBe(1)
         expect(rows[0].total).toBe(7)

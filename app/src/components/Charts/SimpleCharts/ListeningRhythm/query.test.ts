@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryListeningRhythm } from './query'
+import { type ListeningRhythmResult, queryListeningRhythm } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -36,7 +36,10 @@ describe('ListeningRhythm Query', () => {
     })
 
     it('should return rhythm metrics', async () => {
-        const rows = await testQuery(conn, queryListeningRhythm(2024))
+        const rows = await testQuery<ListeningRhythmResult>(
+            conn,
+            queryListeningRhythm(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -49,7 +52,10 @@ describe('ListeningRhythm Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryListeningRhythm(undefined))
+        const rows = await testQuery<ListeningRhythmResult>(
+            conn,
+            queryListeningRhythm(undefined)
+        )
         // 2025-01-01 23:00:00 adds 1 to night, total becomes 8
         expect(rows.length).toBe(1)
         expect(rows[0].total).toBe(8)

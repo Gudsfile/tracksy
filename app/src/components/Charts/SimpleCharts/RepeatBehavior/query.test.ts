@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryRepeatBehavior } from './query'
+import { type RepeatResult, queryRepeatBehavior } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -103,7 +103,10 @@ describe('RepeatBehavior Query', () => {
     })
 
     it('should return repeat behavior metrics', async () => {
-        const rows = await testQuery(conn, queryRepeatBehavior(2024))
+        const rows = await testQuery<RepeatResult>(
+            conn,
+            queryRepeatBehavior(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -117,7 +120,10 @@ describe('RepeatBehavior Query', () => {
     })
 
     it('should return empty metrics', async () => {
-        const rows = await testQuery(conn, queryRepeatBehavior(2025))
+        const rows = await testQuery<RepeatResult>(
+            conn,
+            queryRepeatBehavior(2025)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -129,7 +135,10 @@ describe('RepeatBehavior Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryRepeatBehavior(undefined))
+        const rows = await testQuery<RepeatResult>(
+            conn,
+            queryRepeatBehavior(undefined)
+        )
         // 2018 unselected_year_track (2 consecutive) is now included
         expect(rows.length).toBe(1)
         expect(rows[0].total_repeat_sequences).toBeGreaterThan(0)

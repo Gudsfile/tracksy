@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryConcentrationScore } from './query'
+import { type ConcentrationResult, queryConcentrationScore } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -78,7 +78,10 @@ describe('ConcentrationScore Query', () => {
     })
 
     it('should return concentration metrics', async () => {
-        const rows = await testQuery(conn, queryConcentrationScore(2025))
+        const rows = await testQuery<ConcentrationResult>(
+            conn,
+            queryConcentrationScore(2025)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -89,7 +92,10 @@ describe('ConcentrationScore Query', () => {
     })
 
     it('should return empty metrics', async () => {
-        const rows = await testQuery(conn, queryConcentrationScore(2023))
+        const rows = await testQuery<ConcentrationResult>(
+            conn,
+            queryConcentrationScore(2023)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -100,7 +106,10 @@ describe('ConcentrationScore Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryConcentrationScore(undefined))
+        const rows = await testQuery<ConcentrationResult>(
+            conn,
+            queryConcentrationScore(undefined)
+        )
         // artist24 now has 2 streams (testDate + anotherYear), total streams increase
         expect(rows.length).toBe(1)
         const row = rows[0]

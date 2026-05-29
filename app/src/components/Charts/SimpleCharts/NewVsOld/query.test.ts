@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryNewVsOld } from './query'
+import { type NewVsOldResult, queryNewVsOld } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -34,7 +34,7 @@ describe('NewVsOld Query', () => {
     })
 
     it('should return new vs old metrics', async () => {
-        const rows = await testQuery(conn, queryNewVsOld(2025))
+        const rows = await testQuery<NewVsOldResult>(conn, queryNewVsOld(2025))
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -46,7 +46,10 @@ describe('NewVsOld Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryNewVsOld(undefined))
+        const rows = await testQuery<NewVsOldResult>(
+            conn,
+            queryNewVsOld(undefined)
+        )
         // All years included; "new" = discovered in the latest year (2026)
         expect(rows.length).toBe(1)
         expect(rows[0].total).toBe(5)

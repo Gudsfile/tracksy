@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { buildBingeListenerQuery } from './query'
+import { type BingeListenerResult, buildBingeListenerQuery } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -36,14 +36,20 @@ describe('BingeListener Query', () => {
     })
 
     it('should return the heaviest listening day for a given year', async () => {
-        const rows = await testQuery(conn, buildBingeListenerQuery(testYear))
+        const rows = await testQuery<BingeListenerResult>(
+            conn,
+            buildBingeListenerQuery(testYear)
+        )
         expect(rows.length).toBe(1)
         expect(rows[0].stream_date).toBe(`${testYear}-01-01`)
         expect(rows[0].hours_played).toBeCloseTo(2.0)
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, buildBingeListenerQuery(undefined))
+        const rows = await testQuery<BingeListenerResult>(
+            conn,
+            buildBingeListenerQuery(undefined)
+        )
         expect(rows.length).toBe(1)
         expect(rows[0].stream_date).toBe(`${anotherYear}-06-01`)
         expect(rows[0].hours_played).toBeCloseTo(4.0)
@@ -51,7 +57,10 @@ describe('BingeListener Query', () => {
 
     it('should return empty when no data', async () => {
         await createTestTable(conn, [])
-        const rows = await testQuery(conn, buildBingeListenerQuery(testYear))
+        const rows = await testQuery<BingeListenerResult>(
+            conn,
+            buildBingeListenerQuery(testYear)
+        )
         expect(rows.length).toBe(0)
     })
 })

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryTopTracks } from './query'
+import { type TopTracksResult, queryTopTracks } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -56,7 +56,10 @@ describe('TopTracks Query', () => {
     })
 
     it('should return top tracks ordered by stream count desc', async () => {
-        const rows = await testQuery(conn, queryTopTracks(testYear))
+        const rows = await testQuery<TopTracksResult>(
+            conn,
+            queryTopTracks(testYear)
+        )
         expect(rows).toHaveLength(5)
         expect(rows).toEqual([
             {
@@ -93,7 +96,10 @@ describe('TopTracks Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryTopTracks(undefined))
+        const rows = await testQuery<TopTracksResult>(
+            conn,
+            queryTopTracks(undefined)
+        )
         // track4 has 6 in testYear + 10 in anotherDate = 16 total, ranking it first
         expect(rows).toHaveLength(5)
         expect(rows[0]).toMatchObject({

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryPrincipalPlatform } from './query'
+import { type PlatformResult, queryPrincipalPlatform } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -37,7 +37,10 @@ describe('PrincipalPlatform Query', () => {
     })
 
     it('should return platform metrics', async () => {
-        const rows = await testQuery(conn, queryPrincipalPlatform(testYear))
+        const rows = await testQuery<PlatformResult>(
+            conn,
+            queryPrincipalPlatform(testYear)
+        )
 
         expect(rows).toEqual([
             { pct: 20, platform: 'iOS', stream_count: 1 },
@@ -50,7 +53,10 @@ describe('PrincipalPlatform Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryPrincipalPlatform(undefined))
+        const rows = await testQuery<PlatformResult>(
+            conn,
+            queryPrincipalPlatform(undefined)
+        )
         // anotherYear android stream is now included (total = 6)
         const android = rows.find((r) => r.platform === 'Android OS')
         expect(android?.stream_count).toBe(2)

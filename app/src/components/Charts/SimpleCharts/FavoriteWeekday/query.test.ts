@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryFavoriteWeekday } from './query'
+import { type FavoriteWeekdayResult, queryFavoriteWeekday } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -38,7 +38,10 @@ describe('FavoriteWeekday Query', () => {
     })
 
     it('should return weekday statistics', async () => {
-        const rows = await testQuery(conn, queryFavoriteWeekday(2025))
+        const rows = await testQuery<FavoriteWeekdayResult>(
+            conn,
+            queryFavoriteWeekday(2025)
+        )
 
         expect(rows).toEqual([
             { day_name: 'Monday', stream_count: 2, ms_played: 90000, pct: 25 },
@@ -85,7 +88,10 @@ describe('FavoriteWeekday Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryFavoriteWeekday(undefined))
+        const rows = await testQuery<FavoriteWeekdayResult>(
+            conn,
+            queryFavoriteWeekday(undefined)
+        )
         // 2024-12-01 is a Sunday, so total streams increases from 8 to 9
         const total = rows.reduce(
             (sum, row) => sum + (row.stream_count as number),

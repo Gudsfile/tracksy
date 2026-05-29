@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryTopArtists } from './query'
+import { type TopArtistsResult, queryTopArtists } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -75,7 +75,10 @@ describe('TopArtists Query', () => {
     })
 
     it('should return top artists ordered by stream count desc', async () => {
-        const rows = await testQuery(conn, queryTopArtists(testYear))
+        const rows = await testQuery<TopArtistsResult>(
+            conn,
+            queryTopArtists(testYear)
+        )
         expect(rows).toHaveLength(5)
         expect(rows).toEqual([
             { artist_name: 'artist1', count_streams: 12, ms_played: 12 },
@@ -87,7 +90,10 @@ describe('TopArtists Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryTopArtists(undefined))
+        const rows = await testQuery<TopArtistsResult>(
+            conn,
+            queryTopArtists(undefined)
+        )
         // artist7 has 5 streams in anotherDate, making it visible across all years
         expect(rows).toHaveLength(5)
         const artistNames = rows.map((r) => r.artist_name)

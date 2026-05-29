@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { querySkipRate } from './query'
+import { type SkipRateResult, querySkipRate } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -36,7 +36,10 @@ describe('SkipRate Query', () => {
     })
 
     it('should return skip rate metrics', async () => {
-        const rows = await testQuery(conn, querySkipRate(testYear))
+        const rows = await testQuery<SkipRateResult>(
+            conn,
+            querySkipRate(testYear)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -46,7 +49,10 @@ describe('SkipRate Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, querySkipRate(undefined))
+        const rows = await testQuery<SkipRateResult>(
+            conn,
+            querySkipRate(undefined)
+        )
         // anotherYear trackdone stream is now included
         expect(rows.length).toBe(1)
         expect(rows[0].complete_listens).toBe(4)

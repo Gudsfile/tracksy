@@ -51,10 +51,10 @@ describe('ArtistLoyalty Query', () => {
     })
 
     it('should return artist bins for 2025', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<ArtistLoyaltyResult>(
             conn,
             queryArtistLoyalty(2025)
-        )) as unknown as ArtistLoyaltyResult[]
+        )
 
         expect(rows.length).toBe(5)
 
@@ -74,10 +74,10 @@ describe('ArtistLoyalty Query', () => {
     })
 
     it('should calculate correct stream counts per bin', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<ArtistLoyaltyResult>(
             conn,
             queryArtistLoyalty(2025)
-        )) as unknown as ArtistLoyaltyResult[]
+        )
 
         const bins = rows.reduce(
             (acc, row) => {
@@ -95,10 +95,10 @@ describe('ArtistLoyalty Query', () => {
     })
 
     it('should return correct share of total streams', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<ArtistLoyaltyResult>(
             conn,
             queryArtistLoyalty(2025)
-        )) as unknown as ArtistLoyaltyResult[]
+        )
 
         const totalStreams = rows.reduce(
             (sum, row) => sum + (row.streams_in_bin ?? 0),
@@ -115,14 +115,14 @@ describe('ArtistLoyalty Query', () => {
     })
 
     it('should filter by year correctly', async () => {
-        const rows2025 = (await testQuery(
+        const rows2025 = await testQuery<ArtistLoyaltyResult>(
             conn,
             queryArtistLoyalty(2025)
-        )) as unknown as ArtistLoyaltyResult[]
-        const rows2024 = (await testQuery(
+        )
+        const rows2024 = await testQuery<ArtistLoyaltyResult>(
             conn,
             queryArtistLoyalty(2024)
-        )) as unknown as ArtistLoyaltyResult[]
+        )
 
         expect(rows2025.length).toBe(5)
         expect(rows2024.length).toBe(1)
@@ -131,10 +131,10 @@ describe('ArtistLoyalty Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<ArtistLoyaltyResult>(
             conn,
             queryArtistLoyalty(undefined)
-        )) as unknown as ArtistLoyaltyResult[]
+        )
 
         expect(rows.length).toBe(5)
         expect(rows[0].artist_count).toBe(2)

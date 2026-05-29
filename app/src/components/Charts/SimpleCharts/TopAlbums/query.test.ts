@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryTopAlbums } from './query'
+import { type TopAlbumsResult, queryTopAlbums } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -78,14 +78,20 @@ describe('TopAlbums Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, queryTopAlbums(undefined))
+        const rows = await testQuery<TopAlbumsResult>(
+            conn,
+            queryTopAlbums(undefined)
+        )
         // album7 has 5 streams in anotherDate, making it visible across all years
         const albumNames = rows.map((r) => r.album_name)
         expect(albumNames).toContain('album7')
     })
 
     it('should return top albums ordered by stream count desc', async () => {
-        const rows = await testQuery(conn, queryTopAlbums(testYear))
+        const rows = await testQuery<TopAlbumsResult>(
+            conn,
+            queryTopAlbums(testYear)
+        )
         expect(rows).toHaveLength(5)
         expect(rows).toEqual([
             {
