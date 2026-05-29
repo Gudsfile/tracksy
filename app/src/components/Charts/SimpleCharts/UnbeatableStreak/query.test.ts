@@ -1,5 +1,8 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { buildUnbeatableStreakQuery } from './query'
+import {
+    type UnbeatableStreakResult,
+    buildUnbeatableStreakQuery,
+} from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -40,7 +43,10 @@ describe('UnbeatableStreak Query', () => {
     })
 
     it('should return the longest streak for a given year', async () => {
-        const rows = await testQuery(conn, buildUnbeatableStreakQuery(testYear))
+        const rows = await testQuery<UnbeatableStreakResult>(
+            conn,
+            buildUnbeatableStreakQuery(testYear)
+        )
         expect(rows.length).toBe(1)
         expect(rows[0].streak_days).toBe(3)
         expect(rows[0].start_date).toBe(`${testYear}-01-01`)
@@ -48,7 +54,7 @@ describe('UnbeatableStreak Query', () => {
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(
+        const rows = await testQuery<UnbeatableStreakResult>(
             conn,
             buildUnbeatableStreakQuery(undefined)
         )
@@ -58,7 +64,10 @@ describe('UnbeatableStreak Query', () => {
 
     it('should return empty when no data', async () => {
         await createTestTable(conn, [])
-        const rows = await testQuery(conn, buildUnbeatableStreakQuery(testYear))
+        const rows = await testQuery<UnbeatableStreakResult>(
+            conn,
+            buildUnbeatableStreakQuery(testYear)
+        )
         expect(rows.length).toBe(0)
     })
 })

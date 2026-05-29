@@ -66,12 +66,12 @@ export async function createTestTable(
     appender.closeSync()
 }
 
-export async function testQuery(
+export async function testQuery<T = Record<string, Json>>(
     conn: DuckDBConnection,
     sql: string
-): Promise<Record<string, Json>[]> {
+): Promise<T[]> {
     const result = await conn.runAndReadAll(sql)
-    return result.getRowObjectsJson()
+    return result.getRowObjectsJson() as unknown as T[]
 }
 
 export function closeTestConnection(conn: DuckDBConnection): void {

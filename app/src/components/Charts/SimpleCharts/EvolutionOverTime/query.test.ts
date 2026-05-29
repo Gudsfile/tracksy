@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryEvolutionOverTime } from './query'
+import { type EvolutionResult, queryEvolutionOverTime } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -33,7 +33,10 @@ describe('EvolutionOverTime Query', () => {
     })
 
     it('should return evolution metrics', async () => {
-        const rows = await testQuery(conn, queryEvolutionOverTime())
+        const rows = await testQuery<EvolutionResult>(
+            conn,
+            queryEvolutionOverTime()
+        )
 
         expect(rows).toEqual([
             { stream_year: 2006, stream_count: 1, ms_played: 1 },

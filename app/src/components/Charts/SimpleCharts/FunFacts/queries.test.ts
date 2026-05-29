@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { facts } from './queries'
+import { type FunFactData, facts } from './queries'
 import {
     createTestConnection,
     closeTestConnection,
@@ -58,7 +58,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryMorningFavorite returns artist with most morning streams', async () => {
-            const rows = await testQuery(conn, getFact('morning_favorite').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('morning_favorite').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('top_morning_artist')
@@ -67,7 +70,7 @@ describe('FunFacts queries', () => {
         })
 
         it('queryAfternoonFavorite returns artist with most afternoon streams', async () => {
-            const rows = await testQuery(
+            const rows = await testQuery<FunFactData>(
                 conn,
                 getFact('afternoon_favorite').sql
             )
@@ -117,7 +120,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryMarathon returns longest consecutive artist stream', async () => {
-            const rows = await testQuery(conn, getFact('marathon').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('marathon').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('consecutive_stream_artist')
@@ -136,7 +142,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryOneHitWonder returns track with highest percentage of artist streams', async () => {
-            const rows = await testQuery(conn, getFact('one_hit_wonder').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('one_hit_wonder').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('hit_track')
@@ -162,7 +171,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryWeekendFavorite returns artist with most weekend streams', async () => {
-            const rows = await testQuery(conn, getFact('weekend_favorite').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('weekend_favorite').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('weekend_artist')
@@ -188,7 +200,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryAbsoluteLoyalty returns artist with highest listening time percentage', async () => {
-            const rows = await testQuery(conn, getFact('absolute_loyalty').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('absolute_loyalty').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('loyal_artist')
@@ -211,7 +226,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryNostalgicReturn returns recently played artist with longest gap', async () => {
-            const rows = await testQuery(conn, getFact('nostalgic_return').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('nostalgic_return').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('nostalgic_artist')
@@ -238,7 +256,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryCurrentObsession returns most played track in last 30 days', async () => {
-            const rows = await testQuery(conn, getFact('current_obsession').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('current_obsession').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('current_hit')
@@ -262,7 +283,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryRecentDiscovery returns recently discovered artist with most streams', async () => {
-            const rows = await testQuery(conn, getFact('recent_discovery').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('recent_discovery').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('recent_discovery_artist')
@@ -287,7 +311,10 @@ describe('FunFacts queries', () => {
         })
 
         it('querySubscribedArtist returns artist present in most months', async () => {
-            const rows = await testQuery(conn, getFact('subscribed_artist').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('subscribed_artist').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('subscribed_artist')
@@ -309,7 +336,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryFirstArtist returns first artist listened to', async () => {
-            const rows = await testQuery(conn, getFact('first_artist').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('first_artist').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('first_artist')
@@ -318,7 +348,7 @@ describe('FunFacts queries', () => {
         })
 
         it('queryMusicalAnniversary returns artist listened to for longest time', async () => {
-            const rows = await testQuery(
+            const rows = await testQuery<FunFactData>(
                 conn,
                 getFact('musical_anniversary').sql
             )
@@ -346,7 +376,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryForgottenArtist returns top artist not listened to recently', async () => {
-            const rows = await testQuery(conn, getFact('forgotten_artist').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('forgotten_artist').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBe('forgotten_artist')
@@ -366,7 +399,10 @@ describe('FunFacts queries', () => {
         })
 
         it('queryTrackProposition returns a random track', async () => {
-            const rows = await testQuery(conn, getFact('track_proposition').sql)
+            const rows = await testQuery<FunFactData>(
+                conn,
+                getFact('track_proposition').sql
+            )
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBeOneOf(['track1', 'track2'])
@@ -400,7 +436,10 @@ describe('FunFacts queries', () => {
             it('contains album and artist names', async () => {
                 await createTestTable(conn, testData)
 
-                const rows = await testQuery(conn, getFact('cozy_album').sql)
+                const rows = await testQuery<FunFactData>(
+                    conn,
+                    getFact('cozy_album').sql
+                )
                 expect(rows.length).toBe(1)
                 expect(rows[0].entity).toBe('album1')
                 expect(rows[0].parent_entity).toBe('artist1')
@@ -434,7 +473,10 @@ describe('FunFacts queries', () => {
 
             it('includes Sunday and Monday before 4am only', async () => {
                 await createTestTable(conn, testData)
-                const rows = await testQuery(conn, getFact('cozy_album').sql)
+                const rows = await testQuery<FunFactData>(
+                    conn,
+                    getFact('cozy_album').sql
+                )
                 expect(rows.length).toBe(1)
                 expect(rows[0].entity).toBe('album1')
             })
@@ -464,7 +506,10 @@ describe('FunFacts queries', () => {
 
             it('ignores listens older than one year', async () => {
                 await createTestTable(conn, testData)
-                const rows = await testQuery(conn, getFact('cozy_album').sql)
+                const rows = await testQuery<FunFactData>(
+                    conn,
+                    getFact('cozy_album').sql
+                )
                 expect(rows.length).toBe(1)
                 expect(rows[0].entity).toBe('album2')
             })
@@ -493,7 +538,10 @@ describe('FunFacts queries', () => {
 
             it('requires at least 7 distinct tracks', async () => {
                 await createTestTable(conn, testData)
-                const rows = await testQuery(conn, getFact('cozy_album').sql)
+                const rows = await testQuery<FunFactData>(
+                    conn,
+                    getFact('cozy_album').sql
+                )
                 expect(rows.length).toBe(1)
                 expect(rows[0].entity).toBe('album2')
             })
@@ -509,7 +557,10 @@ describe('FunFacts queries', () => {
 
             it('returns empty result if no album satisfies the rules', async () => {
                 await createTestTable(conn, testData)
-                const rows = await testQuery(conn, getFact('cozy_album').sql)
+                const rows = await testQuery<FunFactData>(
+                    conn,
+                    getFact('cozy_album').sql
+                )
                 expect(rows.length).toBe(0)
             })
         })

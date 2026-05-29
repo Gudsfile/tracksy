@@ -32,19 +32,19 @@ describe('HourlyStreams Query', () => {
     })
 
     it('always returns exactly 24 rows', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<HourlyStreamsQueryResult>(
             conn,
             buildHourlyStreamsQuery(2025)
-        )) as unknown as HourlyStreamsQueryResult[]
+        )
 
         expect(rows.length).toBe(24)
     })
 
     it('returns correct stream count for active hours', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<HourlyStreamsQueryResult>(
             conn,
             buildHourlyStreamsQuery(2025)
-        )) as unknown as HourlyStreamsQueryResult[]
+        )
 
         const hour8 = rows.find((r) => r.play_hour === 8)
         const hour14 = rows.find((r) => r.play_hour === 14)
@@ -54,10 +54,10 @@ describe('HourlyStreams Query', () => {
     })
 
     it('returns zero count_streams for hours with no activity', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<HourlyStreamsQueryResult>(
             conn,
             buildHourlyStreamsQuery(2025)
-        )) as unknown as HourlyStreamsQueryResult[]
+        )
 
         const hour0 = rows.find((r) => r.play_hour === 0)
         expect(hour0?.count_streams).toBe(0)
@@ -65,14 +65,14 @@ describe('HourlyStreams Query', () => {
     })
 
     it('filters by year correctly', async () => {
-        const rows2025 = (await testQuery(
+        const rows2025 = await testQuery<HourlyStreamsQueryResult>(
             conn,
             buildHourlyStreamsQuery(2025)
-        )) as unknown as HourlyStreamsQueryResult[]
-        const rows2024 = (await testQuery(
+        )
+        const rows2024 = await testQuery<HourlyStreamsQueryResult>(
             conn,
             buildHourlyStreamsQuery(2024)
-        )) as unknown as HourlyStreamsQueryResult[]
+        )
 
         const total2025 = rows2025.reduce((s, r) => s + r.count_streams, 0)
         const total2024 = rows2024.reduce((s, r) => s + r.count_streams, 0)
@@ -82,10 +82,10 @@ describe('HourlyStreams Query', () => {
     })
 
     it('includes all years when year is undefined', async () => {
-        const rows = (await testQuery(
+        const rows = await testQuery<HourlyStreamsQueryResult>(
             conn,
             buildHourlyStreamsQuery(undefined)
-        )) as unknown as HourlyStreamsQueryResult[]
+        )
 
         const total = rows.reduce((s, r) => s + r.count_streams, 0)
         expect(total).toBe(4)

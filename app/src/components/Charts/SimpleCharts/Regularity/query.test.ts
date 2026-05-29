@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, it, expect } from 'vitest'
-import { queryRegularity } from './query'
+import { type RegularityResult, queryRegularity } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -28,7 +28,10 @@ describe('Regularity Query', () => {
         ]
         await createTestTable(conn, testData)
 
-        const rows = await testQuery(conn, queryRegularity(2024))
+        const rows = await testQuery<RegularityResult>(
+            conn,
+            queryRegularity(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -46,7 +49,10 @@ describe('Regularity Query', () => {
         ]
         await createTestTable(conn, testData)
 
-        const rows = await testQuery(conn, queryRegularity(2024))
+        const rows = await testQuery<RegularityResult>(
+            conn,
+            queryRegularity(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -65,7 +71,10 @@ describe('Regularity Query', () => {
         ]
         await createTestTable(conn, testData)
 
-        const rows = await testQuery(conn, queryRegularity(2024))
+        const rows = await testQuery<RegularityResult>(
+            conn,
+            queryRegularity(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -83,7 +92,10 @@ describe('Regularity Query', () => {
         ]
         await createTestTable(conn, testData)
 
-        const rows = await testQuery(conn, queryRegularity(2024))
+        const rows = await testQuery<RegularityResult>(
+            conn,
+            queryRegularity(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -102,7 +114,10 @@ describe('Regularity Query', () => {
         ]
         await createTestTable(conn, testData)
 
-        const rows = await testQuery(conn, queryRegularity(2024))
+        const rows = await testQuery<RegularityResult>(
+            conn,
+            queryRegularity(2024)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]
@@ -120,7 +135,10 @@ describe('Regularity Query', () => {
         ]
         await createTestTable(conn, testData)
 
-        const rows = await testQuery(conn, queryRegularity(undefined))
+        const rows = await testQuery<RegularityResult>(
+            conn,
+            queryRegularity(undefined)
+        )
 
         expect(rows.length).toBe(1)
         const row = rows[0]

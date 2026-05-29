@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { buildVarietyDayQuery } from './query'
+import { type VarietyDayResult, buildVarietyDayQuery } from './query'
 import {
     createTestConnection,
     closeTestConnection,
@@ -40,14 +40,20 @@ describe('VarietyDay Query', () => {
     })
 
     it('should return the most diverse day for a given year', async () => {
-        const rows = await testQuery(conn, buildVarietyDayQuery(testYear))
+        const rows = await testQuery<VarietyDayResult>(
+            conn,
+            buildVarietyDayQuery(testYear)
+        )
         expect(rows.length).toBe(1)
         expect(rows[0].stream_date).toBe(`${testYear}-01-01`)
         expect(rows[0].artist_count).toBe(3)
     })
 
     it('should include all years when year is undefined', async () => {
-        const rows = await testQuery(conn, buildVarietyDayQuery(undefined))
+        const rows = await testQuery<VarietyDayResult>(
+            conn,
+            buildVarietyDayQuery(undefined)
+        )
         expect(rows.length).toBe(1)
         expect(rows[0].stream_date).toBe(`${anotherYear}-06-01`)
         expect(rows[0].artist_count).toBe(5)
@@ -55,7 +61,10 @@ describe('VarietyDay Query', () => {
 
     it('should return empty when no data', async () => {
         await createTestTable(conn, [])
-        const rows = await testQuery(conn, buildVarietyDayQuery(testYear))
+        const rows = await testQuery<VarietyDayResult>(
+            conn,
+            buildVarietyDayQuery(testYear)
+        )
         expect(rows.length).toBe(0)
     })
 })
