@@ -1,4 +1,4 @@
-import { DuckDBConnection, type Json } from '@duckdb/node-api'
+import { DuckDBConnection } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
 
 export type TestStreamEntry = {
@@ -66,7 +66,7 @@ export async function createTestTable(
     appender.closeSync()
 }
 
-export async function testQuery<T = Record<string, Json>>(
+export async function testQuery<T>(
     conn: DuckDBConnection,
     sql: string
 ): Promise<T[]> {
