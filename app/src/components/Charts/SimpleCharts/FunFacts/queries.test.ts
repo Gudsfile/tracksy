@@ -63,7 +63,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('top_morning_artist')
             expect(row.metric).toBe(2)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
 
         it('queryAfternoonFavorite returns artist with most afternoon streams', async () => {
@@ -75,7 +75,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('top_afternoon_artist')
             expect(row.metric).toBe(2)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
 
         it('queryEveningFavorite returns artist with most evening streams', async () => {
@@ -87,7 +87,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('top_evening_artist')
             expect(row.metric).toBe(2)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
 
         it('queryNightFavorite returns artist with most night streams', async () => {
@@ -99,7 +99,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('top_night_artist')
             expect(row.metric).toBe(2)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -167,7 +167,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('weekend_artist')
             expect(row.metric).toBe(2)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -193,7 +193,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('loyal_artist')
             expect(row.metric).toBe(75)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -216,7 +216,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('nostalgic_artist')
             expect(row.metric).toBe(366)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -243,7 +243,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('current_hit')
             expect(row.metric).toBe(2)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -267,7 +267,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('recent_discovery_artist')
             expect(row.metric).toBe(1)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -292,7 +292,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('subscribed_artist')
             expect(row.metric).toBe(3)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -314,7 +314,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('first_artist')
             expect(row.metric).toBe(2006)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
 
         it('queryMusicalAnniversary returns artist listened to for longest time', async () => {
@@ -326,7 +326,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBeDefined()
             expect(row.metric).toBeDefined()
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -351,7 +351,7 @@ describe('FunFacts queries', () => {
             const row = rows[0]
             expect(row.entity).toBe('forgotten_artist')
             expect(row.metric).toBe(366)
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -370,9 +370,9 @@ describe('FunFacts queries', () => {
             expect(rows.length).toBe(1)
             const row = rows[0]
             expect(row.entity).toBeOneOf(['track1', 'track2'])
-            expect(row.metric).toBeUndefined()
+            expect(row).not.toHaveProperty('metric')
             expect(row.parent_entity).toBeOneOf(['artist1', 'artist2'])
-            expect(row.context_suffix).toBeUndefined()
+            expect(row).not.toHaveProperty('context_suffix')
         })
     })
 
@@ -404,9 +404,9 @@ describe('FunFacts queries', () => {
                 expect(rows.length).toBe(1)
                 expect(rows[0].entity).toBe('album1')
                 expect(rows[0].parent_entity).toBe('artist1')
-                expect(rows[0].metric).toBeUndefined()
-                expect(rows[0].unit).toBeUndefined()
-                expect(rows[0].context_suffix).toBeUndefined()
+                expect(rows[0]).not.toHaveProperty('metric')
+                expect(rows[0]).not.toHaveProperty('unit')
+                expect(rows[0]).not.toHaveProperty('context_suffix')
             })
         })
 
