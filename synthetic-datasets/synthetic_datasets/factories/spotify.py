@@ -195,8 +195,3 @@ class SpotifyFactory:
             all_streamings.extend(year_records)
 
         return all_streamings
-
-
-def rotate(elements, step):
-    step = step % len(elements)
-    return elements[step:] + elements[:step]
