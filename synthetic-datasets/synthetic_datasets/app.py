@@ -1,7 +1,11 @@
-import argparse
 import time
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
+from typing import Annotated
+
+import typer
+from rich import print
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
@@ -12,84 +16,86 @@ from synthetic_datasets.writers.deezer import DeezerWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
-def apple_music(num_records: int, output_dir: Path, config: GenerationConfig):
+class Provider(str, Enum):
+    spotify = "spotify"
+    deezer = "deezer"
+    apple_music = "apple-music"
+
+
+app = typer.Typer()
+
+
+def _apple_music(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
     factory = AppleMusicFactory(num_records, config=config)
-    all_streamings = factory.create_streaming_history()
-
     writer = AppleMusicWriter(output_dir=output_dir, reference_date=config.reference_date)
-    writer.write(all_streamings)
+    writer.write(factory.create_streaming_history())
 
 
-def spotify(num_records: int, output_dir: Path, config: GenerationConfig):
+def _spotify(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
     factory = SpotifyFactory(num_records, config=config)
-    all_streamings = factory.create_streaming_history()
-
     writer = SpotifyWriter(output_dir=output_dir, reference_date=config.reference_date)
-    writer.write(all_streamings)
+    writer.write(factory.create_streaming_history())
 
 
-def deezer(num_records: int, output_dir: Path, config: GenerationConfig):
+def _deezer(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
     factory = DeezerFactory(num_records, config=config)
-    all_streamings = factory.create_streaming_history()
-
     writer = DeezerWriter(output_dir=output_dir, reference_date=config.reference_date)
-    writer.write(all_streamings)
+    writer.write(factory.create_streaming_history())
 
 
-def min_int(min_value):
-    def checker(value):
-        ivalue = int(value)
-        if ivalue < min_value:
-            raise argparse.ArgumentTypeError(f"Minimal value is: {min_value}")
-        return ivalue
-
-    return checker
+def _validate_num_records(value: int) -> int:
+    if value < 100:
+        raise typer.BadParameter("Minimal value is: 100")
+    return value
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Generate synthetic streaming datasets",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+@app.command(
+    epilog="""
 Examples:
-  generate 1000                                      # Generate 1000 records with random data
-  generate 1000 --seed 42                            # Generate 1000 records with seed 42
-        """,
-    )
-    parser.add_argument("num_records", type=min_int(100), help="Number of lines to be generated (>= 100)")
-    parser.add_argument(
-        "-o",
-        "--output-dir",
-        type=Path,
-        default=Path("datasets"),
-        help="Output directory for generated datasets",
-    )
-    parser.add_argument("--seed", type=int, help="Seed for reproducible generation (optional)")
-    parser.add_argument(
-        "--reference-date",
-        type=lambda s: datetime.fromisoformat(s),
-        help="Overwrite reference date for generation in ISO format (optional, e.g., 2026-02-08 or 2026-02-08T14:30:00)",
-    )
-    parser.add_argument(
-        "--provider",
-        choices=["spotify", "deezer", "apple-music"],
-        default="spotify",
-        help="Streaming provider to generate data for (default: spotify)",
-    )
-    args = parser.parse_args()
 
-    start_data_generation = time.time()
+  generate 1000
 
-    config = GenerationConfig.create(seed=args.seed, reference_date=args.reference_date)
+  generate 1000 --seed 42
+"""
+)
+def generate(
+    num_records: Annotated[
+        int,
+        typer.Argument(help="Number of lines to be generated (>= 100)", callback=_validate_num_records),
+    ],
+    output_dir: Annotated[
+        Path,
+        typer.Option("-o", "--output-dir", help="Output directory for generated datasets"),
+    ] = Path("datasets"),
+    seed: Annotated[int | None, typer.Option(help="Seed for reproducible generation")] = None,
+    reference_date: Annotated[
+        datetime | None,
+        typer.Option(help="Overwrite reference date in ISO format (e.g., 2026-02-08 or 2026-02-08T14:30:00)"),
+    ] = None,
+    provider: Annotated[
+        Provider,
+        typer.Option(help="Streaming provider to generate data for"),
+    ] = Provider.spotify,
+) -> None:
+    """Generate synthetic streaming datasets."""
+    start = time.time()
+
+    config = GenerationConfig.create(seed=seed, reference_date=reference_date)
     config.log_config()
 
-    if args.provider == "deezer":
-        deezer(args.num_records, args.output_dir, config)
-    elif args.provider == "apple-music":
-        apple_music(args.num_records, args.output_dir, config)
-    else:
-        spotify(args.num_records, args.output_dir, config)
-    print("--- %s seconds ---" % (time.time() - start_data_generation))
+    match provider:
+        case Provider.deezer:
+            _deezer(num_records, output_dir, config)
+        case Provider.apple_music:
+            _apple_music(num_records, output_dir, config)
+        case Provider.spotify:
+            _spotify(num_records, output_dir, config)
+
+    print(f"--- {time.time() - start:.2f} seconds ---")
+
+
+def main() -> None:
+    app()
 
 
 if __name__ == "__main__":

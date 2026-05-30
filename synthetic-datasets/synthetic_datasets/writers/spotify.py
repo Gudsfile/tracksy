@@ -3,9 +3,12 @@ from datetime import datetime
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
-from tqdm import tqdm
+from rich import get_console, print
+from rich.progress import track
 
 from ..models.spotify import Streaming
+
+_console = get_console()
 
 
 class SpotifyWriter:
@@ -21,9 +24,9 @@ class SpotifyWriter:
 
     def write(self, records):
         json_path = Path(self.json_path_template.format(num_records=str(len(records))))
-        print(f"Write `json` file: status: `starting`, path: `{json_path.absolute()}`, count_records: `{len(records)}`")
+        print(f"Write json: [yellow]starting[/yellow] {json_path.absolute()} ({len(records)} records)")
         write_json(json_path, records)
-        print(f"Write `json` file: status: `success`, path: `{json_path.absolute()}`, count_records: `{len(records)}`")
+        print(f"Write json: [green]success[/green] {json_path.absolute()} ({len(records)} records)")
 
         chunk_size = int(max(len(records) / max(len(records) / self.max_chunk_size, 4), 10))
         files_for_chunked_zip = {}
@@ -35,17 +38,14 @@ class SpotifyWriter:
             files_for_chunked_zip[filename] = chunk
 
         zip_path = Path(self.zip_path_template.format(num_records=str(len(records))))
-        print(
-            f"Write `zip` file: status: `starting`, path: `{zip_path.absolute()}`, count_files: `{len(files_for_chunked_zip)}`"
-        )
+        print(f"Write zip: [yellow]starting[/yellow] {zip_path.absolute()} ({len(files_for_chunked_zip)} files)")
         write_zip(zip_path, files_for_chunked_zip, self.chunked_zip_folder, self.reference_date)
-        print(f"Write `zip` file: status: `success`, path: `{zip_path.absolute()}`")
+        print(f"Write zip: [green]success[/green] {zip_path.absolute()}")
 
 
 def write_json(path: Path, streamings: list[Streaming]):
     data = [
-        streaming.model_dump(mode="json")
-        for streaming in tqdm(streamings, desc=f"📦 Preparing {path.name}", unit=" records")
+        streaming.model_dump(mode="json") for streaming in track(streamings, description=f"📦 Preparing {path.name}")
     ]
 
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -59,8 +59,8 @@ def write_zip(path: Path, files_to_add: dict[str, list[Streaming]], base_zipped_
 
     sorted_files = sorted(files_to_add.items())
 
-    with ZipFile(path, "w", ZIP_DEFLATED, compresslevel=6) as myzip:
-        for filename, streamings in tqdm(sorted_files, desc="🗜️ Zipping files", unit=" file"):
+    with _console.status("🗜️ Zipping files..."), ZipFile(path, "w", ZIP_DEFLATED, compresslevel=6) as myzip:
+        for filename, streamings in sorted_files:
             data = [streaming.model_dump(mode="json") for streaming in streamings]
             json_content = json.dumps(data, indent=4, sort_keys=True)
 

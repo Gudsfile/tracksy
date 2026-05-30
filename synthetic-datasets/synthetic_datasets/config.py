@@ -2,6 +2,10 @@ import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
+from rich import print
+from rich.panel import Panel
+from rich.table import Table
+
 
 def derive_reference_date_from_seed(seed: int) -> datetime:
     rng = random.Random(seed)
@@ -51,12 +55,17 @@ class GenerationConfig:
         )
 
     def log_config(self) -> None:
-        print("=" * 60)
-        print("🔧 Generation Configuration")
-        print(f"  Seed: {self.seed} {'(auto-generated)' if self.is_seed_auto_generated else '(provided)'}")
-        print(
-            f"  Reference Date: {self.reference_date.isoformat()} {'(derived from seed)' if self.is_reference_date_auto_generated else '(provided)'}"
+        table = Table(show_header=False, box=None, padding=(0, 1))
+        table.add_row("Seed", str(self.seed), "(auto-generated)" if self.is_seed_auto_generated else "(provided)")
+        table.add_row(
+            "Reference Date",
+            self.reference_date.isoformat(),
+            "(derived from seed)" if self.is_reference_date_auto_generated else "(provided)",
         )
-        print("=" * 60)
-        print(f"To reproduce: --seed {self.seed} --reference-date {self.reference_date.isoformat()}")
-        print("=" * 60)
+        print(
+            Panel(
+                table,
+                title="🔧 Generation Configuration",
+                subtitle=f"To reproduce: --seed {self.seed} --reference-date {self.reference_date.isoformat()}",
+            )
+        )
