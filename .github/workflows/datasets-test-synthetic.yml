@@ -53,3 +53,41 @@ jobs:
 
       - name: Run tests
         run: moon run synthetic-datasets:test
+
+      - name: Generate e2e dataset
+        run: moon run synthetic-datasets:generate-e2e
+
+      - name: Verify e2e dataset hashes
+        working-directory: ${{ github.workspace }}
+        env:
+          EXPECTED_JSON_HASH: "REPLACE_WITH_HASH_FROM_CI_LOGS"
+          EXPECTED_ZIP_HASH: "REPLACE_WITH_HASH_FROM_CI_LOGS"
+        run: |
+          JSON_FILE="e2e/datasets/spotify/Streaming_History_Audio_2006_1000.json"
+          ZIP_FILE="e2e/datasets/spotify/streamings_1000.zip"
+
+          ACTUAL_JSON=$(sha256sum "$JSON_FILE" | cut -d' ' -f1)
+          ACTUAL_ZIP=$(sha256sum "$ZIP_FILE" | cut -d' ' -f1)
+
+          echo "JSON hash: $ACTUAL_JSON"
+          echo "ZIP  hash: $ACTUAL_ZIP"
+
+          FAILED=0
+          if [ "$ACTUAL_JSON" != "$EXPECTED_JSON_HASH" ]; then
+            echo "❌ JSON hash mismatch — expected: $EXPECTED_JSON_HASH"
+            FAILED=1
+          fi
+          if [ "$ACTUAL_ZIP" != "$EXPECTED_ZIP_HASH" ]; then
+            echo "❌ ZIP hash mismatch — expected: $EXPECTED_ZIP_HASH"
+            FAILED=1
+          fi
+
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "The e2e dataset output has changed."
+            echo "Investigate whether this change is intentional (generator logic, seed, dependencies)."
+            echo "If intentional, update EXPECTED_JSON_HASH / EXPECTED_ZIP_HASH in datasets-test-synthetic.yml and justify the change in the PR."
+            exit 1
+          fi
+
+          echo "✅ Hashes match"
