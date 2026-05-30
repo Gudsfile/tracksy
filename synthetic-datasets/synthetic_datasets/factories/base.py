@@ -6,14 +6,13 @@ from typing import ClassVar, Generic, TypeVar
 
 import numpy as np
 from faker import Faker
-from rich import print
-from rich.console import Console
+from rich import get_console, print
 from rich.progress import Progress, track
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
 
-_console = Console()
+_console = get_console()
 
 RecordT = TypeVar("RecordT")
 

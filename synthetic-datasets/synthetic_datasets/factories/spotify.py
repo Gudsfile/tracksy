@@ -2,15 +2,14 @@ from datetime import timedelta
 from ipaddress import ip_address
 from typing import ClassVar
 
-from rich import print
-from rich.console import Console
+from rich import get_console, print
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent
 from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Streaming, Track
 from .base import BaseFactory
 
-_console = Console()
+_console = get_console()
 
 
 class SpotifyFactory(BaseFactory[Streaming]):

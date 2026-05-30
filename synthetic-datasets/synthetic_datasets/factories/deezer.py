@@ -2,15 +2,14 @@ import string
 from dataclasses import dataclass
 from ipaddress import ip_address
 
-from rich import print
-from rich.console import Console
+from rich import get_console, print
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent
 from ..models.deezer import DeezerStreaming
 from .base import BaseFactory
 
-_console = Console()
+_console = get_console()
 
 
 @dataclass
