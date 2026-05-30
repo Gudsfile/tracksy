@@ -2,7 +2,7 @@ import calendar
 import random
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
-from typing import Generic, TypeVar
+from typing import ClassVar, Generic, TypeVar
 
 import numpy as np
 from faker import Faker
@@ -14,18 +14,18 @@ RecordT = TypeVar("RecordT")
 
 
 class BaseFactory(ABC, Generic[RecordT]):
-    month_weights = [0.08, 0.07, 0.07, 0.06, 0.07, 0.08, 0.08, 0.08, 0.1, 0.10, 0.11, 0.1]
-    hour_weights = [
+    month_weights: ClassVar[list[float]] = [0.08, 0.07, 0.07, 0.06, 0.07, 0.08, 0.08, 0.08, 0.1, 0.10, 0.11, 0.1]
+    hour_weights: ClassVar[list[float]] = [
         0.01, 0.01, 0.01, 0.01, 0.02, 0.04, 0.07, 0.09, 0.08, 0.06, 0.04, 0.04,
         0.05, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.06, 0.05, 0.03, 0.02, 0.01,
     ]  # fmt: skip
 
-    ZIPF_A: float = 1.8
-    SKIP_CHANCE_MIN: float = 0.15
-    SKIP_CHANCE_MAX: float = 0.30
-    START_YEAR: int = 2020
-    TRACK_DURATION_MIN_MS: int = 120_000
-    TRACK_DURATION_MAX_MS: int = 360_000
+    ZIPF_A: ClassVar[float] = 1.8
+    SKIP_CHANCE_MIN: ClassVar[float] = 0.15
+    SKIP_CHANCE_MAX: ClassVar[float] = 0.30
+    START_YEAR: ClassVar[int] = 2020
+    TRACK_DURATION_MIN_MS: ClassVar[int] = 120_000
+    TRACK_DURATION_MAX_MS: ClassVar[int] = 360_000
 
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         self.config = config
