@@ -60,10 +60,7 @@ class BaseFactory(ABC, Generic[RecordT]):
         n_artists = max(1, int(num_records * 0.20))
         n_albums = max(1, int(num_records * 0.30))
         n_tracks = max(1, int(num_records * 0.50))
-        print(f" - records: {num_records}")
-        print(f" - artists: {n_artists}")
-        print(f" - albums : {n_albums}")
-        print(f" - tracks : {n_tracks}")
+        print(f" - {num_records} records → {n_artists} artists, {n_albums} albums, {n_tracks} tracks")
 
         artists = [self.faker.name() for _ in range(n_artists)]
         albums = [self.faker.catch_phrase() for _ in range(n_albums)]
@@ -74,7 +71,7 @@ class BaseFactory(ABC, Generic[RecordT]):
                 album=self.rng.choice(albums),
                 duration_ms=self.rng.randint(self.TRACK_DURATION_MIN_MS, self.TRACK_DURATION_MAX_MS),
             )
-            for _ in range(n_tracks)
+            for _ in track(range(n_tracks), description=" - Generating tracks")
         ]
 
     @abstractmethod
