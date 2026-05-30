@@ -58,6 +58,8 @@ moon run synthetic-datasets:generate-e2e
 
 The CI verifies that `generate-e2e` produces byte-for-byte identical output across runs. The SHA256 hashes of both output files are hardcoded in `datasets-test-synthetic.yml`.
 
+Output is deterministic for a given platform, but hashes differ across platforms (macOS vs Linux, x86 vs ARM) due to differences in NumPy floating-point operations and Faker data ordering. Always get the reference hashes from CI logs, not from a local run.
+
 If the hash check fails, it means the generator output changed. Before updating the expected hashes:
 
 1. Identify what caused the change (generator logic, seed, library version bump, etc.)
