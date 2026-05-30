@@ -53,3 +53,14 @@ Generate dataset specifically for e2e tests (uses a fixed seed and number of rec
 ```bash
 moon run synthetic-datasets:generate-e2e
 ```
+
+## 🔒 E2E Dataset Integrity Check
+
+The CI verifies that `generate-e2e` produces byte-for-byte identical output across runs. The SHA256 hashes of both output files are hardcoded in `datasets-test-synthetic.yml`.
+
+If the hash check fails, it means the generator output changed. Before updating the expected hashes:
+
+1. Identify what caused the change (generator logic, seed, library version bump, etc.)
+2. Determine if the change is intentional
+3. If yes: update `EXPECTED_JSON_HASH` and `EXPECTED_ZIP_HASH` in `datasets-test-synthetic.yml` with the new hashes printed in the CI logs, and justify the change in the PR description
+4. If no: fix the generator so it produces the expected output again
