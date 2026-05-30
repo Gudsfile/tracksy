@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
-import type { StreaksQueryResult } from './query'
+import type { ListeningStreaksQueryResult } from './query'
 import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
 import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
@@ -70,13 +70,18 @@ function formatDisplayDate(day: string): string {
 }
 
 type Props = {
-    data: StreaksQueryResult[] | undefined
+    data: ListeningStreaksQueryResult[] | undefined
     year: number | undefined
     isLatestYear: boolean
     isLoading?: boolean
 }
 
-export function StreaksView({ data, year, isLatestYear, isLoading }: Props) {
+export function ListeningStreaksView({
+    data,
+    year,
+    isLatestYear,
+    isLoading,
+}: Props) {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
