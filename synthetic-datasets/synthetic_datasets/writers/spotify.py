@@ -4,9 +4,12 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from rich import print
+from rich.console import Console
 from rich.progress import track
 
 from ..models.spotify import Streaming
+
+_console = Console()
 
 
 class SpotifyWriter:
@@ -57,8 +60,8 @@ def write_zip(path: Path, files_to_add: dict[str, list[Streaming]], base_zipped_
 
     sorted_files = sorted(files_to_add.items())
 
-    with ZipFile(path, "w", ZIP_DEFLATED, compresslevel=6) as myzip:
-        for filename, streamings in track(sorted_files, description="🗜️ Zipping files"):
+    with _console.status("🗜️ Zipping files..."), ZipFile(path, "w", ZIP_DEFLATED, compresslevel=6) as myzip:
+        for filename, streamings in sorted_files:
             data = [streaming.model_dump(mode="json") for streaming in streamings]
             json_content = json.dumps(data, indent=4, sort_keys=True)
 
