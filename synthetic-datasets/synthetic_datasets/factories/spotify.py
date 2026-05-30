@@ -2,6 +2,8 @@ from datetime import timedelta
 from ipaddress import ip_address
 from typing import ClassVar
 
+import typer
+
 from ..config import GenerationConfig
 from ..models.base import BaseEvent
 from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Streaming, Track
@@ -19,7 +21,7 @@ class SpotifyFactory(BaseFactory[Streaming]):
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         super().__init__(num_records, config)
 
-        print("🎵 Enriching Spotify catalog...")
+        typer.echo("🎵 Enriching Spotify catalog...")
         self._spotify_catalog: list[Track] = [
             Track(
                 uri=f"spotify:track:{self.faker.uuid4().replace('-', '')[:22]}",
@@ -37,7 +39,7 @@ class SpotifyFactory(BaseFactory[Streaming]):
         num_countries = 5
         num_ip_addresses = 20
 
-        print("💻 Generating platforms...")
+        typer.echo("💻 Generating platforms...")
         self.platforms = [
             self.faker.random_element(
                 [
@@ -51,9 +53,9 @@ class SpotifyFactory(BaseFactory[Streaming]):
             for _ in range(0, num_platforms)
         ]
 
-        print("🌏 Generating country codes...")
+        typer.echo("🌏 Generating country codes...")
         self.countries = [self.faker.country_code() for _ in range(0, num_countries)]
-        print("🛜 Generating IPs...")
+        typer.echo("🛜 Generating IPs...")
         self.ip_addr = [ip_address(self.faker.ipv4()) for _ in range(0, num_ip_addresses)]
 
     def _map_event(self, event: BaseEvent) -> Streaming:

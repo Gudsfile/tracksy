@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
+import typer
 from tqdm import tqdm
 
 from ..models.spotify import Streaming
@@ -21,9 +22,13 @@ class SpotifyWriter:
 
     def write(self, records):
         json_path = Path(self.json_path_template.format(num_records=str(len(records))))
-        print(f"Write `json` file: status: `starting`, path: `{json_path.absolute()}`, count_records: `{len(records)}`")
+        typer.echo(
+            f"Write `json` file: status: `starting`, path: `{json_path.absolute()}`, count_records: `{len(records)}`"
+        )
         write_json(json_path, records)
-        print(f"Write `json` file: status: `success`, path: `{json_path.absolute()}`, count_records: `{len(records)}`")
+        typer.echo(
+            f"Write `json` file: status: `success`, path: `{json_path.absolute()}`, count_records: `{len(records)}`"
+        )
 
         chunk_size = int(max(len(records) / max(len(records) / self.max_chunk_size, 4), 10))
         files_for_chunked_zip = {}
@@ -35,11 +40,11 @@ class SpotifyWriter:
             files_for_chunked_zip[filename] = chunk
 
         zip_path = Path(self.zip_path_template.format(num_records=str(len(records))))
-        print(
+        typer.echo(
             f"Write `zip` file: status: `starting`, path: `{zip_path.absolute()}`, count_files: `{len(files_for_chunked_zip)}`"
         )
         write_zip(zip_path, files_for_chunked_zip, self.chunked_zip_folder, self.reference_date)
-        print(f"Write `zip` file: status: `success`, path: `{zip_path.absolute()}`")
+        typer.echo(f"Write `zip` file: status: `success`, path: `{zip_path.absolute()}`")
 
 
 def write_json(path: Path, streamings: list[Streaming]):

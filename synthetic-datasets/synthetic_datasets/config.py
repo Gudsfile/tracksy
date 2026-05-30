@@ -2,6 +2,8 @@ import random
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
+import typer
+
 
 def derive_reference_date_from_seed(seed: int) -> datetime:
     rng = random.Random(seed)
@@ -30,18 +32,18 @@ class GenerationConfig:
         if seed is None:
             seed = random.randint(0, 2**31 - 1)
             is_seed_auto = True
-            print(f"🌱 Auto-generated seed: {seed} (use --seed {seed} to reproduce)")
+            typer.echo(f"🌱 Auto-generated seed: {seed} (use --seed {seed} to reproduce)")
         else:
             is_seed_auto = False
-            print(f"🌱 Using provided seed: {seed}")
+            typer.echo(f"🌱 Using provided seed: {seed}")
 
         if reference_date is None:
             reference_date = derive_reference_date_from_seed(seed)
             is_date_auto = True
-            print(f"📅 Derived reference date from seed: {reference_date.isoformat()}")
+            typer.echo(f"📅 Derived reference date from seed: {reference_date.isoformat()}")
         else:
             is_date_auto = False
-            print(f"📅 Using provided reference date: {reference_date.isoformat()}")
+            typer.echo(f"📅 Using provided reference date: {reference_date.isoformat()}")
 
         return cls(
             seed=seed,
@@ -51,12 +53,12 @@ class GenerationConfig:
         )
 
     def log_config(self) -> None:
-        print("=" * 60)
-        print("🔧 Generation Configuration")
-        print(f"  Seed: {self.seed} {'(auto-generated)' if self.is_seed_auto_generated else '(provided)'}")
-        print(
+        typer.echo("=" * 60)
+        typer.echo("🔧 Generation Configuration")
+        typer.echo(f"  Seed: {self.seed} {'(auto-generated)' if self.is_seed_auto_generated else '(provided)'}")
+        typer.echo(
             f"  Reference Date: {self.reference_date.isoformat()} {'(derived from seed)' if self.is_reference_date_auto_generated else '(provided)'}"
         )
-        print("=" * 60)
-        print(f"To reproduce: --seed {self.seed} --reference-date {self.reference_date.isoformat()}")
-        print("=" * 60)
+        typer.echo("=" * 60)
+        typer.echo(f"To reproduce: --seed {self.seed} --reference-date {self.reference_date.isoformat()}")
+        typer.echo("=" * 60)

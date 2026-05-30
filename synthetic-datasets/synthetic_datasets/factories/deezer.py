@@ -2,6 +2,8 @@ import string
 from dataclasses import dataclass
 from ipaddress import ip_address
 
+import typer
+
 from ..config import GenerationConfig
 from ..models.base import BaseEvent
 from ..models.deezer import DeezerStreaming
@@ -21,7 +23,7 @@ class DeezerFactory(BaseFactory[DeezerStreaming]):
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         super().__init__(num_records, config)
 
-        print("🎵 Enriching Deezer catalog...")
+        typer.echo("🎵 Enriching Deezer catalog...")
         self._deezer_catalog: list[_DeezerTrack] = [
             _DeezerTrack(
                 isrc=self._generate_isrc(),
@@ -33,10 +35,10 @@ class DeezerFactory(BaseFactory[DeezerStreaming]):
             for t in self._catalog
         ]
 
-        print("💻 Generating platforms...")
+        typer.echo("💻 Generating platforms...")
         self.platforms = ["web", "ios", "android", "desktop", "tv"]
 
-        print("🛜 Generating IPs...")
+        typer.echo("🛜 Generating IPs...")
         self.ip_addresses = [ip_address(self.faker.ipv4()) for _ in range(20)]
 
     def _generate_isrc(self) -> str:

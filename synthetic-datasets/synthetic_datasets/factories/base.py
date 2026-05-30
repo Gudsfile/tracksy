@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from typing import ClassVar, Generic, TypeVar
 
 import numpy as np
+import typer
 from faker import Faker
 from tqdm import tqdm
 
@@ -41,25 +42,25 @@ class BaseFactory(ABC, Generic[RecordT]):
             self.SKIP_CHANCE_MAX,
             self.now.year - self.start_year + 1,
         )
-        print("🎵 Generating music catalog...")
+        typer.echo("🎵 Generating music catalog...")
         self._catalog = self._generate_catalog(num_records)
-        print("📈 Generating evolving listening tastes...")
+        typer.echo("📈 Generating evolving listening tastes...")
         self._weighted_tracks = self._generate_weighted_tracks_by_year()
         for year, weighted_records in self._weighted_tracks.items():
-            print(f" - {year}: {len(weighted_records)} records")
-        print("📅 Generating distribution over year...")
+            typer.echo(f" - {year}: {len(weighted_records)} records")
+        typer.echo("📅 Generating distribution over year...")
         self._records_per_year = self._generate_distribution_over_year(num_records)
         for year, n in self._records_per_year.items():
-            print(f" - {year}: {n} records")
+            typer.echo(f" - {year}: {n} records")
 
     def _generate_catalog(self, num_records: int) -> list[BaseTrack]:
         n_artists = max(1, int(num_records * 0.20))
         n_albums = max(1, int(num_records * 0.30))
         n_tracks = max(1, int(num_records * 0.50))
-        print(f" - records: {num_records}")
-        print(f" - artists: {n_artists}")
-        print(f" - albums : {n_albums}")
-        print(f" - tracks : {n_tracks}")
+        typer.echo(f" - records: {num_records}")
+        typer.echo(f" - artists: {n_artists}")
+        typer.echo(f" - albums : {n_albums}")
+        typer.echo(f" - tracks : {n_tracks}")
 
         artists = [self.faker.name() for _ in range(n_artists)]
         albums = [self.faker.catch_phrase() for _ in range(n_albums)]
