@@ -24,7 +24,7 @@ export const RepeatBehavior: FC<Props> = ({ data, isLoading }) => {
 
     return (
         <ChartCard
-            title="Replay Energy"
+            title="Replay Style"
             emoji="🔁"
             isLoading={isLoading}
             question="Do I replay the same tracks over and over?"

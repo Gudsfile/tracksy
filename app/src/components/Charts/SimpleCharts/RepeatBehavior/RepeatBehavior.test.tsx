@@ -29,7 +29,7 @@ describe('RepeatBehavior Component', () => {
 
         render(<RepeatBehavior data={data} />)
 
-        screen.getByRole('heading', { name: /🔁Replay Energy/ })
+        screen.getByRole('heading', { name: /🔁Replay Style/ })
         screen.getByText('"track_name"')
         screen.getByText('5 times in a row 🎸')
         screen.getByText(/15 repeated sequences/)
