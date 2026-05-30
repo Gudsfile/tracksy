@@ -7,7 +7,7 @@ from typing import ClassVar, Generic, TypeVar
 import numpy as np
 import typer
 from faker import Faker
-from tqdm import tqdm
+from rich.progress import track
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
@@ -160,4 +160,4 @@ class BaseFactory(ABC, Generic[RecordT]):
 
     def create_streaming_history(self) -> list[RecordT]:
         events = self._generate_base_events()
-        return [self._map_event(e) for e in tqdm(events, desc="💿 Generating streamings", leave=True)]
+        return [self._map_event(e) for e in track(events, description="💿 Generating streamings")]

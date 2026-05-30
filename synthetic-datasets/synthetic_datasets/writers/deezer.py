@@ -3,7 +3,7 @@ from pathlib import Path
 
 import openpyxl
 import typer
-from tqdm import tqdm
+from rich.progress import track
 
 from ..models.deezer import DeezerStreaming
 
@@ -53,7 +53,7 @@ def write_xlsx(path: Path, streamings: list[DeezerStreaming], date: datetime) ->
 
     ws.append(COLUMNS)
 
-    for streaming in tqdm(streamings, desc=f"📦 Writing {path.name}", unit=" records"):
+    for streaming in track(streamings, description=f"📦 Writing {path.name}"):
         ws.append(
             [
                 streaming.song_title,
