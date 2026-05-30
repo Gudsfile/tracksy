@@ -3,11 +3,14 @@ from ipaddress import ip_address
 from typing import ClassVar
 
 from rich import print
+from rich.console import Console
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent
 from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Streaming, Track
 from .base import BaseFactory
+
+_console = Console()
 
 
 class SpotifyFactory(BaseFactory[Streaming]):
@@ -21,19 +24,19 @@ class SpotifyFactory(BaseFactory[Streaming]):
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         super().__init__(num_records, config)
 
-        print("🎵 Enriching Spotify catalog...")
-        self._spotify_catalog: list[Track] = [
-            Track(
-                uri=f"spotify:track:{self.faker.uuid4().replace('-', '')[:22]}",
-                name=t.title,
-                album=Album(
-                    name=t.album,
-                    artist=Artist(name=t.artist),
-                ),
-                duration_ms=t.duration_ms,
-            )
-            for t in self._catalog
-        ]
+        with _console.status("🎵 Enriching Spotify catalog..."):
+            self._spotify_catalog: list[Track] = [
+                Track(
+                    uri=f"spotify:track:{self.faker.uuid4().replace('-', '')[:22]}",
+                    name=t.title,
+                    album=Album(
+                        name=t.album,
+                        artist=Artist(name=t.artist),
+                    ),
+                    duration_ms=t.duration_ms,
+                )
+                for t in self._catalog
+            ]
 
         num_platforms = 5
         num_countries = 5
