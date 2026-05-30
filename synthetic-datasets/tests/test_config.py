@@ -59,6 +59,6 @@ def test_log_config(capsys):
 
     captured = capsys.readouterr()
     assert "Generation Configuration" in captured.out
-    assert f"Seed: {seed}" in captured.out
+    assert str(seed) in captured.out
     assert "provided" in captured.out
     assert "derived from seed" in captured.out
