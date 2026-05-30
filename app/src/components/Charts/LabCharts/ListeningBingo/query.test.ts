@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { DuckDBConnection } from '@duckdb/node-api'
-import { streamPerDayOfWeekQueryByYear } from './query'
+import { listeningBingoQueryByYear } from './query'
 import { TABLE } from '../../../../db/queries/constants'
 
 const seedPath =
-    'src/components/Charts/LabCharts/StreamPerDayOfWeek/fixtures/seed.json'
+    'src/components/Charts/LabCharts/ListeningBingo/fixtures/seed.json'
 let conn: DuckDBConnection
 
 beforeAll(async () => {
@@ -19,10 +19,10 @@ beforeEach(async () => {
     await conn.run(`CREATE OR REPLACE TABLE ${TABLE} AS (FROM '${seedPath}')`)
 })
 
-describe('StreamPerDayOfWeek query', () => {
+describe('ListeningBingo query', () => {
     it('returns rows with the expected output fields', async () => {
         const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(undefined)
+            listeningBingoQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
         expect(rows.length).toBeGreaterThan(0)
@@ -35,7 +35,7 @@ describe('StreamPerDayOfWeek query', () => {
 
     it('orders rows chronologically by stream_date_ts', async () => {
         const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(undefined)
+            listeningBingoQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
         const timestamps = rows.map((r) => Number(r.stream_date_ts))
@@ -46,7 +46,7 @@ describe('StreamPerDayOfWeek query', () => {
 
     it('accumulates counts for the same (day_of_week, play_hour) cell across multiple dates', async () => {
         const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(undefined)
+            listeningBingoQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
 
@@ -62,7 +62,7 @@ describe('StreamPerDayOfWeek query', () => {
 
     it('accumulates daily_count > 1 correctly when multiple plays land on the same date', async () => {
         const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(undefined)
+            listeningBingoQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
 
@@ -79,7 +79,7 @@ describe('StreamPerDayOfWeek query', () => {
 
     it('covers all 24 hours for Monday across the full dataset', async () => {
         const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(undefined)
+            listeningBingoQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
         const mondayHours = new Set(
@@ -92,7 +92,7 @@ describe('StreamPerDayOfWeek query', () => {
 
     it('hour 4 is present across all 7 days of the week', async () => {
         const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(undefined)
+            listeningBingoQueryByYear(undefined)
         )
         const rows = result.getRowObjects()
         const daysWithHour4 = new Set(
@@ -104,9 +104,7 @@ describe('StreamPerDayOfWeek query', () => {
     })
 
     it('filters rows by year', async () => {
-        const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(2025)
-        )
+        const result = await conn.runAndReadAll(listeningBingoQueryByYear(2025))
         const rows = result.getRowObjects()
         expect(rows.length).toBeGreaterThan(0)
 
@@ -128,9 +126,7 @@ describe('StreamPerDayOfWeek query', () => {
     })
 
     it('stream_date_ts is epoch milliseconds (numeric, not a date string)', async () => {
-        const result = await conn.runAndReadAll(
-            streamPerDayOfWeekQueryByYear(2025)
-        )
+        const result = await conn.runAndReadAll(listeningBingoQueryByYear(2025))
         const rows = result.getRowObjects()
         const ts = Number(rows[0].stream_date_ts)
         // 2025-10-05 in epoch ms is roughly 1.75e12

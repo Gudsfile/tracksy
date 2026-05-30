@@ -18,7 +18,7 @@ import { RepeatBehavior } from '../Charts/SimpleCharts/RepeatBehavior'
 import { SeasonalPatterns } from '../Charts/SimpleCharts/SeasonalPatterns'
 import { StreamTimeline } from '../Charts/LabCharts/StreamTimeline'
 import { HourlyStreams } from '../Charts/SimpleCharts/HourlyStreams'
-import { StreamPerDayOfWeek } from '../Charts/LabCharts/StreamPerDayOfWeek'
+import { ListeningBingo } from '../Charts/LabCharts/ListeningBingo'
 import { StreamDiscovery } from '../Charts/LabCharts/StreamDiscovery'
 import { UnbeatableStreak } from '../Charts/SimpleCharts/UnbeatableStreak'
 import { CustomChart } from './CustomChart'
@@ -43,7 +43,7 @@ export function ChatChartRouter({ answer, rows }: ChatChartRouterProps) {
         case 'streams_per_hour':
             return <HourlyStreams year={year} />
         case 'streams_per_day_of_week':
-            return <StreamPerDayOfWeek year={year} />
+            return <ListeningBingo year={year} />
         case 'calendar_heatmap':
             return <CalendarHeatmap year={year} />
         case 'session_analysis':

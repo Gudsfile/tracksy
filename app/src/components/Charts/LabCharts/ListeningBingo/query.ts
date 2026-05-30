@@ -1,15 +1,15 @@
 import { TABLE } from '../../../../db/queries/constants'
 import { buildYearCondition } from '../../../../db/queries/buildYearCondition'
-import sqlQueryStreamPerDayOfWeek from './StreamPerDayOfWeek.sql?raw'
+import sqlQueryListeningBingo from './ListeningBingo.sql?raw'
 
-export function streamPerDayOfWeekQueryByYear(year: number | undefined) {
+export function listeningBingoQueryByYear(year: number | undefined) {
     const yearCondition = buildYearCondition(year)
-    return sqlQueryStreamPerDayOfWeek
+    return sqlQueryListeningBingo
         .replaceAll('${table}', TABLE)
         .replaceAll('${year_condition}', yearCondition)
 }
 
-export type StreamPerDayOfWeekQueryResult = {
+export type ListeningBingoQueryResult = {
     stream_date_ts: number // epoch ms, consistent with Top10Race
     day_of_week: number // 0 = Sun, 1 = Mon, ..., 6 = Sat (DuckDB dayofweek convention)
     play_hour: number // 0-23

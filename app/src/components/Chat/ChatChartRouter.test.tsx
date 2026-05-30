@@ -21,7 +21,7 @@ import * as RepeatBehaviorModule from '../Charts/SimpleCharts/RepeatBehavior'
 import * as SeasonalPatternsModule from '../Charts/SimpleCharts/SeasonalPatterns'
 import * as StreamTimelineModule from '../Charts/LabCharts/StreamTimeline'
 import * as HourlyStreamsModule from '../Charts/SimpleCharts/HourlyStreams'
-import * as StreamPerDayOfWeekModule from '../Charts/LabCharts/StreamPerDayOfWeek'
+import * as ListeningBingoModule from '../Charts/LabCharts/ListeningBingo'
 import * as StreamDiscoveryModule from '../Charts/LabCharts/StreamDiscovery'
 import * as UnbeatableStreakModule from '../Charts/SimpleCharts/UnbeatableStreak'
 
@@ -88,10 +88,9 @@ describe('ChatChartRouter', () => {
         vi.spyOn(HourlyStreamsModule, 'HourlyStreams').mockReturnValue(
             <div data-testid="HourlyStreams" />
         )
-        vi.spyOn(
-            StreamPerDayOfWeekModule,
-            'StreamPerDayOfWeek'
-        ).mockReturnValue(<div data-testid="StreamPerDayOfWeek" />)
+        vi.spyOn(ListeningBingoModule, 'ListeningBingo').mockReturnValue(
+            <div data-testid="ListeningBingo" />
+        )
         vi.spyOn(StreamDiscoveryModule, 'StreamDiscovery').mockReturnValue(
             <div data-testid="StreamDiscovery" />
         )
@@ -113,7 +112,7 @@ describe('ChatChartRouter', () => {
         ['favorite_weekday', 'FavoriteWeekday'],
         ['streams_per_month', 'StreamTimeline'],
         ['streams_per_hour', 'HourlyStreams'],
-        ['streams_per_day_of_week', 'StreamPerDayOfWeek'],
+        ['streams_per_day_of_week', 'ListeningBingo'],
         ['artist_discovery', 'StreamDiscovery'],
         ['total_streams', 'EvolutionOverTime'],
         ['concentration_score', 'ConcentrationScore'],

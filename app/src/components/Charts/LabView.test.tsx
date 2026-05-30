@@ -19,9 +19,9 @@ import {
     queryTop10Race,
 } from './LabCharts/Top10Race/query'
 import {
-    type StreamPerDayOfWeekQueryResult,
-    streamPerDayOfWeekQueryByYear,
-} from './LabCharts/StreamPerDayOfWeek/query'
+    type ListeningBingoQueryResult,
+    listeningBingoQueryByYear,
+} from './LabCharts/ListeningBingo/query'
 import {
     type Top10AlbumsEvolutionQueryResult,
     queryTop10AlbumsEvolution,
@@ -118,7 +118,7 @@ const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
     },
 ]
 
-const streamPerDayOfWeekResultMock: StreamPerDayOfWeekQueryResult[] = [
+const listeningBingoResultMock: ListeningBingoQueryResult[] = [
     {
         stream_date_ts: 1704067200000,
         day_of_week: 1,
@@ -150,8 +150,8 @@ it('renders all Charts', async () => {
             return Promise.resolve(top10AlbumsEvolutionResultMock)
         if (query === queryTop10TracksEvolution())
             return Promise.resolve(top10TracksEvolutionResultMock)
-        if (query === streamPerDayOfWeekQueryByYear(2024))
-            return Promise.resolve(streamPerDayOfWeekResultMock)
+        if (query === listeningBingoQueryByYear(2024))
+            return Promise.resolve(listeningBingoResultMock)
         return Promise.resolve([])
     })
 

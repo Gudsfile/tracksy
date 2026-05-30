@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode, useMemo, useState } from 'react'
-import type { StreamPerDayOfWeekQueryResult } from './query'
+import type { ListeningBingoQueryResult } from './query'
 import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
 import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { InsightList, InsightRow } from '../shared/InsightList'
@@ -44,12 +44,12 @@ type TooltipState = {
 }
 
 type Props = {
-    data: StreamPerDayOfWeekQueryResult[] | undefined
+    data: ListeningBingoQueryResult[] | undefined
     year: number | undefined
     isLoading?: boolean
 }
 
-export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
+export function ListeningBingoView({ data, year, isLoading }: Props) {
     const {
         frames,
         maxCount,
@@ -82,7 +82,7 @@ export function StreamPerDayOfWeekView({ data, year, isLoading }: Props) {
             ...new Set(data.map((r) => r.stream_date_ts)),
         ].sort((a, b) => a - b)
 
-        const byDate = new Map<number, StreamPerDayOfWeekQueryResult[]>()
+        const byDate = new Map<number, ListeningBingoQueryResult[]>()
         for (const row of data) {
             if (!byDate.has(row.stream_date_ts))
                 byDate.set(row.stream_date_ts, [])

@@ -14,7 +14,7 @@ import { Streaks } from './LabCharts/Streaks'
 import { Top10Evolution } from './LabCharts/Top10Evolution'
 import { Top10AlbumsEvolution } from './LabCharts/Top10AlbumsEvolution'
 import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
-import { StreamPerDayOfWeek } from './LabCharts/StreamPerDayOfWeek'
+import { ListeningBingo } from './LabCharts/ListeningBingo'
 import { Top10Race } from './LabCharts/Top10Race'
 import { Top10BillboardRace } from './LabCharts/Top10BillboardRace'
 import { SessionAnalysis as SessionAnalysisDetailed } from './LabCharts/SessionAnalysis'
@@ -82,7 +82,7 @@ export function LabView() {
                             year={debouncedYear}
                             isLatestYear={isLatestYear}
                         />
-                        <StreamPerDayOfWeek year={debouncedYear} />
+                        <ListeningBingo year={debouncedYear} />
                     </div>
                 </>
             )}
