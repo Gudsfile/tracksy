@@ -4,7 +4,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 import typer
-from tqdm import tqdm
+from rich.progress import track
 
 from ..models.spotify import Streaming
 
@@ -49,8 +49,7 @@ class SpotifyWriter:
 
 def write_json(path: Path, streamings: list[Streaming]):
     data = [
-        streaming.model_dump(mode="json")
-        for streaming in tqdm(streamings, desc=f"📦 Preparing {path.name}", unit=" records")
+        streaming.model_dump(mode="json") for streaming in track(streamings, description=f"📦 Preparing {path.name}")
     ]
 
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -65,7 +64,7 @@ def write_zip(path: Path, files_to_add: dict[str, list[Streaming]], base_zipped_
     sorted_files = sorted(files_to_add.items())
 
     with ZipFile(path, "w", ZIP_DEFLATED, compresslevel=6) as myzip:
-        for filename, streamings in tqdm(sorted_files, desc="🗜️ Zipping files", unit=" file"):
+        for filename, streamings in track(sorted_files, description="🗜️ Zipping files"):
             data = [streaming.model_dump(mode="json") for streaming in streamings]
             json_content = json.dumps(data, indent=4, sort_keys=True)
 

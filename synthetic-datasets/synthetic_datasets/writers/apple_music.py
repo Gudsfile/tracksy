@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import ClassVar
 
 import typer
-from tqdm import tqdm
+from rich.progress import track
 
 from ..models.apple_music import AppleMusicRecord
 
@@ -35,11 +35,7 @@ class AppleMusicWriter:
         with open(self.output_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=COLUMNS)
             writer.writeheader()
-            for record in tqdm(
-                records,
-                desc=f"📦 Writing {self.output_path.name}",
-                unit=" records",
-            ):
+            for record in track(records, description=f"📦 Writing {self.output_path.name}"):
                 writer.writerow(
                     {
                         "Event Start Timestamp": record.serialize_event_start_timestamp(record.event_start_timestamp),
