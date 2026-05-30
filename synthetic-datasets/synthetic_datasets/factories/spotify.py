@@ -2,6 +2,7 @@ import random
 import string
 from datetime import datetime, timedelta
 from ipaddress import ip_address
+from typing import ClassVar
 
 from ..config import GenerationConfig
 from ..models.spotify import Album, Artist, ReasonEndEnum, ReasonStartEnum, Streaming, Track
@@ -9,7 +10,7 @@ from .base import BaseFactory
 
 
 class SpotifyFactory(BaseFactory[Streaming]):
-    reason_start = [
+    reason_start: ClassVar[list[ReasonStartEnum]] = [
         ReasonStartEnum.TRACK_DONE,
         ReasonStartEnum.FORWARD_BUTTON,
         ReasonStartEnum.BACK_BUTTON,
