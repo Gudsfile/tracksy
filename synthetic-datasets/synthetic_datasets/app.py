@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
+from rich import print
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
@@ -90,7 +91,7 @@ def generate(
         case Provider.spotify:
             _spotify(num_records, output_dir, config)
 
-    typer.echo(f"--- {time.time() - start:.2f} seconds ---")
+    print(f"--- {time.time() - start:.2f} seconds ---")
 
 
 def main() -> None:
