@@ -28,9 +28,7 @@ class AppleMusicWriter:
         self.reference_date = reference_date
 
     def write(self, records: list[AppleMusicRecord]) -> None:
-        print(
-            f"Write `csv` file: status: `starting`, path: `{self.output_path.absolute()}`, count_records: `{len(records)}`"
-        )
+        print(f"Write csv: [yellow]starting[/yellow] {self.output_path.absolute()} ({len(records)} records)")
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.output_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=COLUMNS)
@@ -48,6 +46,4 @@ class AppleMusicWriter:
                         "Container Origin Type": record.container_origin_type or self.NULL_VALUE,
                     }
                 )
-        print(
-            f"Write `csv` file: status: `success`, path: `{self.output_path.absolute()}`, count_records: `{len(records)}`"
-        )
+        print(f"Write csv: [green]success[/green] {self.output_path.absolute()} ({len(records)} records)")
