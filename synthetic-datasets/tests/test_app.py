@@ -82,3 +82,12 @@ def test_generate_with_seed(mock_create, mock_spotify, seed):
 def test_generate_invalid_provider(tmp_path):
     result = runner.invoke(app, ["100", "--seed", "42", "--provider", "napster", "-o", str(tmp_path)])
     assert result.exit_code == 2
+
+
+def test_log_config_output(tmp_path):
+    result = runner.invoke(app, ["100", "--seed", "42", "-o", str(tmp_path)])
+    assert result.exit_code == 0
+    assert "Generation Configuration" in result.output
+    assert "42" in result.output
+    assert "provided" in result.output
+    assert "derived from seed" in result.output

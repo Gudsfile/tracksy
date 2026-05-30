@@ -52,13 +52,6 @@ def test_create_with_seed_and_date():
     assert config.reference_date != date_from_seed
 
 
-def test_log_config(capsys):
-    seed = 42
-    config = GenerationConfig.create(seed=seed)
-    config.log_config()
-
-    captured = capsys.readouterr()
-    assert "Generation Configuration" in captured.out
-    assert str(seed) in captured.out
-    assert "provided" in captured.out
-    assert "derived from seed" in captured.out
+def test_log_config_returns_none():
+    config = GenerationConfig.create(seed=42)
+    assert config.log_config() is None
