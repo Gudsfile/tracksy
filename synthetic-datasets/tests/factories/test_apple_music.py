@@ -65,12 +65,12 @@ def test_all_records_are_audio(default_generation_config):
         assert record.media_type == "AUDIO"
 
 
-def test_records_have_valid_client_platforms(default_generation_config):
-    valid_platforms = {"FUSE", "TILT"}
+def test_records_have_valid_device_types(default_generation_config):
+    valid_device_types = {"IPHONE", "MACINTOSH", "HOMEPOD"}
     factory = AppleMusicFactory(num_records=200, config=default_generation_config)
     records = factory.create_streaming_history()
     for record in records:
-        assert record.client_platform in valid_platforms
+        assert record.device_type in valid_device_types
 
 
 def test_play_duration_is_non_negative(default_generation_config):
@@ -85,3 +85,17 @@ def test_song_names_are_non_empty(default_generation_config):
     records = factory.create_streaming_history()
     for record in records:
         assert record.song_name.strip() != ""
+
+
+def test_album_names_are_non_empty(default_generation_config):
+    factory = AppleMusicFactory(num_records=50, config=default_generation_config)
+    records = factory.create_streaming_history()
+    for record in records:
+        assert record.album_name.strip() != ""
+
+
+def test_container_origin_type_values(default_generation_config):
+    factory = AppleMusicFactory(num_records=500, config=default_generation_config)
+    records = factory.create_streaming_history()
+    values = {r.container_origin_type for r in records}
+    assert values <= {None, "STREAM_RADIO_STATION"}

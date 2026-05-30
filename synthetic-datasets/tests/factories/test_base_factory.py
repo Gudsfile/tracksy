@@ -6,7 +6,10 @@ from faker import Faker
 from numpy.random import Generator
 
 from synthetic_datasets.config import GenerationConfig
+from synthetic_datasets.factories.apple_music import AppleMusicFactory
 from synthetic_datasets.factories.base import BaseFactory
+from synthetic_datasets.factories.deezer import DeezerFactory
+from synthetic_datasets.factories.spotify import SpotifyFactory
 from synthetic_datasets.models.base import BaseEvent, BaseTrack
 
 
@@ -120,3 +123,16 @@ def test_global_random_not_used(config):
     r2 = f2.create_streaming_history()
 
     assert r1 == r2
+
+
+class TestCrossProviderCatalogConsistency:
+    def test_same_seed_produces_same_catalog(self, config):
+        spotify = SpotifyFactory(100, config)
+        deezer = DeezerFactory(100, config)
+        apple = AppleMusicFactory(100, config)
+
+        for i, base_track in enumerate(spotify._catalog):
+            assert deezer._catalog[i].title == base_track.title
+            assert deezer._catalog[i].artist == base_track.artist
+            assert apple._catalog[i].title == base_track.title
+            assert apple._catalog[i].album == base_track.album
