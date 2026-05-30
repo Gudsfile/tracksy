@@ -10,7 +10,7 @@ import {
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
-import { Streaks } from './LabCharts/Streaks'
+import { ListeningStreaks } from './LabCharts/ListeningStreaks'
 import { Top10Evolution } from './LabCharts/Top10Evolution'
 import { Top10AlbumsEvolution } from './LabCharts/Top10AlbumsEvolution'
 import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
@@ -78,7 +78,7 @@ export function LabView() {
                         <StreamVariety year={debouncedYear} />
                         <StreamDiscovery year={debouncedYear} />
                         <Top10Race year={debouncedYear} />
-                        <Streaks
+                        <ListeningStreaks
                             year={debouncedYear}
                             isLatestYear={isLatestYear}
                         />

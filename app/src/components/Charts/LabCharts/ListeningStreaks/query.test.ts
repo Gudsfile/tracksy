@@ -1,11 +1,12 @@
 import { afterAll, beforeAll, beforeEach, describe, it, expect } from 'vitest'
-import { queryStreaks } from './query'
+import { queryListeningStreaks } from './query'
 import { DuckDBConnection, type DuckDBValue } from '@duckdb/node-api'
 import { TABLE } from '../../../../db/queries/constants'
-const seedPath = 'src/components/Charts/LabCharts/Streaks/fixtures/seed.json'
+const seedPath =
+    'src/components/Charts/LabCharts/ListeningStreaks/fixtures/seed.json'
 let conn: DuckDBConnection
 
-describe('Streaks Query', () => {
+describe('ListeningStreaks Query', () => {
     beforeAll(async () => {
         conn = await DuckDBConnection.create()
     })
@@ -21,7 +22,7 @@ describe('Streaks Query', () => {
     })
 
     it('should return streaks', async () => {
-        const result = await conn.runAndReadAll(queryStreaks())
+        const result = await conn.runAndReadAll(queryListeningStreaks())
         const rows = result
             .getRowObjects()
             .toSorted(
@@ -44,7 +45,7 @@ describe('Streaks Query', () => {
     })
 
     it('should return streaks for a specific year', async () => {
-        const result = await conn.runAndReadAll(queryStreaks(2020))
+        const result = await conn.runAndReadAll(queryListeningStreaks(2020))
         const rows = result.getRowObjects()
 
         expect(rows).toEqual([
@@ -57,7 +58,7 @@ describe('Streaks Query', () => {
     })
 
     it('should return empty for a year with no data', async () => {
-        const result = await conn.runAndReadAll(queryStreaks(2019))
+        const result = await conn.runAndReadAll(queryListeningStreaks(2019))
         expect(result.getRowObjects()).toEqual([])
     })
 })
