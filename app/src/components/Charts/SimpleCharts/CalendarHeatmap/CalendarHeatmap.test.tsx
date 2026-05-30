@@ -15,9 +15,10 @@ describe('CalendarHeatmap', () => {
         screen.getByText('No data for this year')
     })
 
-    it('shows the year in the card title', () => {
+    it('renders card title without year', () => {
         render(<CalendarHeatmap data={[]} year={2024} />)
-        screen.getByText(/Listening activity 2024/)
+        screen.getByText(/Listening activity/)
+        expect(screen.queryByText(/Listening activity 2024/)).toBeNull()
     })
 
     it('renders cells for the full year including leading/trailing nulls', () => {

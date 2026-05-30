@@ -45,7 +45,7 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
     if (!data) {
         return (
             <ChartCard
-                title={`Listening activity ${year}`}
+                title="Listening activity"
                 emoji="🗓️"
                 isLoading={isLoading}
             >
@@ -89,11 +89,7 @@ export const CalendarHeatmap: FC<Props> = ({ data, year, isLoading }) => {
     const minGridWidth = LABEL_WIDTH + weekCount * (CELL_GAP + MIN_CELL)
 
     return (
-        <ChartCard
-            title={`Listening activity ${year}`}
-            emoji="🗓️"
-            isLoading={isLoading}
-        >
+        <ChartCard title="Listening activity" emoji="🗓️" isLoading={isLoading}>
             {data && (
                 <div className="overflow-x-auto">
                     <div
