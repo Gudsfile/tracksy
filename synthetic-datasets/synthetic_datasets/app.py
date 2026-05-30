@@ -21,7 +21,7 @@ class Provider(str, Enum):
     apple_music = "apple-music"
 
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer()
 
 
 def _apple_music(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
