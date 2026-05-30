@@ -1,3 +1,7 @@
+from datetime import datetime
+from unittest.mock import patch
+
+from pytest import mark
 from typer.testing import CliRunner
 
 from synthetic_datasets.app import app
@@ -47,18 +51,34 @@ def test_generate_apple_music(tmp_path):
     assert (tmp_path / "apple_music").exists()
 
 
-def test_generate_with_reference_date(tmp_path):
-    result = runner.invoke(app, ["100", "--seed", "42", "--reference-date", "2026-01-15T01:02:03", "-o", str(tmp_path)])
+@patch("synthetic_datasets.app._spotify")
+@patch("synthetic_datasets.app.GenerationConfig.create")
+@mark.parametrize(
+    ["reference_date_str", "expected_datetime"],
+    [
+        ("2026-01-15T01:02:03", datetime(2026, 1, 15, 1, 2, 3)),
+        ("2025-12-31T23:59:59", datetime(2025, 12, 31, 23, 59, 59)),
+        ("2024-02-29T12:00:00", datetime(2024, 2, 29, 12, 0, 0)),
+    ],
+)
+def test_generate_with_reference_date(mock_create, mock_spotify, reference_date_str, expected_datetime):
+    result = runner.invoke(app, ["100", "--reference-date", reference_date_str])
+
     assert result.exit_code == 0
-    assert "2026-01-15" in result.output
+    mock_create.assert_called_once_with(seed=None, reference_date=expected_datetime)
+    mock_spotify.assert_called_once()
 
 
-def test_generate_output_mentions_seed(tmp_path):
-    result = runner.invoke(app, ["100", "--seed", "42", "-o", str(tmp_path)])
+@patch("synthetic_datasets.app._spotify")
+@patch("synthetic_datasets.app.GenerationConfig.create")
+@mark.parametrize("seed", [0, 42, 1234567890])
+def test_generate_with_seed(mock_create, mock_spotify, seed):
+    result = runner.invoke(app, ["100", "--seed", seed])
     assert result.exit_code == 0
-    assert "42" in result.output
+    mock_create.assert_called_once_with(seed=seed, reference_date=None)
+    mock_spotify.assert_called_once()
 
 
 def test_generate_invalid_provider(tmp_path):
     result = runner.invoke(app, ["100", "--seed", "42", "--provider", "napster", "-o", str(tmp_path)])
-    assert result.exit_code != 0
+    assert result.exit_code == 2
