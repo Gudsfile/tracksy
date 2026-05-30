@@ -2,6 +2,7 @@ from datetime import datetime
 from pathlib import Path
 
 import openpyxl
+import typer
 from tqdm import tqdm
 
 from ..models.deezer import DeezerStreaming
@@ -29,9 +30,13 @@ class DeezerWriter:
     def write(self, records: list[DeezerStreaming]) -> None:
         timestamp = int(self.reference_date.timestamp())
         xlsx_path = Path(self.xlsx_path_template.format(timestamp=timestamp))
-        print(f"Write `xlsx` file: status: `starting`, path: `{xlsx_path.absolute()}`, count_records: `{len(records)}`")
+        typer.echo(
+            f"Write `xlsx` file: status: `starting`, path: `{xlsx_path.absolute()}`, count_records: `{len(records)}`"
+        )
         write_xlsx(xlsx_path, records, self.reference_date)
-        print(f"Write `xlsx` file: status: `success`, path: `{xlsx_path.absolute()}`, count_records: `{len(records)}`")
+        typer.echo(
+            f"Write `xlsx` file: status: `success`, path: `{xlsx_path.absolute()}`, count_records: `{len(records)}`"
+        )
 
 
 def write_xlsx(path: Path, streamings: list[DeezerStreaming], date: datetime) -> None:

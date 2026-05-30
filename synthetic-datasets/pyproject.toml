@@ -10,6 +10,7 @@ dependencies = [
     "openpyxl==3.1.5",
     "pydantic==2.13.4",
     "tqdm==4.67.3",
+    "typer==0.26.4",
 ]
 
 [dependency-groups]

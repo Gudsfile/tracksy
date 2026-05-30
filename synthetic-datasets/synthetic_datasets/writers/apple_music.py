@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
 
+import typer
 from tqdm import tqdm
 
 from ..models.apple_music import AppleMusicRecord
@@ -27,7 +28,7 @@ class AppleMusicWriter:
         self.reference_date = reference_date
 
     def write(self, records: list[AppleMusicRecord]) -> None:
-        print(
+        typer.echo(
             f"Write `csv` file: status: `starting`, path: `{self.output_path.absolute()}`, count_records: `{len(records)}`"
         )
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -51,6 +52,6 @@ class AppleMusicWriter:
                         "Container Origin Type": record.container_origin_type or self.NULL_VALUE,
                     }
                 )
-        print(
+        typer.echo(
             f"Write `csv` file: status: `success`, path: `{self.output_path.absolute()}`, count_records: `{len(records)}`"
         )
