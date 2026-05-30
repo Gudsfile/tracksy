@@ -7,10 +7,13 @@ from typing import ClassVar, Generic, TypeVar
 import numpy as np
 from faker import Faker
 from rich import print
+from rich.console import Console
 from rich.progress import track
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
+
+_console = Console()
 
 RecordT = TypeVar("RecordT")
 
@@ -44,12 +47,12 @@ class BaseFactory(ABC, Generic[RecordT]):
         )
         print("🎵 Generating music catalog...")
         self._catalog = self._generate_catalog(num_records)
-        print("📈 Generating evolving listening tastes...")
-        self._weighted_tracks = self._generate_weighted_tracks_by_year()
+        with _console.status("📈 Generating listening tastes..."):
+            self._weighted_tracks = self._generate_weighted_tracks_by_year()
         for year, weighted_records in self._weighted_tracks.items():
             print(f" - {year}: {len(weighted_records)} records")
-        print("📅 Generating distribution over year...")
-        self._records_per_year = self._generate_distribution_over_year(num_records)
+        with _console.status("📅 Generating distribution over year..."):
+            self._records_per_year = self._generate_distribution_over_year(num_records)
         for year, n in self._records_per_year.items():
             print(f" - {year}: {n} records")
 
