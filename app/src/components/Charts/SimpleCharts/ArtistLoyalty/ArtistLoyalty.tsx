@@ -56,7 +56,7 @@ export const ArtistLoyalty: FC<Props> = ({ data, isLoading }) => {
             title="Artist Loyalty"
             emoji="🤝"
             isLoading={isLoading}
-            question="How are my streams distributed by how much I listen to each artist?"
+            question="How loyal am I to my favorite artists?"
             className="h-full"
         >
             {!data?.length ? (
