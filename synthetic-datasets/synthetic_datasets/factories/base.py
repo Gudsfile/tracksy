@@ -8,7 +8,7 @@ import numpy as np
 from faker import Faker
 from rich import print
 from rich.console import Console
-from rich.progress import track
+from rich.progress import Progress, track
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
@@ -137,25 +137,29 @@ class BaseFactory(ABC, Generic[RecordT]):
         return weighted_tracks_by_year
 
     def _generate_base_events(self) -> list[BaseEvent]:
+        total = sum(self._records_per_year.values())
         events: list[BaseEvent] = []
-        for year, count in self._records_per_year.items():
-            skip_chance = self.skip_chance_trend[year - self.start_year]
-            for _ in range(count):
-                ts = self._get_random_datetime_for_year(year)
-                track_index = self.rng.choice(self._weighted_tracks[year])
-                is_skipped = self.rng.random() < skip_chance
-                if is_skipped:
-                    duration_ratio = self.rng.uniform(0.05, 0.30)
-                else:
-                    duration_ratio = self.rng.uniform(0.90, 1.00)
-                events.append(
-                    BaseEvent(
-                        timestamp=ts,
-                        track_index=track_index,
-                        is_skipped=is_skipped,
-                        duration_ratio=duration_ratio,
+        with Progress() as progress:
+            task = progress.add_task("📅 Generating events...", total=total)
+            for year, count in self._records_per_year.items():
+                skip_chance = self.skip_chance_trend[year - self.start_year]
+                for _ in range(count):
+                    ts = self._get_random_datetime_for_year(year)
+                    track_index = self.rng.choice(self._weighted_tracks[year])
+                    is_skipped = self.rng.random() < skip_chance
+                    if is_skipped:
+                        duration_ratio = self.rng.uniform(0.05, 0.30)
+                    else:
+                        duration_ratio = self.rng.uniform(0.90, 1.00)
+                    events.append(
+                        BaseEvent(
+                            timestamp=ts,
+                            track_index=track_index,
+                            is_skipped=is_skipped,
+                            duration_ratio=duration_ratio,
+                        )
                     )
-                )
+                    progress.advance(task)
         return sorted(events, key=lambda e: e.timestamp)
 
     def create_streaming_history(self) -> list[RecordT]:
