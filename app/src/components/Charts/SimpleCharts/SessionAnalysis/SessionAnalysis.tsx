@@ -27,7 +27,7 @@ export const SessionAnalysis: FC<Props> = ({ data, isLoading }) => {
     return (
         <ChartCard
             title="Listening sessions"
-            emoji="🎵"
+            emoji="🎛️"
             isLoading={isLoading}
             question="How are my listening sessions structured?"
             className="h-full"
