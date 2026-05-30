@@ -50,9 +50,11 @@ def apple_music_record():
     return AppleMusicRecord(
         event_start_timestamp=datetime.fromisoformat("2020-08-07T11:48:23"),
         song_name="Never Gonna Give You Up",
+        album_name="Whenever You Need Somebody",
         media_type="AUDIO",
         play_duration_ms=213_000,
-        client_platform="FUSE",
+        device_type="IPHONE",
+        container_origin_type=None,
     )
 
 

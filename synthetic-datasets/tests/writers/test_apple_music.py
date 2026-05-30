@@ -81,6 +81,9 @@ def test_write_csv_record_values(tmp_path, apple_music_record):
         reader = csv.DictReader(f)
         row = next(reader)
     assert row["Song Name"] == apple_music_record.song_name
+    assert row["Album Name"] == apple_music_record.album_name
     assert row["Media Type"] == apple_music_record.media_type
     assert row["Play Duration Milliseconds"] == str(apple_music_record.play_duration_ms)
     assert row["Container Artist Name"] == ""
+    assert row["Device Type"] == apple_music_record.device_type
+    assert row["Container Origin Type"] == ""

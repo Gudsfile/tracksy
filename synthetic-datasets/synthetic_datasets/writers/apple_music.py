@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 from pathlib import Path
+from typing import ClassVar
 
 from tqdm import tqdm
 
@@ -9,14 +10,18 @@ from ..models.apple_music import AppleMusicRecord
 COLUMNS = [
     "Event Start Timestamp",
     "Song Name",
+    "Album Name",
     "Container Artist Name",
     "Media Type",
     "Play Duration Milliseconds",
-    "Feature Name",
+    "Device Type",
+    "Container Origin Type",
 ]
 
 
 class AppleMusicWriter:
+    NULL_VALUE: ClassVar[str] = ""
+
     def __init__(self, output_dir: Path, reference_date: datetime) -> None:
         self.output_path = output_dir / "apple_music" / "Apple Music Play Activity.csv"
         self.reference_date = reference_date
@@ -38,10 +43,12 @@ class AppleMusicWriter:
                     {
                         "Event Start Timestamp": record.serialize_event_start_timestamp(record.event_start_timestamp),
                         "Song Name": record.song_name,
-                        "Container Artist Name": "",
+                        "Album Name": record.album_name,
+                        "Container Artist Name": self.NULL_VALUE,
                         "Media Type": record.media_type,
                         "Play Duration Milliseconds": str(record.play_duration_ms),
-                        "Feature Name": record.client_platform,
+                        "Device Type": record.device_type,
+                        "Container Origin Type": record.container_origin_type or self.NULL_VALUE,
                     }
                 )
         print(
