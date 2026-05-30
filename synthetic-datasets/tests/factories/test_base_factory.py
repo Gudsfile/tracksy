@@ -1,17 +1,18 @@
+import random
 from datetime import datetime
 
 import pytest
+from faker import Faker
+from numpy.random import Generator
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.base import BaseFactory
+from synthetic_datasets.models.base import BaseEvent, BaseTrack
 
 
 class ConcreteFactory(BaseFactory[str]):
-    def _generate_catalog(self, num_records: int) -> list:
-        return []
-
-    def _create_one_record(self, ts: datetime) -> str:
-        return "record"
+    def _map_event(self, event: BaseEvent) -> str:
+        return f"record:{event.track_index}"
 
 
 @pytest.fixture
@@ -46,4 +47,76 @@ def test_generate_distribution_over_year_sums_to_n(factory):
 def test_rng_seeding_is_deterministic(config):
     f1 = ConcreteFactory(num_records=50, config=config)
     f2 = ConcreteFactory(num_records=50, config=config)
-    assert f1.records_per_year == f2.records_per_year
+    assert f1._records_per_year == f2._records_per_year
+
+
+def test_instance_level_rngs_exist(factory):
+    assert isinstance(factory.rng, random.Random)
+    assert isinstance(factory.np_rng, Generator)
+    assert isinstance(factory.faker, Faker)
+
+
+def test_generate_catalog_returns_base_tracks(factory):
+    assert len(factory._catalog) > 0
+    for track in factory._catalog:
+        assert isinstance(track, BaseTrack)
+        assert track.title
+        assert track.artist
+        assert track.album
+        assert factory.TRACK_DURATION_MIN_MS <= track.duration_ms <= factory.TRACK_DURATION_MAX_MS
+
+
+def test_weighted_tracks_contains_indices(factory):
+    for year, indices in factory._weighted_tracks.items():
+        assert len(indices) > 0
+        for idx in indices:
+            assert isinstance(idx, int)
+            assert 0 <= idx < len(factory._catalog)
+
+
+def test_generate_base_events_returns_sorted_events(factory):
+    events = factory._generate_base_events()
+    timestamps = [e.timestamp for e in events]
+    assert timestamps == sorted(timestamps)
+
+
+def test_generate_base_events_count_matches_records_per_year(factory):
+    events = factory._generate_base_events()
+    assert len(events) == sum(factory._records_per_year.values())
+
+
+def test_base_event_duration_ratio_skipped(config):
+    factory = ConcreteFactory(num_records=200, config=config)
+    events = factory._generate_base_events()
+    for event in events:
+        if event.is_skipped:
+            assert 0.05 <= event.duration_ratio <= 0.30
+        else:
+            assert 0.90 <= event.duration_ratio <= 1.00
+
+
+def test_create_streaming_history_count(config):
+    factory = ConcreteFactory(num_records=50, config=config)
+    records = factory.create_streaming_history()
+    assert len(records) == sum(factory._records_per_year.values())
+
+
+def test_same_seed_same_output(config):
+    f1 = ConcreteFactory(num_records=50, config=config)
+    r1 = f1.create_streaming_history()
+    f2 = ConcreteFactory(num_records=50, config=config)
+    r2 = f2.create_streaming_history()
+    assert r1 == r2
+
+
+def test_global_random_not_used(config):
+    """Instance-level rng; global random state must not affect output."""
+    random.seed(999)
+    f1 = ConcreteFactory(num_records=30, config=config)
+    r1 = f1.create_streaming_history()
+
+    random.seed(0)
+    f2 = ConcreteFactory(num_records=30, config=config)
+    r2 = f2.create_streaming_history()
+
+    assert r1 == r2
