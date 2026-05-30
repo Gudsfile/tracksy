@@ -22,7 +22,7 @@ class Provider(str, Enum):
     apple_music = "apple-music"
 
 
-app = typer.Typer()
+app = typer.Typer(add_completion=False)
 
 
 def _apple_music(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
