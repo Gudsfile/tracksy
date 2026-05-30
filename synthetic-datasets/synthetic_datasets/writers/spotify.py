@@ -3,13 +3,12 @@ from datetime import datetime
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
-from rich import print
-from rich.console import Console
+from rich import get_console, print
 from rich.progress import track
 
 from ..models.spotify import Streaming
 
-_console = Console()
+_console = get_console()
 
 
 class SpotifyWriter:
