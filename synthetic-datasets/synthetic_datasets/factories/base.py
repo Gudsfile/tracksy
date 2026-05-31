@@ -7,7 +7,7 @@ from typing import ClassVar, Generic, TypeVar
 import numpy as np
 from faker import Faker
 from rich import get_console, print
-from rich.progress import Progress, track
+from rich.progress import track
 
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
@@ -46,12 +46,12 @@ class BaseFactory(ABC, Generic[RecordT]):
         )
         print("🎵 Generating music catalog...")
         self._catalog = self._generate_catalog(num_records)
-        with _console.status("📈 Generating listening tastes..."):
-            self._weighted_tracks = self._generate_weighted_tracks_by_year()
+        print("📈 Generating listening tastes...")
+        self._weighted_tracks = self._generate_weighted_tracks_by_year()
         for year, weighted_records in self._weighted_tracks.items():
             print(f" - {year}: {len(weighted_records)} records")
-        with _console.status("📅 Generating distribution over year..."):
-            self._records_per_year = self._generate_distribution_over_year(num_records)
+        print("📅 Generating distribution over year...")
+        self._records_per_year = self._generate_distribution_over_year(num_records)
         for year, n in self._records_per_year.items():
             print(f" - {year}: {n} records")
 
@@ -59,19 +59,25 @@ class BaseFactory(ABC, Generic[RecordT]):
         n_artists = max(1, int(num_records * 0.20))
         n_albums = max(1, int(num_records * 0.30))
         n_tracks = max(1, int(num_records * 0.50))
-        print(f" - {num_records} records → {n_artists} artists, {n_albums} albums, {n_tracks} tracks")
+        print(f" - {num_records} records")
+        print(f" - {n_artists} artists")
+        print(f" - {n_albums} albums")
+        print(f" - {n_tracks} tracks")
 
-        artists = [self.faker.name() for _ in range(n_artists)]
-        albums = [self.faker.catch_phrase() for _ in range(n_albums)]
-        return [
-            BaseTrack(
-                title=self.faker.bs(),
-                artist=self.rng.choice(artists),
-                album=self.rng.choice(albums),
-                duration_ms=self.rng.randint(self.TRACK_DURATION_MIN_MS, self.TRACK_DURATION_MAX_MS),
-            )
-            for _ in track(range(n_tracks), description=" - Generating tracks")
-        ]
+        with _console.status("Generating artists..."):
+            artists = [self.faker.name() for _ in range(n_artists)]
+        with _console.status("Generating albums..."):
+            albums = [self.faker.catch_phrase() for _ in range(n_albums)]
+        with _console.status("Generating tracks..."):
+            return [
+                BaseTrack(
+                    title=self.faker.bs(),
+                    artist=self.rng.choice(artists),
+                    album=self.rng.choice(albums),
+                    duration_ms=self.rng.randint(self.TRACK_DURATION_MIN_MS, self.TRACK_DURATION_MAX_MS),
+                )
+                for _ in range(n_tracks)
+            ]
 
     @abstractmethod
     def _map_event(self, event: BaseEvent) -> RecordT: ...
@@ -136,29 +142,26 @@ class BaseFactory(ABC, Generic[RecordT]):
         return weighted_tracks_by_year
 
     def _generate_base_events(self) -> list[BaseEvent]:
-        total = sum(self._records_per_year.values())
         events: list[BaseEvent] = []
-        with Progress() as progress:
-            task = progress.add_task("📅 Generating events...", total=total)
-            for year, count in self._records_per_year.items():
-                skip_chance = self.skip_chance_trend[year - self.start_year]
-                for _ in range(count):
-                    ts = self._get_random_datetime_for_year(year)
-                    track_index = self.rng.choice(self._weighted_tracks[year])
-                    is_skipped = self.rng.random() < skip_chance
-                    if is_skipped:
-                        duration_ratio = self.rng.uniform(0.05, 0.30)
-                    else:
-                        duration_ratio = self.rng.uniform(0.90, 1.00)
-                    events.append(
-                        BaseEvent(
-                            timestamp=ts,
-                            track_index=track_index,
-                            is_skipped=is_skipped,
-                            duration_ratio=duration_ratio,
-                        )
+        print("📅 Generating events...")
+        for year, count in self._records_per_year.items():
+            skip_chance = self.skip_chance_trend[year - self.start_year]
+            for _ in track(range(count), description=f" - {year}"):
+                ts = self._get_random_datetime_for_year(year)
+                track_index = self.rng.choice(self._weighted_tracks[year])
+                is_skipped = self.rng.random() < skip_chance
+                if is_skipped:
+                    duration_ratio = self.rng.uniform(0.05, 0.30)
+                else:
+                    duration_ratio = self.rng.uniform(0.90, 1.00)
+                events.append(
+                    BaseEvent(
+                        timestamp=ts,
+                        track_index=track_index,
+                        is_skipped=is_skipped,
+                        duration_ratio=duration_ratio,
                     )
-                    progress.advance(task)
+                )
         return sorted(events, key=lambda e: e.timestamp)
 
     def create_streaming_history(self) -> list[RecordT]:

@@ -23,19 +23,16 @@ class SpotifyFactory(BaseFactory[Streaming]):
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         super().__init__(num_records, config)
 
-        with _console.status("🎵 Enriching Spotify catalog..."):
-            self._spotify_catalog: list[Track] = [
-                Track(
-                    uri=f"spotify:track:{self.faker.uuid4().replace('-', '')[:22]}",
-                    name=t.title,
-                    album=Album(
-                        name=t.album,
-                        artist=Artist(name=t.artist),
-                    ),
-                    duration_ms=t.duration_ms,
-                )
-                for t in self._catalog
-            ]
+        print("🎵 Enriching Spotify catalog...")
+        self._spotify_catalog: list[Track] = [
+            Track(
+                uri=f"spotify:track:{self.faker.uuid4().replace('-', '')[:22]}",
+                name=t.title,
+                album=Album(name=t.album, artist=Artist(name=t.artist)),
+                duration_ms=t.duration_ms,
+            )
+            for t in self._catalog
+        ]
 
         num_platforms = 5
         num_countries = 5
