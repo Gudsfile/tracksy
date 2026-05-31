@@ -24,9 +24,9 @@ class SpotifyWriter:
 
     def write(self, records):
         json_path = Path(self.json_path_template.format(num_records=str(len(records))))
-        print(f"Write json: [yellow]starting[/yellow] {json_path.absolute()} ({len(records)} records)")
-        write_json(json_path, records)
-        print(f"Write json: [green]success[/green] {json_path.absolute()} ({len(records)} records)")
+        with _console.status("🖍️ Writing json..."):
+            write_json(json_path, records)
+        print(f"🖍️ Write json: [green]success[/green] {json_path.absolute()} ({len(records)} records)")
 
         chunk_size = int(max(len(records) / max(len(records) / self.max_chunk_size, 4), 10))
         files_for_chunked_zip = {}
@@ -38,9 +38,9 @@ class SpotifyWriter:
             files_for_chunked_zip[filename] = chunk
 
         zip_path = Path(self.zip_path_template.format(num_records=str(len(records))))
-        print(f"Write zip: [yellow]starting[/yellow] {zip_path.absolute()} ({len(files_for_chunked_zip)} files)")
-        write_zip(zip_path, files_for_chunked_zip, self.chunked_zip_folder, self.reference_date)
-        print(f"Write zip: [green]success[/green] {zip_path.absolute()}")
+        with _console.status("🖍️ Writing zip..."):
+            write_zip(zip_path, files_for_chunked_zip, self.chunked_zip_folder, self.reference_date)
+        print(f"🖍️ Write zip: [green]success[/green] {zip_path.absolute()} ({len(files_for_chunked_zip)} files)")
 
 
 def write_json(path: Path, streamings: list[Streaming]):

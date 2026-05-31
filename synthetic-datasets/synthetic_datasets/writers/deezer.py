@@ -2,10 +2,12 @@ from datetime import datetime
 from pathlib import Path
 
 import openpyxl
-from rich import print
+from rich import get_console, print
 from rich.progress import track
 
 from ..models.deezer import DeezerStreaming
+
+_console = get_console()
 
 SHEET_NAME = "10_listeningHistory"
 COLUMNS = [
@@ -30,9 +32,9 @@ class DeezerWriter:
     def write(self, records: list[DeezerStreaming]) -> None:
         timestamp = int(self.reference_date.timestamp())
         xlsx_path = Path(self.xlsx_path_template.format(timestamp=timestamp))
-        print(f"Write xlsx: [yellow]starting[/yellow] {xlsx_path.absolute()} ({len(records)} records)")
-        write_xlsx(xlsx_path, records, self.reference_date)
-        print(f"Write xlsx: [green]success[/green] {xlsx_path.absolute()} ({len(records)} records)")
+        with _console.status("🖍️ Writing xlsx..."):
+            write_xlsx(xlsx_path, records, self.reference_date)
+        print(f"🖍️ Write xlsx: [green]success[/green] {xlsx_path.absolute()} ({len(records)} records)")
 
 
 def write_xlsx(path: Path, streamings: list[DeezerStreaming], date: datetime) -> None:

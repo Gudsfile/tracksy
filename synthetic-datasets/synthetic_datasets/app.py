@@ -6,6 +6,7 @@ from typing import Annotated
 
 import typer
 from rich import print
+from rich.panel import Panel
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
@@ -78,10 +79,9 @@ def generate(
     ] = Provider.spotify,
 ) -> None:
     """Generate synthetic streaming datasets."""
-    start = time.time()
+    start = time.perf_counter()
 
     config = GenerationConfig.create(seed=seed, reference_date=reference_date)
-    config.log_config()
 
     match provider:
         case Provider.deezer:
@@ -91,7 +91,9 @@ def generate(
         case Provider.spotify:
             _spotify(num_records, output_dir, config)
 
-    print(f"--- {time.time() - start:.2f} seconds ---")
+    elapsed = time.perf_counter() - start
+    print(Panel(f"Completed in [bold]{elapsed:.2f}s[/bold]", title="✨ Result", style="green"))
+    config.log_config()
 
 
 def main() -> None:

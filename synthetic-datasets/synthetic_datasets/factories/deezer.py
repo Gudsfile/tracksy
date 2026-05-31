@@ -25,17 +25,17 @@ class DeezerFactory(BaseFactory[DeezerStreaming]):
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         super().__init__(num_records, config)
 
-        with _console.status("🎵 Enriching Deezer catalog..."):
-            self._deezer_catalog: list[_DeezerTrack] = [
-                _DeezerTrack(
-                    isrc=self._generate_isrc(),
-                    title=t.title,
-                    artist=t.artist,
-                    album_title=t.album,
-                    duration_sec=t.duration_ms // 1000,
-                )
-                for t in self._catalog
-            ]
+        print("🎵 Enriching Deezer catalog...")
+        self._deezer_catalog: list[_DeezerTrack] = [
+            _DeezerTrack(
+                isrc=self._generate_isrc(),
+                title=t.title,
+                artist=t.artist,
+                album_title=t.album,
+                duration_sec=t.duration_ms // 1000,
+            )
+            for t in self._catalog
+        ]
 
         print("💻 Generating platforms...")
         self.platforms = ["web", "ios", "android", "desktop", "tv"]
