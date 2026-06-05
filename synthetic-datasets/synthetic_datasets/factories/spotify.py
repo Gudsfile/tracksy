@@ -75,7 +75,7 @@ class SpotifyFactory(BaseFactory[Streaming]):
             spotify_track_uri=track.uri,
             reason_start=self.rng.choice(self.reason_start),
             reason_end=ReasonEndEnum.FORWARD_BUTTON if event.is_skipped else ReasonEndEnum.TRACK_DONE,
-            shuffle=bool(self.rng.getrandbits(1)),
+            shuffle=event.shuffle,
             skipped=event.is_skipped,
             offline=is_offline,
             offline_timestamp=int((ts - timedelta(minutes=self.rng.randint(1, 60))).timestamp())

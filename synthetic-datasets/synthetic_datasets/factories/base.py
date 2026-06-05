@@ -1,4 +1,3 @@
-import calendar
 import random
 from abc import ABC, abstractmethod
 from datetime import date, datetime, timedelta
@@ -12,7 +11,7 @@ from rich.progress import track
 from ..chapters import Chapter
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
-from ..personas import ACTIVE_PERSONAS, TERMINAL_PERSONA
+from ..personas import ACTIVE_PERSONAS, TERMINAL_PERSONA, PersonaProfile
 
 _console = get_console()
 
@@ -20,15 +19,7 @@ RecordT = TypeVar("RecordT")
 
 
 class BaseFactory(ABC, Generic[RecordT]):
-    month_weights: ClassVar[list[float]] = [0.08, 0.07, 0.07, 0.06, 0.07, 0.08, 0.08, 0.08, 0.1, 0.10, 0.11, 0.1]
-    hour_weights: ClassVar[list[float]] = [
-        0.01, 0.01, 0.01, 0.01, 0.02, 0.04, 0.07, 0.09, 0.08, 0.06, 0.04, 0.04,
-        0.05, 0.03, 0.04, 0.05, 0.05, 0.06, 0.07, 0.06, 0.05, 0.03, 0.02, 0.01,
-    ]  # fmt: skip
-
     ZIPF_A: ClassVar[float] = 1.8
-    SKIP_CHANCE_MIN: ClassVar[float] = 0.15
-    SKIP_CHANCE_MAX: ClassVar[float] = 0.30
     TRACK_DURATION_MIN_MS: ClassVar[int] = 120_000
     TRACK_DURATION_MAX_MS: ClassVar[int] = 360_000
     ROLE_BOOST: ClassVar[dict[str, float]] = {"core": 3.0, "favored": 1.0, "noise": 0.2}
@@ -40,12 +31,6 @@ class BaseFactory(ABC, Generic[RecordT]):
         self.faker = Faker()
         self.faker.seed_instance(config.seed)
         self.now = config.reference_date
-        self.start_year = self.now.year - 4
-        self.skip_chance_trend = np.linspace(
-            self.SKIP_CHANCE_MIN,
-            self.SKIP_CHANCE_MAX,
-            5,
-        )
         print("🎵 Generating music catalog...")
         self._catalog = self._generate_catalog(num_records)
         print("🗂️ Building chapter sequence...")
@@ -60,6 +45,14 @@ class BaseFactory(ABC, Generic[RecordT]):
         self._weighted_tracks_per_chapter = self._generate_weighted_tracks_per_chapter()
         for position, pool in self._weighted_tracks_per_chapter.items():
             print(f" - position {position}: {len(pool)} weighted entries")
+        print("🕐 Precomputing day/hour distributions per chapter...")
+        self._day_distribution_per_chapter: dict[int, tuple[list[date], list[float]]] = {}
+        self._hour_distribution_per_chapter: dict[int, list[float]] = {}
+        for chapter in self._chapters:
+            if chapter.persona is None:
+                continue
+            self._day_distribution_per_chapter[chapter.position] = self._build_day_distribution(chapter)
+            self._hour_distribution_per_chapter[chapter.position] = self._build_hour_distribution(chapter.persona)
 
     def _generate_catalog(self, num_records: int) -> list[BaseTrack]:
         n_artists = max(1, int(num_records * 0.20))
@@ -92,36 +85,6 @@ class BaseFactory(ABC, Generic[RecordT]):
     @abstractmethod
     def _map_event(self, event: BaseEvent) -> RecordT: ...
 
-    def _get_random_datetime_for_year(self, year: int) -> datetime:
-        if year < self.now.year:
-            months = np.arange(1, 13)
-            month_weights = np.array(self.month_weights)
-        else:
-            months = np.arange(1, self.now.month + 1)
-            month_weights = np.array(self.month_weights[: self.now.month])
-
-        month_weights = month_weights / month_weights.sum()
-        month = self.np_rng.choice(months, p=month_weights)
-
-        max_day = calendar.monthrange(year, int(month))[1]
-        day = self.rng.randint(1, max_day)
-
-        hour_weights = np.array(self.hour_weights)
-        hour_weights = hour_weights / hour_weights.sum()
-        hour = self.np_rng.choice(range(24), p=hour_weights)
-
-        minute = self.rng.randint(0, 59)
-        second = self.rng.randint(0, 59)
-
-        candidate = datetime(year, int(month), day, int(hour), minute, second)
-
-        if candidate > self.now:
-            start = datetime(year, 1, 1)
-            delta_seconds = int((self.now - start).total_seconds())
-            return start + timedelta(seconds=self.rng.randint(0, delta_seconds))
-
-        return candidate
-
     def _chapter_bounds(self, chapter: Chapter) -> tuple[date, date]:
         first_day = date(chapter.year, 1, 1)
         if chapter.year == self.now.year:
@@ -129,6 +92,29 @@ class BaseFactory(ABC, Generic[RecordT]):
         else:
             last_day = date(chapter.year, 12, 31)
         return first_day, last_day
+
+    def _build_day_distribution(self, chapter: Chapter) -> tuple[list[date], list[float]]:
+        persona = chapter.persona
+        assert persona is not None
+        first_day, last_day = self._chapter_bounds(chapter)
+        inactivity = chapter.inactivity_dates
+        days: list[date] = []
+        weights: list[float] = []
+        current = first_day
+        while current <= last_day:
+            if current not in inactivity:
+                month_w = persona.month_weights[current.month - 1]
+                weekday_w = persona.weekday_multipliers[current.weekday()]
+                days.append(current)
+                weights.append(month_w * weekday_w)
+            current = current + timedelta(days=1)
+        total = sum(weights)
+        probs = [w / total for w in weights]
+        return days, probs
+
+    def _build_hour_distribution(self, persona: PersonaProfile) -> list[float]:
+        total = sum(persona.hour_weights)
+        return [w / total for w in persona.hour_weights]
 
     def _select_gaps_for_chapter(self, chapter: Chapter) -> None:
         persona = chapter.persona
@@ -214,30 +200,42 @@ class BaseFactory(ABC, Generic[RecordT]):
 
         return result
 
+    def _generate_events_for_chapter(self, chapter: Chapter) -> list[BaseEvent]:
+        persona = chapter.persona
+        assert persona is not None
+        count = self._records_per_chapter[chapter.position]
+        weighted_pool = self._weighted_tracks_per_chapter[chapter.position]
+        days, day_probs = self._day_distribution_per_chapter[chapter.position]
+        hour_probs = self._hour_distribution_per_chapter[chapter.position]
+
+        day_indices = self.np_rng.choice(len(days), size=count, p=day_probs)
+        hour_values = self.np_rng.choice(24, size=count, p=hour_probs)
+
+        events: list[BaseEvent] = []
+        for i in range(count):
+            day = days[int(day_indices[i])]
+            hour = int(hour_values[i])
+            minute = self.rng.randint(0, 59)
+            second = self.rng.randint(0, 59)
+            ts = datetime(day.year, day.month, day.day, hour, minute, second)
+            track_index = self.rng.choice(weighted_pool)
+            is_skipped = self.rng.random() < persona.skip_chance
+            duration_ratio = self.rng.uniform(0.05, 0.30) if is_skipped else self.rng.uniform(0.90, 1.00)
+            shuffle = self.rng.random() < persona.shuffle_chance
+            events.append(BaseEvent(ts, track_index, is_skipped, duration_ratio, shuffle))
+        return events
+
     def _generate_base_events(self) -> list[BaseEvent]:
         events: list[BaseEvent] = []
         print("📅 Generating events...")
         for chapter in self._chapters:
             if chapter.persona is None:
                 continue
-            count = self._records_per_chapter[chapter.position]
-            skip_chance = self.skip_chance_trend[chapter.position]
-            for _ in track(range(count), description=f" - {chapter.year} ({chapter.persona.name})"):
-                ts = self._get_random_datetime_for_year(chapter.year)
-                track_index = self.rng.choice(self._weighted_tracks_per_chapter[chapter.position])
-                is_skipped = self.rng.random() < skip_chance
-                if is_skipped:
-                    duration_ratio = self.rng.uniform(0.05, 0.30)
-                else:
-                    duration_ratio = self.rng.uniform(0.90, 1.00)
-                events.append(
-                    BaseEvent(
-                        timestamp=ts,
-                        track_index=track_index,
-                        is_skipped=is_skipped,
-                        duration_ratio=duration_ratio,
-                    )
-                )
+            label = chapter.persona.name
+            chapter_events = self._generate_events_for_chapter(chapter)
+            for _ in track(range(len(chapter_events)), description=f" - {chapter.year} ({label})"):
+                pass
+            events.extend(chapter_events)
         return sorted(events, key=lambda e: e.timestamp)
 
     def create_streaming_history(self) -> list[RecordT]:

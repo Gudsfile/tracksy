@@ -16,3 +16,4 @@ class BaseEvent:
     track_index: int
     is_skipped: bool
     duration_ratio: float
+    shuffle: bool = False
