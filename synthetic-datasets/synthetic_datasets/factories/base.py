@@ -113,15 +113,20 @@ class BaseFactory(ABC, Generic[RecordT]):
         return candidate
 
     def _generate_distribution_over_year(self, n_records: int) -> dict[int, int]:
-        years = range(self.start_year, self.now.year + 1)
+        years = list(range(self.start_year, self.now.year + 1))
 
         year_weights = [self.rng.uniform(0.5, 1.5) for _ in years]
-        base_records_per_year = n_records / sum(year_weights)
-        records_per_year = {
-            year: int(base_records_per_year * year_weight) for year, year_weight in zip(years, year_weights)
-        }
-        records_per_year[self.now.year] += n_records - sum(records_per_year.values())
-        return records_per_year
+        total_weight = sum(year_weights)
+
+        exact = {year: n_records * weight / total_weight for year, weight in zip(years, year_weights)}
+        base = {year: int(v) for year, v in exact.items()}
+
+        leftover = n_records - sum(base.values())
+        remainders = sorted(years, key=lambda y: exact[y] - base[y], reverse=True)
+        for year in remainders[:leftover]:
+            base[year] += 1
+
+        return base
 
     def _generate_weighted_tracks_by_year(self) -> dict[int, list[int]]:
         weighted_tracks_by_year: dict[int, list[int]] = {}

@@ -47,6 +47,43 @@ def test_generate_distribution_over_year_sums_to_n(factory):
         assert sum(result.values()) == n
 
 
+def test_generate_distribution_over_year_largest_remainder(factory, config):
+    # Edge cases: sum must always equal n_records
+    for n in [0, 1, 3, 100, 1000]:
+        result = factory._generate_distribution_over_year(n)
+        assert sum(result.values()) == n, f"sum mismatch for n={n}"
+
+    # Determinism: same seed produces same distribution
+    factory_a = ConcreteFactory(num_records=10, config=config)
+    factory_b = ConcreteFactory(num_records=10, config=config)
+    assert factory_a._generate_distribution_over_year(97) == factory_b._generate_distribution_over_year(97)
+
+    # Largest remainder correctness: monkey-patch weights so we can predict the result.
+    # With equal weights across N years, each year gets exactly n_records / N.
+    # When not evenly divisible the remainder must be spread one per year starting
+    # from the first years (all fractional parts are equal so ordering is stable).
+
+    years = list(range(factory.start_year, factory.now.year + 1))
+    n_years = len(years)
+    n = n_years * 3 + 1  # e.g. 19 for 6 years => floor=3 per year, leftover=1
+
+    # Temporarily replace rng.uniform to return a constant weight
+    original_uniform = factory.rng.uniform
+    factory.rng.uniform = lambda a, b: 1.0  # type: ignore[method-assign]
+    result = factory._generate_distribution_over_year(n)
+    factory.rng.uniform = original_uniform  # type: ignore[method-assign]
+
+    assert sum(result.values()) == n
+    floor_val = n // n_years
+    ceil_val = floor_val + 1
+    leftover = n - floor_val * n_years
+    assert sum(1 for v in result.values() if v == ceil_val) == leftover
+    assert sum(1 for v in result.values() if v == floor_val) == n_years - leftover
+    # All values must be floor or ceil — no other values allowed
+    for v in result.values():
+        assert v in (floor_val, ceil_val), f"unexpected count {v}"
+
+
 def test_rng_seeding_is_deterministic(config):
     f1 = ConcreteFactory(num_records=50, config=config)
     f2 = ConcreteFactory(num_records=50, config=config)
