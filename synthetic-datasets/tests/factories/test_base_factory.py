@@ -64,12 +64,34 @@ def test_generate_catalog_returns_base_tracks(factory):
         assert factory.TRACK_DURATION_MIN_MS <= track.duration_ms <= factory.TRACK_DURATION_MAX_MS
 
 
-def test_weighted_tracks_contains_indices(factory):
-    for year, indices in factory._weighted_tracks.items():
+def test_weighted_tracks_per_chapter_contains_indices(factory):
+    for position, indices in factory._weighted_tracks_per_chapter.items():
         assert len(indices) > 0
         for idx in indices:
             assert isinstance(idx, int)
             assert 0 <= idx < len(factory._catalog)
+
+
+def test_core_indices_identical_across_active_chapters(config):
+    f1 = ConcreteFactory(num_records=200, config=config)
+    f2 = ConcreteFactory(num_records=200, config=config)
+    assert f1._core_indices == f2._core_indices
+    active_positions = [ch.position for ch in f1.chapters if ch.persona is not None]
+    assert len(active_positions) >= 2
+    for pos in active_positions:
+        assert f1._core_indices <= set(range(len(f1._catalog)))
+
+
+def test_favored_indices_disjoint_from_core(config):
+    factory = ConcreteFactory(num_records=200, config=config)
+    for position, favored in factory._favored_indices_per_chapter.items():
+        assert favored.isdisjoint(factory._core_indices)
+
+
+def test_same_seed_same_weighted_tracks_per_chapter(config):
+    f1 = ConcreteFactory(num_records=200, config=config)
+    f2 = ConcreteFactory(num_records=200, config=config)
+    assert f1._weighted_tracks_per_chapter == f2._weighted_tracks_per_chapter
 
 
 def test_generate_base_events_returns_sorted_events(factory):

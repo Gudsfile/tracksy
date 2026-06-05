@@ -31,6 +31,7 @@ class BaseFactory(ABC, Generic[RecordT]):
     SKIP_CHANCE_MAX: ClassVar[float] = 0.30
     TRACK_DURATION_MIN_MS: ClassVar[int] = 120_000
     TRACK_DURATION_MAX_MS: ClassVar[int] = 360_000
+    ROLE_BOOST: ClassVar[dict[str, float]] = {"core": 3.0, "favored": 1.0, "noise": 0.2}
 
     def __init__(self, num_records: int, config: GenerationConfig) -> None:
         self.config = config
@@ -47,10 +48,6 @@ class BaseFactory(ABC, Generic[RecordT]):
         )
         print("🎵 Generating music catalog...")
         self._catalog = self._generate_catalog(num_records)
-        print("📈 Generating listening tastes...")
-        self._weighted_tracks = self._generate_weighted_tracks_by_year()
-        for year, weighted_records in self._weighted_tracks.items():
-            print(f" - {year}: {len(weighted_records)} records")
         print("🗂️ Building chapter sequence...")
         self._chapters = self._build_chapters()
         print("📅 Distributing records per chapter...")
@@ -59,6 +56,10 @@ class BaseFactory(ABC, Generic[RecordT]):
             count = self._records_per_chapter[chapter.position]
             label = chapter.persona.name if chapter.persona else "Ghost"
             print(f" - {chapter.year} ({label}): {count} records")
+        print("📈 Generating listening tastes per chapter...")
+        self._weighted_tracks_per_chapter = self._generate_weighted_tracks_per_chapter()
+        for position, pool in self._weighted_tracks_per_chapter.items():
+            print(f" - position {position}: {len(pool)} weighted entries")
 
     def _generate_catalog(self, num_records: int) -> list[BaseTrack]:
         n_artists = max(1, int(num_records * 0.20))
@@ -181,23 +182,37 @@ class BaseFactory(ABC, Generic[RecordT]):
             base[pos] += 1
         return base
 
-    def _generate_weighted_tracks_by_year(self) -> dict[int, list[int]]:
-        weighted_tracks_by_year: dict[int, list[int]] = {}
-        for year in range(self.start_year, self.now.year + 1):
-            popularity = self.np_rng.zipf(a=self.ZIPF_A, size=len(self._catalog))
-            self.np_rng.shuffle(popularity)
+    def _generate_weighted_tracks_per_chapter(self) -> dict[int, list[int]]:
+        n_tracks = len(self._catalog)
+        n_core = int(n_tracks * 0.20)
+        self._core_indices: set[int] = set(self.rng.sample(range(n_tracks), n_core))
+
+        popularity = self.np_rng.zipf(a=self.ZIPF_A, size=n_tracks)
+        self._favored_indices_per_chapter: dict[int, set[int]] = {}
+
+        result: dict[int, list[int]] = {}
+        for chapter in self._chapters:
+            if chapter.persona is None:
+                continue
+            chapter_rng = random.Random(self.config.seed ^ chapter.position)
+            favored_pool = [i for i in range(n_tracks) if i not in self._core_indices]
+            n_favored = min(int(n_tracks * chapter.persona.catalog_favored_share), len(favored_pool))
+            favored_indices = set(chapter_rng.sample(favored_pool, n_favored))
+            self._favored_indices_per_chapter[chapter.position] = favored_indices
 
             weighted: list[int] = []
-            for i, weight in enumerate(popularity):
-                repeats = min(int(weight / 10), 100)
+            for i, p in enumerate(popularity):
+                role = "core" if i in self._core_indices else "favored" if i in favored_indices else "noise"
+                repeats = min(int(p * self.ROLE_BOOST[role] / 10), 100)
                 if repeats > 0:
                     weighted.extend([i] * repeats)
-                else:
-                    weighted.append(i)
 
-            weighted_tracks_by_year[year] = weighted
+            if not weighted:
+                weighted = list(range(n_tracks))
 
-        return weighted_tracks_by_year
+            result[chapter.position] = weighted
+
+        return result
 
     def _generate_base_events(self) -> list[BaseEvent]:
         events: list[BaseEvent] = []
@@ -209,7 +224,7 @@ class BaseFactory(ABC, Generic[RecordT]):
             skip_chance = self.skip_chance_trend[chapter.position]
             for _ in track(range(count), description=f" - {chapter.year} ({chapter.persona.name})"):
                 ts = self._get_random_datetime_for_year(chapter.year)
-                track_index = self.rng.choice(self._weighted_tracks[chapter.year])
+                track_index = self.rng.choice(self._weighted_tracks_per_chapter[chapter.position])
                 is_skipped = self.rng.random() < skip_chance
                 if is_skipped:
                     duration_ratio = self.rng.uniform(0.05, 0.30)
