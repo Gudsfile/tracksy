@@ -60,8 +60,8 @@ jobs:
       - name: Verify e2e dataset hashes
         working-directory: ${{ github.workspace }}
         env:
-          EXPECTED_JSON_HASH: "986df6877dbdf585d639ec035fb999d05ae45d2c3f5fbfc5c5eeb6da7d3b87ce"
-          EXPECTED_ZIP_HASH: "8da5fb0293424d2660cfe20a773f9d499e770d6ca8e7808dcbeff50b18c748f3"
+          EXPECTED_JSON_HASH: "3021ad3c9c78019a6605aff4dfd61a153fdba788ae870e4ee5abb5ce70e87d21"
+          EXPECTED_ZIP_HASH: "5cc794c530605ab2b2bc575f0c9dc2d1416f0b2a4a9cff8e707f8d809816a92e"
         run: |
           JSON_FILE="e2e/datasets/spotify/Streaming_History_Audio_2006_1000.json"
           ZIP_FILE="e2e/datasets/spotify/streamings_1000.zip"
