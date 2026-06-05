@@ -18,6 +18,13 @@ def test_base_event_fields():
     assert event.track_index == 3
     assert event.is_skipped is False
     assert event.duration_ratio == 0.95
+    assert event.shuffle is False
+
+
+def test_base_event_shuffle_field():
+    ts = datetime(2024, 1, 1, 12, 0, 0)
+    event = BaseEvent(timestamp=ts, track_index=0, is_skipped=True, duration_ratio=0.1, shuffle=True)
+    assert event.shuffle is True
 
 
 def test_base_track_is_dataclass():

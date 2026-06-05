@@ -29,19 +29,6 @@ def factory(config):
     return ConcreteFactory(num_records=10, config=config)
 
 
-def test_get_random_datetime_for_year_returns_correct_year(factory):
-    for year in range(factory.start_year, factory.now.year + 1):
-        dt = factory._get_random_datetime_for_year(year)
-        assert dt.year == year
-
-
-def test_get_random_datetime_for_current_year_never_future(factory):
-    current_year = factory.now.year
-    for _ in range(100):
-        dt = factory._get_random_datetime_for_year(current_year)
-        assert dt <= factory.now
-
-
 def test_rng_seeding_is_deterministic(config):
     f1 = ConcreteFactory(num_records=50, config=config)
     f2 = ConcreteFactory(num_records=50, config=config)
@@ -213,6 +200,94 @@ def test_global_random_not_used(config):
     r2 = f2.create_streaming_history()
 
     assert r1 == r2
+
+
+class TestPersonaDrivenGeneration:
+    def test_no_timestamp_in_inactivity_dates(self, config):
+        factory = ConcreteFactory(num_records=200, config=config)
+        events = factory._generate_base_events()
+        for chapter in factory.chapters:
+            if chapter.persona is None:
+                continue
+            chapter_events = [e for e in events if e.timestamp.year == chapter.year]
+            for event in chapter_events:
+                assert event.timestamp.date() not in chapter.inactivity_dates, (
+                    f"Event on {event.timestamp.date()} falls in inactivity for {chapter.year}"
+                )
+
+    def test_no_timestamp_outside_chapter_year(self, config):
+        factory = ConcreteFactory(num_records=200, config=config)
+        events = factory._generate_base_events()
+        valid_years = {ch.year for ch in factory.chapters}
+        for event in events:
+            assert event.timestamp.year in valid_years
+
+    def test_no_timestamp_exceeds_reference_date(self, config):
+        factory = ConcreteFactory(num_records=200, config=config)
+        events = factory._generate_base_events()
+        for event in events:
+            assert event.timestamp <= factory.now
+
+    def test_skip_chance_constants_removed(self):
+        assert not hasattr(ConcreteFactory, "SKIP_CHANCE_MIN")
+        assert not hasattr(ConcreteFactory, "SKIP_CHANCE_MAX")
+
+    def test_skip_chance_trend_not_on_instance(self, config):
+        factory = ConcreteFactory(num_records=10, config=config)
+        assert not hasattr(factory, "skip_chance_trend")
+
+    def test_class_level_month_weights_removed(self):
+        assert not hasattr(ConcreteFactory, "month_weights")
+
+    def test_class_level_hour_weights_removed(self):
+        assert not hasattr(ConcreteFactory, "hour_weights")
+
+    def test_get_random_datetime_for_year_removed(self, config):
+        factory = ConcreteFactory(num_records=10, config=config)
+        assert not hasattr(factory, "_get_random_datetime_for_year")
+
+    def test_day_distribution_per_chapter_exists(self, config):
+        factory = ConcreteFactory(num_records=50, config=config)
+        assert hasattr(factory, "_day_distribution_per_chapter")
+        for chapter in factory.chapters:
+            if chapter.persona is None:
+                continue
+            days, probs = factory._day_distribution_per_chapter[chapter.position]
+            assert len(days) > 0
+            assert abs(sum(probs) - 1.0) < 1e-9
+
+    def test_hour_distribution_per_chapter_exists(self, config):
+        factory = ConcreteFactory(num_records=50, config=config)
+        assert hasattr(factory, "_hour_distribution_per_chapter")
+        for chapter in factory.chapters:
+            if chapter.persona is None:
+                continue
+            hour_probs = factory._hour_distribution_per_chapter[chapter.position]
+            assert len(hour_probs) == 24
+            assert abs(sum(hour_probs) - 1.0) < 1e-9
+
+    def test_base_event_has_shuffle(self, config):
+        factory = ConcreteFactory(num_records=100, config=config)
+        events = factory._generate_base_events()
+        assert all(hasattr(e, "shuffle") for e in events)
+        assert any(e.shuffle for e in events)
+        assert any(not e.shuffle for e in events)
+
+    def test_day_distribution_excludes_inactivity(self, config):
+        factory = ConcreteFactory(num_records=50, config=config)
+        for chapter in factory.chapters:
+            if chapter.persona is None or not chapter.inactivity_dates:
+                continue
+            days, _ = factory._day_distribution_per_chapter[chapter.position]
+            for day in days:
+                assert day not in chapter.inactivity_dates
+
+    def test_current_era_day_distribution_clamped(self, config):
+        factory = ConcreteFactory(num_records=50, config=config)
+        era_chapter = factory.chapters[4]
+        days, _ = factory._day_distribution_per_chapter[era_chapter.position]
+        for day in days:
+            assert day <= factory.now.date()
 
 
 class TestCrossProviderCatalogConsistency:
