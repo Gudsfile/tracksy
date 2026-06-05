@@ -1,3 +1,4 @@
+import dataclasses
 import random
 from datetime import datetime
 
@@ -29,7 +30,7 @@ def factory(config):
 
 
 def test_get_random_datetime_for_year_returns_correct_year(factory):
-    for year in range(2020, 2026):
+    for year in range(factory.start_year, factory.now.year + 1):
         dt = factory._get_random_datetime_for_year(year)
         assert dt.year == year
 
@@ -41,53 +42,10 @@ def test_get_random_datetime_for_current_year_never_future(factory):
         assert dt <= factory.now
 
 
-def test_generate_distribution_over_year_sums_to_n(factory):
-    for n in [0, 1, 50, 100, 999]:
-        result = factory._generate_distribution_over_year(n)
-        assert sum(result.values()) == n
-
-
-def test_generate_distribution_over_year_largest_remainder(factory, config):
-    # Edge cases: sum must always equal n_records
-    for n in [0, 1, 3, 100, 1000]:
-        result = factory._generate_distribution_over_year(n)
-        assert sum(result.values()) == n, f"sum mismatch for n={n}"
-
-    # Determinism: same seed produces same distribution
-    factory_a = ConcreteFactory(num_records=10, config=config)
-    factory_b = ConcreteFactory(num_records=10, config=config)
-    assert factory_a._generate_distribution_over_year(97) == factory_b._generate_distribution_over_year(97)
-
-    # Largest remainder correctness: monkey-patch weights so we can predict the result.
-    # With equal weights across N years, each year gets exactly n_records / N.
-    # When not evenly divisible the remainder must be spread one per year starting
-    # from the first years (all fractional parts are equal so ordering is stable).
-
-    years = list(range(factory.start_year, factory.now.year + 1))
-    n_years = len(years)
-    n = n_years * 3 + 1  # e.g. 19 for 6 years => floor=3 per year, leftover=1
-
-    # Temporarily replace rng.uniform to return a constant weight
-    original_uniform = factory.rng.uniform
-    factory.rng.uniform = lambda a, b: 1.0  # type: ignore[method-assign]
-    result = factory._generate_distribution_over_year(n)
-    factory.rng.uniform = original_uniform  # type: ignore[method-assign]
-
-    assert sum(result.values()) == n
-    floor_val = n // n_years
-    ceil_val = floor_val + 1
-    leftover = n - floor_val * n_years
-    assert sum(1 for v in result.values() if v == ceil_val) == leftover
-    assert sum(1 for v in result.values() if v == floor_val) == n_years - leftover
-    # All values must be floor or ceil — no other values allowed
-    for v in result.values():
-        assert v in (floor_val, ceil_val), f"unexpected count {v}"
-
-
 def test_rng_seeding_is_deterministic(config):
     f1 = ConcreteFactory(num_records=50, config=config)
     f2 = ConcreteFactory(num_records=50, config=config)
-    assert f1._records_per_year == f2._records_per_year
+    assert f1._records_per_chapter == f2._records_per_chapter
 
 
 def test_instance_level_rngs_exist(factory):
@@ -120,9 +78,9 @@ def test_generate_base_events_returns_sorted_events(factory):
     assert timestamps == sorted(timestamps)
 
 
-def test_generate_base_events_count_matches_records_per_year(factory):
+def test_generate_base_events_count_matches_records_per_chapter(factory):
     events = factory._generate_base_events()
-    assert len(events) == sum(factory._records_per_year.values())
+    assert len(events) == sum(factory._records_per_chapter.values())
 
 
 def test_base_event_duration_ratio_skipped(config):
@@ -138,7 +96,7 @@ def test_base_event_duration_ratio_skipped(config):
 def test_create_streaming_history_count(config):
     factory = ConcreteFactory(num_records=50, config=config)
     records = factory.create_streaming_history()
-    assert len(records) == sum(factory._records_per_year.values())
+    assert len(records) == sum(factory._records_per_chapter.values())
 
 
 def test_same_seed_same_output(config):
@@ -147,6 +105,79 @@ def test_same_seed_same_output(config):
     f2 = ConcreteFactory(num_records=50, config=config)
     r2 = f2.create_streaming_history()
     assert r1 == r2
+
+
+def test_build_chapters_returns_five(factory):
+    assert len(factory.chapters) == 5
+
+
+def test_position_four_is_current_era(factory):
+    assert factory.chapters[4].position == 4
+    from synthetic_datasets.personas import CURRENT_ERA
+
+    assert factory.chapters[4].persona == CURRENT_ERA
+
+
+def test_position_zero_never_ghost(factory):
+    assert factory.chapters[0].persona is not None
+
+
+def test_exactly_one_ghost(factory):
+    ghost_count = sum(1 for ch in factory.chapters if ch.persona is None)
+    assert ghost_count == 1
+
+
+def test_same_seed_same_chapter_ordering(config):
+    f1 = ConcreteFactory(num_records=50, config=config)
+    f2 = ConcreteFactory(num_records=50, config=config)
+    for ch1, ch2 in zip(f1.chapters, f2.chapters):
+        assert ch1.position == ch2.position
+        assert ch1.year == ch2.year
+        assert (ch1.persona is None) == (ch2.persona is None)
+        if ch1.persona is not None and ch2.persona is not None:
+            assert ch1.persona.name == ch2.persona.name
+
+
+def test_different_seeds_different_ordering(config):
+    configs = [
+        config,
+        dataclasses.replace(config, seed=42),
+        dataclasses.replace(config, seed=999),
+    ]
+    factories = [ConcreteFactory(num_records=50, config=c) for c in configs]
+    chapter_sequences = [
+        tuple((ch.position, ch.persona.name if ch.persona else None) for ch in f.chapters) for f in factories
+    ]
+    assert len(set(chapter_sequences)) >= 2  # At least 2 different orderings among 3 seeds
+
+
+def test_ghost_gets_zero_records(factory):
+    for chapter in factory.chapters:
+        if chapter.persona is None:
+            assert factory._records_per_chapter[chapter.position] == 0
+
+
+def test_records_sum_equals_num_records(config):
+    for num in [50, 100, 500, 1000]:
+        factory = ConcreteFactory(num_records=num, config=config)
+        assert sum(factory._records_per_chapter.values()) == num
+
+
+def test_chapters_property_is_tuple_of_chapter(factory):
+    from synthetic_datasets.chapters import Chapter
+
+    assert isinstance(factory.chapters, tuple)
+    assert all(isinstance(ch, Chapter) for ch in factory.chapters)
+
+
+def test_at_least_one_active_chapter_has_month_windows(factory):
+    active_chapters = [ch for ch in factory.chapters if ch.persona is not None]
+    assert any(ch.selected_month_windows for ch in active_chapters)
+
+
+def test_at_least_one_active_chapter_has_day_windows(factory):
+    active_chapters = [ch for ch in factory.chapters if ch.persona is not None]
+    assert any(ch.selected_day_windows for ch in active_chapters)
 
 
 def test_global_random_not_used(config):

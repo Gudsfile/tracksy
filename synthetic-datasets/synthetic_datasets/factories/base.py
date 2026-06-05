@@ -1,7 +1,7 @@
 import calendar
 import random
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import ClassVar, Generic, TypeVar
 
 import numpy as np
@@ -9,8 +9,10 @@ from faker import Faker
 from rich import get_console, print
 from rich.progress import track
 
+from ..chapters import Chapter
 from ..config import GenerationConfig
 from ..models.base import BaseEvent, BaseTrack
+from ..personas import ACTIVE_PERSONAS, TERMINAL_PERSONA
 
 _console = get_console()
 
@@ -27,7 +29,6 @@ class BaseFactory(ABC, Generic[RecordT]):
     ZIPF_A: ClassVar[float] = 1.8
     SKIP_CHANCE_MIN: ClassVar[float] = 0.15
     SKIP_CHANCE_MAX: ClassVar[float] = 0.30
-    START_YEAR: ClassVar[int] = 2020
     TRACK_DURATION_MIN_MS: ClassVar[int] = 120_000
     TRACK_DURATION_MAX_MS: ClassVar[int] = 360_000
 
@@ -38,11 +39,11 @@ class BaseFactory(ABC, Generic[RecordT]):
         self.faker = Faker()
         self.faker.seed_instance(config.seed)
         self.now = config.reference_date
-        self.start_year = self.START_YEAR
+        self.start_year = self.now.year - 4
         self.skip_chance_trend = np.linspace(
             self.SKIP_CHANCE_MIN,
             self.SKIP_CHANCE_MAX,
-            self.now.year - self.start_year + 1,
+            5,
         )
         print("🎵 Generating music catalog...")
         self._catalog = self._generate_catalog(num_records)
@@ -50,10 +51,14 @@ class BaseFactory(ABC, Generic[RecordT]):
         self._weighted_tracks = self._generate_weighted_tracks_by_year()
         for year, weighted_records in self._weighted_tracks.items():
             print(f" - {year}: {len(weighted_records)} records")
-        print("📅 Generating distribution over year...")
-        self._records_per_year = self._generate_distribution_over_year(num_records)
-        for year, n in self._records_per_year.items():
-            print(f" - {year}: {n} records")
+        print("🗂️ Building chapter sequence...")
+        self._chapters = self._build_chapters()
+        print("📅 Distributing records per chapter...")
+        self._records_per_chapter = self._distribute_records(num_records)
+        for chapter in self._chapters:
+            count = self._records_per_chapter[chapter.position]
+            label = chapter.persona.name if chapter.persona else "Ghost"
+            print(f" - {chapter.year} ({label}): {count} records")
 
     def _generate_catalog(self, num_records: int) -> list[BaseTrack]:
         n_artists = max(1, int(num_records * 0.20))
@@ -78,6 +83,10 @@ class BaseFactory(ABC, Generic[RecordT]):
                 )
                 for _ in range(n_tracks)
             ]
+
+    @property
+    def chapters(self) -> tuple[Chapter, ...]:
+        return tuple(self._chapters)
 
     @abstractmethod
     def _map_event(self, event: BaseEvent) -> RecordT: ...
@@ -112,20 +121,64 @@ class BaseFactory(ABC, Generic[RecordT]):
 
         return candidate
 
-    def _generate_distribution_over_year(self, n_records: int) -> dict[int, int]:
-        years = list(range(self.start_year, self.now.year + 1))
+    def _chapter_bounds(self, chapter: Chapter) -> tuple[date, date]:
+        first_day = date(chapter.year, 1, 1)
+        if chapter.year == self.now.year:
+            last_day = self.now.date()
+        else:
+            last_day = date(chapter.year, 12, 31)
+        return first_day, last_day
 
-        year_weights = [self.rng.uniform(0.5, 1.5) for _ in years]
-        total_weight = sum(year_weights)
+    def _select_gaps_for_chapter(self, chapter: Chapter) -> None:
+        persona = chapter.persona
+        if persona is None:
+            return
+        chapter_rng = random.Random(self.config.seed ^ chapter.position)
+        chapter.selected_month_windows = tuple(
+            chapter_rng.sample(persona.inactivity_month_windows, persona.n_month_gaps)
+        )
+        chapter.selected_day_windows = tuple(
+            chapter_rng.sample(persona.inactivity_day_windows, persona.n_day_gap_windows)
+        )
 
-        exact = {year: n_records * weight / total_weight for year, weight in zip(years, year_weights)}
-        base = {year: int(v) for year, v in exact.items()}
+    def _build_chapters(self) -> list[Chapter]:
+        ref_year = self.now.year
+        chapters: list[Chapter | None] = [None] * 5
+        chapters[4] = Chapter(year=ref_year, position=4, persona=TERMINAL_PERSONA)
+        ghost_position = self.rng.choice([1, 2, 3])
+        chapters[ghost_position] = Chapter(year=ref_year - (4 - ghost_position), position=ghost_position, persona=None)
+        remaining_positions = [p for p in (0, 1, 2, 3) if chapters[p] is None]
+        shuffled = list(ACTIVE_PERSONAS)
+        self.rng.shuffle(shuffled)
+        for position, persona in zip(remaining_positions, shuffled):
+            chapter = Chapter(
+                year=ref_year - (4 - position),
+                position=position,
+                persona=persona,
+            )
+            self._select_gaps_for_chapter(chapter)
+            chapters[position] = chapter
+        self._select_gaps_for_chapter(chapters[4])  # type: ignore[index]
+        return [ch for ch in chapters if ch is not None]
 
-        leftover = n_records - sum(base.values())
-        remainders = sorted(years, key=lambda y: exact[y] - base[y], reverse=True)
-        for year in remainders[:leftover]:
-            base[year] += 1
+    def _distribute_records(self, num_records: int) -> dict[int, int]:
+        share_units: dict[int, float] = {}
+        for chapter in self._chapters:
+            if chapter.persona is None:
+                share_units[chapter.position] = 0.0
+                continue
+            first_day, last_day = self._chapter_bounds(chapter)
+            duration_factor = (last_day - first_day).days / 365
+            share_units[chapter.position] = chapter.persona.volume_weight * duration_factor
 
+        total = sum(share_units.values())
+        exact = {pos: num_records * unit / total for pos, unit in share_units.items()}
+        base = {pos: int(value) for pos, value in exact.items()}
+        leftover = num_records - sum(base.values())
+
+        fractions = sorted(exact.items(), key=lambda kv: kv[1] - int(kv[1]), reverse=True)
+        for pos, _ in fractions[:leftover]:
+            base[pos] += 1
         return base
 
     def _generate_weighted_tracks_by_year(self) -> dict[int, list[int]]:
@@ -149,11 +202,14 @@ class BaseFactory(ABC, Generic[RecordT]):
     def _generate_base_events(self) -> list[BaseEvent]:
         events: list[BaseEvent] = []
         print("📅 Generating events...")
-        for year, count in self._records_per_year.items():
-            skip_chance = self.skip_chance_trend[year - self.start_year]
-            for _ in track(range(count), description=f" - {year}"):
-                ts = self._get_random_datetime_for_year(year)
-                track_index = self.rng.choice(self._weighted_tracks[year])
+        for chapter in self._chapters:
+            if chapter.persona is None:
+                continue
+            count = self._records_per_chapter[chapter.position]
+            skip_chance = self.skip_chance_trend[chapter.position]
+            for _ in track(range(count), description=f" - {chapter.year} ({chapter.persona.name})"):
+                ts = self._get_random_datetime_for_year(chapter.year)
+                track_index = self.rng.choice(self._weighted_tracks[chapter.year])
                 is_skipped = self.rng.random() < skip_chance
                 if is_skipped:
                     duration_ratio = self.rng.uniform(0.05, 0.30)
