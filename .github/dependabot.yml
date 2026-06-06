@@ -66,6 +66,13 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      go-packages:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "gitsubmodule"
     directory: "/"
