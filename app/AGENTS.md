@@ -12,6 +12,12 @@ moon run app:build          # Type-check + build
 moon run app:preview        # Preview production build
 ```
 
+For raw pnpm commands (adding deps, etc.) — use sparingly:
+
+```bash
+moon run app:pnpm -- add <package>
+```
+
 ## Code Style
 
 - TypeScript strict mode
