@@ -176,7 +176,7 @@ Once uploaded, explore your listening habits across four views:
 | [`app/`](app/) | Frontend. DuckDB WASM processes data client-side; nothing reaches a server. |
 | [`blog/`](blog/) | Static blog with architectural decision records. |
 | [`e2e/`](e2e/) | End-to-end test suite built with Playwright. |
-| [`synthetic-datasets/`](synthetic-datasets/) | Generates synthetic Spotify/Deezer streaming histories for testing. |
+| [`synthetic-datasets/`](synthetic-datasets/) | Generates synthetic Spotify/Deezer/Apple Music/Custom streaming histories for testing. |
 
 ## Installation
 

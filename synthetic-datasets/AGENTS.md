@@ -6,12 +6,13 @@ Python scripts for synthetic music streaming history generation.
 
 ## Generate
 
-Supported providers: `spotify`, `deezer`, `apple-music` (default: `spotify`).
+Supported providers: `spotify`, `deezer`, `apple-music`, `custom` (default: `spotify`).
 
 ```bash
 moon run synthetic-datasets:generate -- 100 --provider spotify      # 100 Spotify records
 moon run synthetic-datasets:generate -- 100 --provider deezer       # 100 Deezer records
 moon run synthetic-datasets:generate -- 100 --provider apple-music  # 100 Apple Music records
+moon run synthetic-datasets:generate -- 100 --provider custom       # 100 Custom CSV records
 moon run synthetic-datasets:generate -- --seed 42                   # Deterministic output
 moon run synthetic-datasets:generate -- --help                      # Full options
 ```
