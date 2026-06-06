@@ -1,13 +1,13 @@
 language: go
 tasks:
   dev:
-    command: go run github.com/gohugoio/hugo@v0.152.0 server --minify -D -E -F
+    command: go run github.com/gohugoio/hugo server --minify -D -E -F
     preset: server
   new-post:
-    command: go run github.com/gohugoio/hugo@v0.152.0 new
+    command: go run github.com/gohugoio/hugo new
     preset: server
   build:
-    command: go run github.com/gohugoio/hugo@v0.152.0 --minify
+    command: go run github.com/gohugoio/hugo --minify
     inputs:
       - archetypes/**/*
       - assets/**/*
