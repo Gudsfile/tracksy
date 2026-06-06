@@ -10,9 +10,11 @@ from rich.panel import Panel
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
+from synthetic_datasets.factories.custom import CustomFactory
 from synthetic_datasets.factories.deezer import DeezerFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
 from synthetic_datasets.writers.apple_music import AppleMusicWriter
+from synthetic_datasets.writers.custom import CustomWriter
 from synthetic_datasets.writers.deezer import DeezerWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
@@ -21,6 +23,7 @@ class Provider(str, Enum):
     spotify = "spotify"
     deezer = "deezer"
     apple_music = "apple-music"
+    custom = "custom"
 
 
 app = typer.Typer(add_completion=False)
@@ -41,6 +44,12 @@ def _spotify(num_records: int, output_dir: Path, config: GenerationConfig) -> No
 def _deezer(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
     factory = DeezerFactory(num_records, config=config)
     writer = DeezerWriter(output_dir=output_dir, reference_date=config.reference_date)
+    writer.write(factory.create_streaming_history())
+
+
+def _custom(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
+    factory = CustomFactory(num_records, config=config)
+    writer = CustomWriter(output_dir=output_dir)
     writer.write(factory.create_streaming_history())
 
 
@@ -90,6 +99,8 @@ def generate(
             _apple_music(num_records, output_dir, config)
         case Provider.spotify:
             _spotify(num_records, output_dir, config)
+        case Provider.custom:
+            _custom(num_records, output_dir, config)
 
     elapsed = time.perf_counter() - start
     print(Panel(f"Completed in [bold]{elapsed:.2f}s[/bold]", title="✨ Result", style="green"))

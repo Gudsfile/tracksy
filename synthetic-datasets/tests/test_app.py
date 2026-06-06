@@ -51,6 +51,12 @@ def test_generate_apple_music(tmp_path):
     assert (tmp_path / "apple_music").exists()
 
 
+def test_generate_custom(tmp_path):
+    result = runner.invoke(app, ["100", "--seed", "42", "--provider", "custom", "-o", str(tmp_path)])
+    assert result.exit_code == 0
+    assert (tmp_path / "custom").exists()
+
+
 @patch("synthetic_datasets.app._spotify")
 @patch("synthetic_datasets.app.GenerationConfig.create")
 @mark.parametrize(
