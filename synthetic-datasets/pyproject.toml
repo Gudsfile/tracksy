@@ -5,18 +5,18 @@ description = "Tracksy app test datasets"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
-    "faker==40.19.1",
+    "faker==40.21.0",
     "numpy==2.4.6",
     "openpyxl==3.1.5",
     "pydantic==2.13.4",
-    "typer==0.26.4",
+    "typer==0.26.7",
 ]
 
 [dependency-groups]
 dev = [
     "pytest==9.0.3",
-    "ruff==0.15.15",
-    "ty==0.0.40",
+    "ruff==0.15.16",
+    "ty==0.0.44",
 ]
 
 [tool.uv]
