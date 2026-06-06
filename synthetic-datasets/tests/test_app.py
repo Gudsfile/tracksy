@@ -97,3 +97,40 @@ def test_log_config_output(tmp_path):
     assert "42" in result.output
     assert "provided" in result.output
     assert "derived from seed" in result.output
+
+
+def test_all_providers_generates_all_outputs(tmp_path):
+    result = runner.invoke(app, ["100", "--seed", "42", "--all-providers", "-o", str(tmp_path)])
+    assert result.exit_code == 0
+    assert (tmp_path / "spotify").exists()
+    assert (tmp_path / "deezer").exists()
+    assert (tmp_path / "apple_music").exists()
+    assert (tmp_path / "custom").exists()
+
+
+def test_all_providers_conflicts_with_provider(tmp_path):
+    result = runner.invoke(
+        app, ["100", "--seed", "42", "--all-providers", "--provider", "spotify", "-o", str(tmp_path)]
+    )
+    assert result.exit_code == 2
+    assert "Cannot use --all-providers with --provider" in result.output
+
+
+@patch("synthetic_datasets.app._spotify")
+@patch("synthetic_datasets.app._apple_music")
+@patch("synthetic_datasets.app._deezer")
+@patch("synthetic_datasets.app._custom")
+def test_all_providers_continues_on_failure(mock_custom, mock_deezer, mock_apple, mock_spotify, tmp_path):
+    mock_spotify.side_effect = RuntimeError("spotify failed")
+    result = runner.invoke(app, ["100", "--seed", "42", "--all-providers", "-o", str(tmp_path)])
+    assert result.exit_code != 0
+    assert "Error generating spotify" in result.output
+    mock_deezer.assert_called_once()
+    mock_apple.assert_called_once()
+    mock_custom.assert_called_once()
+
+
+def test_help_mentions_all_providers():
+    result = runner.invoke(app, ["--help"])
+    assert result.exit_code == 0
+    assert "all-providers" in result.output
