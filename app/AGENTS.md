@@ -68,19 +68,23 @@ Astro outputs raw HTML — e2e tests can use build output. Vitest and React Test
 
 Supported formats:
 
-- Spotify: ZIP or JSON (`Streaming_History_Audio_*.json`)
-- Deezer: XLSX (`deezer-data_\d{10}.xlsx`), sheet `10_listeningHistory`, parsed via DuckDB Excel extension
+| Provider    | File pattern                            | Notes                                               |
+| ----------- | --------------------------------------- | --------------------------------------------------- |
+| Spotify     | `Streaming_History_Audio_*.json` or ZIP |                                                     |
+| Deezer      | `deezer-data_\d{10}.xlsx`               | Sheet `10_listeningHistory`, DuckDB Excel extension |
+| Apple Music | `Apple Music Play Activity.csv`         |                                                     |
+| Custom      | `tracksy-custom.csv`                    | Tracksy-specific CSV format                         |
 
 **StreamProvider pattern:** `src/streamProvider/` — extensible adapter for multi-source support. Each provider implements `filePattern`, `readFile()`, `transform()` → canonical `StreamRecord` objects. Register new providers in `index.ts`.
 
 **Key Directories:**
 
-| Path                  | Purpose                             |
-| --------------------- | ----------------------------------- |
-| `src/components/`     | React and Astro components          |
-| `src/pages/`          | Astro page routes                   |
-| `src/db/`             | DuckDB queries and database logic   |
-| `src/streamProvider/` | Provider adapters (Spotify, Deezer) |
+| Path                  | Purpose                                                  |
+| --------------------- | -------------------------------------------------------- |
+| `src/components/`     | React and Astro components                               |
+| `src/pages/`          | Astro page routes                                        |
+| `src/db/`             | DuckDB queries and database logic                        |
+| `src/streamProvider/` | Provider adapters (Spotify, Deezer, Apple Music, Custom) |
 
 ## Environment Variables
 
