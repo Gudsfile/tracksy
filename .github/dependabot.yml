@@ -56,6 +56,17 @@ updates:
           - "minor"
           - "patch"
 
+  - package-ecosystem: "gomod"
+    directory: "/blog"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "[ blog ]"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
   - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
