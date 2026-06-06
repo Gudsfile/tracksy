@@ -5,6 +5,7 @@ import pytest
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.models.apple_music import AppleMusicRecord
+from synthetic_datasets.models.custom import CustomStreaming
 from synthetic_datasets.models.deezer import DeezerStreaming
 from synthetic_datasets.models.spotify import ReasonEndEnum, ReasonStartEnum, Streaming
 
@@ -55,6 +56,19 @@ def apple_music_record():
         play_duration_ms=213_000,
         device_type="IPHONE",
         container_origin_type=None,
+    )
+
+
+@pytest.fixture
+def custom_streaming_record():
+    return CustomStreaming(
+        ts=datetime.fromisoformat("2024-03-15T14:30:00"),
+        track_name="NeS - Post-it",
+        artist_name="Veridis Project",
+        album_name="Veridis Remix",
+        ms_played=213_000,
+        track_uri="custom:veridis-project:nes-post-it",
+        platform="web",
     )
 
 
