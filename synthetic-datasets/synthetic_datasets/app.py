@@ -66,6 +66,8 @@ Examples:
   generate 1000
 
   generate 1000 --seed 42
+
+  generate 1000 --all-providers
 """
 )
 def generate(
@@ -83,24 +85,48 @@ def generate(
         typer.Option(help="Overwrite reference date in ISO format (e.g., 2026-02-08 or 2026-02-08T14:30:00)"),
     ] = None,
     provider: Annotated[
-        Provider,
+        Provider | None,
         typer.Option(help="Streaming provider to generate data for"),
-    ] = Provider.spotify,
+    ] = None,
+    all_providers: Annotated[
+        bool,
+        typer.Option("--all-providers", help="Generate datasets for all providers"),
+    ] = False,
 ) -> None:
     """Generate synthetic streaming datasets."""
-    start = time.perf_counter()
+    if all_providers and provider is not None:
+        raise typer.BadParameter("Cannot use --all-providers with --provider")
 
+    start = time.perf_counter()
     config = GenerationConfig.create(seed=seed, reference_date=reference_date)
 
-    match provider:
-        case Provider.deezer:
-            _deezer(num_records, output_dir, config)
-        case Provider.apple_music:
-            _apple_music(num_records, output_dir, config)
-        case Provider.spotify:
-            _spotify(num_records, output_dir, config)
-        case Provider.custom:
-            _custom(num_records, output_dir, config)
+    if all_providers:
+        provider_fns = {
+            Provider.spotify: _spotify,
+            Provider.deezer: _deezer,
+            Provider.apple_music: _apple_music,
+            Provider.custom: _custom,
+        }
+        errors: list[tuple[Provider, Exception]] = []
+        for prov, fn in handlers:
+            try:
+                fn(num_records, output_dir, config)
+            except Exception as e:
+                errors.append((prov, e))
+        if errors:
+            for prov, e in errors:
+                print(f"[red]Error generating {prov.value}: {e}[/red]")
+            raise typer.Exit(code=1)
+    else:
+        match provider or Provider.spotify:
+            case Provider.deezer:
+                _deezer(num_records, output_dir, config)
+            case Provider.apple_music:
+                _apple_music(num_records, output_dir, config)
+            case Provider.spotify:
+                _spotify(num_records, output_dir, config)
+            case Provider.custom:
+                _custom(num_records, output_dir, config)
 
     elapsed = time.perf_counter() - start
     print(Panel(f"Completed in [bold]{elapsed:.2f}s[/bold]", title="✨ Result", style="green"))
