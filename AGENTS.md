@@ -53,6 +53,8 @@ See sub-project AGENTS.md for format/lint/test/typecheck commands.
 5. All tests must pass before merging
 6. Use **rebase and merge** strategy (enforced)
 
+PRs use the template at [`.github/pull_request_template.md`](.github/pull_request_template.md). Fill all sections. Issues and PRs use labels defined in [`.github/labels.yml`](.github/labels.yml) — apply the relevant ones.
+
 ## CI/CD
 
 Workflows in `.github/workflows/`.
