@@ -16,6 +16,12 @@ moon run synthetic-datasets:generate -- --seed 42                   # Determinis
 moon run synthetic-datasets:generate -- --help                      # Full options
 ```
 
+For raw uv commands (adding deps, etc.) — use sparingly:
+
+```bash
+moon run synthetic-datasets:uv -- add <package>
+```
+
 ## Testing and Quality
 
 ```bash
