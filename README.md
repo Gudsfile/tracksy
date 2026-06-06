@@ -192,7 +192,7 @@ More details in the [CONTRIBUTING.md development section](CONTRIBUTING.md#develo
 Tracksy is under active development. On the horizon:
 
 - More visualizations and a simplified view for non-technical users
-- Support for additional data sources (Apple Music, Funkwhale, etc.)
+- Support for additional data sources (Funkwhale, etc.)
 
 See [open issues](https://github.com/Gudsfile/tracksy/issues) for the full list.
 
