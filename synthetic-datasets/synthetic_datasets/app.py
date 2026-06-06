@@ -7,6 +7,7 @@ from typing import Annotated
 import typer
 from rich import print
 from rich.panel import Panel
+from rich.rule import Rule
 
 from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
@@ -108,7 +109,9 @@ def generate(
             Provider.custom: _custom,
         }
         errors: list[tuple[Provider, Exception]] = []
-        for prov, fn in handlers:
+        for prov in Provider:
+            fn = provider_fns[prov]
+            print(Rule(f"[bold]{prov.value}[/bold]"))
             try:
                 fn(num_records, output_dir, config)
             except Exception as e:
