@@ -14,7 +14,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "duckdb>=1.5.3",
     "pytest==9.0.3",
     "ruff==0.15.15",
     "ty==0.0.40",
