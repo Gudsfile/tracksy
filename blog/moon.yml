@@ -1,13 +1,13 @@
 language: go
 tasks:
   dev:
-    command: go run github.com/gohugoio/hugo server --minify -D -E -F
+    command: go tool github.com/gohugoio/hugo server --minify -D -E -F
     preset: server
   new-post:
-    command: go run github.com/gohugoio/hugo new
+    command: go tool github.com/gohugoio/hugo new
     preset: server
   build:
-    command: go run github.com/gohugoio/hugo --minify
+    command: go tool github.com/gohugoio/hugo --minify
     inputs:
       - archetypes/**/*
       - assets/**/*
@@ -22,6 +22,8 @@ tasks:
     env:
       HUGO_ENVIRONMENT: production
       HUGO_ENV: production
+  tidy:
+    command: go mod tidy
   clean:
     command: rm -rf public
 layer: application
