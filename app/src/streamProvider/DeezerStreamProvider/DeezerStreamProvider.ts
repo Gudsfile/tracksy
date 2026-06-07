@@ -10,7 +10,7 @@ export class DeezerStreamProvider extends StreamProvider<DeezerRawStreamRecord> 
     name = 'deezer'
     displayName = 'Deezer'
     acceptedFormats = 'XLSX'
-    filePattern = /^deezer-data_\d{10}\.xlsx$/i
+    filePattern = /^deezer-data_\d+\.xlsx$/i
     fileContentType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
