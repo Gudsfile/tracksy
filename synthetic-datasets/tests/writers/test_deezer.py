@@ -61,6 +61,5 @@ def test_deezer_writer_write_calls_helper(mock_write_xlsx, tmp_path, deezer_stre
     writer.write(records)
     # then
     assert mock_write_xlsx.called
-    expected_timestamp = int(reference_date.timestamp())
-    expected_path = Path(tmp_path) / "deezer" / f"deezer-data_{expected_timestamp}.xlsx"
+    expected_path = Path(tmp_path) / "deezer" / f"deezer-data_{len(records)}.xlsx"
     assert mock_write_xlsx.call_args.args == (expected_path, records, reference_date)
