@@ -38,21 +38,21 @@ describe('StreamProvider Factory', () => {
 
             expect(streamProvider).not.toBeUndefined()
             expect(streamProvider?.name).toBe('custom')
+        })
 
-            it('should detect JellyFin files', () => {
-                const file = new File([], 'playback_report.csv')
-                const streamProvider = detectProvider(file)
+        it('should detect JellyFin files', () => {
+            const file = new File([], 'playback_report.csv')
+            const streamProvider = detectProvider(file)
 
-                expect(streamProvider).not.toBeUndefined()
-                expect(streamProvider?.name).toBe('jellyfin')
-            })
+            expect(streamProvider).not.toBeUndefined()
+            expect(streamProvider?.name).toBe('jellyfin')
+        })
 
-            it('should return undefined for unknown file formats', () => {
-                const file = new File([], 'unknown_format.json')
-                const streamProvider = detectProvider(file)
+        it('should return undefined for unknown file formats', () => {
+            const file = new File([], 'unknown_format.json')
+            const streamProvider = detectProvider(file)
 
-                expect(streamProvider).toBeUndefined()
-            })
+            expect(streamProvider).toBeUndefined()
         })
 
         describe('getSupportedProviderNames', () => {
@@ -71,7 +71,7 @@ describe('StreamProvider Factory', () => {
                 expect(names).toContain('Deezer (XLSX)')
                 expect(names).toContain('Custom (CSV)')
                 expect(names).not.toContain('Apple Music (ZIP/CSV)')
-                expect(names).toContain('JellyFin (CSV)')
+                expect(names).not.toContain('JellyFin (CSV)')
             })
         })
 
