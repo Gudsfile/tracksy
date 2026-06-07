@@ -77,6 +77,8 @@ Examples:
 
   generate 1000 --seed 42
 
+  generate 1000 --provider spotify --provider deezer
+
   generate 1000 --all-providers
 """
 )
@@ -95,35 +97,42 @@ def generate(
         typer.Option(help="Overwrite reference date in ISO format (e.g., 2026-02-08 or 2026-02-08T14:30:00)"),
     ] = None,
     provider: Annotated[
-        Provider | None,
-        typer.Option(help="Streaming provider to generate data for"),
-    ] = None,
+        list[Provider],
+        typer.Option(help="Streaming provider to generate data for (repeatable)"),
+    ] = [],
     all_providers: Annotated[
         bool,
         typer.Option("--all-providers", help="Generate datasets for all providers"),
     ] = False,
 ) -> None:
     """Generate synthetic streaming datasets."""
-    if all_providers and provider is not None:
+    if all_providers and provider:
         raise typer.BadParameter("Cannot use --all-providers with --provider")
 
     start = time.perf_counter()
     config = GenerationConfig.create(seed=seed, reference_date=reference_date)
 
+    provider_fns = {
+        Provider.spotify: _spotify,
+        Provider.deezer: _deezer,
+        Provider.apple_music: _apple_music,
+        Provider.jellyfin: _jellyfin,
+        Provider.custom: _custom,
+    }
+
     if all_providers:
-        provider_fns = {
-            Provider.spotify: _spotify,
-            Provider.deezer: _deezer,
-            Provider.apple_music: _apple_music,
-            Provider.jellyfin: _jellyfin,
-            Provider.custom: _custom,
-        }
+        providers_to_run: list[Provider] = list(Provider)
+    elif provider:
+        providers_to_run = provider
+    else:
+        providers_to_run = []
+
+    if providers_to_run:
         errors: list[tuple[Provider, Exception]] = []
-        for prov in Provider:
-            fn = provider_fns[prov]
+        for prov in providers_to_run:
             print(Rule(f"[bold]{prov.value}[/bold]"))
             try:
-                fn(num_records, output_dir, config)
+                provider_fns[prov](num_records, output_dir, config)
             except Exception as e:
                 errors.append((prov, e))
         if errors:
@@ -131,17 +140,7 @@ def generate(
                 print(f"[red]Error generating {prov.value}: {e}[/red]")
             raise typer.Exit(code=1)
     else:
-        match provider or Provider.spotify:
-            case Provider.deezer:
-                _deezer(num_records, output_dir, config)
-            case Provider.apple_music:
-                _apple_music(num_records, output_dir, config)
-            case Provider.spotify:
-                _spotify(num_records, output_dir, config)
-            case Provider.jellyfin:
-                _jellyfin(num_records, output_dir, config)
-            case Provider.custom:
-                _custom(num_records, output_dir, config)
+        _spotify(num_records, output_dir, config)
 
     elapsed = time.perf_counter() - start
     print(Panel(f"Completed in [bold]{elapsed:.2f}s[/bold]", title="✨ Result", style="green"))

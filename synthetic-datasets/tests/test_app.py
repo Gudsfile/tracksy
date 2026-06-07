@@ -136,3 +136,48 @@ def test_help_mentions_all_providers():
     result = runner.invoke(app, ["--help"], env={"TERM": "dumb"})
     assert result.exit_code == 0
     assert "all-providers" in result.output
+
+
+def test_generate_multiple_providers(tmp_path):
+    result = runner.invoke(
+        app,
+        ["100", "--seed", "42", "--provider", "spotify", "--provider", "deezer", "-o", str(tmp_path)],
+    )
+    assert result.exit_code == 0
+    assert (tmp_path / "spotify").exists()
+    assert (tmp_path / "deezer").exists()
+
+
+@patch("synthetic_datasets.app._deezer")
+@patch("synthetic_datasets.app._spotify")
+def test_multiple_providers_continues_on_failure(mock_spotify, mock_deezer, tmp_path):
+    mock_spotify.side_effect = RuntimeError("spotify failed")
+    result = runner.invoke(
+        app,
+        ["100", "--seed", "42", "--provider", "spotify", "--provider", "deezer", "-o", str(tmp_path)],
+        env={"TERM": "dumb"},
+    )
+    assert result.exit_code != 0
+    assert "Error generating spotify" in result.output
+    mock_deezer.assert_called_once()
+
+
+def test_multiple_providers_conflict_with_all_providers(tmp_path):
+    result = runner.invoke(
+        app,
+        [
+            "100",
+            "--seed",
+            "42",
+            "--all-providers",
+            "--provider",
+            "spotify",
+            "--provider",
+            "deezer",
+            "-o",
+            str(tmp_path),
+        ],
+        env={"TERM": "dumb"},
+    )
+    assert result.exit_code == 2
+    assert "Cannot use --all-providers with --provider" in result.output
