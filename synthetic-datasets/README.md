@@ -13,6 +13,8 @@ Run the generator locally with:
 ```bash
 moon setup
 moon run synthetic-datasets:generate -- 1000 --provider spotify
+moon run synthetic-datasets:generate -- 1000 --provider spotify --provider deezer  # multiple providers at once
+moon run synthetic-datasets:generate -- 1000 --all-providers                       # all providers at once
 ```
 
 Find generated datasets in the `datasets` folder. Load the output file in the Tracksy app and inspect charts.

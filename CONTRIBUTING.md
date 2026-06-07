@@ -168,10 +168,12 @@ Run tasks across the entire monorepo or for specific projects.
 - **Datasets (`synthetic-datasets`)**:
 
     ```bash
-    moon run synthetic-datasets:generate  # Generate new datasets
-    moon run synthetic-datasets:generate-e2e  # Generate predictable dataset for e2e tests
-    moon run synthetic-datasets:generate -- --help  # View available options for generate command
-    moon run synthetic-datasets:test      # Run python tests
+    moon run synthetic-datasets:generate -- 1000 --provider spotify             # Generate Spotify dataset
+    moon run synthetic-datasets:generate -- 1000 --provider spotify --provider deezer  # Multiple providers
+    moon run synthetic-datasets:generate -- 1000 --all-providers                # All providers
+    moon run synthetic-datasets:generate-e2e                                    # Predictable e2e dataset
+    moon run synthetic-datasets:generate -- --help                              # View all options
+    moon run synthetic-datasets:test                                            # Run Python tests
     ```
 
 - **Blog (`blog`)**:
