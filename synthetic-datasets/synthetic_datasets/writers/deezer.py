@@ -26,12 +26,11 @@ COLUMNS = [
 class DeezerWriter:
     def __init__(self, output_dir: Path, reference_date: datetime) -> None:
         folder = output_dir / "deezer"
-        self.xlsx_path_template: str = str(folder) + "/deezer-data_{timestamp}.xlsx"
+        self.xlsx_path_template: str = str(folder) + "/deezer-data_{num_records}.xlsx"
         self.reference_date = reference_date
 
     def write(self, records: list[DeezerStreaming]) -> None:
-        timestamp = int(self.reference_date.timestamp())
-        xlsx_path = Path(self.xlsx_path_template.format(timestamp=timestamp))
+        xlsx_path = Path(self.xlsx_path_template.format(num_records=len(records)))
         with _console.status("🖍️ Writing xlsx..."):
             write_xlsx(xlsx_path, records, self.reference_date)
         print(f"🖍️ Write xlsx: [green]success[/green] {xlsx_path.absolute()} ({len(records)} records)")
