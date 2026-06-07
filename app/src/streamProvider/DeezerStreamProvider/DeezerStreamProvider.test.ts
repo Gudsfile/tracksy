@@ -50,6 +50,9 @@ describe('DeezerStreamProvider', () => {
             'deezer-data_1234567890.xlsx',
             'deezer-data_0000000000.xlsx',
             'DEEZER-DATA_9999999999.xlsx',
+            'deezer-data_250.xlsx',
+            'deezer-data_123.xlsx',
+            'deezer-data_12345678901.xlsx',
         ])(
             'should return true for %s as it matches Deezer filename pattern',
             (filename) => {
@@ -61,8 +64,6 @@ describe('DeezerStreamProvider', () => {
         )
 
         it.each([
-            'deezer-data_123.xlsx',
-            'deezer-data_12345678901.xlsx',
             'deezer_data_1234567890.xlsx',
             'Streaming_History_Audio_2024.json',
             'deezer-data_1234567890.json',
