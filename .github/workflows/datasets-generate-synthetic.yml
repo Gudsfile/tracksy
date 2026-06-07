@@ -34,13 +34,11 @@ jobs:
 
       - name: Generate datasets
         run: |
-          moon run synthetic-datasets:generate -- 1000
-          moon run synthetic-datasets:generate -- 25000
-          moon run synthetic-datasets:generate -- 500000
+          moon run synthetic-datasets:generate -- 1000 --provider spotify
+          moon run synthetic-datasets:generate -- 500000 --provider spotify
           moon run synthetic-datasets:generate -- 1000 --provider deezer
-          moon run synthetic-datasets:generate -- 25000 --provider deezer
           moon run synthetic-datasets:generate -- 500000 --provider deezer
-          moon run synthetic-datasets:generate -- 25000 --provider apple-music
+          moon run synthetic-datasets:generate -- 25000 --all-providers
 
       - name: Clone HF repo and move datasets into it
         env:
