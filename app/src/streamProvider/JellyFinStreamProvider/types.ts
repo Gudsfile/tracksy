@@ -1,5 +1,5 @@
 export interface JellyFinRawRecord {
-    DateCreated: Date | string // DuckDB parses TIMESTAMP columns as Date objects
+    DateCreated: Date | string | number | bigint // DuckDB may return TIMESTAMP as Date, bigint (µs), or string
     UserId: string
     ItemId: string
     ItemType: string // "Audio" | "Movie" | "Episode" | ...
