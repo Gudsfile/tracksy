@@ -13,10 +13,12 @@ from synthetic_datasets.config import GenerationConfig
 from synthetic_datasets.factories.apple_music import AppleMusicFactory
 from synthetic_datasets.factories.custom import CustomFactory
 from synthetic_datasets.factories.deezer import DeezerFactory
+from synthetic_datasets.factories.jellyfin import JellyFinFactory
 from synthetic_datasets.factories.spotify import SpotifyFactory
 from synthetic_datasets.writers.apple_music import AppleMusicWriter
 from synthetic_datasets.writers.custom import CustomWriter
 from synthetic_datasets.writers.deezer import DeezerWriter
+from synthetic_datasets.writers.jellyfin import JellyFinWriter
 from synthetic_datasets.writers.spotify import SpotifyWriter
 
 
@@ -24,6 +26,7 @@ class Provider(str, Enum):
     spotify = "spotify"
     deezer = "deezer"
     apple_music = "apple-music"
+    jellyfin = "jellyfin"
     custom = "custom"
 
 
@@ -45,6 +48,12 @@ def _spotify(num_records: int, output_dir: Path, config: GenerationConfig) -> No
 def _deezer(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
     factory = DeezerFactory(num_records, config=config)
     writer = DeezerWriter(output_dir=output_dir, reference_date=config.reference_date)
+    writer.write(factory.create_streaming_history())
+
+
+def _jellyfin(num_records: int, output_dir: Path, config: GenerationConfig) -> None:
+    factory = JellyFinFactory(num_records, config=config)
+    writer = JellyFinWriter(output_dir=output_dir, reference_date=config.reference_date)
     writer.write(factory.create_streaming_history())
 
 
@@ -106,6 +115,7 @@ def generate(
             Provider.spotify: _spotify,
             Provider.deezer: _deezer,
             Provider.apple_music: _apple_music,
+            Provider.jellyfin: _jellyfin,
             Provider.custom: _custom,
         }
         errors: list[tuple[Provider, Exception]] = []
@@ -128,6 +138,8 @@ def generate(
                 _apple_music(num_records, output_dir, config)
             case Provider.spotify:
                 _spotify(num_records, output_dir, config)
+            case Provider.jellyfin:
+                _jellyfin(num_records, output_dir, config)
             case Provider.custom:
                 _custom(num_records, output_dir, config)
 
