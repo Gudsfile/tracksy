@@ -76,7 +76,7 @@ Or bring your own data:
 </details>
 
 <details>
-<summary>JellyFin</summary>
+<summary>JellyFin (experimental)</summary>
 <br>
 
 **Requires the [Playback Reporting plugin](https://github.com/jellyfin/jellyfin-plugin-playbackreporting).**
@@ -85,7 +85,7 @@ Or bring your own data:
 2. After some listening activity has been recorded, go to "_Dashboard_" > "_Playback Report_"
 3. Click "_Export as CSV_" to download `playback_report.csv`
 
-> [!NOTE]
+> [!IMPORTANT]
 > Artist and album names are not included in the plugin export. Charts based on artist or album will not be populated for JellyFin data.
 
 </details>
