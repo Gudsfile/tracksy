@@ -43,7 +43,10 @@ export class JellyFinStreamProvider extends StreamProvider<JellyFinRawRecord> {
                     ts:
                         r.DateCreated instanceof Date
                             ? r.DateCreated.toISOString()
-                            : String(r.DateCreated).replace(' ', 'T') + 'Z',
+                            : typeof r.DateCreated === 'number' ||
+                                typeof r.DateCreated === 'bigint'
+                              ? new Date(Number(r.DateCreated)).toISOString()
+                              : String(r.DateCreated).replace(' ', 'T') + 'Z',
                     ms_played: seconds > 0 ? seconds * 1000 : 0,
                     platform: r.ClientName,
                 }
