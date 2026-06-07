@@ -110,7 +110,9 @@ def test_all_providers_generates_all_outputs(tmp_path):
 
 def test_all_providers_conflicts_with_provider(tmp_path):
     result = runner.invoke(
-        app, ["100", "--seed", "42", "--all-providers", "--provider", "spotify", "-o", str(tmp_path)]
+        app,
+        ["100", "--seed", "42", "--all-providers", "--provider", "spotify", "-o", str(tmp_path)],
+        env={"TERM": "dumb"},
     )
     assert result.exit_code == 2
     assert "Cannot use --all-providers with --provider" in result.output
@@ -131,6 +133,6 @@ def test_all_providers_continues_on_failure(mock_custom, mock_deezer, mock_apple
 
 
 def test_help_mentions_all_providers():
-    result = runner.invoke(app, ["--help"])
+    result = runner.invoke(app, ["--help"], env={"TERM": "dumb"})
     assert result.exit_code == 0
     assert "all-providers" in result.output
