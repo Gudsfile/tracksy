@@ -11,6 +11,7 @@ export class JellyFinStreamProvider extends StreamProvider<JellyFinRawRecord> {
     readonly acceptedFormats = 'CSV'
     readonly filePattern = /^playback_report\.csv$/i
     readonly fileContentType = 'text/csv'
+    readonly experimental = true
 
     async readFile(file: File): Promise<JellyFinRawRecord[]> {
         const buffer = await file.arrayBuffer()
