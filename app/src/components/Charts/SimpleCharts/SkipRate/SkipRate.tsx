@@ -44,7 +44,7 @@ export const SkipRate: FC<Props> = ({ data, isLoading }) => {
                         role="list"
                     >
                         <li role="listitem">
-                            Skippped ({skipped_listens.toLocaleString()})
+                            Skipped ({skipped_listens.toLocaleString()})
                         </li>
                         <li role="listitem">
                             Completed ({complete_listens.toLocaleString()})

@@ -159,7 +159,7 @@ test('has title and can upload dataset', async ({ page }) => {
     await expect(skipMoodCard).toBeVisible()
     await expect(skipMoodCard.getByText('Patient', { exact: true })).toBeVisible()
     await expect(skipMoodCard.getByText('83.2%')).toBeVisible()
-    await expect(skipMoodCard.getByRole('listitem').filter({ hasText: 'Skippped' })).toContainText('56')
+    await expect(skipMoodCard.getByRole('listitem').filter({ hasText: 'Skipped' })).toContainText('56')
     await expect(skipMoodCard.getByRole('listitem').filter({ hasText: 'Completed' })).toContainText('277')
 
     /* Replay Energy Card */
