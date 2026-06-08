@@ -19,6 +19,13 @@ moon run e2e:test-dev
 - `moon run e2e:codegen` — record actions to generate tests
 - `moon run e2e:show-report` — view last test report
 
+Quality checks:
+
+```bash
+moon run e2e:format          # Format with Prettier
+moon run e2e:format-check    # Check formatting
+```
+
 ## Datasets
 
 Tests run against a fixed synthetic dataset generated with:
