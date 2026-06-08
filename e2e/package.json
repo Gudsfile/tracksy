@@ -4,6 +4,7 @@
   "description": "End-to-end tests for Tracksy",
   "devDependencies": {
     "@playwright/test": "^1.57.0",
+    "prettier": "^3.8.3",
     "@types/node": "^24.10.4",
     "typescript": "^5.9.3"
   },
