@@ -1,27 +1,31 @@
 language: javascript
 tasks:
-  test:
-    command: playwright test
-    deps:
-      - synthetic-datasets:generate-e2e
-  test-dev:
-    command: playwright test
-    deps:
-      - app:dev
-      - synthetic-datasets:generate-e2e
-    preset: server
-  test-ui:
-    command: playwright test --ui
-    deps:
-      - app:dev
-      - synthetic-datasets:generate-e2e
-    preset: server
-  codegen:
-    command: playwright codegen
-    preset: server
-  show-report:
-    command: playwright show-report
-    preset: server
-  install-browsers:
-    command: playwright install --with-deps
+    test:
+        command: playwright test
+        deps:
+            - synthetic-datasets:generate-e2e
+    test-dev:
+        command: playwright test
+        deps:
+            - app:dev
+            - synthetic-datasets:generate-e2e
+        preset: server
+    test-ui:
+        command: playwright test --ui
+        deps:
+            - app:dev
+            - synthetic-datasets:generate-e2e
+        preset: server
+    codegen:
+        command: playwright codegen
+        preset: server
+    show-report:
+        command: playwright show-report
+        preset: server
+    install-browsers:
+        command: playwright install --with-deps
+    format:
+        command: prettier --write .
+    format-check:
+        command: prettier --check .
 layer: application
