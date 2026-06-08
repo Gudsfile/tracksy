@@ -9,7 +9,9 @@ on:
       - closed
     paths:
       - "app/**"
+      - "e2e/**"
       - ".github/workflows/app-deploy-preview.yml"
+      - ".github/workflows/e2e.yml"
       - ".moon/toolchains.yml"
   workflow_dispatch:
 
