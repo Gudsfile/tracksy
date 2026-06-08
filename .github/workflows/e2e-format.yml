@@ -1,0 +1,32 @@
+name: E2E Format Check
+
+on:
+  pull_request:
+    paths:
+      - "e2e/**"
+      - ".github/workflows/e2e-format.yml"
+      - ".moon/toolchains.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  format-check:
+    name: Check format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install moon
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: false
+
+      - name: Setup toolchains
+        run: moon setup
+
+      - name: Check format
+        run: moon run e2e:format-check
