@@ -177,4 +177,17 @@ test('has title and can upload dataset', async ({ page }) => {
     /* Eclectic Day */
     await expect(page.getByRole('heading', { name: /Eclectic Day/ })).toBeVisible()
     await expect(page.getByText('4different artists')).toBeVisible()
+
+    // Switch to Lab view
+    await labView.click()
+    await expect(simpleViewTab).not.toHaveAttribute('aria-selected', 'true')
+    await expect(labView).toHaveAttribute('aria-selected', 'true')
+
+    await expect(page.getByRole('heading', { name: /Stream Timeline/ })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Stream Variety/ })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Stream Discovery/ })).toBeVisible()
+
+    await expect(page.getByRole('heading', { name: /Top 10 Race/ })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Listening Streaks/ })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Listening Bingo/ })).toBeVisible()
 })
