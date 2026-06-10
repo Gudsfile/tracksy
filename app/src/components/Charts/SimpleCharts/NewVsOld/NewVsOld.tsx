@@ -9,9 +9,36 @@ type Props = {
     data: NewVsOldResult | undefined
     isLoading?: boolean
     year?: number
+    totalArtists?: number
 }
 
-export const NewVsOld: FC<Props> = ({ data, isLoading, year }) => {
+export const NewVsOld: FC<Props> = ({
+    data,
+    isLoading,
+    year,
+    totalArtists,
+}) => {
+    if (year === undefined) {
+        return (
+            <ChartCard
+                title="Fresh vs Familiar"
+                emoji="🆕"
+                isLoading={isLoading}
+                question="Do I listen more to new or familiar artists?"
+            >
+                <p className="text-sm text-gray-400 dark:text-gray-500 italic text-center py-6">
+                    Select a year to see your Fresh vs Familiar split
+                </p>
+                {totalArtists !== undefined && (
+                    <InsightCard>
+                        {totalArtists.toLocaleString()} artists discovered all
+                        time
+                    </InsightCard>
+                )}
+            </ChartCard>
+        )
+    }
+
     const newPct = data?.total
         ? (data.new_artists_streams / data.total) * 100
         : 0
@@ -75,11 +102,7 @@ export const NewVsOld: FC<Props> = ({ data, isLoading, year }) => {
 
                     <InsightCard>
                         {data.new_artists_count.toLocaleString()} new artists
-                        discovered
-                        {year !== undefined
-                            ? ' this year'
-                            : ' in your latest year'}
-                        !
+                        discovered this year!
                     </InsightCard>
                 </>
             )}
