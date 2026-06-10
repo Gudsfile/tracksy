@@ -89,7 +89,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: {},
             title: 'Top artists',
             explanation: 'Artists ranked by total stream count.',
-            sql: 'SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE artist_name IS NOT NULL GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5',
+            sql: `SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} WHERE artist_name IS NOT NULL GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5`,
         }),
     },
     {
@@ -99,7 +99,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: CURRENT_YEAR },
             title: `Top artists ${CURRENT_YEAR}`,
             explanation: `Artists ranked by total stream count in ${CURRENT_YEAR}.`,
-            sql: `SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE artist_name IS NOT NULL AND EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5`,
+            sql: `SELECT artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} WHERE artist_name IS NOT NULL AND EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5`,
         }),
     },
     {
@@ -109,7 +109,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: CURRENT_YEAR - 1 },
             title: `Top tracks ${CURRENT_YEAR - 1}`,
             explanation: `Most-played tracks during ${CURRENT_YEAR - 1}.`,
-            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM music_streams WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR - 1} AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 5`,
+            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR - 1} AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 5`,
         }),
     },
     {
@@ -119,7 +119,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: 2023, limit: 10 },
             title: 'Top 10 tracks in 2023',
             explanation: 'Most-played tracks during 2023.',
-            sql: 'SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM music_streams WHERE EXTRACT(year FROM ts) = 2023 AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 10',
+            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM ${TABLE} WHERE EXTRACT(year FROM ts) = 2023 AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 10`,
         }),
     },
     {
@@ -129,7 +129,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: CURRENT_YEAR },
             title: 'Listening calendar',
             explanation: 'Daily listening intensity across the calendar year.',
-            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY day`,
+            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY day`,
         }),
     },
     {
@@ -139,7 +139,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: 2022 },
             title: 'Streams per month — 2022',
             explanation: 'Monthly stream counts for the year 2022.',
-            sql: "SELECT DATE_TRUNC('month', ts) AS month, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams WHERE EXTRACT(year FROM ts) = 2022 GROUP BY month ORDER BY month",
+            sql: `SELECT DATE_TRUNC('month', ts) AS month, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} WHERE EXTRACT(year FROM ts) = 2022 GROUP BY month ORDER BY month`,
         }),
     },
     {
@@ -150,7 +150,7 @@ export const FEW_SHOTS: FewShot[] = [
             title: 'Minutes listened per platform',
             explanation:
                 'Total minutes of playback grouped by reported platform.',
-            sql: 'SELECT platform, SUM(ms_played) / 60000.0 AS minutes FROM music_streams WHERE platform IS NOT NULL GROUP BY platform ORDER BY minutes DESC',
+            sql: `SELECT platform, SUM(ms_played) / 60000.0 AS minutes FROM ${TABLE} WHERE platform IS NOT NULL GROUP BY platform ORDER BY minutes DESC`,
         }),
     },
     {
@@ -160,7 +160,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: {},
             title: 'Skip rate',
             explanation: 'Share of streams that were skipped vs completed.',
-            sql: 'SELECT COUNT(*) FILTER (WHERE ms_played < 30000)::DOUBLE AS skipped_listens, COUNT(*) FILTER (WHERE ms_played >= 30000)::DOUBLE AS complete_listens FROM music_streams',
+            sql: `SELECT COUNT(*) FILTER (WHERE ms_played < 30000)::DOUBLE AS skipped_listens, COUNT(*) FILTER (WHERE ms_played >= 30000)::DOUBLE AS complete_listens FROM ${TABLE}`,
         }),
     },
     {
@@ -170,7 +170,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: {},
             title: 'Listening evolution',
             explanation: 'Total stream count per year across all years.',
-            sql: 'SELECT year(ts::date)::integer AS stream_year, COUNT(*)::DOUBLE AS stream_count, SUM(ms_played)::DOUBLE AS ms_played FROM music_streams GROUP BY year(ts::date) ORDER BY year(ts::date)',
+            sql: `SELECT year(ts::date)::integer AS stream_year, COUNT(*)::DOUBLE AS stream_count, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} GROUP BY year(ts::date) ORDER BY year(ts::date)`,
         }),
     },
     {
@@ -181,7 +181,7 @@ export const FEW_SHOTS: FewShot[] = [
             title: 'Listening streaks',
             explanation:
                 'Longest and most recent consecutive listening day streaks.',
-            sql: 'SELECT COUNT(*)::integer AS streaks, MIN(ts::date) AS start_ts, MAX(ts::date) AS end_ts FROM music_streams GROUP BY ts::date ORDER BY streaks DESC LIMIT 1',
+            sql: `SELECT COUNT(*)::integer AS streaks, MIN(ts::date) AS start_ts, MAX(ts::date) AS end_ts FROM ${TABLE} GROUP BY ts::date ORDER BY streaks DESC LIMIT 1`,
         }),
     },
     {
@@ -192,7 +192,7 @@ export const FEW_SHOTS: FewShot[] = [
             title: 'Principal platform',
             explanation:
                 'Distribution of listening across platforms and devices.',
-            sql: 'SELECT platform, COUNT(*)::DOUBLE AS stream_count FROM music_streams WHERE platform IS NOT NULL GROUP BY platform ORDER BY stream_count DESC LIMIT 5',
+            sql: `SELECT platform, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE platform IS NOT NULL GROUP BY platform ORDER BY stream_count DESC LIMIT 5`,
         }),
     },
 ]
