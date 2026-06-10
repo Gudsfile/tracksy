@@ -8,5 +8,5 @@ export function NewVsOld({ year }: { year: number | undefined }) {
         year,
     })
 
-    return <NewVsOldView data={data} isLoading={isLoading} />
+    return <NewVsOldView data={data} isLoading={isLoading} year={year} />
 }
