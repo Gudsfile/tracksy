@@ -16,7 +16,7 @@ export type TotalArtistsResult = {
     total_artists: number
 }
 
-export function queryNewVsOld(year: number | undefined): string {
+export function queryNewVsOld(year: number): string {
     const yearCondition = buildYearCondition(year)
     const yearForNew = buildYearOrLatest(year)
     return sqlQueryNewVsOld
