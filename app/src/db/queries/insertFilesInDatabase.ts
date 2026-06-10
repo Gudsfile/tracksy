@@ -1,5 +1,5 @@
 import { getDB } from '../getDB'
-import { TABLE, DROP_TABLE_QUERY } from './constants'
+import { TABLE } from './constants'
 import { tableFromJSON } from 'apache-arrow'
 import { detectProvider } from '../../streamProvider'
 import type { StreamRecord } from '../../streamProvider/types'
@@ -45,7 +45,7 @@ export async function insertFilesInDatabase(files: FileList) {
 
     const { conn } = await getDB()
 
-    await conn.query(DROP_TABLE_QUERY)
+    await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
     console.debug(`Table ${TABLE} dropped.`)
 
     await conn.insertArrowTable(arrowTableContent, {
