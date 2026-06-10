@@ -1,3 +1,4 @@
+export const RAW_TABLE = 'music_streams_raw'
 export const TABLE = 'music_streams'
 
 export const DAILY_STREAM_COUNTS_TABLE = 'daily_stream_counts'
