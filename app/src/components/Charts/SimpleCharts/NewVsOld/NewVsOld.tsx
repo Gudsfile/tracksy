@@ -31,7 +31,7 @@ export const NewVsOld: FC<Props> = ({ data, isLoading, year }) => {
             title="Fresh vs Familiar"
             emoji="🆕"
             isLoading={isLoading}
-            question="Am I discovering new artists?"
+            question="Do I listen more to new or familiar artists?"
         >
             {!data?.total ? (
                 <ChartCardEmpty />
@@ -48,7 +48,7 @@ export const NewVsOld: FC<Props> = ({ data, isLoading, year }) => {
                                 <div className="text-2xl font-bold text-brand-purple">
                                     {newPct.toFixed(0)}%
                                 </div>
-                                <div>Discoveries</div>
+                                <div>Fresh</div>
                             </div>
                             <div className="text-2xl" role="separator">
                                 |
@@ -57,7 +57,7 @@ export const NewVsOld: FC<Props> = ({ data, isLoading, year }) => {
                                 <div className="text-2xl font-bold text-brand-blue">
                                     {oldPct.toFixed(0)}%
                                 </div>
-                                <div>Favorites</div>
+                                <div>Familiar</div>
                             </div>
                         </div>
                     </div>

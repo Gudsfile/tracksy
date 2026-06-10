@@ -162,11 +162,9 @@ test('has title and can upload dataset', async ({ page }) => {
         await expect(freshVsFamiliarCard).toBeVisible()
         await expect.soft(freshVsFamiliarCard.getByText('Comfort Listener', { exact: true })).toBeVisible()
         await expect.soft(freshVsFamiliarCard.getByText('6 new artists discovered this year!')).toBeVisible()
+        await expect.soft(freshVsFamiliarCard.getByRole('listitem').filter({ hasText: 'Fresh' })).toContainText('3%')
         await expect
-            .soft(freshVsFamiliarCard.getByRole('listitem').filter({ hasText: 'Discoveries' }))
-            .toContainText('3%')
-        await expect
-            .soft(freshVsFamiliarCard.getByRole('listitem').filter({ hasText: 'Favorites' }))
+            .soft(freshVsFamiliarCard.getByRole('listitem').filter({ hasText: 'Familiar' }))
             .toContainText('97%')
     })
 
