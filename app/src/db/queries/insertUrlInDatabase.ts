@@ -1,5 +1,5 @@
 import { getDB } from '../getDB'
-import { TABLE } from './constants'
+import { RAW_TABLE, TABLE } from './constants'
 import { tableFromJSON } from 'apache-arrow'
 import { detectProvider } from '../../streamProvider'
 import { precomputeDerivedTables } from '../precompute'
@@ -29,9 +29,10 @@ export async function insertUrlInDatabase(jsonUrl: URL) {
     const arrowTableContent = tableFromJSON(records)
 
     const { conn } = await getDB()
-    await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
+    await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
+    await conn.query(`DROP TABLE IF EXISTS ${RAW_TABLE}`)
     await conn.insertArrowTable(arrowTableContent, {
-        name: TABLE,
+        name: RAW_TABLE,
         create: true,
     })
 

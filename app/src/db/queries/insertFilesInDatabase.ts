@@ -1,5 +1,5 @@
 import { getDB } from '../getDB'
-import { TABLE } from './constants'
+import { RAW_TABLE, TABLE } from './constants'
 import { tableFromJSON } from 'apache-arrow'
 import { detectProvider } from '../../streamProvider'
 import type { StreamRecord } from '../../streamProvider/types'
@@ -45,15 +45,16 @@ export async function insertFilesInDatabase(files: FileList) {
 
     const { conn } = await getDB()
 
-    await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
-    console.debug(`Table ${TABLE} dropped.`)
+    await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
+    await conn.query(`DROP TABLE IF EXISTS ${RAW_TABLE}`)
+    console.debug(`Table ${RAW_TABLE} dropped.`)
 
     await conn.insertArrowTable(arrowTableContent, {
-        name: TABLE,
+        name: RAW_TABLE,
         create: true,
     })
     console.debug(
-        `Table ${TABLE} created with ${allStreamRecords.length} records.`
+        `Table ${RAW_TABLE} created with ${allStreamRecords.length} records.`
     )
 
     await precomputeDerivedTables(conn)
