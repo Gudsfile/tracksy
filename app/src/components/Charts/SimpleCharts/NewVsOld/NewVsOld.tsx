@@ -8,9 +8,10 @@ import { InsightCard } from '../shared/InsightCard'
 type Props = {
     data: NewVsOldResult | undefined
     isLoading?: boolean
+    year?: number
 }
 
-export const NewVsOld: FC<Props> = ({ data, isLoading }) => {
+export const NewVsOld: FC<Props> = ({ data, isLoading, year }) => {
     const newPct = data?.total
         ? (data.new_artists_streams / data.total) * 100
         : 0
@@ -74,7 +75,11 @@ export const NewVsOld: FC<Props> = ({ data, isLoading }) => {
 
                     <InsightCard>
                         {data.new_artists_count.toLocaleString()} new artists
-                        discovered this year!
+                        discovered
+                        {year !== undefined
+                            ? ' this year'
+                            : ' in your latest year'}
+                        !
                     </InsightCard>
                 </>
             )}

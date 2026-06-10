@@ -23,7 +23,7 @@ describe('NewVsOld Component', () => {
         screen.getByText('No data for this year')
     })
 
-    it('renders correctly with data', async () => {
+    it('renders correctly with a specific year', async () => {
         const data = {
             new_artists_streams: 30,
             old_artists_streams: 70,
@@ -31,12 +31,25 @@ describe('NewVsOld Component', () => {
             total: 100,
         }
 
-        render(<NewVsOld data={data} />)
+        render(<NewVsOld data={data} year={2025} />)
 
         screen.getByRole('heading', { name: /🆕Fresh vs Familiar/ })
         screen.getByText('30%')
         screen.getByText('70%')
-        screen.getByText(/5 new artists discovered/)
+        screen.getByText(/5 new artists discovered this year/)
+    })
+
+    it('renders with "latest year" label when year is undefined (all time)', async () => {
+        const data = {
+            new_artists_streams: 30,
+            old_artists_streams: 70,
+            new_artists_count: 5,
+            total: 100,
+        }
+
+        render(<NewVsOld data={data} year={undefined} />)
+
+        screen.getByText(/5 new artists discovered in your latest year/)
     })
 
     it('renders Trend Hunter when new artists dominate', () => {
