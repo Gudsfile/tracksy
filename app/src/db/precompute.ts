@@ -1,4 +1,5 @@
 import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
+import { getStoredTimezone } from './timezoneStorage'
 import {
     RAW_TABLE,
     TABLE,
@@ -25,7 +26,7 @@ const TOTAL_STEPS = 1 + DERIVED_TABLES.length
 
 export async function precomputeDerivedTables(
     conn: AsyncDuckDBConnection,
-    tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+    tz: string = getStoredTimezone(),
     onProgress?: OnProgress
 ): Promise<void> {
     await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
