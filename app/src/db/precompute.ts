@@ -1,4 +1,5 @@
 import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
+import { getStoredTimezone } from './timezoneStorage'
 import {
     RAW_TABLE,
     TABLE,
@@ -21,7 +22,7 @@ const DERIVED_TABLES = [
 
 export async function precomputeDerivedTables(
     conn: AsyncDuckDBConnection,
-    tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone
+    tz: string = getStoredTimezone()
 ): Promise<void> {
     await conn.query(
         `CREATE OR REPLACE VIEW ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
