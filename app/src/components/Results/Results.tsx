@@ -1,8 +1,16 @@
-import { LabView } from '../Charts/LabView'
+import { lazy, Suspense, useState } from 'react'
 import { SimpleView } from '../Charts/SimpleView'
-import { ChatView } from '../Charts/ChatView'
-import { QueryView } from '../Charts/QueryView'
-import { useState } from 'react'
+import { Spinner } from '../Spinner/Spinner'
+
+const LabView = lazy(() =>
+    import('../Charts/LabView').then((m) => ({ default: m.LabView }))
+)
+const ChatView = lazy(() =>
+    import('../Charts/ChatView').then((m) => ({ default: m.ChatView }))
+)
+const QueryView = lazy(() =>
+    import('../Charts/QueryView').then((m) => ({ default: m.QueryView }))
+)
 
 type Tab = 'simple' | 'lab' | 'chat' | 'query'
 
@@ -65,15 +73,23 @@ export function Results() {
             </div>
 
             <div>
-                {activeTab === 'simple' ? (
-                    <SimpleView />
-                ) : activeTab === 'lab' ? (
-                    <LabView />
-                ) : activeTab === 'query' ? (
-                    <QueryView />
-                ) : (
-                    <ChatView />
-                )}
+                <Suspense
+                    fallback={
+                        <div className="flex justify-center py-12">
+                            <Spinner />
+                        </div>
+                    }
+                >
+                    {activeTab === 'simple' ? (
+                        <SimpleView />
+                    ) : activeTab === 'lab' ? (
+                        <LabView />
+                    ) : activeTab === 'query' ? (
+                        <QueryView />
+                    ) : (
+                        <ChatView />
+                    )}
+                </Suspense>
             </div>
         </div>
     )
