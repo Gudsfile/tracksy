@@ -29,18 +29,16 @@ describe('Results Component', () => {
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
     })
 
-    it('switches to simple view when Simple button is clicked', async () => {
+    it('switches to lab view when Lab button is clicked', async () => {
         render(<Results />)
-        const simpleButton = screen.getByRole('tab', {
+        const labButton = screen.getByRole('tab', {
             name: '🔬 Lab',
         })
 
-        fireEvent.click(simpleButton)
+        fireEvent.click(labButton)
 
-        // Lab view content should be visible
-        screen.queryByText(/Work in Progress/i)
-
-        // We can check if RangeSlider is present (common) but distinguishing is key.
+        // Lab view is lazy-loaded; wait for it
+        await screen.findByText(/Work in Progress/i)
     })
 
     it('switches to query view when Query button is clicked', async () => {
@@ -48,24 +46,24 @@ describe('Results Component', () => {
 
         fireEvent.click(screen.getByRole('tab', { name: '⌨️ Query' }))
 
-        screen.getByText('⌨️ DuckDB Shell')
+        await screen.findByText('⌨️ DuckDB Shell')
     })
 
-    it('switches to lab view when Lab View button is clicked', async () => {
+    it('switches back to simple view from lab view', async () => {
         render(<Results />)
 
         // First switch to lab view
-        const simpleButton = screen.getByRole('tab', {
+        const labButton = screen.getByRole('tab', {
             name: '🔬 Lab',
         })
-        fireEvent.click(simpleButton)
-        screen.getByText(/Work in Progress/i)
+        fireEvent.click(labButton)
+        await screen.findByText(/Work in Progress/i)
 
         // Then switch back to simple view
-        const labButton = screen.getByRole('tab', {
+        const simpleButton = screen.getByRole('tab', {
             name: '✨ Simple',
         })
-        fireEvent.click(labButton)
+        fireEvent.click(simpleButton)
 
         // Lab View content should not be visible again
         expect(screen.queryByText(/Work in Progress/i)).toBeNull()
