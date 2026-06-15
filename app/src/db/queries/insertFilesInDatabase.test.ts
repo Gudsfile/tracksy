@@ -6,7 +6,7 @@ import * as adapters from '../../streamProvider'
 import * as precompute from '../precompute'
 import * as dataSignal from '../dataSignal'
 
-import { RAW_TABLE, TABLE } from './constants'
+import { RAW_TABLE } from './constants'
 
 import { mockDB, mockStreamProviderWithSpy } from './__tests__/test-utils'
 
@@ -177,10 +177,7 @@ describe('insertFilesInDatabase', () => {
             expect(processFileSpy1).toHaveBeenCalledTimes(1)
             expect(processFileSpy2).toHaveBeenCalledTimes(1)
 
-            expect(connectionMock.query).toHaveBeenCalledTimes(2)
-            expect(connectionMock.query).toHaveBeenCalledWith(
-                `DROP VIEW IF EXISTS ${TABLE}`
-            )
+            expect(connectionMock.query).toHaveBeenCalledTimes(1)
             expect(connectionMock.query).toHaveBeenCalledWith(
                 `DROP TABLE IF EXISTS ${RAW_TABLE}`
             )
@@ -260,10 +257,7 @@ describe('insertFilesInDatabase', () => {
 
             expect(detectProviderSpy).toHaveBeenCalledTimes(2)
 
-            expect(connectionMock.query).toHaveBeenCalledTimes(2)
-            expect(connectionMock.query).toHaveBeenCalledWith(
-                `DROP VIEW IF EXISTS ${TABLE}`
-            )
+            expect(connectionMock.query).toHaveBeenCalledTimes(1)
             expect(connectionMock.query).toHaveBeenCalledWith(
                 `DROP TABLE IF EXISTS ${RAW_TABLE}`
             )

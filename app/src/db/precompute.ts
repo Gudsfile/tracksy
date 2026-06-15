@@ -23,8 +23,10 @@ export async function precomputeDerivedTables(
     conn: AsyncDuckDBConnection,
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone
 ): Promise<void> {
+    await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
+    await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
     await conn.query(
-        `CREATE OR REPLACE VIEW ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
+        `CREATE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
     )
     for (const [name, sql] of DERIVED_TABLES) {
         await conn.query(`DROP TABLE IF EXISTS ${name}`)
