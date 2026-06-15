@@ -8,7 +8,7 @@ import * as dataSignal from '../dataSignal'
 import { mockDB, mockStreamProviderWithSpy } from './__tests__/test-utils'
 
 import type { StreamRecord } from '../../streamProvider/types'
-import { RAW_TABLE, TABLE } from './constants'
+import { RAW_TABLE } from './constants'
 
 describe('insertUrlInDatabase', () => {
     beforeEach(() => {
@@ -120,9 +120,6 @@ describe('insertUrlInDatabase', () => {
             await insertUrlInDatabase(url)
 
             expect(connectionMock.query).toHaveBeenCalledWith(
-                `DROP VIEW IF EXISTS ${TABLE}`
-            )
-            expect(connectionMock.query).toHaveBeenCalledWith(
                 `DROP TABLE IF EXISTS ${RAW_TABLE}`
             )
             expect(connectionMock.insertArrowTable).toHaveBeenCalledTimes(1)
@@ -160,9 +157,6 @@ describe('insertUrlInDatabase', () => {
             await insertUrlInDatabase(url)
 
             expect(processFileSpy).toHaveBeenCalledTimes(1)
-            expect(connectionMock.query).toHaveBeenCalledWith(
-                `DROP VIEW IF EXISTS ${TABLE}`
-            )
             expect(connectionMock.query).toHaveBeenCalledWith(
                 `DROP TABLE IF EXISTS ${RAW_TABLE}`
             )
