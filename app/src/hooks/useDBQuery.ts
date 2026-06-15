@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
-import { DATA_LOADED_EVENT } from '../db/dataSignal'
+import { DATA_LOADED_EVENT, TIMEZONE_CHANGED_EVENT } from '../db/dataSignal'
 
 type DBPrimitive = string | number | null
 type DBRow = Record<string, DBPrimitive>
@@ -32,9 +32,18 @@ export function useDBQueryMany<T extends DBRow>({
             hasLoadedRef.current = false
             setTriggerRefetch((t) => t + 1)
         }
+        const handleTimezoneChanged = () => {
+            setTriggerRefetch((t) => t + 1)
+        }
         window.addEventListener(DATA_LOADED_EVENT, handleDataLoaded)
-        return () =>
+        window.addEventListener(TIMEZONE_CHANGED_EVENT, handleTimezoneChanged)
+        return () => {
             window.removeEventListener(DATA_LOADED_EVENT, handleDataLoaded)
+            window.removeEventListener(
+                TIMEZONE_CHANGED_EVENT,
+                handleTimezoneChanged
+            )
+        }
     }, [])
 
     useEffect(() => {
