@@ -2,6 +2,7 @@ import { renderHook, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useDBQueryFirst, useDBQueryMany } from './useDBQuery'
 import * as queryDB from '../db/queries/queryDB'
+import { clearQueryCache } from '../db/queries/queryDBCached'
 import { DATA_LOADED_EVENT } from '../db/dataSignal'
 
 type User = { id: number; name?: string; year?: number }
@@ -9,6 +10,7 @@ type User = { id: number; name?: string; year?: number }
 describe('useDBQueryMany', () => {
     beforeEach(() => {
         vi.clearAllMocks()
+        clearQueryCache()
     })
 
     it('should start loading initially', () => {
@@ -88,6 +90,7 @@ describe('useDBQueryMany', () => {
 describe('useDBQueryFirst', () => {
     beforeEach(() => {
         vi.clearAllMocks()
+        clearQueryCache()
     })
 
     it('should return only the first row', async () => {
@@ -129,6 +132,7 @@ describe('useDBQueryFirst', () => {
 describe('stale-while-revalidate', () => {
     beforeEach(() => {
         vi.clearAllMocks()
+        clearQueryCache()
     })
 
     it('keeps isLoading false during refetch after initial load', async () => {
@@ -210,6 +214,7 @@ describe('stale-while-revalidate', () => {
 describe('shared behavior', () => {
     beforeEach(() => {
         vi.clearAllMocks()
+        clearQueryCache()
     })
 
     it('should refetch when year changes', async () => {

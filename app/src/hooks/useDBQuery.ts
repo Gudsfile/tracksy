@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { queryDBAsJSON } from '../db/queries/queryDB'
+import { queryDBCached, getCachedResult } from '../db/queries/queryDBCached'
 import { DATA_LOADED_EVENT } from '../db/dataSignal'
 import { resolveCallerSource } from '../devToolbar/resolveCallerSource'
 
@@ -22,11 +22,12 @@ export function useDBQueryMany<T extends DBRow>({
     year,
 }: BaseOptions): UseDBQueryResult<T[]> {
     const source = resolveCallerSource()
-    const [data, setData] = useState<T[] | undefined>(undefined)
-    const [isLoading, setIsLoading] = useState(true)
+    const cachedInitial = getCachedResult<T>(query)
+    const [data, setData] = useState<T[] | undefined>(cachedInitial)
+    const [isLoading, setIsLoading] = useState(cachedInitial === undefined)
     const [error, setError] = useState<Error | undefined>(undefined)
     const requestIdRef = useRef(0)
-    const hasLoadedRef = useRef(false)
+    const hasLoadedRef = useRef(cachedInitial !== undefined)
     const [triggerRefetch, setTriggerRefetch] = useState(0)
 
     useEffect(() => {
@@ -42,12 +43,21 @@ export function useDBQueryMany<T extends DBRow>({
     useEffect(() => {
         const id = ++requestIdRef.current
 
+        const cached = getCachedResult<T>(query)
+        if (cached) {
+            setData(cached)
+            setError(undefined)
+            setIsLoading(false)
+            hasLoadedRef.current = true
+            return
+        }
+
         const fetchData = async () => {
             setIsLoading(!hasLoadedRef.current)
             setError(undefined)
 
             try {
-                const rows = await queryDBAsJSON<T>(query, source)
+                const rows = await queryDBCached<T>(query, source)
                 if (id === requestIdRef.current) {
                     setData(rows)
                     hasLoadedRef.current = true
