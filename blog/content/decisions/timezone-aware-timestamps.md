@@ -85,18 +85,41 @@ Store raw data in `music_streams_raw` (UTC, never modified). Create a DuckDB vie
 
 - View must be recreated whenever the timezone offset changes, which also triggers a precompute rebuild
 - The timezone approximation remains imperfect: users who listened in multiple timezones (travel, relocation) will still see some misattributed streams
+- **DuckDB cannot push date-range predicates (e.g. `year(ts::date) = N`) through the `AT TIME ZONE` shift because of date-boundary correctness, so every chart query pays a full scan plus per-row conversion. Measured impact on a real dataset: queries went from ~300 ms to ~2000 ms (6-7x regression) after switching to the view.**
+
+### Option 6: Materialized table `music_streams` built from `music_streams_raw`
+
+Same shape as Option 5, but `music_streams` is a real table created during `precomputeDerivedTables` via `CREATE TABLE music_streams AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM music_streams_raw`. Chart SQL and derived tables remain unchanged because they reference the same `music_streams` name.
+
+**Pros:**
+
+- Zero changes to existing SQL files (same as Option 5)
+- Raw UTC data preserved in `music_streams_raw`, fully reversible
+- Timezone conversion is paid **once at precompute time** instead of on every query: chart query latency returns to the pre-feature baseline (~300 ms range on the reference dataset)
+- Derived tables (`daily_stream_counts`, `stream_sessions`, …) build from a real table, avoiding the same predicate-pushdown limitation during precompute
+
+**Cons:**
+
+- WASM memory now holds both `music_streams_raw` and the materialized `music_streams` (roughly 2x the stream-data footprint). For typical datasets in the 100k-500k row range this is on the order of tens of MB, acceptable client-side
+- A timezone change still triggers a full precompute rebuild (same as Option 5), now slightly more expensive because the main table is rematerialized in addition to the derived tables
 
 ## Decision Outcome
 
-Chosen option: **Option 5 — DuckDB view**, because it requires zero changes to existing SQL queries, preserves the raw UTC data as an immutable source of truth, and reuses the existing precompute lifecycle. The timezone offset defaults to the browser's local timezone (`Intl.DateTimeFormat().resolvedOptions().timeZone`) and can be overridden in settings.
+Chosen option: **Option 6 — Materialized table**.
+
+Option 5 (view) was chosen first because it avoided SQL changes and kept the raw data immutable. Both properties also hold for Option 6: chart SQL is unchanged, and `music_streams_raw` remains the untouched source of truth. The pivot is driven by the measured 6-7x query-latency regression introduced by per-row `AT TIME ZONE` evaluation in the view. Paying the conversion once at precompute restores the pre-feature baseline at the cost of a modest extra memory footprint, which is the right trade-off in a client-side WASM context where query responsiveness directly drives the user experience.
+
+The timezone offset defaults to the browser's local timezone (`Intl.DateTimeFormat().resolvedOptions().timeZone`) and can be overridden in settings.
 
 ### Consequences
 
 * Good, because all existing chart queries work without modification
 * Good, because the raw data is never mutated and the offset can be changed or removed at any time
+* Good, because chart query latency stays close to the pre-feature baseline (no per-query timezone conversion)
 * Good, because the override mechanism (settings UI + precompute rebuild) is self-contained and client-side
 * Bad, because users who consumed music across multiple timezones will still see approximated results — this limitation is documented in the UI with an informational message on time-sensitive charts
-* Bad, because a timezone change triggers a full precompute rebuild, which adds latency in the settings flow
+* Bad, because a timezone change triggers a full precompute rebuild (including rematerialization of `music_streams`), which adds latency in the settings flow
+* Bad, because WASM memory carries both the raw and the timezone-adjusted copy of the stream data
 
 ## More Information
 
