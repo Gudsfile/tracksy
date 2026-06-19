@@ -34,6 +34,7 @@ export function ChatView() {
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const [streamingNarrative, setStreamingNarrative] = useState('')
     const streamingMsgIdRef = useRef<string | null>(null)
+    const messagesRef = useRef(messages)
     const bottomRef = useRef<HTMLDivElement>(null)
 
     const { state, ensureLoaded, ask, cancel } = useChatEngine()
@@ -46,6 +47,10 @@ export function ChatView() {
         window.addEventListener(DATA_LOADED_EVENT, handler)
         return () => window.removeEventListener(DATA_LOADED_EVENT, handler)
     }, [])
+
+    useEffect(() => {
+        messagesRef.current = messages
+    }, [messages])
 
     // Scroll to bottom whenever messages change
     useEffect(() => {
@@ -85,7 +90,7 @@ export function ChatView() {
             setMessages((prev) => [...prev, userMsg])
             setIsAsking(true)
 
-            const result = await ask(text, [...messages, userMsg])
+            const result = await ask(text, [...messagesRef.current, userMsg])
 
             const payload: AssistantPayload = result.payload
 
@@ -103,11 +108,8 @@ export function ChatView() {
                 payload,
             }
 
-            if (
-                payload.kind === 'ok' &&
-                payload.answer.intent === 'custom' &&
-                result.rows
-            ) {
+            // Every successful answer renders from its executed SQL rows.
+            if (payload.kind === 'ok' && result.rows) {
                 setCustomRows((prev) => {
                     const next = new Map(prev)
                     next.set(assistantMsgId, result.rows!)
@@ -118,7 +120,8 @@ export function ChatView() {
             setMessages((prev) => [...prev, assistantMsg])
             setIsAsking(false)
 
-            // Stream narrative below the chart
+            // Stream the narrative above the chart (desktop only; absent on
+            // mobile, where the static explanation is shown instead).
             if (result.streamNarrator) {
                 streamingMsgIdRef.current = assistantMsgId
                 setStreamingNarrative('')
@@ -142,7 +145,7 @@ export function ChatView() {
                 )
             }
         },
-        [state.kind, ensureLoaded, ask, messages]
+        [state.kind, ensureLoaded, ask]
     )
 
     const isReady = state.kind === 'ready'

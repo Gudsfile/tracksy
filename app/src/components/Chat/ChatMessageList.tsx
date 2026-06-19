@@ -1,6 +1,6 @@
 import type { AssistantPayload, ChatMessage } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
-import { ChatChartRouter } from './ChatChartRouter'
+import { CustomChart } from './CustomChart'
 import { useQueryTab } from '../Results/QueryTabContext'
 
 type ChatMessageListProps = {
@@ -13,7 +13,7 @@ type ChatMessageListProps = {
 
 function SqlBlock({ sql }: { sql: string }) {
     return (
-        <details open className="text-xs mt-2">
+        <details className="text-xs mt-2">
             <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
                 🔍 Generated SQL
             </summary>
@@ -111,35 +111,38 @@ function AssistantCard({
     const openInQueryTab = useQueryTab()
     return (
         <div className="space-y-2">
-            {narrative && (
+            {narrative ? (
                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
                     {narrative}
                 </p>
-            )}
-            {!narrative && streamingNarrative && (
+            ) : streamingNarrative ? (
                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
                     {streamingNarrative}
                     <span className="animate-pulse">▌</span>
                 </p>
+            ) : (
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+                    {answer.explanation}
+                </p>
             )}
-            <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
-            <div className="flex items-center justify-between text-xs">
-                <details open className="flex-1">
-                    <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
-                        ℹ️ {answer.explanation}
-                    </summary>
-                    <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
-                        {answer.sql}
-                    </pre>
-                </details>
-                <button
-                    onClick={() => openInQueryTab(answer.sql)}
-                    aria-label="Open in Query tab"
-                    className="ml-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 shrink-0"
-                >
-                    ⌨️
-                </button>
-            </div>
+            <CustomChart
+                title={answer.title}
+                rows={customRows.get(msg.id) ?? []}
+            />
+            {answer.sql && (
+                <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                        <SqlBlock sql={answer.sql} />
+                    </div>
+                    <button
+                        onClick={() => openInQueryTab(answer.sql)}
+                        aria-label="Open in Query tab"
+                        className="ml-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 shrink-0"
+                    >
+                        ⌨️
+                    </button>
+                </div>
+            )}
         </div>
     )
 }
