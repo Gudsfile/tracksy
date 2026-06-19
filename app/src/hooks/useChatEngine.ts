@@ -24,7 +24,11 @@ function setAssistantEnabled(): void {
 export type AskResult = {
     payload: AssistantPayload
     rows?: Record<string, string | number | null>[]
-    /** Call after rendering the chart to stream a narrative summary. Present for all successful queries. */
+    /**
+     * Call after rendering the chart to stream a narrative summary of `rows`.
+     * Only attached on capable (non-degraded/desktop) engines — on mobile the
+     * UI shows the static explanation instead. Absent when not available.
+     */
     streamNarrator?: (onChunk: (delta: string) => void) => Promise<string>
 }
 
@@ -80,6 +84,7 @@ export function useChatEngine() {
             userText: string,
             history: ChatMessage[]
         ): Promise<AskResult> => {
+            type QueryResult = Record<string, string | number | null>
             try {
                 if (!moduleRef.current || !askLLMRef.current) {
                     return {
@@ -98,43 +103,9 @@ export function useChatEngine() {
                     abortRef.current.signal
                 )
 
-                if (answer.intent !== 'custom') {
-                    const capturedEngine = engine
-                    const capturedAnswer = answer
-                    const capturedQuestion = userText
-                    return {
-                        payload: { kind: 'ok', answer },
-                        streamNarrator: async (onChunk) => {
-                            const { askNarrator } =
-                                await import('../llm/askNarrator')
-                            let narratorRows: Record<
-                                string,
-                                string | number | null
-                            >[] = []
-                            try {
-                                const validation = validateSql(
-                                    capturedAnswer.sql ?? ''
-                                )
-                                if (validation.ok) {
-                                    narratorRows = await queryDBAsJSON<
-                                        Record<string, string | number | null>
-                                    >(validation.sql)
-                                }
-                            } catch {
-                                // fall through — narrator uses explanation as fallback
-                            }
-                            return askNarrator(
-                                capturedEngine,
-                                capturedQuestion,
-                                capturedAnswer.sql,
-                                narratorRows,
-                                onChunk,
-                                capturedAnswer.explanation
-                            )
-                        },
-                    }
-                }
-
+                // Unified path: every answer's SQL is validated and executed
+                // exactly once. The chart, the narrative, and the displayed SQL
+                // all read from this single result set, so they cannot disagree.
                 const validation = validateSql(answer.sql ?? '')
                 if (!validation.ok) {
                     return {
@@ -147,11 +118,9 @@ export function useChatEngine() {
                 }
 
                 let finalAnswer = { ...answer, sql: validation.sql }
-                let rows: Record<string, string | number | null>[]
+                let rows: QueryResult[]
                 try {
-                    rows = await queryDBAsJSON<
-                        Record<string, string | number | null>
-                    >(validation.sql)
+                    rows = await queryDBAsJSON<QueryResult>(validation.sql)
                 } catch (firstErr) {
                     // Retry once: feed the error back to the LLM so it can correct the SQL
                     try {
@@ -171,9 +140,9 @@ export function useChatEngine() {
                             }
                         }
                         finalAnswer = { ...retried, sql: retryValidation.sql }
-                        rows = await queryDBAsJSON<
-                            Record<string, string | number | null>
-                        >(retryValidation.sql)
+                        rows = await queryDBAsJSON<QueryResult>(
+                            retryValidation.sql
+                        )
                     } catch (e) {
                         return {
                             payload: {
@@ -186,26 +155,30 @@ export function useChatEngine() {
                     }
                 }
 
-                const capturedEngine = engine
-                const capturedQuestion = userText
-                const capturedSql = finalAnswer.sql
-                const capturedRows = rows
-
-                return {
+                const result: AskResult = {
                     payload: { kind: 'ok', answer: finalAnswer },
                     rows,
-                    streamNarrator: async (onChunk) => {
+                }
+
+                // Narrative streams only on capable (desktop) engines. The small
+                // mobile coder model hallucinates prose, so degraded engines fall
+                // back to the static explanation rendered by the UI.
+                if (!isDegraded) {
+                    result.streamNarrator = async (onChunk) => {
                         const { askNarrator } =
                             await import('../llm/askNarrator')
                         return askNarrator(
-                            capturedEngine,
-                            capturedQuestion,
-                            capturedSql,
-                            capturedRows,
-                            onChunk
+                            engine,
+                            userText,
+                            finalAnswer.sql,
+                            rows,
+                            onChunk,
+                            finalAnswer.explanation
                         )
-                    },
+                    }
                 }
+
+                return result
             } catch (e) {
                 if (e instanceof LLMError && e.kind === 'aborted') {
                     return { payload: { kind: 'aborted' } }
@@ -218,7 +191,7 @@ export function useChatEngine() {
                 }
             }
         },
-        []
+        [isDegraded]
     )
 
     const cancel = useCallback(() => {
