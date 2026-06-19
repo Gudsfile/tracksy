@@ -1,6 +1,6 @@
 import type { AssistantPayload, ChatMessage } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
-import { ChatChartRouter } from './ChatChartRouter'
+import { CustomChart } from './CustomChart'
 
 type ChatMessageListProps = {
     messages: ChatMessage[]
@@ -12,7 +12,7 @@ type ChatMessageListProps = {
 
 function SqlBlock({ sql }: { sql: string }) {
     return (
-        <details open className="text-xs mt-2">
+        <details className="text-xs mt-2">
             <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
                 🔍 Generated SQL
             </summary>
@@ -97,28 +97,30 @@ function AssistantCard({
         AssistantPayload,
         { kind: 'ok' }
     >
+    // Narrative line, in priority order: the settled LLM narrative (desktop),
+    // the live streaming tokens (desktop, mid-stream), else the deterministic
+    // static explanation (mobile / before the first token — never hallucinated).
     return (
         <div className="space-y-2">
-            {narrative && (
+            {narrative ? (
                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
                     {narrative}
                 </p>
-            )}
-            {!narrative && streamingNarrative && (
+            ) : streamingNarrative ? (
                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
                     {streamingNarrative}
                     <span className="animate-pulse">▌</span>
                 </p>
+            ) : (
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+                    {answer.explanation}
+                </p>
             )}
-            <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
-            <details open className="text-xs">
-                <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
-                    ℹ️ {answer.explanation}
-                </summary>
-                <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
-                    {answer.sql}
-                </pre>
-            </details>
+            <CustomChart
+                title={answer.title}
+                rows={customRows.get(msg.id) ?? []}
+            />
+            {answer.sql && <SqlBlock sql={answer.sql} />}
         </div>
     )
 }
