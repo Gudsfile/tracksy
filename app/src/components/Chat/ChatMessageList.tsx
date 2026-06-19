@@ -1,6 +1,6 @@
 import type { AssistantPayload, ChatMessage } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
-import { CustomChart } from './CustomChart'
+import { ChatChartRouter } from './ChatChartRouter'
 
 type ChatMessageListProps = {
     messages: ChatMessage[]
@@ -100,26 +100,15 @@ function AssistantCard({
     // Narrative line, in priority order: the settled LLM narrative (desktop),
     // the live streaming tokens (desktop, mid-stream), else the deterministic
     // static explanation (mobile / before the first token — never hallucinated).
+    const narrativeText = narrative ?? streamingNarrative ?? answer.explanation
+    const isStreaming = !narrative && !!streamingNarrative
     return (
         <div className="space-y-2">
-            {narrative ? (
-                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
-                    {narrative}
-                </p>
-            ) : streamingNarrative ? (
-                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
-                    {streamingNarrative}
-                    <span className="animate-pulse">▌</span>
-                </p>
-            ) : (
-                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
-                    {answer.explanation}
-                </p>
-            )}
-            <CustomChart
-                title={answer.title}
-                rows={customRows.get(msg.id) ?? []}
-            />
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+                {narrativeText}
+                {isStreaming && <span className="animate-pulse">▌</span>}
+            </p>
+            <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
             {answer.sql && <SqlBlock sql={answer.sql} />}
         </div>
     )
