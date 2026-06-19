@@ -16,7 +16,7 @@ export type ChatAnswer = {
 export type ChatRole = 'user' | 'assistant'
 
 export type AssistantPayload =
-    | { kind: 'ok'; answer: ChatAnswer }
+    | { kind: 'ok'; answer: ChatAnswer; narrative?: string }
     | { kind: 'unsafe-sql'; answer: ChatAnswer; reason: string }
     | { kind: 'sql-error'; answer: ChatAnswer; error: string }
     | { kind: 'llm-error'; error: string }
