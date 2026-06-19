@@ -109,7 +109,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: CURRENT_YEAR - 1 },
             title: `Top tracks ${CURRENT_YEAR - 1}`,
             explanation: `Most-played tracks during ${CURRENT_YEAR - 1}.`,
-            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR - 1} AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 5`,
+            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR - 1} AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 5`,
         }),
     },
     {
@@ -119,7 +119,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: 2023, limit: 10 },
             title: 'Top 10 tracks in 2023',
             explanation: 'Most-played tracks during 2023.',
-            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams FROM ${TABLE} WHERE EXTRACT(year FROM ts) = 2023 AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 10`,
+            sql: `SELECT track_name, artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} WHERE EXTRACT(year FROM ts) = 2023 AND track_name IS NOT NULL GROUP BY track_name, artist_name ORDER BY count_streams DESC LIMIT 10`,
         }),
     },
     {
@@ -129,7 +129,7 @@ export const FEW_SHOTS: FewShot[] = [
             params: { year: CURRENT_YEAR },
             title: 'Listening calendar',
             explanation: 'Daily listening intensity across the calendar year.',
-            sql: `SELECT ts::date AS day, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY day`,
+            sql: `SELECT ts::date AS stream_date, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY stream_date`,
         }),
     },
     {
@@ -193,6 +193,59 @@ export const FEW_SHOTS: FewShot[] = [
             explanation:
                 'Distribution of listening across platforms and devices.',
             sql: `SELECT platform, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE platform IS NOT NULL GROUP BY platform ORDER BY stream_count DESC LIMIT 5`,
+        }),
+    },
+    {
+        user: 'My top albums of all time',
+        assistant: JSON.stringify({
+            intent: 'top_albums',
+            params: {},
+            title: 'Top albums',
+            explanation: 'Albums ranked by total stream count.',
+            sql: `SELECT album_name, artist_name, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} WHERE album_name IS NOT NULL GROUP BY album_name, artist_name ORDER BY count_streams DESC LIMIT 5`,
+        }),
+    },
+    {
+        user: 'What hours of the day do I listen most?',
+        assistant: JSON.stringify({
+            intent: 'streams_per_hour',
+            params: {},
+            title: 'Streams by hour',
+            explanation: 'Number of streams for each hour of the day.',
+            sql: `SELECT EXTRACT(hour FROM ts)::INTEGER AS play_hour, COUNT(*)::DOUBLE AS count_streams, SUM(ms_played)::DOUBLE AS ms_played FROM ${TABLE} GROUP BY play_hour ORDER BY play_hour`,
+        }),
+    },
+    {
+        user: 'Am I a morning or a night listener?',
+        assistant: JSON.stringify({
+            intent: 'listening_rhythm',
+            params: {},
+            title: 'Listening rhythm',
+            explanation:
+                'Share of listening across morning, afternoon, evening and night.',
+            sql: `SELECT COUNT(*) FILTER (WHERE EXTRACT(hour FROM ts) BETWEEN 6 AND 11)::DOUBLE AS morning, COUNT(*) FILTER (WHERE EXTRACT(hour FROM ts) BETWEEN 12 AND 17)::DOUBLE AS afternoon, COUNT(*) FILTER (WHERE EXTRACT(hour FROM ts) BETWEEN 18 AND 23)::DOUBLE AS evening, COUNT(*) FILTER (WHERE EXTRACT(hour FROM ts) BETWEEN 0 AND 5)::DOUBLE AS night, COUNT(*)::DOUBLE AS total FROM ${TABLE}`,
+        }),
+    },
+    {
+        user: 'How does my listening change by season?',
+        assistant: JSON.stringify({
+            intent: 'seasonal_patterns',
+            params: {},
+            title: 'Seasonal patterns',
+            explanation:
+                'Share of listening across winter, spring, summer and fall.',
+            sql: `SELECT COUNT(*) FILTER (WHERE EXTRACT(month FROM ts) IN (12, 1, 2))::DOUBLE AS winter, COUNT(*) FILTER (WHERE EXTRACT(month FROM ts) IN (3, 4, 5))::DOUBLE AS spring, COUNT(*) FILTER (WHERE EXTRACT(month FROM ts) IN (6, 7, 8))::DOUBLE AS summer, COUNT(*) FILTER (WHERE EXTRACT(month FROM ts) IN (9, 10, 11))::DOUBLE AS fall, COUNT(*)::DOUBLE AS total FROM ${TABLE}`,
+        }),
+    },
+    {
+        user: 'Which weekday do I listen the most?',
+        assistant: JSON.stringify({
+            intent: 'favorite_weekday',
+            params: {},
+            title: 'Favorite weekday',
+            explanation:
+                'Streams per weekday with the share each day represents.',
+            sql: `SELECT dayname(ts) AS day_name, COUNT(*)::DOUBLE AS stream_count, SUM(ms_played)::DOUBLE AS ms_played, (COUNT(*) * 100.0 / SUM(COUNT(*)) OVER ())::DOUBLE AS pct FROM ${TABLE} GROUP BY day_name ORDER BY stream_count DESC`,
         }),
     },
 ]
