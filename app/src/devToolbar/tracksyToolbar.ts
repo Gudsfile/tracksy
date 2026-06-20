@@ -54,6 +54,7 @@ export default defineToolbarApp({
 
         // --- State ---
         const queries: DuckDBEntry[] = []
+        let totalQueries = 0
         let loadState: DevBusEventMap['webllm:load'] | null = null
         let lastInference: InferenceEntry | null = null
         let lastStream:
@@ -112,7 +113,7 @@ export default defineToolbarApp({
         function render(): void {
             sections.innerHTML = `
           <div class="section">
-            <div class="section-header">DuckDB — ${queries.length} queries</div>
+            <div class="section-header">DuckDB — ${totalQueries > MAX_QUERIES ? `last ${MAX_QUERIES} of ${totalQueries} queries` : `${totalQueries} ${totalQueries === 1 ? 'query' : 'queries'}`}</div>
             <div class="section-body">${renderDuckDB()}</div>
           </div>
           <div class="section">
@@ -139,6 +140,7 @@ export default defineToolbarApp({
 
         listen('duckdb:query', (d) => {
             queries.push({ ...d, ts: Date.now() })
+            totalQueries++
             if (queries.length > MAX_QUERIES) queries.shift()
             render()
         })
