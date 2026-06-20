@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
 import * as db from '../getDB'
+import * as devBusModule from '../../devToolbar/devBus'
 import { queryDBAsJSON } from './queryDB'
 
 describe('queryDBAsJSON', () => {
@@ -13,6 +14,7 @@ describe('queryDBAsJSON', () => {
             conn: mockConnection,
             db: {} as unknown as AsyncDuckDB,
         })
+        vi.spyOn(devBusModule.devBus, 'emit').mockImplementation(() => {})
         vi.clearAllMocks()
     })
 
@@ -38,5 +40,37 @@ describe('queryDBAsJSON', () => {
 
         expect(mockConnection.query).toHaveBeenCalledWith(query)
         expect(result).toEqual(mockData)
+    })
+
+    it('emits duckdb:query event with source when provided', async () => {
+        const mockTable = {
+            toArray: () => [{ toJSON: () => ({ x: 1 }) }],
+        }
+        ;(mockConnection.query as ReturnType<typeof vi.fn>).mockResolvedValue(
+            mockTable
+        )
+
+        await queryDBAsJSON('SELECT 1', 'MyComponent')
+
+        expect(devBusModule.devBus.emit).toHaveBeenCalledWith(
+            'duckdb:query',
+            expect.objectContaining({ source: 'MyComponent' })
+        )
+    })
+
+    it('emits duckdb:query event with source=undefined when not provided and no components/ frame in stack', async () => {
+        const mockTable = {
+            toArray: () => [],
+        }
+        ;(mockConnection.query as ReturnType<typeof vi.fn>).mockResolvedValue(
+            mockTable
+        )
+
+        await queryDBAsJSON('SELECT 1')
+
+        expect(devBusModule.devBus.emit).toHaveBeenCalledWith(
+            'duckdb:query',
+            expect.objectContaining({ source: undefined })
+        )
     })
 })

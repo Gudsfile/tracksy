@@ -72,6 +72,22 @@ describe('devBus', () => {
         expect(calls).toHaveLength(1)
     })
 
+    it('passes source field through for duckdb:query', () => {
+        vi.stubEnv('DEV', true)
+
+        const received: unknown[] = []
+        const off = devBus.on('duckdb:query', (d) => received.push(d))
+        devBus.emit('duckdb:query', {
+            sql: 'SELECT 1',
+            durationMs: 1,
+            rowCount: 1,
+            source: 'StreamDiscovery',
+        })
+        off()
+
+        expect(received[0]).toMatchObject({ source: 'StreamDiscovery' })
+    })
+
     it('passes error field through for duckdb:query', () => {
         vi.stubEnv('DEV', true)
 
