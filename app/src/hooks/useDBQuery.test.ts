@@ -41,7 +41,10 @@ describe('useDBQueryMany', () => {
 
         expect(result.current.isLoading).toBe(false)
         expect(result.current.error).toBeUndefined()
-        expect(queryDB.queryDBAsJSON).toHaveBeenCalledWith('SELECT * FROM test')
+        expect(queryDB.queryDBAsJSON).toHaveBeenCalledWith(
+            'SELECT * FROM test',
+            undefined
+        )
     })
 
     it('should return empty array when DB returns empty', async () => {
