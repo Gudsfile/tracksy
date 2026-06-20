@@ -6,7 +6,7 @@ const PREFIX = 'tracksy:dev:'
 type DuckDBEntry = DevBusEventMap['duckdb:query'] & { ts: number }
 type InferenceEntry = DevBusEventMap['webllm:inference'] & { ts: number }
 
-const MAX_QUERIES = 20
+const MAX_QUERIES = 50
 
 // Styles for slot content inside astro-dev-toolbar-window.
 // Positioning, background, border, shadow, and z-index are all owned by the
