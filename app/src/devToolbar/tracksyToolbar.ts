@@ -23,6 +23,7 @@ const STYLES = `
   .badge-time { background: #1d4ed8; color: #bfdbfe; }
   .badge-rows { background: #166534; color: #bbf7d0; }
   .badge-error { background: #991b1b; color: #fecaca; }
+  .source { color: rgba(148, 163, 184, 0.5); white-space: nowrap; font-size: 10px; min-width: 80px; }
   .kv { display: flex; gap: 8px; align-items: center; }
   .kv-label { color: rgba(148, 163, 184, 1); }
   .kv-value { color: #f8fafc; font-weight: 600; font-family: ui-monospace, monospace; }
@@ -76,6 +77,7 @@ export default defineToolbarApp({
                 .map(
                     (q) => `
               <div class="row">
+                ${q.source ? `<span class="source">${q.source}</span>` : ''}
                 <span class="sql" title="${q.sql.replace(/"/g, '&quot;')}">${q.sql}</span>
                 <span class="badge badge-time">${fmt(q.durationMs)}</span>
                 <span class="badge badge-rows">${q.rowCount} rows</span>
