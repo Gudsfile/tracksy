@@ -19,7 +19,7 @@ jobs:
       PUBLIC_DEMO_JSON_URL: ${{ vars.PUBLIC_DEMO_JSON_URL }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
