@@ -116,6 +116,17 @@ describe('useChatEngine.ask (unified SQL path)', () => {
         expect(mobile.streamNarrator).toBeUndefined()
     })
 
+    it('omits streamNarrator when SQL returns empty rows to prevent hallucination', async () => {
+        vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(answer())
+        vi.spyOn(queryDBModule, 'queryDBAsJSON').mockResolvedValue([])
+
+        const result = await ask(await loadedHook())
+
+        expect(result.payload.kind).toBe('ok')
+        expect(result.rows).toEqual([])
+        expect(result.streamNarrator).toBeUndefined()
+    })
+
     it('retries once with the error appended when the first SQL fails', async () => {
         const askSpy = vi
             .spyOn(askLLMModule, 'askLLM')

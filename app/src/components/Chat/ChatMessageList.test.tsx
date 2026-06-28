@@ -180,6 +180,18 @@ describe('ChatMessageList (unified SQL rendering)', () => {
         ).toBeNull()
     })
 
+    it('shows "No results found" and not the explanation when SQL returned empty rows', () => {
+        const { messages, customRows } = okMessages([])
+        render(<ChatMessageList messages={messages} customRows={customRows} />)
+
+        expect(
+            screen.getByText('No results found for this query.')
+        ).toBeTruthy()
+        expect(
+            screen.queryByText('Total number of tracks streamed in 2025.')
+        ).toBeNull()
+    })
+
     it('renders a Retry button on sql-error that re-submits the preceding question', () => {
         const onRetry = vi.fn()
         const messages: ChatMessage[] = [
