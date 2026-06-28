@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { getDB } from '../db/getDB'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
 import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
-import { Spinner } from './Spinner/Spinner'
+import { ProgressBar } from './ProgressBar/ProgressBar'
 import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
 import { DemoButton } from './DemoButton/DemoButton'
 import { HowToButton } from './HowToButton/HowToButton'
@@ -26,8 +26,15 @@ export function TracksyWrapper({
     const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
     const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
     const [uploadError, setUploadError] = useState<string | null>(null)
+    const [loadProgress, setLoadProgress] = useState<{
+        stage: string
+        percent: number
+    } | null>(null)
     const dismissUploadError = useCallback(() => setUploadError(null), [])
-    const { isDemoReady, handleDemoButtonClick, demoJsonUrl } = useDemo()
+    const { isDemoReady, handleDemoButtonClick, demoJsonUrl, demoProgress } =
+        useDemo()
+
+    const activeProgress = loadProgress ?? demoProgress
 
     useEffect(() => {
         const initDB = async () => {
@@ -41,14 +48,19 @@ export function TracksyWrapper({
         if (!files) return
         setIsDataReady(false)
         setIsDataDropped(true)
+        setLoadProgress(null)
         try {
-            await insertFilesInDatabase(files)
+            await insertFilesInDatabase(files, (stage, percent) =>
+                setLoadProgress({ stage, percent })
+            )
             setIsDataReady(true)
         } catch (error) {
             console.error('Failed to upload files:', error)
             setIsDataReady(false)
             setIsDataDropped(false)
             setUploadError(getUserMessage(error))
+        } finally {
+            setLoadProgress(null)
         }
     }
 
@@ -64,7 +76,7 @@ export function TracksyWrapper({
 
     return (
         <>
-            {(!isDataDropped || isDataReady) && (
+            {(!isDataDropped || isDataReady) && !activeProgress && (
                 <div className="flex flex-col md:flex-row gap-4 items-stretch">
                     <div className="flex-grow transition-all duration-300">
                         <DropzoneWrapper
@@ -89,7 +101,12 @@ export function TracksyWrapper({
                     </div>
                 </div>
             )}
-            {isDataDropped && !isDataReady && <Spinner />}
+            {activeProgress && (
+                <ProgressBar
+                    stage={activeProgress.stage}
+                    percent={activeProgress.percent}
+                />
+            )}
             {(isDataReady || isDemoReady) && <Results />}
             {uploadError && (
                 <UploadError

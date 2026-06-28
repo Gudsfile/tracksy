@@ -86,6 +86,74 @@ describe('insertUrlInDatabase', () => {
         })
     })
 
+    describe('onProgress callback', () => {
+        it('calls onProgress through all stages with increasing percentages', async () => {
+            mockDB()
+            const mockRecords = [
+                {
+                    track_uri: 'spotify:track:123',
+                    track_name: 'Test Song',
+                    artist_name: 'Test Artist',
+                    album_name: 'Test Album',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                    platform: 'Test_Platform',
+                },
+            ]
+            const { provider } = mockStreamProviderWithSpy(mockRecords)
+            vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+                ok: true,
+                blob: async () =>
+                    new Blob([JSON.stringify(mockRecords)], {
+                        type: 'application/json',
+                    }),
+            } as Response)
+            vi.spyOn(adapters, 'detectProvider').mockReturnValue(provider)
+
+            const percents: number[] = []
+            const onProgress = vi.fn((_stage: string, pct: number) =>
+                percents.push(pct)
+            )
+
+            await insertUrlInDatabase(
+                new URL('https://example.com/data.json'),
+                onProgress
+            )
+
+            expect(onProgress).toHaveBeenCalled()
+            expect(percents[0]).toBe(0)
+            expect(percents[percents.length - 1]).toBeGreaterThanOrEqual(70)
+        })
+
+        it('works without onProgress (optional)', async () => {
+            mockDB()
+            const mockRecords = [
+                {
+                    track_uri: 'spotify:track:123',
+                    track_name: 'Test Song',
+                    artist_name: 'Test Artist',
+                    album_name: 'Test Album',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                    platform: 'Test_Platform',
+                },
+            ]
+            const { provider } = mockStreamProviderWithSpy(mockRecords)
+            vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+                ok: true,
+                blob: async () =>
+                    new Blob([JSON.stringify(mockRecords)], {
+                        type: 'application/json',
+                    }),
+            } as Response)
+            vi.spyOn(adapters, 'detectProvider').mockReturnValue(provider)
+
+            await expect(
+                insertUrlInDatabase(new URL('https://example.com/data.json'))
+            ).resolves.toBeUndefined()
+        })
+    })
+
     describe('real provider detection from URL filename', () => {
         it('should detect Spotify provider and process data using real detectProvider', async () => {
             const connectionMock = mockDB()
@@ -193,7 +261,11 @@ describe('insertUrlInDatabase', () => {
 
             const precomputeSpy = vi.mocked(precompute.precomputeDerivedTables)
             expect(precomputeSpy).toHaveBeenCalledTimes(1)
-            expect(precomputeSpy).toHaveBeenCalledWith(connectionMock)
+            expect(precomputeSpy).toHaveBeenCalledWith(
+                connectionMock,
+                undefined,
+                expect.any(Function)
+            )
 
             const insertCallOrder = (
                 connectionMock.insertArrowTable as ReturnType<typeof vi.fn>
