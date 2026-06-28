@@ -1,8 +1,8 @@
-import { StreamTimeline } from './LabCharts/StreamTimeline'
-import { StreamVariety } from './LabCharts/StreamVariety'
-import { StreamDiscovery } from './LabCharts/StreamDiscovery'
+import { StreamTimeline as StreamTimelineRaw } from './LabCharts/StreamTimeline'
+import { StreamVariety as StreamVarietyRaw } from './LabCharts/StreamVariety'
+import { StreamDiscovery as StreamDiscoveryRaw } from './LabCharts/StreamDiscovery'
 import { YearSidebar } from '../YearSidebar/YearSidebar'
-import { useState, useEffect, useCallback } from 'react'
+import { memo, useState, useEffect, useCallback } from 'react'
 import {
     summarizeQuery,
     type SummarizeDataQueryResult,
@@ -10,14 +10,26 @@ import {
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
-import { ListeningStreaks } from './LabCharts/ListeningStreaks'
-import { Top10Evolution } from './LabCharts/Top10Evolution'
-import { Top10AlbumsEvolution } from './LabCharts/Top10AlbumsEvolution'
-import { Top10TracksEvolution } from './LabCharts/Top10TracksEvolution'
-import { ListeningBingo } from './LabCharts/ListeningBingo'
-import { Top10Race } from './LabCharts/Top10Race'
-import { Top10BillboardRace } from './LabCharts/Top10BillboardRace'
-import { SessionAnalysis as SessionAnalysisDetailed } from './LabCharts/SessionAnalysis'
+import { ListeningStreaks as ListeningStreaksRaw } from './LabCharts/ListeningStreaks'
+import { Top10Evolution as Top10EvolutionRaw } from './LabCharts/Top10Evolution'
+import { Top10AlbumsEvolution as Top10AlbumsEvolutionRaw } from './LabCharts/Top10AlbumsEvolution'
+import { Top10TracksEvolution as Top10TracksEvolutionRaw } from './LabCharts/Top10TracksEvolution'
+import { ListeningBingo as ListeningBingoRaw } from './LabCharts/ListeningBingo'
+import { Top10Race as Top10RaceRaw } from './LabCharts/Top10Race'
+import { Top10BillboardRace as Top10BillboardRaceRaw } from './LabCharts/Top10BillboardRace'
+import { SessionAnalysis as SessionAnalysisDetailedRaw } from './LabCharts/SessionAnalysis'
+
+const StreamTimeline = memo(StreamTimelineRaw)
+const StreamVariety = memo(StreamVarietyRaw)
+const StreamDiscovery = memo(StreamDiscoveryRaw)
+const ListeningStreaks = memo(ListeningStreaksRaw)
+const Top10Evolution = memo(Top10EvolutionRaw)
+const Top10AlbumsEvolution = memo(Top10AlbumsEvolutionRaw)
+const Top10TracksEvolution = memo(Top10TracksEvolutionRaw)
+const ListeningBingo = memo(ListeningBingoRaw)
+const Top10Race = memo(Top10RaceRaw)
+const Top10BillboardRace = memo(Top10BillboardRaceRaw)
+const SessionAnalysisDetailed = memo(SessionAnalysisDetailedRaw)
 
 export function LabView() {
     const [year, setYear] = useState<number | undefined>(2006)
