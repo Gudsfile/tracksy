@@ -100,7 +100,12 @@ function AssistantCard({
     // Narrative line, in priority order: the settled LLM narrative (desktop),
     // the live streaming tokens (desktop, mid-stream), else the deterministic
     // static explanation (mobile / before the first token — never hallucinated).
-    const narrativeText = narrative ?? streamingNarrative ?? answer.explanation
+    const rows = customRows.get(msg.id)
+    const hasNoResults = rows !== undefined && rows.length === 0
+    const narrativeText =
+        narrative ??
+        streamingNarrative ??
+        (hasNoResults ? 'No results found for this query.' : answer.explanation)
     const isStreaming = !narrative && !!streamingNarrative
     return (
         <div className="space-y-2">

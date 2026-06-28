@@ -155,7 +155,9 @@ export function useChatEngine() {
                 // Narrative streams only on capable (desktop) engines. The small
                 // mobile coder model hallucinates prose, so degraded engines fall
                 // back to the static explanation rendered by the UI.
-                if (!isDegraded) {
+                // Skip the narrator entirely on empty results — the model cannot
+                // ground its response and hallucinate values with no data to cite.
+                if (!isDegraded && rows.length > 0) {
                     result.streamNarrator = async (onChunk) => {
                         const { askNarrator } =
                             await import('../llm/askNarrator')
