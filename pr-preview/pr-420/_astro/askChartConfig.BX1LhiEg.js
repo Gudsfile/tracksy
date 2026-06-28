@@ -1,4 +1,4 @@
-import{b as l}from"./ChatView.DSFndbZm.js";import"./index.DL5C1mjd.js";const p=`You are a chart type selector. Given a user question, the column names and their types, and the number of rows, choose the best chart type and which columns to use.
+import{b as l}from"./ChatView.DyDl8P_1.js";import"./index.DL5C1mjd.js";const p=`You are a chart type selector. Given a user question, the column names and their types, and the number of rows, choose the best chart type and which columns to use.
 
 Available types:
 - "metric"  — single big number: 1 row, 1 numeric column
