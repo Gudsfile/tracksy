@@ -120,12 +120,10 @@ export function ChatView() {
                         />
                         <div ref={bottomRef} />
                     </div>
-                    {messages.length === 0 && (
-                        <ChatShortcuts
-                            onSelect={handleSubmit}
-                            disabled={isLoading}
-                        />
-                    )}
+                    <ChatShortcuts
+                        onSelect={handleSubmit}
+                        disabled={isLoading}
+                    />
                     <ChatInput
                         disabled={isLoading}
                         placeholder={
