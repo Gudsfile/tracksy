@@ -2,11 +2,13 @@ import { useContext, useEffect, useRef } from 'react'
 import * as Plot from '@observablehq/plot'
 import { ThemeContext } from '../../hooks/ThemeContext'
 import { inferChartType, type DBRow } from '../../llm/inferChartType'
+import type { ChartConfig } from '../../llm/askChartConfig'
 import { ChartCard } from '../Charts/SimpleCharts/shared/ChartCard'
 
 type CustomChartProps = {
     title: string
     rows: DBRow[]
+    chartConfig?: ChartConfig
 }
 
 function MetricCard({ rows }: { rows: DBRow[] }) {
@@ -27,10 +29,20 @@ function MetricCard({ rows }: { rows: DBRow[] }) {
     )
 }
 
-function RankedListChart({ rows }: { rows: DBRow[] }) {
+function RankedListChart({
+    rows,
+    xKey,
+    yKey,
+}: {
+    rows: DBRow[]
+    xKey?: string
+    yKey?: string
+}) {
     const keys = Object.keys(rows[0])
-    const labelKey = keys.find((k) => typeof rows[0][k] === 'string') ?? keys[0]
-    const valueKey = keys.find((k) => typeof rows[0][k] === 'number') ?? keys[1]
+    const labelKey =
+        xKey ?? keys.find((k) => typeof rows[0][k] === 'string') ?? keys[0]
+    const valueKey =
+        yKey ?? keys.find((k) => typeof rows[0][k] === 'number') ?? keys[1]
     const max = Math.max(...rows.map((r) => Number(r[valueKey]) || 0)) || 1
 
     return (
@@ -70,9 +82,13 @@ function RankedListChart({ rows }: { rows: DBRow[] }) {
 function PlotChart({
     rows,
     chartType,
+    xKey,
+    yKey,
 }: {
     rows: DBRow[]
     chartType: 'bar' | 'line'
+    xKey?: string
+    yKey?: string
 }) {
     const containerRef = useRef<HTMLDivElement>(null)
     const { effectiveTheme } = useContext(ThemeContext)
@@ -83,11 +99,13 @@ function PlotChart({
 
         const keys = Object.keys(rows[0])
         const labelKey =
-            keys.find((k) => typeof rows[0][k] === 'string') ?? keys[0]
+            xKey ?? keys.find((k) => typeof rows[0][k] === 'string') ?? keys[0]
         const valueKey =
+            yKey ??
             keys.find(
                 (k) => k !== labelKey && typeof rows[0][k] === 'number'
-            ) ?? keys[1]
+            ) ??
+            keys[1]
 
         const textColor = isDark ? '#e2e8f0' : '#1e293b'
         const gridColor = isDark ? '#334155' : '#e2e8f0'
@@ -126,7 +144,7 @@ function PlotChart({
         return () => {
             el?.remove()
         }
-    }, [rows, chartType, isDark])
+    }, [rows, chartType, isDark, xKey, yKey])
 
     return <div ref={containerRef} className="overflow-x-auto" />
 }
@@ -184,16 +202,29 @@ function TableFallback({ rows }: { rows: DBRow[] }) {
     )
 }
 
-export function CustomChart({ title, rows }: CustomChartProps) {
-    const chartType = inferChartType(rows)
+export function CustomChart({ title, rows, chartConfig }: CustomChartProps) {
+    const chartType = chartConfig?.type ?? inferChartType(rows)
 
     let content: React.ReactNode
     if (chartType === 'metric') {
         content = <MetricCard rows={rows} />
     } else if (chartType === 'list') {
-        content = <RankedListChart rows={rows} />
+        content = (
+            <RankedListChart
+                rows={rows}
+                xKey={chartConfig?.x}
+                yKey={chartConfig?.y}
+            />
+        )
     } else if (chartType === 'bar' || chartType === 'line') {
-        content = <PlotChart rows={rows} chartType={chartType} />
+        content = (
+            <PlotChart
+                rows={rows}
+                chartType={chartType}
+                xKey={chartConfig?.x}
+                yKey={chartConfig?.y}
+            />
+        )
     } else {
         content = <TableFallback rows={rows} />
     }

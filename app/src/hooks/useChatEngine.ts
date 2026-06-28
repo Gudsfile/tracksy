@@ -3,6 +3,7 @@ import { queryDBAsJSON } from '../db/queries/queryDB'
 import { validateSql } from '../llm/sqlSafety'
 import { isMobileBrowser } from '../llm/deviceDetection'
 import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
+import type { ChartConfig } from '../llm/askChartConfig'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
 
@@ -19,6 +20,7 @@ function setAssistantEnabled(): void {
 export type AskResult = {
     payload: AssistantPayload
     rows?: Record<string, string | number | null>[]
+    chartConfig?: ChartConfig
     /**
      * Call after rendering the chart to stream a narrative summary of `rows`.
      * Only attached on capable (non-degraded/desktop) engines — on mobile the
@@ -152,12 +154,20 @@ export function useChatEngine() {
                     rows,
                 }
 
-                // Narrative streams only on capable (desktop) engines. The small
-                // mobile coder model hallucinates prose, so degraded engines fall
-                // back to the static explanation rendered by the UI.
-                // Skip the narrator entirely on empty results — the model cannot
-                // ground its response and hallucinate values with no data to cite.
+                // ChartAgent + NarratorAgent only on capable (desktop) engines.
+                // Skip on empty results — nothing to visualize or narrate.
                 if (!isDegraded && rows.length > 0) {
+                    try {
+                        const { askChartConfig } =
+                            await import('../llm/askChartConfig')
+                        result.chartConfig = await askChartConfig(
+                            engine,
+                            userText,
+                            rows
+                        )
+                    } catch {
+                        // CustomChart falls back to inferChartType — no regression
+                    }
                     result.streamNarrator = async (onChunk) => {
                         const { askNarrator } =
                             await import('../llm/askNarrator')

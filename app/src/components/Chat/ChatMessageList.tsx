@@ -1,10 +1,12 @@
 import type { AssistantPayload, ChatMessage } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
+import type { ChartConfig } from '../../llm/askChartConfig'
 import { ChatChartRouter } from './ChatChartRouter'
 
 type ChatMessageListProps = {
     messages: ChatMessage[]
     customRows: Map<string, DBRow[]>
+    chartConfigs?: Map<string, ChartConfig>
     streamingNarrative?: string
     streamingMsgId?: string | null
     onRetry?: (userText: string) => void
@@ -26,12 +28,14 @@ function SqlBlock({ sql }: { sql: string }) {
 function AssistantCard({
     msg,
     customRows,
+    chartConfigs,
     onRetry,
     precedingUserText,
     streamingNarrative,
 }: {
     msg: Extract<ChatMessage, { role: 'assistant' }>
     customRows: Map<string, DBRow[]>
+    chartConfigs?: Map<string, ChartConfig>
     onRetry?: (userText: string) => void
     precedingUserText?: string
     streamingNarrative?: string
@@ -113,7 +117,11 @@ function AssistantCard({
                 {narrativeText}
                 {isStreaming && <span className="animate-pulse">▌</span>}
             </p>
-            <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
+            <ChatChartRouter
+                answer={answer}
+                rows={customRows.get(msg.id)}
+                chartConfig={chartConfigs?.get(msg.id)}
+            />
             {answer.sql && <SqlBlock sql={answer.sql} />}
         </div>
     )
@@ -122,6 +130,7 @@ function AssistantCard({
 export function ChatMessageList({
     messages,
     customRows,
+    chartConfigs,
     streamingNarrative,
     streamingMsgId,
     onRetry,
@@ -167,6 +176,7 @@ export function ChatMessageList({
                                         >
                                     }
                                     customRows={customRows}
+                                    chartConfigs={chartConfigs}
                                     onRetry={onRetry}
                                     precedingUserText={precedingUserText}
                                     streamingNarrative={
