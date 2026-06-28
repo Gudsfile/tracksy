@@ -213,7 +213,11 @@ describe('insertFilesInDatabase', () => {
 
             const precomputeSpy = vi.mocked(precompute.precomputeDerivedTables)
             expect(precomputeSpy).toHaveBeenCalledTimes(1)
-            expect(precomputeSpy).toHaveBeenCalledWith(connectionMock)
+            expect(precomputeSpy).toHaveBeenCalledWith(
+                connectionMock,
+                undefined,
+                expect.any(Function)
+            )
 
             const insertCallOrder = (
                 connectionMock.insertArrowTable as ReturnType<typeof vi.fn>
@@ -221,6 +225,68 @@ describe('insertFilesInDatabase', () => {
             const precomputeCallOrder =
                 precomputeSpy.mock.invocationCallOrder[0]
             expect(precomputeCallOrder).toBeGreaterThan(insertCallOrder)
+        })
+    })
+
+    describe('onProgress callback', () => {
+        it('calls onProgress starting at 0 and ending at 70+ for a single file', async () => {
+            mockDB()
+            const records = [
+                {
+                    track_uri: 'spotify:track:123',
+                    track_name: 'Song',
+                    artist_name: 'Artist',
+                    album_name: 'Album',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                    platform: 'Platform',
+                },
+            ]
+            const { provider } = mockStreamProviderWithSpy(records)
+            vi.spyOn(adapters, 'detectProvider').mockReturnValue(provider)
+
+            const percents: number[] = []
+            const onProgress = vi.fn((_stage: string, pct: number) =>
+                percents.push(pct)
+            )
+
+            await insertFilesInDatabase(
+                convertArrayToFileList([
+                    mockFile('[]', 'test.json', { type: 'application/json' }),
+                ]),
+                onProgress
+            )
+
+            expect(onProgress).toHaveBeenCalled()
+            expect(percents[0]).toBe(0)
+            expect(percents[percents.length - 1]).toBeGreaterThanOrEqual(70)
+        })
+
+        it('works without onProgress (optional)', async () => {
+            mockDB()
+            const records = [
+                {
+                    track_uri: 'spotify:track:123',
+                    track_name: 'Song',
+                    artist_name: 'Artist',
+                    album_name: 'Album',
+                    ts: '2024-01-01T12:00:00Z',
+                    ms_played: 180000,
+                    platform: 'Platform',
+                },
+            ]
+            const { provider } = mockStreamProviderWithSpy(records)
+            vi.spyOn(adapters, 'detectProvider').mockReturnValue(provider)
+
+            await expect(
+                insertFilesInDatabase(
+                    convertArrayToFileList([
+                        mockFile('[]', 'test.json', {
+                            type: 'application/json',
+                        }),
+                    ])
+                )
+            ).resolves.toBeUndefined()
         })
     })
 

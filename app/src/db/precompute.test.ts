@@ -65,4 +65,26 @@ describe('precomputeDerivedTables', () => {
             'DuckDB error'
         )
     })
+
+    it('calls onProgress once per step (5 total: 1 main + 4 derived)', async () => {
+        const conn = mockConn()
+        const onProgress = vi.fn()
+        await precomputeDerivedTables(conn, undefined, onProgress)
+        expect(onProgress).toHaveBeenCalledTimes(5)
+    })
+
+    it('calls onProgress with increasing percentages ending at 100', async () => {
+        const conn = mockConn()
+        const percents: number[] = []
+        await precomputeDerivedTables(conn, undefined, (_stage, pct) =>
+            percents.push(pct)
+        )
+        expect(percents[percents.length - 1]).toBe(100)
+        expect(percents).toEqual([...percents].sort((a, b) => a - b))
+    })
+
+    it('works without onProgress (optional)', async () => {
+        const conn = mockConn()
+        await expect(precomputeDerivedTables(conn)).resolves.toBeUndefined()
+    })
 })

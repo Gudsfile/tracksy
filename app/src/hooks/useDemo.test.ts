@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { renderHook, act } from '@testing-library/react'
 import { useDemo } from './useDemo'
+import * as insertUrlModule from '../db/queries/insertUrlInDatabase'
 
 afterEach(() => {
     vi.restoreAllMocks()
@@ -54,6 +55,44 @@ describe('useDemo', () => {
             expect(handleDemoButtonClick).toBeDefined()
             const expectedUrl = new URL('https://example.com')
             expect(demoJsonUrl).toStrictEqual(expectedUrl)
+        })
+    })
+
+    describe('demoProgress', () => {
+        it('starts as null', () => {
+            vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
+            const { result } = renderHook(() => useDemo())
+            expect(result.current.demoProgress).toBeNull()
+        })
+
+        it('is null after a failed load', async () => {
+            vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
+            vi.spyOn(insertUrlModule, 'insertUrlInDatabase').mockRejectedValue(
+                new Error('fail')
+            )
+
+            const { result } = renderHook(() => useDemo())
+            await act(async () => {
+                await result.current.handleDemoButtonClick()
+            })
+
+            expect(result.current.demoProgress).toBeNull()
+            expect(result.current.isDemoReady).toBe(false)
+        })
+
+        it('is null after a successful load', async () => {
+            vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
+            vi.spyOn(insertUrlModule, 'insertUrlInDatabase').mockResolvedValue(
+                undefined
+            )
+
+            const { result } = renderHook(() => useDemo())
+            await act(async () => {
+                await result.current.handleDemoButtonClick()
+            })
+
+            expect(result.current.demoProgress).toBeNull()
+            expect(result.current.isDemoReady).toBe(true)
         })
     })
 })
