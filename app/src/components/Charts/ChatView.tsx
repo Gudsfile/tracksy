@@ -3,6 +3,7 @@ import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 import { useChatEngine } from '../../hooks/useChatEngine'
 import type { ChatMessage, AssistantPayload } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
+import type { ChartConfig } from '../../llm/askChartConfig'
 import { ModelLoader } from '../Chat/ModelLoader'
 import { ChatInput } from '../Chat/ChatInput'
 import { ChatMessageList } from '../Chat/ChatMessageList'
@@ -29,6 +30,9 @@ export function ChatView() {
     const [customRows, setCustomRows] = useState<Map<string, DBRow[]>>(
         new Map()
     )
+    const [chartConfigs, setChartConfigs] = useState<Map<string, ChartConfig>>(
+        new Map()
+    )
     const [isAsking, setIsAsking] = useState(false)
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const [streamingNarrative, setStreamingNarrative] = useState('')
@@ -42,6 +46,7 @@ export function ChatView() {
         const handler = () => {
             setMessages([])
             setCustomRows(new Map())
+            setChartConfigs(new Map())
         }
         window.addEventListener(DATA_LOADED_EVENT, handler)
         return () => window.removeEventListener(DATA_LOADED_EVENT, handler)
@@ -114,6 +119,13 @@ export function ChatView() {
                     next.set(assistantMsgId, result.rows!)
                     return next
                 })
+                if (result.chartConfig) {
+                    setChartConfigs((prev) => {
+                        const next = new Map(prev)
+                        next.set(assistantMsgId, result.chartConfig!)
+                        return next
+                    })
+                }
             }
 
             setMessages((prev) => [...prev, assistantMsg])
@@ -161,6 +173,7 @@ export function ChatView() {
                         <ChatMessageList
                             messages={messages}
                             customRows={customRows}
+                            chartConfigs={chartConfigs}
                             streamingNarrative={streamingNarrative}
                             streamingMsgId={streamingMsgIdRef.current}
                             onRetry={handleSubmit}

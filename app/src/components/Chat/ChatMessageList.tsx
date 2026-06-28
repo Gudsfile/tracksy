@@ -1,11 +1,13 @@
 import type { AssistantPayload, ChatMessage } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
+import type { ChartConfig } from '../../llm/askChartConfig'
 import { ChatChartRouter } from './ChatChartRouter'
 import { useQueryTab } from '../Results/QueryTabContext'
 
 type ChatMessageListProps = {
     messages: ChatMessage[]
     customRows: Map<string, DBRow[]>
+    chartConfigs?: Map<string, ChartConfig>
     streamingNarrative?: string
     streamingMsgId?: string | null
     onRetry?: (userText: string) => void
@@ -27,12 +29,14 @@ function SqlBlock({ sql }: { sql: string }) {
 function AssistantCard({
     msg,
     customRows,
+    chartConfigs,
     onRetry,
     precedingUserText,
     streamingNarrative,
 }: {
     msg: Extract<ChatMessage, { role: 'assistant' }>
     customRows: Map<string, DBRow[]>
+    chartConfigs?: Map<string, ChartConfig>
     onRetry?: (userText: string) => void
     precedingUserText?: string
     streamingNarrative?: string
@@ -122,7 +126,11 @@ function AssistantCard({
                 {narrativeText}
                 {isStreaming && <span className="animate-pulse">▌</span>}
             </p>
-            <ChatChartRouter answer={answer} rows={rows} />
+            <ChatChartRouter
+                answer={answer}
+                rows={rows}
+                chartConfig={chartConfigs?.get(msg.id)}
+            />
             {answer.sql && (
                 <div className="flex items-center justify-between">
                     <div className="flex-1">
@@ -144,6 +152,7 @@ function AssistantCard({
 export function ChatMessageList({
     messages,
     customRows,
+    chartConfigs,
     streamingNarrative,
     streamingMsgId,
     onRetry,
@@ -189,6 +198,7 @@ export function ChatMessageList({
                                         >
                                     }
                                     customRows={customRows}
+                                    chartConfigs={chartConfigs}
                                     onRetry={onRetry}
                                     precedingUserText={precedingUserText}
                                     streamingNarrative={
