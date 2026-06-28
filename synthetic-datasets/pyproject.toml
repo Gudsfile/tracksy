@@ -6,17 +6,17 @@ readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
     "faker==40.23.0",
-    "numpy==2.4.6",
+    "numpy==2.5.0",
     "openpyxl==3.1.5",
     "pydantic==2.13.4",
-    "typer==0.26.7",
+    "typer==0.26.8",
 ]
 
 [dependency-groups]
 dev = [
     "pytest==9.1.1",
-    "ruff==0.15.18",
-    "ty==0.0.51",
+    "ruff==0.15.20",
+    "ty==0.0.55",
 ]
 
 [tool.uv]
