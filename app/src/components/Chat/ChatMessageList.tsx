@@ -109,7 +109,12 @@ function AssistantCard({
         { kind: 'ok' }
     >
     const openInQueryTab = useQueryTab()
-    const narrativeText = narrative ?? streamingNarrative ?? answer.explanation
+    const rows = customRows.get(msg.id)
+    const hasNoResults = rows !== undefined && rows.length === 0
+    const narrativeText =
+        narrative ??
+        streamingNarrative ??
+        (hasNoResults ? 'No results found for this query.' : answer.explanation)
     const isStreaming = !narrative && !!streamingNarrative
     return (
         <div className="space-y-2">
@@ -117,7 +122,7 @@ function AssistantCard({
                 {narrativeText}
                 {isStreaming && <span className="animate-pulse">▌</span>}
             </p>
-            <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
+            <ChatChartRouter answer={answer} rows={rows} />
             {answer.sql && (
                 <div className="flex items-center justify-between">
                     <div className="flex-1">
