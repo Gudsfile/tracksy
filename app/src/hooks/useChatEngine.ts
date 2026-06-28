@@ -1,8 +1,20 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
 import { validateSql } from '../llm/sqlSafety'
 import { isMobileBrowser } from '../llm/deviceDetection'
 import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
+
+const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
+
+function getAssistantEnabled(): boolean {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem(ASSISTANT_ENABLED_KEY) === 'true'
+}
+
+function setAssistantEnabled(): void {
+    if (typeof window === 'undefined') return
+    localStorage.setItem(ASSISTANT_ENABLED_KEY, 'true')
+}
 
 export type AskResult = {
     payload: AssistantPayload
@@ -22,6 +34,7 @@ export function useChatEngine() {
 
     const ensureLoaded = useCallback(async () => {
         if (state.kind === 'ready' || state.kind === 'loading') return
+        setAssistantEnabled()
         try {
             if (!moduleRef.current) {
                 moduleRef.current = await import('../llm/engine')
@@ -120,6 +133,10 @@ export function useChatEngine() {
         },
         []
     )
+
+    useEffect(() => {
+        if (getAssistantEnabled()) ensureLoaded()
+    }, [])
 
     return { state, ensureLoaded, ask }
 }
