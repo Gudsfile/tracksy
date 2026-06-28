@@ -34,12 +34,8 @@ describe('askNarrator', () => {
         const engine = makeMockEngine(['Hello', ' world', '!'])
         const chunks: string[] = []
 
-        await askNarrator(
-            engine,
-            'Who are my top artists?',
-            'SELECT 1',
-            [],
-            (d) => chunks.push(d)
+        await askNarrator(engine, 'Who are my top artists?', [], (d) =>
+            chunks.push(d)
         )
 
         expect(chunks).toEqual(['Hello', ' world', '!'])
@@ -51,7 +47,6 @@ describe('askNarrator', () => {
         const result = await askNarrator(
             engine,
             'Who are my top artists?',
-            'SELECT 1',
             [],
             () => {}
         )
@@ -65,7 +60,7 @@ describe('askNarrator', () => {
             artist: `Artist${i}`,
         }))
 
-        await askNarrator(engine, 'question', 'SELECT 1', rows, () => {})
+        await askNarrator(engine, 'question', rows, () => {})
 
         const createCall = (
             engine.chat.completions.create as ReturnType<typeof vi.fn>
@@ -82,12 +77,40 @@ describe('askNarrator', () => {
     it('emits a webllm:inference devBus event on completion', async () => {
         const engine = makeMockEngine(['done'])
 
-        await askNarrator(engine, 'q', 'SELECT 1', [], () => {})
+        await askNarrator(engine, 'q', [], () => {})
 
         expect(devBusModule.devBus.emit).toHaveBeenCalledWith(
             'webllm:inference',
             expect.objectContaining({ model: 'test-model' })
         )
+    })
+
+    it('converts ms_played to hours_played before passing data to the model', async () => {
+        const engine = makeMockEngine(['ok'])
+        const rows = [
+            {
+                artist_name: 'Thomas Maddox',
+                count_streams: 18,
+                ms_played: 3_275_010,
+            },
+            {
+                artist_name: 'Paul Patterson',
+                count_streams: 17,
+                ms_played: 3_749_911,
+            },
+        ]
+
+        await askNarrator(engine, 'top artists in spring', rows, () => {})
+
+        const createCall = (
+            engine.chat.completions.create as ReturnType<typeof vi.fn>
+        ).mock.calls[0][0]
+        const userContent = createCall.messages[1].content as string
+        // Raw ms values must not appear; hours_played column must be present
+        expect(userContent).not.toContain('ms_played')
+        expect(userContent).toContain('hours_played')
+        // Thomas Maddox: 3275010 / 3600000 = 0.91
+        expect(userContent).toContain('0.91')
     })
 
     it('uses explanation as context when no rows are provided', async () => {
@@ -96,7 +119,6 @@ describe('askNarrator', () => {
         await askNarrator(
             engine,
             'question',
-            'SELECT 1',
             [],
             () => {},
             'Bar chart of top artists'

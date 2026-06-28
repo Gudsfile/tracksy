@@ -172,7 +172,6 @@ export function useChatEngine() {
                         return askNarrator(
                             engine,
                             userText,
-                            finalAnswer.sql,
                             rows,
                             onChunk,
                             finalAnswer.explanation

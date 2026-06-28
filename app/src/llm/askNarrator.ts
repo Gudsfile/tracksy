@@ -3,14 +3,30 @@ import type { DBRow } from './inferChartType'
 import { devBus } from '../devToolbar/devBus'
 import { selectModelId } from './engine'
 
-const NARRATOR_SYSTEM_PROMPT = `You are a music data analyst. Write a concise 2-3 sentence summary that directly answers the user's question using ONLY the data provided.
+const NARRATOR_SYSTEM_PROMPT = `You are a witty music companion who comments on someone's listening data like a knowledgeable friend, not a report generator.
+
+Given the user's question and their actual streaming data, write 1-3 engaging sentences that feel like a personal observation — highlight what is striking, dominant, or worth noticing in the numbers.
 
 Rules:
-- Only reference names, values, and counts that appear verbatim in the provided data.
-- Never invent, guess, or add any information not present in the results.
-- Start your response by referencing the first item in the data table by its exact name.
-- If the data is insufficient to answer, say so briefly.
-- Write in a friendly, conversational tone. Do not repeat the question.`
+- Ground every claim in the provided data. Never invent names, numbers, or genres not in the results.
+- Lead with an insight or observation, not a list. Avoid starting with "Based on the data" or "According to the results".
+- Use "you" and speak conversationally.
+- hours_played is already computed in the data (ms ÷ 3 600 000). Use it directly — never invent or recalculate time values.
+- If one item clearly dominates, say so. If the top and second are close, note that.
+- Keep it to 1-3 sentences. Be warm, not formal.
+- If no data is available, say so briefly in one sentence.`
+
+function humanizeRows(rows: DBRow[]): DBRow[] {
+    return rows.map((r) => {
+        if (!('ms_played' in r)) return r
+        const { ms_played, ...rest } = r
+        const hours =
+            typeof ms_played === 'number'
+                ? Math.round((ms_played / 3_600_000) * 100) / 100
+                : ms_played
+        return { ...rest, hours_played: hours }
+    })
+}
 
 function rowsToTable(rows: DBRow[]): string {
     if (rows.length === 0) return '(no data)'
@@ -27,14 +43,14 @@ function rowsToTable(rows: DBRow[]): string {
 export async function askNarrator(
     engine: MLCEngineInterface,
     question: string,
-    sql: string,
     rows: DBRow[],
     onChunk: (delta: string) => void,
     explanation?: string
 ): Promise<string> {
+    const sample = humanizeRows(rows.slice(0, 10))
     const dataContext =
-        rows.length > 0
-            ? `Data (${rows.length} rows total, showing up to 10):\n${rowsToTable(rows)}`
+        sample.length > 0
+            ? `Data (${rows.length} rows total, showing up to 10):\n${rowsToTable(sample)}`
             : explanation
               ? `Chart description: ${explanation}`
               : 'No result data available.'
@@ -43,7 +59,7 @@ export async function askNarrator(
         { role: 'system' as const, content: NARRATOR_SYSTEM_PROMPT },
         {
             role: 'user' as const,
-            content: `Question: ${question}\n\n${dataContext}\n\nSQL used:\n${sql}`,
+            content: `Question: ${question}\n\n${dataContext}`,
         },
     ]
 
@@ -53,7 +69,7 @@ export async function askNarrator(
 
     const stream = await engine.chat.completions.create({
         messages,
-        temperature: 0.1,
+        temperature: 0.3,
         max_tokens: 256,
         stream: true,
     })
