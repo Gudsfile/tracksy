@@ -1,0 +1,1 @@
+function e(){if(typeof navigator>`u`)return!1;let e=navigator.userAgent;return/iP(hone|ad|od)/.test(e)&&/Safari/.test(e)&&!/Chrome|CriOS|FxiOS|EdgiOS/.test(e)}function t(){return typeof navigator>`u`?!1:/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)}export{e as n,t};
