@@ -271,6 +271,55 @@ describe('DuckDBShell', () => {
         expect(historyItems).toHaveLength(1)
     })
 
+    it('should pre-fill textarea with initialQuery prop', () => {
+        render(<DuckDBShell initialQuery="SELECT * FROM streams" />)
+
+        const textarea = screen.getByRole('textbox') as HTMLTextAreaElement
+        expect(textarea.value).toBe('SELECT * FROM streams')
+    })
+
+    it('should auto-run initialQuery on mount', async () => {
+        mockQuery.mockResolvedValue({
+            schema: { fields: [{ name: 'count' }] },
+            toArray: () => [{ count: 5 }],
+            numRows: 1,
+        })
+
+        render(<DuckDBShell initialQuery="SELECT count(*) FROM streams" />)
+
+        await waitFor(() => {
+            expect(mockQuery).toHaveBeenCalledWith(
+                'SELECT count(*) FROM streams'
+            )
+        })
+    })
+
+    it('should call onQueryConsumed after auto-run', async () => {
+        mockQuery.mockResolvedValue({
+            schema: { fields: [{ name: 'count' }] },
+            toArray: () => [{ count: 5 }],
+            numRows: 1,
+        })
+
+        const onQueryConsumed = vi.fn()
+        render(
+            <DuckDBShell
+                initialQuery="SELECT count(*) FROM streams"
+                onQueryConsumed={onQueryConsumed}
+            />
+        )
+
+        await waitFor(() => {
+            expect(onQueryConsumed).toHaveBeenCalledTimes(1)
+        })
+    })
+
+    it('should not auto-run when no initialQuery is provided', () => {
+        render(<DuckDBShell />)
+
+        expect(mockQuery).not.toHaveBeenCalled()
+    })
+
     it('should truncate long queries in history display', async () => {
         const longQuery = 'SELECT ' + 'a'.repeat(100) + ' FROM test'
 
