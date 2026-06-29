@@ -166,7 +166,7 @@ export function useChatEngine() {
                             rows
                         )
                     } catch {
-                        // CustomChart falls back to inferChartType — no regression
+                        // GenericChartRenderer falls back to inferConfig — no regression
                     }
                     result.streamNarrator = async (onChunk) => {
                         const { askNarrator } =
