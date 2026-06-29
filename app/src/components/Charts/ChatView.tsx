@@ -12,6 +12,18 @@ function generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
 
+function MemoryNotice() {
+    return (
+        <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200/60 dark:border-blue-700/40 text-blue-800 dark:text-blue-300 text-sm">
+            <span className="shrink-0">💡</span>
+            <p>
+                Chat history is stored in memory only — switching to another tab
+                will clear the conversation.
+            </p>
+        </div>
+    )
+}
+
 export function ChatView() {
     const [messages, setMessages] = useState<ChatMessage[]>([])
     const [customRows, setCustomRows] = useState<Map<string, DBRow[]>>(
@@ -109,6 +121,7 @@ export function ChatView() {
 
     return (
         <div className="flex flex-col gap-4 max-w-3xl mx-auto py-4">
+            <MemoryNotice />
             <ModelLoader state={state} onEnable={handleEnable} />
 
             {isReady && (
