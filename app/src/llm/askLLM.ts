@@ -1,4 +1,5 @@
 import type {
+    ChatCompletion,
     ChatCompletionMessageParam,
     MLCEngineInterface,
 } from '@mlc-ai/web-llm'
@@ -129,17 +130,32 @@ export function parseChatAnswer(raw: string): ChatAnswer {
 export async function askLLM(
     engine: MLCEngineInterface,
     userText: string,
-    history: ChatMessage[]
+    history: ChatMessage[],
+    signal?: AbortSignal
 ): Promise<ChatAnswer> {
     const messages = buildMessages(userText, history)
     let response
     const start = performance.now()
     try {
-        response = await engine.chat.completions.create({
+        const completionPromise = engine.chat.completions.create({
             messages,
             temperature: 0.1,
             max_tokens: 512,
-        })
+        }) as Promise<ChatCompletion>
+        if (signal) {
+            const abortPromise = new Promise<never>((_, reject) => {
+                if (signal.aborted) {
+                    reject(new LLMError('Cancelled', 'aborted'))
+                    return
+                }
+                signal.addEventListener('abort', () =>
+                    reject(new LLMError('Cancelled', 'aborted'))
+                )
+            })
+            response = await Promise.race([completionPromise, abortPromise])
+        } else {
+            response = await completionPromise
+        }
         const durationMs = performance.now() - start
         const tokens = response.usage?.completion_tokens ?? 0
         devBus.emit('webllm:inference', {
@@ -148,6 +164,9 @@ export async function askLLM(
             tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
         })
     } catch (e) {
+        if (e instanceof LLMError && e.kind === 'aborted') {
+            throw e
+        }
         const reason = e instanceof Error ? e.message : String(e)
         throw new LLMError(reason, 'engine')
     }

@@ -2,11 +2,19 @@ import { useState, type KeyboardEvent } from 'react'
 
 type ChatInputProps = {
     disabled?: boolean
+    isAsking?: boolean
     placeholder?: string
     onSubmit: (text: string) => void
+    onCancel?: () => void
 }
 
-export function ChatInput({ disabled, placeholder, onSubmit }: ChatInputProps) {
+export function ChatInput({
+    disabled,
+    isAsking,
+    placeholder,
+    onSubmit,
+    onCancel,
+}: ChatInputProps) {
     const [value, setValue] = useState('')
 
     const submit = () => {
@@ -46,13 +54,23 @@ export function ChatInput({ disabled, placeholder, onSubmit }: ChatInputProps) {
                 }
                 className="flex-1 resize-none bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50"
             />
-            <button
-                type="submit"
-                disabled={disabled || value.trim().length === 0}
-                className="px-4 py-2 bg-gradient-brand text-white font-semibold rounded-xl shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-                Ask
-            </button>
+            {isAsking ? (
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    className="px-4 py-2 bg-gradient-brand text-white font-semibold rounded-xl shadow-glow transition-all"
+                >
+                    Stop
+                </button>
+            ) : (
+                <button
+                    type="submit"
+                    disabled={disabled || value.trim().length === 0}
+                    className="px-4 py-2 bg-gradient-brand text-white font-semibold rounded-xl shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                    Ask
+                </button>
+            )}
         </form>
     )
 }

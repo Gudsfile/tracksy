@@ -20,6 +20,7 @@ export type AssistantPayload =
     | { kind: 'unsafe-sql'; answer: ChatAnswer; reason: string }
     | { kind: 'sql-error'; answer: ChatAnswer; error: string }
     | { kind: 'llm-error'; error: string }
+    | { kind: 'aborted' }
 
 export type ChatMessage =
     | { id: string; role: 'user'; text: string }
