@@ -1,8 +1,7 @@
 import type { ChatAnswer } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
 import type { ChartConfig } from '../../llm/askChartConfig'
-import { CustomChart } from './CustomChart'
-import { renderIntentChart } from './intentCharts'
+import { GenericChartRenderer } from './GenericChartRenderer'
 
 type ChatChartRouterProps = {
     answer: ChatAnswer
@@ -11,25 +10,21 @@ type ChatChartRouterProps = {
 }
 
 /**
- * Renders the chart for a chat answer. Bespoke intent charts take priority;
- * when the intent has no mapping or the rows don't fit its required shape,
- * falls back to CustomChart using the ChartAgent config (or inferChartType
- * when the ChartAgent was not run, e.g. on mobile).
+ * Renders the chart for a chat answer. The ChartAgent picks the config;
+ * GenericChartRenderer handles all chart types using shared primitives.
+ * When chartConfig is absent (mobile / agent error), inferConfig() falls back
+ * to heuristic detection inside GenericChartRenderer.
  */
 export function ChatChartRouter({
     answer,
     rows,
     chartConfig,
 }: ChatChartRouterProps) {
-    const data = rows ?? []
-    const rich = renderIntentChart(answer, data)
     return (
-        rich ?? (
-            <CustomChart
-                title={answer.title}
-                rows={data}
-                chartConfig={chartConfig}
-            />
-        )
+        <GenericChartRenderer
+            title={answer.title}
+            rows={rows ?? []}
+            chartConfig={chartConfig}
+        />
     )
 }
