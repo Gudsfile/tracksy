@@ -1,13 +1,20 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { getDB } from '../../db/getDB'
 
 const MAX_ROWS = 1000
 const MAX_HISTORY = 20
+const DEFAULT_QUERY =
+    'SELECT 42 AS answer;\n-- tips: use `describe music_streams` to show available columns\n-- tips: use `show tables` to… show tables'
 
-export function DuckDBShell() {
-    const [query, setQuery] = useState(
-        'SELECT 42 AS answer;\n-- tips: use `describe music_streams` to show available columns\n-- tips: use `show tables` to… show tables'
-    )
+export function DuckDBShell({
+    initialQuery,
+    onQueryConsumed,
+}: {
+    initialQuery?: string
+    onQueryConsumed?: () => void
+}) {
+    const [query, setQuery] = useState(initialQuery ?? DEFAULT_QUERY)
+    const autoRunRef = useRef(!!initialQuery)
     const [results, setResults] = useState<
         { columns: string[]; rows: string[][]; totalRows: number } | undefined
     >()
@@ -48,6 +55,14 @@ export function DuckDBShell() {
             setLoading(false)
         }
     }, [query])
+
+    useEffect(() => {
+        if (autoRunRef.current) {
+            autoRunRef.current = false
+            runQuery()
+            onQueryConsumed?.()
+        }
+    }, [runQuery, onQueryConsumed])
 
     return (
         <div className="p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100">

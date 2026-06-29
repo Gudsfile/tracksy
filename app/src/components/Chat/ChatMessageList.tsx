@@ -1,6 +1,7 @@
 import type { ChatMessage } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
 import { ChatChartRouter } from './ChatChartRouter'
+import { useQueryTab } from '../Results/QueryTabContext'
 
 type ChatMessageListProps = {
     messages: ChatMessage[]
@@ -89,6 +90,7 @@ function AssistantCard({
 
     // payload.kind === 'ok'
     const { answer } = payload
+    const openInQueryTab = useQueryTab()
     return (
         <div className="space-y-2">
             <ChatChartRouter answer={answer} rows={customRows.get(msg.id)} />
@@ -100,6 +102,12 @@ function AssistantCard({
                     {answer.sql}
                 </pre>
             </details>
+            <button
+                onClick={() => openInQueryTab(answer.sql)}
+                className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+            >
+                ⌨️ Open in Query tab
+            </button>
         </div>
     )
 }
