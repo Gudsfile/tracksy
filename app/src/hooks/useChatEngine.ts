@@ -3,6 +3,7 @@ import { queryDBAsJSON } from '../db/queries/queryDB'
 import { validateSql } from '../llm/sqlSafety'
 import { isMobileBrowser } from '../llm/deviceDetection'
 import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
+import type { ChartConfig } from '../llm/askChartConfig'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
 
@@ -19,6 +20,13 @@ function setAssistantEnabled(): void {
 export type AskResult = {
     payload: AssistantPayload
     rows?: Record<string, string | number | null>[]
+    chartConfig?: ChartConfig
+    /**
+     * Call after rendering the chart to stream a narrative summary of `rows`.
+     * Only attached on capable (non-degraded/desktop) engines — on mobile the
+     * UI shows the static explanation instead. Absent when not available.
+     */
+    streamNarrator?: (onChunk: (delta: string) => void) => Promise<string>
 }
 
 export function useChatEngine() {
@@ -72,6 +80,7 @@ export function useChatEngine() {
             userText: string,
             history: ChatMessage[]
         ): Promise<AskResult> => {
+            type QueryResult = Record<string, string | number | null>
             try {
                 if (!moduleRef.current || !askLLMRef.current) {
                     return {
@@ -88,10 +97,9 @@ export function useChatEngine() {
                     history
                 )
 
-                if (answer.intent !== 'custom') {
-                    return { payload: { kind: 'ok', answer } }
-                }
-
+                // Unified path: every answer's SQL is validated and executed
+                // exactly once. The chart, the narrative, and the displayed SQL
+                // all read from this single result set, so they cannot disagree.
                 const validation = validateSql(answer.sql ?? '')
                 if (!validation.ok) {
                     return {
@@ -102,26 +110,78 @@ export function useChatEngine() {
                         },
                     }
                 }
+
+                let finalAnswer = { ...answer, sql: validation.sql }
+                let rows: QueryResult[]
                 try {
-                    const rows = await queryDBAsJSON<
-                        Record<string, string | number | null>
-                    >(validation.sql)
-                    return {
-                        payload: {
-                            kind: 'ok',
-                            answer: { ...answer, sql: validation.sql },
-                        },
-                        rows,
-                    }
-                } catch (e) {
-                    return {
-                        payload: {
-                            kind: 'sql-error',
-                            answer: { ...answer, sql: validation.sql },
-                            error: e instanceof Error ? e.message : String(e),
-                        },
+                    rows = await queryDBAsJSON<QueryResult>(validation.sql)
+                } catch (firstErr) {
+                    // Retry once: feed the error back to the LLM so it can correct the SQL
+                    try {
+                        const retried = await askLLMRef.current!.askLLM(
+                            engine,
+                            `${userText}\n\nPrevious SQL failed with: ${firstErr}`,
+                            history
+                        )
+                        const retryValidation = validateSql(retried.sql ?? '')
+                        if (!retryValidation.ok) {
+                            return {
+                                payload: {
+                                    kind: 'unsafe-sql',
+                                    answer: retried,
+                                    reason: retryValidation.reason,
+                                },
+                            }
+                        }
+                        finalAnswer = { ...retried, sql: retryValidation.sql }
+                        rows = await queryDBAsJSON<QueryResult>(
+                            retryValidation.sql
+                        )
+                    } catch (e) {
+                        return {
+                            payload: {
+                                kind: 'sql-error',
+                                answer: finalAnswer,
+                                error:
+                                    e instanceof Error ? e.message : String(e),
+                            },
+                        }
                     }
                 }
+
+                const result: AskResult = {
+                    payload: { kind: 'ok', answer: finalAnswer },
+                    rows,
+                }
+
+                // ChartAgent + NarratorAgent only on capable (desktop) engines.
+                // Skip on empty results — nothing to visualize or narrate.
+                if (!isDegraded && rows.length > 0) {
+                    try {
+                        const { askChartConfig } =
+                            await import('../llm/askChartConfig')
+                        result.chartConfig = await askChartConfig(
+                            engine,
+                            userText,
+                            rows
+                        )
+                    } catch {
+                        // GenericChartRenderer falls back to inferConfig — no regression
+                    }
+                    result.streamNarrator = async (onChunk) => {
+                        const { askNarrator } =
+                            await import('../llm/askNarrator')
+                        return askNarrator(
+                            engine,
+                            userText,
+                            rows,
+                            onChunk,
+                            finalAnswer.explanation
+                        )
+                    }
+                }
+
+                return result
             } catch (e) {
                 return {
                     payload: {
@@ -131,7 +191,7 @@ export function useChatEngine() {
                 }
             }
         },
-        []
+        [isDegraded]
     )
 
     useEffect(() => {

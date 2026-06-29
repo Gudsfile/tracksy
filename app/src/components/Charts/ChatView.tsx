@@ -3,6 +3,7 @@ import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 import { useChatEngine } from '../../hooks/useChatEngine'
 import type { ChatMessage, AssistantPayload } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
+import type { ChartConfig } from '../../llm/askChartConfig'
 import { ModelLoader } from '../Chat/ModelLoader'
 import { ChatInput } from '../Chat/ChatInput'
 import { ChatMessageList } from '../Chat/ChatMessageList'
@@ -29,8 +30,14 @@ export function ChatView() {
     const [customRows, setCustomRows] = useState<Map<string, DBRow[]>>(
         new Map()
     )
+    const [chartConfigs, setChartConfigs] = useState<Map<string, ChartConfig>>(
+        new Map()
+    )
     const [isAsking, setIsAsking] = useState(false)
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
+    const [streamingNarrative, setStreamingNarrative] = useState('')
+    const streamingMsgIdRef = useRef<string | null>(null)
+    const messagesRef = useRef(messages)
     const bottomRef = useRef<HTMLDivElement>(null)
 
     const { state, ensureLoaded, ask } = useChatEngine()
@@ -39,10 +46,15 @@ export function ChatView() {
         const handler = () => {
             setMessages([])
             setCustomRows(new Map())
+            setChartConfigs(new Map())
         }
         window.addEventListener(DATA_LOADED_EVENT, handler)
         return () => window.removeEventListener(DATA_LOADED_EVENT, handler)
     }, [])
+
+    useEffect(() => {
+        messagesRef.current = messages
+    }, [messages])
 
     // Scroll to bottom whenever messages change
     useEffect(() => {
@@ -82,7 +94,7 @@ export function ChatView() {
             setMessages((prev) => [...prev, userMsg])
             setIsAsking(true)
 
-            const result = await ask(text, [...messages, userMsg])
+            const result = await ask(text, [...messagesRef.current, userMsg])
 
             const payload: AssistantPayload = result.payload
 
@@ -98,22 +110,51 @@ export function ChatView() {
                 payload,
             }
 
-            if (
-                payload.kind === 'ok' &&
-                payload.answer.intent === 'custom' &&
-                result.rows
-            ) {
+            // Every successful answer renders from its executed SQL rows.
+            if (payload.kind === 'ok' && result.rows) {
                 setCustomRows((prev) => {
                     const next = new Map(prev)
                     next.set(assistantMsgId, result.rows!)
                     return next
                 })
+                if (result.chartConfig) {
+                    setChartConfigs((prev) => {
+                        const next = new Map(prev)
+                        next.set(assistantMsgId, result.chartConfig!)
+                        return next
+                    })
+                }
             }
 
             setMessages((prev) => [...prev, assistantMsg])
             setIsAsking(false)
+
+            // Stream the narrative above the chart (desktop only; absent on
+            // mobile, where the static explanation is shown instead).
+            if (result.streamNarrator) {
+                streamingMsgIdRef.current = assistantMsgId
+                setStreamingNarrative('')
+                const narrative = await result.streamNarrator((delta) =>
+                    setStreamingNarrative((prev) => prev + delta)
+                )
+                streamingMsgIdRef.current = null
+                setStreamingNarrative('')
+                setMessages((prev) =>
+                    prev.map((m) =>
+                        m.id === assistantMsgId && m.role === 'assistant'
+                            ? {
+                                  ...m,
+                                  payload: {
+                                      ...m.payload,
+                                      narrative,
+                                  } as AssistantPayload,
+                              }
+                            : m
+                    )
+                )
+            }
         },
-        [state.kind, ensureLoaded, ask, messages]
+        [state.kind, ensureLoaded, ask]
     )
 
     const isReady = state.kind === 'ready'
@@ -130,6 +171,10 @@ export function ChatView() {
                         <ChatMessageList
                             messages={messages}
                             customRows={customRows}
+                            chartConfigs={chartConfigs}
+                            streamingNarrative={streamingNarrative}
+                            streamingMsgId={streamingMsgIdRef.current}
+                            onRetry={handleSubmit}
                         />
                         <div ref={bottomRef} />
                     </div>

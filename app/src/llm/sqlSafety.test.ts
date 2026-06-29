@@ -125,4 +125,27 @@ describe('validateSql', () => {
         )
         expect(result.ok).toBe(true)
     })
+
+    it('does not treat a column inside EXTRACT(... FROM col) as a table', () => {
+        const result = validateSql(
+            'SELECT artist_name, COUNT(*)::DOUBLE AS count_streams FROM music_streams WHERE artist_name IS NOT NULL AND EXTRACT(year FROM ts) = 2026 GROUP BY artist_name ORDER BY count_streams DESC LIMIT 5'
+        )
+        expect(result.ok).toBe(true)
+    })
+
+    it.each([
+        "SELECT EXTRACT(year FROM date_trunc('month', ts)) AS y FROM music_streams",
+        "SELECT TRIM(' ' FROM artist_name) AS a FROM music_streams",
+        'SELECT SUBSTRING(track_name FROM 1 FOR 3) AS s FROM music_streams',
+    ])('accepts FROM-argument functions: %s', (sql) => {
+        expect(validateSql(sql).ok).toBe(true)
+    })
+
+    it('still rejects a real unknown table alongside EXTRACT(... FROM col)', () => {
+        const result = validateSql(
+            'SELECT * FROM evil_table WHERE EXTRACT(year FROM ts) = 2026'
+        )
+        expect(result.ok).toBe(false)
+        if (!result.ok) expect(result.reason).toMatch(/evil_table/)
+    })
 })

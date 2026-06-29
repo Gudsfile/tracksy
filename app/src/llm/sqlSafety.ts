@@ -64,11 +64,49 @@ function extractCteNames(sql: string): Set<string> {
     return cteNames
 }
 
+// Functions that use FROM/IN/FOR/PLACING as an argument separator, e.g.
+// EXTRACT(year FROM ts), TRIM(' ' FROM s), SUBSTRING(s FROM 1 FOR 3). Their
+// inner FROM must not be mistaken for a table source, so we blank out each
+// call's parenthesized body before scanning for table references.
+const FROM_ARG_FUNCTIONS = ['extract', 'trim', 'substring', 'overlay']
+
+function maskFromArgFunctions(sql: string): string {
+    const chars = sql.split('')
+    const lower = sql.toLowerCase()
+    let i = 0
+    while (i < chars.length) {
+        const fn = FROM_ARG_FUNCTIONS.find(
+            (name) =>
+                lower.startsWith(name, i) &&
+                (i === 0 || !/[a-z0-9_]/.test(lower[i - 1]))
+        )
+        if (fn) {
+            let open = i + fn.length
+            while (open < chars.length && /\s/.test(chars[open])) open++
+            if (chars[open] === '(') {
+                let depth = 0
+                let close = open
+                for (; close < chars.length; close++) {
+                    if (chars[close] === '(') depth++
+                    else if (chars[close] === ')' && --depth === 0) break
+                }
+                // Blank the body but keep the parentheses themselves.
+                for (let p = open + 1; p < close; p++) chars[p] = ' '
+                i = close + 1
+                continue
+            }
+        }
+        i++
+    }
+    return chars.join('')
+}
+
 function extractReferencedTables(sql: string): string[] {
+    const masked = maskFromArgFunctions(sql)
     const refs: string[] = []
     const regex = /\b(?:from|join)\s+([a-z_][a-z0-9_]*)/gi
     let match: RegExpExecArray | null
-    while ((match = regex.exec(sql)) !== null) {
+    while ((match = regex.exec(masked)) !== null) {
         refs.push(match[1].toLowerCase())
     }
     return refs
