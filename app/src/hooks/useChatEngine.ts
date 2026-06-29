@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
 import { validateSql } from '../llm/sqlSafety'
 import { isMobileBrowser } from '../llm/deviceDetection'
-import type { AssistantPayload, ChatMessage, EngineState } from '../llm/types'
+import {
+    LLMError,
+    type AssistantPayload,
+    type ChatMessage,
+    type EngineState,
+} from '../llm/types'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
 
@@ -31,6 +36,7 @@ export function useChatEngine() {
     // bloat the main bundle with @mlc-ai/web-llm.
     const moduleRef = useRef<typeof import('../llm/engine') | null>(null)
     const askLLMRef = useRef<typeof import('../llm/askLLM') | null>(null)
+    const abortRef = useRef<AbortController | null>(null)
 
     const ensureLoaded = useCallback(async () => {
         if (state.kind === 'ready' || state.kind === 'loading') return
@@ -81,11 +87,13 @@ export function useChatEngine() {
                         },
                     }
                 }
+                abortRef.current = new AbortController()
                 const engine = await moduleRef.current.getEngine()
                 const answer = await askLLMRef.current.askLLM(
                     engine,
                     userText,
-                    history
+                    history,
+                    abortRef.current.signal
                 )
 
                 if (answer.intent !== 'custom') {
@@ -123,6 +131,9 @@ export function useChatEngine() {
                     }
                 }
             } catch (e) {
+                if (e instanceof LLMError && e.kind === 'aborted') {
+                    return { payload: { kind: 'aborted' } }
+                }
                 return {
                     payload: {
                         kind: 'llm-error',
@@ -134,9 +145,13 @@ export function useChatEngine() {
         []
     )
 
+    const cancel = useCallback(() => {
+        abortRef.current?.abort()
+    }, [])
+
     useEffect(() => {
         if (getAssistantEnabled()) ensureLoaded()
     }, [])
 
-    return { state, ensureLoaded, ask }
+    return { state, ensureLoaded, ask, cancel }
 }

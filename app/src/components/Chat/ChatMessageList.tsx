@@ -77,6 +77,16 @@ function AssistantCard({
         )
     }
 
+    if (payload.kind === 'aborted') {
+        return (
+            <div className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700/50">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Request cancelled.
+                </p>
+            </div>
+        )
+    }
+
     // payload.kind === 'ok'
     const { answer } = payload
     return (

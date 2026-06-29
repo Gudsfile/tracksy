@@ -33,7 +33,7 @@ export function ChatView() {
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
 
-    const { state, ensureLoaded, ask } = useChatEngine()
+    const { state, ensureLoaded, ask, cancel } = useChatEngine()
 
     useEffect(() => {
         const handler = () => {
@@ -94,7 +94,9 @@ export function ChatView() {
                         ? JSON.stringify(payload.answer)
                         : payload.kind === 'llm-error'
                           ? `error: ${payload.error}`
-                          : `error: ${payload.kind}`,
+                          : payload.kind === 'aborted'
+                            ? 'aborted'
+                            : `error: ${payload.kind}`,
                 payload,
             }
 
@@ -139,12 +141,14 @@ export function ChatView() {
                     />
                     <ChatInput
                         disabled={isLoading}
+                        isAsking={isAsking}
                         placeholder={
                             isAsking
                                 ? 'Thinking…'
                                 : 'Ask about your listening history…'
                         }
                         onSubmit={handleSubmit}
+                        onCancel={cancel}
                     />
                 </div>
             )}
