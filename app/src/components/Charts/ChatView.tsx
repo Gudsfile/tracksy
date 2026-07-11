@@ -7,6 +7,7 @@ import { ModelLoader } from '../Chat/ModelLoader'
 import { ChatInput } from '../Chat/ChatInput'
 import { ChatMessageList } from '../Chat/ChatMessageList'
 import { ChatShortcuts } from '../Chat/ChatShortcuts'
+import { ChatThinkingIndicator } from '../Chat/ChatThinkingIndicator'
 
 function generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -139,6 +140,7 @@ export function ChatView() {
                         onSelect={handleSubmit}
                         disabled={isLoading}
                     />
+                    {isAsking && <ChatThinkingIndicator />}
                     <ChatInput
                         disabled={isLoading}
                         isAsking={isAsking}
