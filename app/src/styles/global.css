@@ -37,6 +37,7 @@
     --animate-fade-in: fadeIn 0.5s ease-in-out;
     --animate-slide-up: slideUp 0.4s ease-out;
     --animate-scale-in: scaleIn 0.3s ease-out;
+    --animate-vibe-pulse: vibePulse 2.8s ease-in-out forwards;
 
     @keyframes fadeIn {
         from {
@@ -66,6 +67,25 @@
         to {
             transform: scale(1);
             opacity: 1;
+        }
+    }
+
+    @keyframes vibePulse {
+        0% {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        15% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        75% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-4px);
         }
     }
 }
