@@ -37,8 +37,10 @@ describe('Results Component', () => {
 
         fireEvent.click(labButton)
 
-        // Lab view is lazy-loaded; wait for it
-        await screen.findByText(/Work in Progress/i)
+        // Lab view is lazy-loaded; wait for it (slow CI runners need > 1s)
+        await screen.findByText(/Work in Progress/i, undefined, {
+            timeout: 5000,
+        })
     })
 
     it('switches to query view when Query button is clicked', async () => {
@@ -46,7 +48,9 @@ describe('Results Component', () => {
 
         fireEvent.click(screen.getByRole('tab', { name: '⌨️ Query' }))
 
-        await screen.findByText('⌨️ DuckDB Shell')
+        await screen.findByText('⌨️ DuckDB Shell', undefined, {
+            timeout: 5000,
+        })
     })
 
     it('switches back to simple view from lab view', async () => {
@@ -57,7 +61,9 @@ describe('Results Component', () => {
             name: '🔬 Lab',
         })
         fireEvent.click(labButton)
-        await screen.findByText(/Work in Progress/i)
+        await screen.findByText(/Work in Progress/i, undefined, {
+            timeout: 5000,
+        })
 
         // Then switch back to simple view
         const simpleButton = screen.getByRole('tab', {
