@@ -115,8 +115,8 @@ importers:
         specifier: ^4.1.9
         version: 4.1.9(@types/node@20.19.40)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@7.3.5(@types/node@20.19.40)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
       vitest-leak-detector:
-        specifier: ^1.0.3
-        version: 1.0.3(vitest@4.1.9)
+        specifier: ^1.1.0
+        version: 1.1.0(vitest@4.1.9)
 
 packages:
 
@@ -3698,8 +3698,8 @@ packages:
       vite:
         optional: true
 
-  vitest-leak-detector@1.0.3:
-    resolution: {integrity: sha512-6iCq8Fx5hErd0iE9laspR9gJ66klh6FtXHbSjm/NNgeWWtUZQ7fW2XuPXZlwhI5+F/J2z/IXSR9PwLIdEVVxYg==}
+  vitest-leak-detector@1.1.0:
+    resolution: {integrity: sha512-7x+eIeUpsqe8PFAMrWomTpG2Wtn33p5oCgu0mwVYoA2rh81POqYsXCCOiQioGHuiValODMtLUHrQQsS4odsgRQ==}
     engines: {node: '>=24'}
     peerDependencies:
       vitest: '>=4.0.0'
@@ -8074,7 +8074,7 @@ snapshots:
     optionalDependencies:
       vite: 7.3.5(@types/node@20.19.40)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4)
 
-  vitest-leak-detector@1.0.3(vitest@4.1.9):
+  vitest-leak-detector@1.1.0(vitest@4.1.9):
     dependencies:
       vitest: 4.1.9(@types/node@20.19.40)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@7.3.5(@types/node@20.19.40)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
 
