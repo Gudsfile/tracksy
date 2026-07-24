@@ -5,6 +5,7 @@ import type { ChatMessage, AssistantPayload } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
 import type { ChartConfig } from '../../llm/askChartConfig'
 import { ModelLoader } from '../Chat/ModelLoader'
+import { AssistantSettings } from '../Chat/AssistantSettings'
 import { ChatInput } from '../Chat/ChatInput'
 import { ChatMessageList } from '../Chat/ChatMessageList'
 import { ChatShortcuts } from '../Chat/ChatShortcuts'
@@ -37,11 +38,20 @@ export function ChatView() {
     const [isAsking, setIsAsking] = useState(false)
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const [streamingNarrative, setStreamingNarrative] = useState('')
+    const [settingsOpen, setSettingsOpen] = useState(false)
     const streamingMsgIdRef = useRef<string | null>(null)
     const messagesRef = useRef(messages)
     const bottomRef = useRef<HTMLDivElement>(null)
 
-    const { state, ensureLoaded, ask, cancel } = useChatEngine()
+    const {
+        state,
+        config,
+        ensureLoaded,
+        enableWith,
+        applyConfig,
+        ask,
+        cancel,
+    } = useChatEngine()
 
     useEffect(() => {
         const handler = () => {
@@ -166,10 +176,40 @@ export function ChatView() {
     return (
         <div className="flex flex-col gap-4 py-4">
             <MemoryNotice />
-            <ModelLoader state={state} onEnable={handleEnable} />
+
+            {state.kind === 'idle' ? (
+                <AssistantSettings mode="onboarding" onSubmit={enableWith} />
+            ) : (
+                <ModelLoader state={state} onEnable={handleEnable} />
+            )}
+
+            {isReady && settingsOpen && (
+                <AssistantSettings
+                    mode="settings"
+                    initialConfig={config}
+                    onSubmit={(next) => {
+                        applyConfig(next)
+                        setSettingsOpen(false)
+                    }}
+                    onCancel={() => setSettingsOpen(false)}
+                />
+            )}
 
             {isReady && (
                 <div className="flex flex-col gap-4">
+                    <div className="flex justify-end">
+                        <button
+                            type="button"
+                            onClick={() => setSettingsOpen((v) => !v)}
+                            aria-expanded={settingsOpen}
+                            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        >
+                            <span aria-hidden="true" className="text-lg">
+                                ⚙️
+                            </span>
+                            Settings
+                        </button>
+                    </div>
                     <div className="min-h-64">
                         <ChatMessageList
                             messages={messages}
