@@ -1,33 +1,55 @@
-import { ConcentrationScore } from './SimpleCharts/ConcentrationScore'
-import { ListeningRhythm } from './SimpleCharts/ListeningRhythm'
-import { Regularity } from './SimpleCharts/Regularity'
-import { SeasonalPatterns } from './SimpleCharts/SeasonalPatterns'
-import { EvolutionOverTime } from './SimpleCharts/EvolutionOverTime'
-import { NewVsOld } from './SimpleCharts/NewVsOld'
-import { SkipRate } from './SimpleCharts/SkipRate'
-import { RepeatBehavior } from './SimpleCharts/RepeatBehavior'
-import { FunFacts } from './SimpleCharts/FunFacts'
-import { PrincipalPlatform } from './SimpleCharts/PrincipalPlatform'
-import { ArtistLoyalty } from './SimpleCharts/ArtistLoyalty'
-import { FavoriteWeekday } from './SimpleCharts/FavoriteWeekday'
-import { UnbeatableStreak } from './SimpleCharts/UnbeatableStreak'
-import { BingeListener } from './SimpleCharts/BingeListener'
-import { VarietyDay } from './SimpleCharts/VarietyDay'
-import { CalendarHeatmap } from './SimpleCharts/CalendarHeatmap'
-import { HourlyStreams } from './SimpleCharts/HourlyStreams'
-import { SessionAnalysis } from './SimpleCharts/SessionAnalysis'
-import { TopArtists } from './SimpleCharts/TopArtists'
-import { TopAlbums } from './SimpleCharts/TopAlbums'
-import { TopTracks } from './SimpleCharts/TopTracks'
+import { ConcentrationScore as ConcentrationScoreRaw } from './SimpleCharts/ConcentrationScore'
+import { ListeningRhythm as ListeningRhythmRaw } from './SimpleCharts/ListeningRhythm'
+import { Regularity as RegularityRaw } from './SimpleCharts/Regularity'
+import { SeasonalPatterns as SeasonalPatternsRaw } from './SimpleCharts/SeasonalPatterns'
+import { EvolutionOverTime as EvolutionOverTimeRaw } from './SimpleCharts/EvolutionOverTime'
+import { NewVsOld as NewVsOldRaw } from './SimpleCharts/NewVsOld'
+import { SkipRate as SkipRateRaw } from './SimpleCharts/SkipRate'
+import { RepeatBehavior as RepeatBehaviorRaw } from './SimpleCharts/RepeatBehavior'
+import { FunFacts as FunFactsRaw } from './SimpleCharts/FunFacts'
+import { PrincipalPlatform as PrincipalPlatformRaw } from './SimpleCharts/PrincipalPlatform'
+import { ArtistLoyalty as ArtistLoyaltyRaw } from './SimpleCharts/ArtistLoyalty'
+import { FavoriteWeekday as FavoriteWeekdayRaw } from './SimpleCharts/FavoriteWeekday'
+import { UnbeatableStreak as UnbeatableStreakRaw } from './SimpleCharts/UnbeatableStreak'
+import { BingeListener as BingeListenerRaw } from './SimpleCharts/BingeListener'
+import { VarietyDay as VarietyDayRaw } from './SimpleCharts/VarietyDay'
+import { CalendarHeatmap as CalendarHeatmapRaw } from './SimpleCharts/CalendarHeatmap'
+import { HourlyStreams as HourlyStreamsRaw } from './SimpleCharts/HourlyStreams'
+import { SessionAnalysis as SessionAnalysisRaw } from './SimpleCharts/SessionAnalysis'
+import { TopArtists as TopArtistsRaw } from './SimpleCharts/TopArtists'
+import { TopAlbums as TopAlbumsRaw } from './SimpleCharts/TopAlbums'
+import { TopTracks as TopTracksRaw } from './SimpleCharts/TopTracks'
 import { YearSidebar } from '../YearSidebar/YearSidebar'
 import { queryDBAsJSON } from '../../db/queries/queryDB'
 import {
     type SummarizeDataQueryResult,
     summarizeQuery,
 } from './Summarize/summarizeQuery'
-import { useState, useEffect, useCallback } from 'react'
+import { memo, useState, useEffect, useCallback } from 'react'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
+
+const ConcentrationScore = memo(ConcentrationScoreRaw)
+const ListeningRhythm = memo(ListeningRhythmRaw)
+const Regularity = memo(RegularityRaw)
+const SeasonalPatterns = memo(SeasonalPatternsRaw)
+const EvolutionOverTime = memo(EvolutionOverTimeRaw)
+const NewVsOld = memo(NewVsOldRaw)
+const SkipRate = memo(SkipRateRaw)
+const RepeatBehavior = memo(RepeatBehaviorRaw)
+const FunFacts = memo(FunFactsRaw)
+const PrincipalPlatform = memo(PrincipalPlatformRaw)
+const ArtistLoyalty = memo(ArtistLoyaltyRaw)
+const FavoriteWeekday = memo(FavoriteWeekdayRaw)
+const UnbeatableStreak = memo(UnbeatableStreakRaw)
+const BingeListener = memo(BingeListenerRaw)
+const VarietyDay = memo(VarietyDayRaw)
+const CalendarHeatmap = memo(CalendarHeatmapRaw)
+const HourlyStreams = memo(HourlyStreamsRaw)
+const SessionAnalysis = memo(SessionAnalysisRaw)
+const TopArtists = memo(TopArtistsRaw)
+const TopAlbums = memo(TopAlbumsRaw)
+const TopTracks = memo(TopTracksRaw)
 
 export function SimpleView() {
     const [year, setYear] = useState<number | undefined>(undefined)
