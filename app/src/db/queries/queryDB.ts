@@ -1,13 +1,11 @@
 import { getDB } from '../getDB'
 import { devBus } from '../../devToolbar/devBus'
-import { parseCallerFrame } from '../../devToolbar/parseCallerFrame'
+import { resolveCallerSource } from '../../devToolbar/resolveCallerSource'
 
 export async function queryDBAsJSON<
     T extends Record<string, string | number | null | undefined>,
 >(query: string, source?: string): Promise<T[]> {
-    const resolvedSource =
-        source ??
-        (import.meta.env.DEV ? parseCallerFrame(new Error().stack) : undefined)
+    const resolvedSource = source ?? resolveCallerSource()
     const { conn } = await getDB()
     const start = performance.now()
     try {
