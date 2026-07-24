@@ -20,8 +20,8 @@ function MemoryNotice() {
         <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200/60 dark:border-blue-700/40 text-blue-800 dark:text-blue-300 text-sm">
             <span className="shrink-0">💡</span>
             <p>
-                Chat history is stored in memory only — switching to another tab
-                will clear the conversation.
+                Chat history is kept in memory for this session and is cleared
+                when you load new data.
             </p>
         </div>
     )

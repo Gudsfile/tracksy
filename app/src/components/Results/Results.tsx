@@ -1,7 +1,15 @@
-import { lazy, Suspense, useCallback, useRef, useState } from 'react'
+import {
+    lazy,
+    Suspense,
+    useCallback,
+    useRef,
+    useState,
+    type ReactNode,
+} from 'react'
 import { SimpleView } from '../Charts/SimpleView'
 import { Spinner } from '../Spinner/Spinner'
 import { QueryTabContext } from './QueryTabContext'
+import { TabPanelActiveContext } from './TabPanelContext'
 
 const LabView = lazy(() =>
     import('../Charts/LabView').then((m) => ({ default: m.LabView }))
@@ -38,17 +46,65 @@ const TABS: { id: Tab; label: string; tooltip: string }[] = [
     },
 ]
 
+function TabFallback() {
+    return (
+        <div className="flex justify-center py-12">
+            <Spinner />
+        </div>
+    )
+}
+
+// Keep each panel mounted once visited and toggle visibility instead of
+// unmounting, so switching tabs does not remount the view (which caused a
+// visible jump/refresh flicker and re-ran the view's queries). See #560.
+function TabPanel({
+    id,
+    active,
+    children,
+}: {
+    id: Tab
+    active: boolean
+    children: ReactNode
+}) {
+    return (
+        <div
+            role="tabpanel"
+            id={`panel-${id}`}
+            aria-labelledby={`tab-${id}`}
+            tabIndex={active ? 0 : -1}
+            hidden={!active}
+        >
+            <TabPanelActiveContext.Provider value={active}>
+                {children}
+            </TabPanelActiveContext.Provider>
+        </div>
+    )
+}
+
 export function Results() {
     const [activeTab, setActiveTab] = useState<Tab>('simple')
+    const [visitedTabs, setVisitedTabs] = useState<Set<Tab>>(
+        () => new Set<Tab>(['simple'])
+    )
     const [queryKey, setQueryKey] = useState(0)
     const pendingQueryRef = useRef<string | undefined>(undefined)
     const tabIndex = TABS.findIndex((t) => t.id === activeTab)
 
-    const openInQueryTab = useCallback((sql: string) => {
-        pendingQueryRef.current = sql
-        setActiveTab('query')
-        setQueryKey((k) => k + 1)
+    const selectTab = useCallback((tab: Tab) => {
+        setActiveTab(tab)
+        setVisitedTabs((prev) =>
+            prev.has(tab) ? prev : new Set(prev).add(tab)
+        )
     }, [])
+
+    const openInQueryTab = useCallback(
+        (sql: string) => {
+            pendingQueryRef.current = sql
+            selectTab('query')
+            setQueryKey((k) => k + 1)
+        },
+        [selectTab]
+    )
 
     const clearPendingQuery = () => {
         pendingQueryRef.current = undefined
@@ -70,10 +126,12 @@ export function Results() {
                         {TABS.map((tab) => (
                             <button
                                 key={tab.id}
+                                id={`tab-${tab.id}`}
                                 role="tab"
                                 aria-selected={activeTab === tab.id}
+                                aria-controls={`panel-${tab.id}`}
                                 title={tab.tooltip}
-                                onClick={() => setActiveTab(tab.id)}
+                                onClick={() => selectTab(tab.id)}
                                 className={`relative z-10 flex-1 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${
                                     activeTab === tab.id
                                         ? 'text-white'
@@ -87,27 +145,34 @@ export function Results() {
                 </div>
 
                 <div>
-                    <Suspense
-                        fallback={
-                            <div className="flex justify-center py-12">
-                                <Spinner />
-                            </div>
-                        }
-                    >
-                        {activeTab === 'simple' ? (
-                            <SimpleView />
-                        ) : activeTab === 'lab' ? (
-                            <LabView />
-                        ) : activeTab === 'query' ? (
-                            <QueryView
-                                key={queryKey}
-                                initialQuery={pendingQueryRef.current}
-                                onQueryConsumed={clearPendingQuery}
-                            />
-                        ) : (
-                            <ChatView />
-                        )}
-                    </Suspense>
+                    <TabPanel id="simple" active={activeTab === 'simple'}>
+                        <SimpleView />
+                    </TabPanel>
+                    {visitedTabs.has('lab') && (
+                        <TabPanel id="lab" active={activeTab === 'lab'}>
+                            <Suspense fallback={<TabFallback />}>
+                                <LabView />
+                            </Suspense>
+                        </TabPanel>
+                    )}
+                    {visitedTabs.has('chat') && (
+                        <TabPanel id="chat" active={activeTab === 'chat'}>
+                            <Suspense fallback={<TabFallback />}>
+                                <ChatView />
+                            </Suspense>
+                        </TabPanel>
+                    )}
+                    {visitedTabs.has('query') && (
+                        <TabPanel id="query" active={activeTab === 'query'}>
+                            <Suspense fallback={<TabFallback />}>
+                                <QueryView
+                                    key={queryKey}
+                                    initialQuery={pendingQueryRef.current}
+                                    onQueryConsumed={clearPendingQuery}
+                                />
+                            </Suspense>
+                        </TabPanel>
+                    )}
                 </div>
             </div>
         </QueryTabContext.Provider>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useTabPanelActive } from '../Results/TabPanelContext'
 
 interface YearSidebarProps {
     value: number | undefined
@@ -22,6 +23,7 @@ function readFloatingMatch(): boolean {
 }
 
 export function YearSidebar({ value, onChange, min, max }: YearSidebarProps) {
+    const isPanelActive = useTabPanelActive()
     const [isFloating, setIsFloating] = useState(readFloatingMatch)
 
     useEffect(() => {
@@ -32,6 +34,11 @@ export function YearSidebar({ value, onChange, min, max }: YearSidebarProps) {
         mq.addEventListener('change', update)
         return () => mq.removeEventListener('change', update)
     }, [])
+
+    // The floating variant portals to `document.body`, escaping the panel's
+    // `hidden` subtree, so a hidden panel's sidebar would otherwise stay visible
+    // and overlap the active one (#560). Render nothing while inactive.
+    if (!isPanelActive) return null
 
     const years: number[] = []
     for (let year = max; year >= min; year--) years.push(year)
