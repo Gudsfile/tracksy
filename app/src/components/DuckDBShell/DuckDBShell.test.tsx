@@ -1,10 +1,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { DuckDBShell } from './DuckDBShell'
 import * as db from '../../db/getDB'
 
 describe('DuckDBShell', () => {
     const mockQuery = vi.fn()
+    const pendingTimers: ReturnType<typeof setTimeout>[] = []
 
     beforeEach(() => {
         vi.clearAllMocks()
@@ -15,6 +16,12 @@ describe('DuckDBShell', () => {
                 query: mockQuery,
             },
         } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+    })
+
+    afterEach(() => {
+        while (pendingTimers.length > 0) {
+            clearTimeout(pendingTimers.pop())
+        }
     })
 
     it('should render the component with default query', () => {
@@ -41,18 +48,20 @@ describe('DuckDBShell', () => {
         // Mock a slow query
         mockQuery.mockImplementation(
             () =>
-                new Promise((resolve) =>
-                    setTimeout(
-                        () =>
-                            resolve({
-                                schema: {
-                                    fields: [{ name: 'answer' }],
-                                },
-                                toArray: () => [{ answer: 42 }],
-                            }),
-                        100
+                new Promise((resolve) => {
+                    pendingTimers.push(
+                        setTimeout(
+                            () =>
+                                resolve({
+                                    schema: {
+                                        fields: [{ name: 'answer' }],
+                                    },
+                                    toArray: () => [{ answer: 42 }],
+                                }),
+                            100
+                        )
                     )
-                )
+                })
         )
 
         render(<DuckDBShell />)
