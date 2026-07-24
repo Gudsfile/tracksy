@@ -42,8 +42,7 @@ const DENY_KEYWORDS = [
 const MAX_SQL_LENGTH = 4000
 
 export type SqlValidation =
-    | { ok: true; sql: string }
-    | { ok: false; reason: string }
+    { ok: true; sql: string } | { ok: false; reason: string }
 
 function stripComments(sql: string): string {
     // /* block comments */ — non-greedy so we don't eat across statements

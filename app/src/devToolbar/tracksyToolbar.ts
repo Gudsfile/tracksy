@@ -58,8 +58,7 @@ export default defineToolbarApp({
         let loadState: DevBusEventMap['webllm:load'] | null = null
         let lastInference: InferenceEntry | null = null
         let lastStream:
-            | (DevBusEventMap['stream:parsed'] & { ts: number })
-            | null = null
+            (DevBusEventMap['stream:parsed'] & { ts: number }) | null = null
 
         // --- Render helpers ---
         function fmt(ms: number): string {
