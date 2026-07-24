@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { YearSidebar } from './YearSidebar'
+import { TabPanelActiveContext } from '../Results/TabPanelContext'
 
 describe('YearSidebar', () => {
     it('renders an "All time" button and one button per year', () => {
@@ -88,5 +89,23 @@ describe('YearSidebar', () => {
         fireEvent.click(screen.getByRole('button', { name: 'All time' }))
 
         expect(onChange).toHaveBeenCalledWith(undefined)
+    })
+
+    it('renders nothing when its tab panel is inactive (#560)', () => {
+        // A hidden panel stays mounted; the floating variant portals to
+        // document.body and would otherwise overlap the active panel's sidebar.
+        const { container } = render(
+            <TabPanelActiveContext.Provider value={false}>
+                <YearSidebar
+                    value={2024}
+                    onChange={vi.fn()}
+                    min={2020}
+                    max={2024}
+                />
+            </TabPanelActiveContext.Provider>
+        )
+
+        expect(container.firstChild).toBeNull()
+        expect(screen.queryByRole('button', { name: 'All time' })).toBeNull()
     })
 })
