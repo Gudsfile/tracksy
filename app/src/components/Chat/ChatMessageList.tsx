@@ -45,7 +45,7 @@ function AssistantCard({
 
     if (payload.kind === 'llm-error') {
         return (
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-700/50">
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl rounded-bl-sm border border-red-200 dark:border-red-700/50 shadow-sm">
                 <p className="text-sm font-medium text-red-700 dark:text-red-300">
                     ⚠️ Assistant error
                 </p>
@@ -59,7 +59,7 @@ function AssistantCard({
     if (payload.kind === 'unsafe-sql') {
         return (
             <div className="space-y-2">
-                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200 dark:border-amber-700/50">
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-2xl rounded-bl-sm border border-amber-200 dark:border-amber-700/50 shadow-sm">
                     <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
                         🔒 Query blocked
                     </p>
@@ -75,7 +75,7 @@ function AssistantCard({
     if (payload.kind === 'sql-error') {
         return (
             <div className="space-y-2">
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-700/50">
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl rounded-bl-sm border border-red-200 dark:border-red-700/50 shadow-sm">
                     <p className="text-sm font-medium text-red-700 dark:text-red-300">
                         ⚠️ Query failed
                     </p>
@@ -99,7 +99,7 @@ function AssistantCard({
 
     if (payload.kind === 'aborted') {
         return (
-            <div className="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700/50">
+            <div className="p-4 bg-gray-50 dark:bg-slate-800/60 rounded-2xl rounded-bl-sm border border-gray-200 dark:border-slate-700/60 shadow-sm">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                     Request cancelled.
                 </p>
@@ -121,8 +121,8 @@ function AssistantCard({
         (hasNoResults ? 'No results found for this query.' : answer.explanation)
     const isStreaming = !narrative && !!streamingNarrative
     return (
-        <div className="space-y-2">
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed px-1">
+        <div className="space-y-2 p-4 bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/60 rounded-2xl rounded-bl-sm shadow-sm">
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                 {narrativeText}
                 {isStreaming && <span className="animate-pulse">▌</span>}
             </p>
