@@ -4,8 +4,15 @@ import type { MLCEngineInterface } from '@mlc-ai/web-llm'
 import { useChatEngine, type AskResult } from './useChatEngine'
 import * as engineModule from '../llm/engine'
 import * as askLLMModule from '../llm/askLLM'
+import * as askChartConfigModule from '../llm/askChartConfig'
 import * as queryDBModule from '../db/queries/queryDB'
 import * as deviceDetection from '../llm/deviceDetection'
+import {
+    configFromPreset,
+    saveConfig,
+    ASSISTANT_CONFIG_KEY,
+    type PresetName,
+} from '../llm/assistantConfig'
 import { makeChatAnswer } from '../llm/testHelpers'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
@@ -24,10 +31,10 @@ beforeEach(() => {
     vi.spyOn(deviceDetection, 'isMobileBrowser').mockReturnValue(false)
 })
 
-async function loadedHook() {
+async function loadedHook(preset: PresetName = 'rich') {
     const hook = renderHook(() => useChatEngine())
     await act(async () => {
-        await hook.result.current.ensureLoaded()
+        await hook.result.current.enableWith(configFromPreset(preset))
     })
     return hook
 }
@@ -42,53 +49,57 @@ async function ask(
     return result!
 }
 
-describe('useChatEngine — fresh visit', () => {
-    it('stays idle when no preference is stored', () => {
+describe('useChatEngine — onboarding gate', () => {
+    it('stays idle when no config is stored', () => {
         const { result } = renderHook(() => useChatEngine())
+        expect(result.current.state.kind).toBe('idle')
+    })
+
+    it('shows onboarding (stays idle) for a pre-feature user who is enabled but has no config', async () => {
+        localStorage.setItem(ASSISTANT_ENABLED_KEY, 'true')
+
+        const { result } = renderHook(() => useChatEngine())
+
+        // Give the mount effect a tick; it must NOT auto-load without a config.
+        await act(async () => {
+            await Promise.resolve()
+        })
         expect(result.current.state.kind).toBe('idle')
     })
 })
 
 describe('useChatEngine — returning visit', () => {
-    it('auto-starts loading when preference key is set', async () => {
+    it('auto-loads when both enabled flag and a stored config are present', async () => {
         localStorage.setItem(ASSISTANT_ENABLED_KEY, 'true')
+        saveConfig(configFromPreset('rich'))
 
         const { result } = renderHook(() => useChatEngine())
 
-        // jsdom has no WebGPU, so ensureLoaded() settles to 'unsupported' —
-        // but any non-idle state proves the auto-load fired.
         await waitFor(() => {
             expect(result.current.state.kind).not.toBe('idle')
         })
     })
 })
 
-describe('useChatEngine — explicit enable', () => {
-    it('writes the preference key to localStorage when ensureLoaded is called', async () => {
+describe('useChatEngine — enableWith', () => {
+    it('persists the config and enabled flag, then leaves idle', async () => {
         const { result } = renderHook(() => useChatEngine())
 
         expect(localStorage.getItem(ASSISTANT_ENABLED_KEY)).toBeNull()
+        expect(localStorage.getItem(ASSISTANT_CONFIG_KEY)).toBeNull()
 
         await act(async () => {
-            await result.current.ensureLoaded()
+            await result.current.enableWith(configFromPreset('lite'))
         })
 
         expect(localStorage.getItem(ASSISTANT_ENABLED_KEY)).toBe('true')
-    })
-
-    it('transitions away from idle after explicit enable', async () => {
-        const { result } = renderHook(() => useChatEngine())
-
-        await act(async () => {
-            await result.current.ensureLoaded()
-        })
-
+        expect(localStorage.getItem(ASSISTANT_CONFIG_KEY)).toContain('lite')
         expect(result.current.state.kind).not.toBe('idle')
     })
 })
 
 describe('useChatEngine.ask (unified SQL path)', () => {
-    it('executes the generated SQL and returns rows for a preset (non-custom) intent', async () => {
+    it('executes the generated SQL and returns rows', async () => {
         const rows = [{ artist_name: 'Radiohead', c: 1204 }]
         vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(
             answer({ intent: 'top_artists' })
@@ -104,27 +115,62 @@ describe('useChatEngine.ask (unified SQL path)', () => {
         expect(result.rows).toEqual(rows)
     })
 
-    it('attaches streamNarrator on desktop and omits it on mobile', async () => {
+    it('streams the narrative for a stream config (Rich) and skips it for a static config (Lite)', async () => {
         vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(answer())
         vi.spyOn(queryDBModule, 'queryDBAsJSON').mockResolvedValue([{ x: 1 }])
 
-        const desktop = await ask(await loadedHook())
-        expect(desktop.streamNarrator).toBeTypeOf('function')
+        const rich = await ask(await loadedHook('rich'))
+        expect(rich.streamNarrator).toBeTypeOf('function')
 
-        vi.spyOn(deviceDetection, 'isMobileBrowser').mockReturnValue(true)
-        const mobile = await ask(await loadedHook())
-        expect(mobile.streamNarrator).toBeUndefined()
+        const lite = await ask(await loadedHook('lite'))
+        expect(lite.streamNarrator).toBeUndefined()
     })
 
-    it('omits streamNarrator when SQL returns empty rows to prevent hallucination', async () => {
+    it('runs the ChartAgent for a llm-chart config (Rich)', async () => {
+        vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(answer())
+        vi.spyOn(queryDBModule, 'queryDBAsJSON').mockResolvedValue([{ x: 1 }])
+        const chartSpy = vi
+            .spyOn(askChartConfigModule, 'askChartConfig')
+            .mockResolvedValue({ type: 'metric', key: 'x' })
+
+        const result = await ask(await loadedHook('rich'))
+
+        expect(chartSpy).toHaveBeenCalledTimes(1)
+        expect(result.chartConfig).toEqual({ type: 'metric', key: 'x' })
+    })
+
+    it('renders a table without the ChartAgent for an off-chart config (Minimal)', async () => {
+        vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(answer())
+        vi.spyOn(queryDBModule, 'queryDBAsJSON').mockResolvedValue([{ x: 1 }])
+        const chartSpy = vi.spyOn(askChartConfigModule, 'askChartConfig')
+
+        const result = await ask(await loadedHook('minimal'))
+
+        expect(chartSpy).not.toHaveBeenCalled()
+        expect(result.chartConfig).toEqual({ type: 'table' })
+    })
+
+    it('leaves chartConfig undefined for an infer-chart config (Lite)', async () => {
+        vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(answer())
+        vi.spyOn(queryDBModule, 'queryDBAsJSON').mockResolvedValue([{ x: 1 }])
+        const chartSpy = vi.spyOn(askChartConfigModule, 'askChartConfig')
+
+        const result = await ask(await loadedHook('lite'))
+
+        expect(chartSpy).not.toHaveBeenCalled()
+        expect(result.chartConfig).toBeUndefined()
+    })
+
+    it('omits chart + narrator when SQL returns empty rows', async () => {
         vi.spyOn(askLLMModule, 'askLLM').mockResolvedValue(answer())
         vi.spyOn(queryDBModule, 'queryDBAsJSON').mockResolvedValue([])
 
-        const result = await ask(await loadedHook())
+        const result = await ask(await loadedHook('rich'))
 
         expect(result.payload.kind).toBe('ok')
         expect(result.rows).toEqual([])
         expect(result.streamNarrator).toBeUndefined()
+        expect(result.chartConfig).toBeUndefined()
     })
 
     it('retries once with the error appended when the first SQL fails', async () => {
@@ -140,7 +186,7 @@ describe('useChatEngine.ask (unified SQL path)', () => {
             .mockRejectedValueOnce(new Error('boom'))
             .mockResolvedValueOnce([{ ok: 1 }])
 
-        const result = await ask(await loadedHook())
+        const result = await ask(await loadedHook('minimal'))
 
         expect(askSpy).toHaveBeenCalledTimes(2)
         expect(askSpy.mock.calls[1][1]).toContain('Previous SQL failed with:')
@@ -160,7 +206,7 @@ describe('useChatEngine.ask (unified SQL path)', () => {
             .mockRejectedValueOnce(new Error('boom1'))
             .mockRejectedValueOnce(new Error('boom2'))
 
-        const result = await ask(await loadedHook())
+        const result = await ask(await loadedHook('minimal'))
 
         expect(result.payload.kind).toBe('sql-error')
     })
@@ -171,7 +217,7 @@ describe('useChatEngine.ask (unified SQL path)', () => {
         )
         const querySpy = vi.spyOn(queryDBModule, 'queryDBAsJSON')
 
-        const result = await ask(await loadedHook())
+        const result = await ask(await loadedHook('minimal'))
 
         expect(result.payload.kind).toBe('unsafe-sql')
         expect(querySpy).not.toHaveBeenCalled()
