@@ -155,6 +155,18 @@ describe('ChatMessageList (unified SQL rendering)', () => {
         expect(screen.getByText('🔍 Generated SQL')).toBeTruthy()
     })
 
+    it('renders the SQL block with readable text colors in both themes', () => {
+        const { messages, customRows } = okMessages([{ total_streams: 1550 }])
+        const { container } = render(
+            <ChatMessageList messages={messages} customRows={customRows} />
+        )
+
+        const pre = container.querySelector('pre')
+        expect(pre).toBeTruthy()
+        expect(pre?.className).toContain('text-gray-800')
+        expect(pre?.className).toContain('dark:text-gray-100')
+    })
+
     it('falls back to the static explanation when no narrative is present (mobile)', () => {
         const { messages, customRows } = okMessages([{ total_streams: 1550 }])
         render(<ChatMessageList messages={messages} customRows={customRows} />)
