@@ -3,6 +3,7 @@ type DevBusEventMap = {
         sql: string
         durationMs: number
         rowCount: number
+        source?: string
         error?: string
     }
     'webllm:load': { model: string; progress: number; text: string }
