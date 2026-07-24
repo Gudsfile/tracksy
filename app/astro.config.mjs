@@ -88,6 +88,21 @@ export default defineConfig({
         build: {
             rollupOptions: {
                 external: DUCKDB_EXTERNALS,
+                output: {
+                    // Keep the light assistant config/device modules in their
+                    // own chunk so they can never be folded into the ~5.7 MB
+                    // web-llm `engine` chunk — which would pull it eagerly when
+                    // the Chat tab opens instead of on "Enable assistant".
+                    manualChunks(id) {
+                        if (
+                            id.includes('src/llm/assistantConfig') ||
+                            id.includes('src/llm/deviceDetection') ||
+                            id.includes('src/llm/modelState')
+                        ) {
+                            return 'assistant-config'
+                        }
+                    },
+                },
             },
         },
         optimizeDeps: {

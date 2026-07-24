@@ -1,7 +1,7 @@
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
 import { inferChartType, type DBRow } from './inferChartType'
 import { devBus } from '../devToolbar/devBus'
-import { selectModelId } from './engine'
+import { getLoadedModelId } from './modelState'
 
 export type ChartConfig =
     | {
@@ -207,7 +207,7 @@ export async function askChartConfig(
     const durationMs = performance.now() - start
     const tokens = response.usage?.completion_tokens ?? 0
     devBus.emit('webllm:inference', {
-        model: selectModelId(),
+        model: getLoadedModelId(),
         durationMs,
         tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
     })

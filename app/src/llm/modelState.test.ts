@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { selectModelId, MODEL_ID, MODEL_ID_IOS } from './engine'
+import { selectModelId, MODEL_ID, MODEL_ID_IOS } from './modelState'
 
 const setUA = (ua: string) =>
     vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(ua)

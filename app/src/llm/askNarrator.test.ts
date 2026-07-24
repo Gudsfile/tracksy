@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { askNarrator } from './askNarrator'
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
-import * as engineModule from './engine'
+import * as modelState from './modelState'
 import * as devBusModule from '../devToolbar/devBus'
 
 function makeChunk(content: string) {
@@ -25,7 +25,7 @@ function makeMockEngine(deltas: string[]): MLCEngineInterface {
 }
 
 beforeEach(() => {
-    vi.spyOn(engineModule, 'selectModelId').mockReturnValue('test-model')
+    vi.spyOn(modelState, 'getLoadedModelId').mockReturnValue('test-model')
     vi.spyOn(devBusModule.devBus, 'emit').mockImplementation(() => {})
 })
 
