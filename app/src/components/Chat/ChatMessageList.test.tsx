@@ -204,6 +204,25 @@ describe('ChatMessageList (unified SQL rendering)', () => {
         ).toBeNull()
     })
 
+    it('wraps the assistant response in a left-aligned message bubble', () => {
+        const { messages, customRows } = okMessages(
+            [{ total_streams: 1550 }],
+            'You streamed 1,550 tracks in 2025.'
+        )
+        render(<ChatMessageList messages={messages} customRows={customRows} />)
+
+        // The narrative text lives inside a styled bubble container.
+        const narrative = screen.getByText('You streamed 1,550 tracks in 2025.')
+        const bubble = narrative.parentElement
+        expect(bubble?.className).toContain('rounded-2xl')
+        expect(bubble?.className).toContain('rounded-bl-sm')
+        expect(bubble?.className).toContain('border-gray-200')
+
+        // The bubble is rendered on the left (assistant) side of the row.
+        const row = bubble?.closest('div.flex')
+        expect(row?.className).toContain('justify-start')
+    })
+
     it('renders a Retry button on sql-error that re-submits the preceding question', () => {
         const onRetry = vi.fn()
         const messages: ChatMessage[] = [
