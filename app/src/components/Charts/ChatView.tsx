@@ -164,7 +164,7 @@ export function ChatView() {
     const isLoading = state.kind === 'loading' || isAsking
 
     return (
-        <div className="flex flex-col gap-4 max-w-3xl mx-auto py-4">
+        <div className="flex flex-col gap-4 py-4">
             <MemoryNotice />
             <ModelLoader state={state} onEnable={handleEnable} />
 
