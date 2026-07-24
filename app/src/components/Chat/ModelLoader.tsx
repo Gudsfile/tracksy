@@ -10,8 +10,8 @@ function DegradedNotice() {
         <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/60 dark:border-amber-700/40 text-amber-800 dark:text-amber-300 text-sm">
             <span className="shrink-0">⚠️</span>
             <p>
-                A lighter model is used on this device. Responses may be less
-                accurate — especially for time-based questions.
+                A non-default model is in use — responses may be less reliable,
+                especially for time-based questions.
             </p>
         </div>
     )
