@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { queryDBAsJSON } from '../db/queries/queryDB'
 import { DATA_LOADED_EVENT } from '../db/dataSignal'
-import { parseCallerFrame } from '../devToolbar/parseCallerFrame'
+import { resolveCallerSource } from '../devToolbar/resolveCallerSource'
 
 type DBPrimitive = string | number | null
 type DBRow = Record<string, DBPrimitive>
@@ -21,9 +21,7 @@ export function useDBQueryMany<T extends DBRow>({
     query,
     year,
 }: BaseOptions): UseDBQueryResult<T[]> {
-    const source = import.meta.env.DEV
-        ? parseCallerFrame(new Error().stack)
-        : undefined
+    const source = resolveCallerSource()
     const [data, setData] = useState<T[] | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>(undefined)
