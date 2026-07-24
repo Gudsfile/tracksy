@@ -19,7 +19,7 @@ function SqlBlock({ sql }: { sql: string }) {
             <summary className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 select-none">
                 🔍 Generated SQL
             </summary>
-            <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
+            <pre className="mt-2 p-3 bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-100 rounded-xl overflow-x-auto whitespace-pre-wrap break-all">
                 {sql}
             </pre>
         </details>
