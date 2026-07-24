@@ -8,7 +8,7 @@ import { SYSTEM_PROMPT, FEW_SHOTS, CURRENT_DATE } from './prompt'
 import { resolveYear } from './resolveYear'
 import { LLMError, type ChatAnswer, type ChatMessage } from './types'
 import { devBus } from '../devToolbar/devBus'
-import { selectModelId } from './engine'
+import { getLoadedModelId } from './modelState'
 
 function buildMessages(
     userText: string,
@@ -159,7 +159,7 @@ export async function askLLM(
         const durationMs = performance.now() - start
         const tokens = response.usage?.completion_tokens ?? 0
         devBus.emit('webllm:inference', {
-            model: selectModelId(),
+            model: getLoadedModelId(),
             durationMs,
             tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
         })

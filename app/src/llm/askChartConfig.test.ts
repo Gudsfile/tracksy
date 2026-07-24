@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { askChartConfig, inferConfig } from './askChartConfig'
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
-import * as engineModule from './engine'
+import * as modelState from './modelState'
 import * as devBusModule from '../devToolbar/devBus'
 import type { DBRow } from './inferChartType'
 
@@ -24,7 +24,7 @@ const artistRows: DBRow[] = [
 ]
 
 beforeEach(() => {
-    vi.spyOn(engineModule, 'selectModelId').mockReturnValue('test-model')
+    vi.spyOn(modelState, 'getLoadedModelId').mockReturnValue('test-model')
     vi.spyOn(devBusModule.devBus, 'emit').mockImplementation(() => {})
 })
 

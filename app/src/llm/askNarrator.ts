@@ -1,7 +1,7 @@
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
 import type { DBRow } from './inferChartType'
 import { devBus } from '../devToolbar/devBus'
-import { selectModelId } from './engine'
+import { getLoadedModelId } from './modelState'
 
 const NARRATOR_SYSTEM_PROMPT = `You are a witty music companion who comments on someone's listening data like a knowledgeable friend, not a report generator.
 
@@ -85,7 +85,7 @@ export async function askNarrator(
 
     const durationMs = performance.now() - start
     devBus.emit('webllm:inference', {
-        model: selectModelId(),
+        model: getLoadedModelId(),
         durationMs,
         tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
     })
