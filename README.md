@@ -227,6 +227,7 @@ If you would like to be added to or removed from the contributors list, feel fre
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/noancloarec"><img src="https://avatars.githubusercontent.com/u/15016365?v=4" width="100px;" alt=""/><br /><sub><b>noancloarec</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://jeanphi-baconnais.gitlab.io/"><img src="https://avatars.githubusercontent.com/u/32639372?v=4" width="100px;" alt=""/><br /><sub><b>Jean-Phi Baconnais</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/arthurzenika"><img src="https://avatars.githubusercontent.com/u/445200?v=4" width="100px;" alt=""/><br /><sub><b>Arthur Lutz</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://ctftime.org/user/30785"><img src="https://avatars.githubusercontent.com/u/32420956?v=4" width="100px;" alt=""/><br /><sub><b>Gudsfile</b></sub></a></td>
     </tr>
   </tbody>
 </table>
