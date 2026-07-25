@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { SimpleView } from '../Charts/SimpleView'
 import { Spinner } from '../Spinner/Spinner'
+import { ExportButton } from '../ExportButton/ExportButton'
 import { QueryTabContext } from './QueryTabContext'
 
 const LabView = lazy(() =>
@@ -42,6 +43,7 @@ export function Results() {
     const [activeTab, setActiveTab] = useState<Tab>('simple')
     const [queryKey, setQueryKey] = useState(0)
     const pendingQueryRef = useRef<string | undefined>(undefined)
+    const exportRef = useRef<HTMLDivElement>(null)
     const tabIndex = TABS.findIndex((t) => t.id === activeTab)
 
     const openInQueryTab = useCallback((sql: string) => {
@@ -86,7 +88,11 @@ export function Results() {
                     </div>
                 </div>
 
-                <div>
+                <div className="mb-4 flex justify-end">
+                    <ExportButton targetRef={exportRef} />
+                </div>
+
+                <div ref={exportRef}>
                     <Suspense
                         fallback={
                             <div className="flex justify-center py-12">
