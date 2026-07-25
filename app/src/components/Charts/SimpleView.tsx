@@ -25,11 +25,13 @@ import {
     type SummarizeDataQueryResult,
     summarizeQuery,
 } from './Summarize/summarizeQuery'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
+import { TimezoneContext } from '../../hooks/TimezoneContext'
 
 export function SimpleView() {
+    const { timezone } = useContext(TimezoneContext)
     const [year, setYear] = useState<number | undefined>(undefined)
     const [summarize, setSummarize] = useState<
         SummarizeDataQueryResult | undefined
@@ -79,6 +81,10 @@ export function SimpleView() {
                         ).getFullYear()}
                         onChange={setYear}
                     />
+
+                    <p className="text-xs text-gray-400 dark:text-slate-500 text-right mb-2">
+                        Time-based charts use timezone: {timezone}
+                    </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TopTracks year={debouncedYear} />
