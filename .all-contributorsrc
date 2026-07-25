@@ -53,6 +53,15 @@
         "ideas",
         "doc"
       ]
+    },
+    {
+      "login": "Gudsfile",
+      "name": "Gudsfile",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32420956?v=4",
+      "profile": "https://ctftime.org/user/30785",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitType": "docs",
