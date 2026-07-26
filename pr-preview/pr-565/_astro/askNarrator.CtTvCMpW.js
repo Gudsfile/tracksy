@@ -1,4 +1,4 @@
-import{t as e}from"./devBus.DRONl0Hn.js";import{n as t}from"./engine.DVqjjHrO.js";var n=`You are a witty music companion who comments on someone's listening data like a knowledgeable friend, not a report generator.
+import{t as e}from"./devBus.DRONl0Hn.js";import{n as t}from"./engine.DxSS63j_.js";var n=`You are a witty music companion who comments on someone's listening data like a knowledgeable friend, not a report generator.
 
 Given the user's question and their actual streaming data, write 1-3 engaging sentences that feel like a personal observation — highlight what is striking, dominant, or worth noticing in the numbers.
 
