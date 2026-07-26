@@ -63,16 +63,16 @@ The chapter ordering is seed-dependent. Use `factory.chapters` to inspect the la
 
 ```python
 PersonaProfile(
-    volume_weight=1.0,          # relative record count (higher = more records)
-    hour_weights=(...,),        # 24 floats, index = hour of day (0=midnight)
-    weekday_multipliers=(...,), # 7 floats, index 0 = Monday
-    month_weights=(...,),       # 12 floats, index 0 = January
-    skip_chance=0.30,           # fraction of events that are skipped
-    shuffle_chance=0.50,        # fraction of Spotify events with shuffle=True
+    volume_weight=1.0,  # relative record count (higher = more records)
+    hour_weights=(...,),  # 24 floats, index = hour of day (0=midnight)
+    weekday_multipliers=(...,),  # 7 floats, index 0 = Monday
+    month_weights=(...,),  # 12 floats, index 0 = January
+    skip_chance=0.30,  # fraction of events that are skipped
+    shuffle_chance=0.50,  # fraction of Spotify events with shuffle=True
     inactivity_month_windows=(...,),  # full-month gaps available for selection
-    inactivity_day_windows=(...,),    # day-range gaps available for selection
-    n_month_gaps=1,             # how many month windows to select per chapter
-    n_day_gap_windows=1,        # how many day windows to select per chapter
+    inactivity_day_windows=(...,),  # day-range gaps available for selection
+    n_month_gaps=1,  # how many month windows to select per chapter
+    n_day_gap_windows=1,  # how many day windows to select per chapter
 )
 ```
 
