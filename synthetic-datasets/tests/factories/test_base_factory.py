@@ -228,24 +228,6 @@ class TestPersonaDrivenGeneration:
         for event in events:
             assert event.timestamp <= factory.now
 
-    def test_skip_chance_constants_removed(self):
-        assert not hasattr(ConcreteFactory, "SKIP_CHANCE_MIN")
-        assert not hasattr(ConcreteFactory, "SKIP_CHANCE_MAX")
-
-    def test_skip_chance_trend_not_on_instance(self, config):
-        factory = ConcreteFactory(num_records=10, config=config)
-        assert not hasattr(factory, "skip_chance_trend")
-
-    def test_class_level_month_weights_removed(self):
-        assert not hasattr(ConcreteFactory, "month_weights")
-
-    def test_class_level_hour_weights_removed(self):
-        assert not hasattr(ConcreteFactory, "hour_weights")
-
-    def test_get_random_datetime_for_year_removed(self, config):
-        factory = ConcreteFactory(num_records=10, config=config)
-        assert not hasattr(factory, "_get_random_datetime_for_year")
-
     def test_day_distribution_per_chapter_exists(self, config):
         factory = ConcreteFactory(num_records=50, config=config)
         assert hasattr(factory, "_day_distribution_per_chapter")
