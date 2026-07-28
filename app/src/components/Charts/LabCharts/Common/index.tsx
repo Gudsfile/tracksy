@@ -1,7 +1,7 @@
 // Common part of all charts components like StreamPerHour, StreamPerDay, etc.
 
 import { useState, useEffect, useRef, useContext } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { ThemeContext } from '../../../../hooks/ThemeContext'
 import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 
@@ -15,20 +15,14 @@ export function Common<T extends Record<string, string | number | null>>({
     buildPlot,
 }: CommonProps<T>) {
     const [data, setData] = useState<T[] | undefined>()
-    const [hasError, setHasError] = useState(false)
     const { effectiveTheme } = useContext(ThemeContext)
 
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const getData = async () => {
-            try {
-                const result = await queryDBAsJSON<T>(query)
-                setData(result)
-            } catch (error) {
-                console.error('Error loading chart data:', error)
-                setHasError(true)
-            }
+            const result = useDBQueryMany<T>({ query: query })
+            setData(result.data)
         }
         getData()
     }, [query])
@@ -49,7 +43,7 @@ export function Common<T extends Record<string, string | number | null>>({
             ref={containerRef}
             className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in"
         >
-            {hasError && <ChartCardEmpty message="Failed to load chart data" />}
+            {!data && <ChartCardEmpty />}
         </div>
     )
 }
