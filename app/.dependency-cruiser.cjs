@@ -98,6 +98,10 @@ module.exports = {
             from: {},
             to: {
                 couldNotResolve: true,
+                pathNot: [
+                    '^@duckdb/duckdb-wasm/dist/(duckdb-.*\\.wasm|duckdb-browser-.*\\.worker\\.js)\\?url$', // Vite ?url imports for DuckDB WASM assets
+                    '^\\.\\./\\.astro/types\\.d\\.ts$', // Astro generated type reference from src/env.d.ts
+                ],
             },
         },
         {
