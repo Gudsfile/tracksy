@@ -18,6 +18,7 @@ moon run e2e:test-dev
 - `moon run e2e:test-ui` — interactive Playwright UI mode (starts `app:dev` first)
 - `moon run e2e:codegen` — record actions to generate tests
 - `moon run e2e:show-report` — view last test report
+- `moon run e2e:generate-readme-gif` — regenerate the README demo GIF (starts `app:dev` first)
 
 Quality checks:
 
@@ -35,3 +36,12 @@ moon run synthetic-datasets:generate-e2e
 ```
 
 1000 records, fixed seed — deterministic test expectations. `e2e:test-dev` runs this automatically as a dep.
+
+## README demo GIF
+
+`moon run e2e:generate-readme-gif` records the main demo flow (upload the deterministic dataset, browse the
+Simple view, switch to the Lab view) with Playwright and writes an optimized GIF to `.github/img/tracksy_demo.gif`
+(the path referenced by the root README). The task starts `app:dev` and generates the dataset automatically.
+
+Requires **`ffmpeg`** (video → GIF) on the PATH; **`gifsicle`** is optional and shrinks the result further when
+installed. The generation script lives in `scripts/generate-readme-gif.mts`.
