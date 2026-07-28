@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { insertUrlInDatabase } from '../db/queries/insertUrlInDatabase'
 
 type DemoProgress = { stage: string; percent: number }
 
-export function useDemo() {
+/**
+ * @param onFail - Called when loading the demo dataset fails, so the caller can
+ *   surface the failure to the user (mirrors the file-upload `onFail` path).
+ */
+export function useDemo({
+    onFail,
+}: { onFail?: (error: unknown) => void } = {}) {
     const [isDemoReady, setIsDemoReady] = useState(false)
     const [demoProgress, setDemoProgress] = useState<DemoProgress | null>(null)
 
-    const demoJsonUrl: URL | undefined = (() => {
+    // Computed once per hook instance instead of on every render — avoids
+    // re-`new URL()` churn and repeated `console.warn` spam when the env var is
+    // missing/invalid.
+    const demoJsonUrl: URL | undefined = useMemo(() => {
         const url = import.meta.env.PUBLIC_DEMO_JSON_URL
         if (!url) {
             console.warn('Missing PUBLIC_DEMO_JSON_URL environment variable')
@@ -21,7 +30,7 @@ export function useDemo() {
             })
             return undefined
         }
-    })()
+    }, [])
 
     const handleDemoButtonClick = async () => {
         setIsDemoReady(false)
@@ -32,8 +41,10 @@ export function useDemo() {
                 setDemoProgress({ stage, percent })
             )
             setIsDemoReady(true)
-        } catch {
+        } catch (error) {
+            console.error('Failed to load demo data:', error)
             setIsDemoReady(false)
+            onFail?.(error)
         } finally {
             setDemoProgress(null)
         }

@@ -48,7 +48,9 @@ export function TracksyWrapper({
     } | null>(null)
     const dismissUploadError = useCallback(() => setUploadError(null), [])
     const { isDemoReady, handleDemoButtonClick, demoJsonUrl, demoProgress } =
-        useDemo()
+        useDemo({
+            onFail: (error) => setUploadError(getUserMessage(error)),
+        })
 
     const activeProgress = loadProgress ?? demoProgress
 
