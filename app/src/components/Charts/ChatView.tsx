@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 import { useChatEngine } from '../../hooks/useChatEngine'
+import { useChatSuggestions } from '../../hooks/useChatSuggestions'
 import type { ChatMessage, AssistantPayload } from '../../llm/types'
 import type { DBRow } from '../../llm/inferChartType'
 import type { ChartConfig } from '../../llm/askChartConfig'
@@ -39,6 +40,7 @@ export function ChatView() {
     const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
     const [streamingNarrative, setStreamingNarrative] = useState('')
     const [settingsOpen, setSettingsOpen] = useState(false)
+    const [draft, setDraft] = useState('')
     const streamingMsgIdRef = useRef<string | null>(null)
     const messagesRef = useRef(messages)
     const bottomRef = useRef<HTMLDivElement>(null)
@@ -50,6 +52,7 @@ export function ChatView() {
         enableWith,
         applyConfig,
         ask,
+        suggest,
         cancel,
     } = useChatEngine()
 
@@ -173,6 +176,24 @@ export function ChatView() {
     const isReady = state.kind === 'ready'
     const isLoading = state.kind === 'loading' || isAsking
 
+    const { suggestions, isGenerating } = useChatSuggestions({
+        draft,
+        enabled: isReady,
+        busy: isLoading,
+        suggest,
+    })
+
+    // A chip always sends straight away. Clearing the draft empties the input
+    // too, so a half-typed question doesn't linger behind the answer it
+    // replaced.
+    const handleShortcut = useCallback(
+        (question: string) => {
+            setDraft('')
+            handleSubmit(question)
+        },
+        [handleSubmit]
+    )
+
     return (
         <div className="flex flex-col gap-4 py-4">
             <MemoryNotice />
@@ -222,8 +243,10 @@ export function ChatView() {
                         <div ref={bottomRef} />
                     </div>
                     <ChatShortcuts
-                        onSelect={handleSubmit}
+                        onSelect={handleShortcut}
                         disabled={isLoading}
+                        suggestions={suggestions}
+                        isGenerating={isGenerating}
                     />
                     {isAsking && <ChatThinkingIndicator />}
                     <ChatInput
@@ -236,6 +259,8 @@ export function ChatView() {
                         }
                         onSubmit={handleSubmit}
                         onCancel={cancel}
+                        value={draft}
+                        onChange={setDraft}
                     />
                 </div>
             )}

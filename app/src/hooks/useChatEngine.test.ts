@@ -223,3 +223,63 @@ describe('useChatEngine.ask (unified SQL path)', () => {
         expect(querySpy).not.toHaveBeenCalled()
     })
 })
+
+describe('useChatEngine — suggest', () => {
+    it('never loads or swaps a model: it uses the already-loaded engine only', async () => {
+        const askSuggestionsModule = await import('../llm/askSuggestions')
+        vi.spyOn(askSuggestionsModule, 'askSuggestions').mockResolvedValue([
+            { label: 'Late night', question: 'What do I play after 1am?' },
+        ])
+        vi.spyOn(engineModule, 'peekEngine').mockReturnValue(
+            Promise.resolve(mockEngine)
+        )
+        const hook = await loadedHook('rich')
+        const getEngineSpy = vi.mocked(engineModule.getEngine)
+        getEngineSpy.mockClear()
+
+        let out
+        await act(async () => {
+            out = await hook.result.current.suggest('what do i listen to')
+        })
+
+        expect(out).toEqual([
+            { label: 'Late night', question: 'What do I play after 1am?' },
+        ])
+        // getEngine can create or tear down a model; the suggestion path must
+        // never touch it.
+        expect(getEngineSpy).not.toHaveBeenCalled()
+    })
+
+    it('returns nothing when no engine is loaded', async () => {
+        const askSuggestionsModule = await import('../llm/askSuggestions')
+        const askSpy = vi.spyOn(askSuggestionsModule, 'askSuggestions')
+        vi.spyOn(engineModule, 'peekEngine').mockReturnValue(null)
+        const hook = await loadedHook('rich')
+
+        let out
+        await act(async () => {
+            out = await hook.result.current.suggest('what do i listen to')
+        })
+
+        expect(out).toEqual([])
+        expect(askSpy).not.toHaveBeenCalled()
+    })
+
+    it('returns nothing when the config has suggestions off', async () => {
+        const askSuggestionsModule = await import('../llm/askSuggestions')
+        const askSpy = vi.spyOn(askSuggestionsModule, 'askSuggestions')
+        const peekSpy = vi
+            .spyOn(engineModule, 'peekEngine')
+            .mockReturnValue(Promise.resolve(mockEngine))
+        const hook = await loadedHook('lite')
+
+        let out
+        await act(async () => {
+            out = await hook.result.current.suggest('what do i listen to')
+        })
+
+        expect(out).toEqual([])
+        expect(askSpy).not.toHaveBeenCalled()
+        expect(peekSpy).not.toHaveBeenCalled()
+    })
+})

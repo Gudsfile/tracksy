@@ -12,6 +12,7 @@ import {
     type AssistantPayload,
     type ChatMessage,
     type EngineState,
+    type Suggestion,
 } from '../llm/types'
 import type { ChartConfig } from '../llm/askChartConfig'
 
@@ -307,6 +308,37 @@ export function useChatEngine() {
         []
     )
 
+    /**
+     * Shortcut chips that continue the user's partial input.
+     *
+     * Strictly best-effort and strictly lowest priority: it uses `peekEngine`,
+     * which hands back the already-loaded engine or nothing at all, so
+     * suggestions can never start a download or swap the running model. Any
+     * failure returns `[]` and the caller falls back to the static chips.
+     */
+    const suggest = useCallback(
+        async (draft: string, signal?: AbortSignal): Promise<Suggestion[]> => {
+            const cfg = configRef.current
+            if (!cfg || cfg.suggest !== 'llm') return []
+            if (!moduleRef.current) return []
+            const enginePromise = moduleRef.current.peekEngine()
+            if (!enginePromise) return []
+            try {
+                const engine = await enginePromise
+                const [{ askSuggestions }, { getSuggestionContext }] =
+                    await Promise.all([
+                        import('../llm/askSuggestions'),
+                        import('../llm/suggestionContext'),
+                    ])
+                const context = await getSuggestionContext()
+                return await askSuggestions(engine, draft, context, signal)
+            } catch {
+                return []
+            }
+        },
+        []
+    )
+
     const cancel = useCallback(() => {
         abortRef.current?.abort()
     }, [])
@@ -330,6 +362,7 @@ export function useChatEngine() {
         enableWith,
         applyConfig,
         ask,
+        suggest,
         cancel,
     }
 }

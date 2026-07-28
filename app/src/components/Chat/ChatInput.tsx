@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react'
+import type { KeyboardEvent } from 'react'
 
 type ChatInputProps = {
     disabled?: boolean
@@ -6,6 +6,12 @@ type ChatInputProps = {
     placeholder?: string
     onSubmit: (text: string) => void
     onCancel?: () => void
+    /**
+     * The in-progress draft. Owned by the parent because the shortcut chips
+     * read it to adapt themselves, and clicking a chip has to clear it.
+     */
+    value: string
+    onChange: (text: string) => void
 }
 
 export function ChatInput({
@@ -14,14 +20,14 @@ export function ChatInput({
     placeholder,
     onSubmit,
     onCancel,
+    value,
+    onChange,
 }: ChatInputProps) {
-    const [value, setValue] = useState('')
-
     const submit = () => {
         const trimmed = value.trim()
         if (!trimmed) return
         onSubmit(trimmed)
-        setValue('')
+        onChange('')
     }
 
     const handleSubmit = (e: { preventDefault(): void }) => {
@@ -44,7 +50,7 @@ export function ChatInput({
             <textarea
                 aria-label="Ask the assistant"
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => onChange(e.target.value)}
                 onKeyDown={handleKey}
                 disabled={disabled}
                 rows={2}
