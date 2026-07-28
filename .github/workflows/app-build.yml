@@ -43,6 +43,14 @@ jobs:
       - name: Check SQL Lint
         run: moon run app:lint-sql
 
+      - name: Check dead code (knip, non-blocking)
+        run: moon run app:lint-deadcode
+        continue-on-error: true
+
+      - name: Check circular deps (madge, non-blocking)
+        run: moon run app:lint-cycles
+        continue-on-error: true
+
       - name: Check test
         run: moon run app:test-coverage
 
