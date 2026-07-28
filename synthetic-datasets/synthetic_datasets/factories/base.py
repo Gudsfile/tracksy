@@ -231,10 +231,7 @@ class BaseFactory(ABC, Generic[RecordT]):
         for chapter in self._chapters:
             if chapter.persona is None:
                 continue
-            label = chapter.persona.name
             chapter_events = self._generate_events_for_chapter(chapter)
-            for _ in track(range(len(chapter_events)), description=f" - {chapter.year} ({label})"):
-                pass
             events.extend(chapter_events)
         return sorted(events, key=lambda e: e.timestamp)
 
