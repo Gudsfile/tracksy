@@ -39,6 +39,15 @@
     --animate-scale-in: scaleIn 0.3s ease-out;
     --animate-vibe-pulse: vibePulse 2.8s ease-in-out forwards;
 
+    /* Duck loader — the only looping animations in the app, and both are guarded
+       for reduced motion. The duck takes motion-reduce:animate-none: duckBob
+       rests at translateY(0), so stopping it just holds the duck still. The
+       ripples take motion-reduce:hidden instead, because duckRipple has no
+       resting state — unanimated they sit at scale(1) and full opacity, which
+       is an opaque ring rather than a faded-out one. */
+    --animate-duck-bob: duckBob 2.4s ease-in-out infinite;
+    --animate-duck-ripple: duckRipple 2.4s ease-out infinite;
+
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -86,6 +95,27 @@
         100% {
             opacity: 0;
             transform: translateY(-4px);
+        }
+    }
+
+    @keyframes duckBob {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    @keyframes duckRipple {
+        0% {
+            transform: scale(0.6);
+            opacity: 0.7;
+        }
+        100% {
+            transform: scale(1.4);
+            opacity: 0;
         }
     }
 }
