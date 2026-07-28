@@ -124,6 +124,65 @@ describe('DeezerStreamProvider', () => {
             const result = provider.transform([RAW_RECORD])
             expect(result[0].track_uri).toBe('GBAYE8800243')
         })
+
+        it('should skip a row with a missing Date without throwing', () => {
+            const raw = { ...RAW_RECORD }
+            delete (raw as Partial<DeezerRawStreamRecord>).Date
+
+            expect(() =>
+                provider.transform([raw as DeezerRawStreamRecord])
+            ).not.toThrow()
+            expect(provider.transform([raw as DeezerRawStreamRecord])).toEqual(
+                []
+            )
+        })
+
+        it('should skip a row with a missing ISRC without throwing', () => {
+            const raw = { ...RAW_RECORD }
+            delete (raw as Partial<DeezerRawStreamRecord>).ISRC
+
+            expect(() =>
+                provider.transform([raw as DeezerRawStreamRecord])
+            ).not.toThrow()
+            expect(provider.transform([raw as DeezerRawStreamRecord])).toEqual(
+                []
+            )
+        })
+
+        it('should default optional fields when columns are missing', () => {
+            const raw = { ...RAW_RECORD }
+            delete (raw as Partial<DeezerRawStreamRecord>)['Song Title']
+            delete (raw as Partial<DeezerRawStreamRecord>).Artist
+            delete (raw as Partial<DeezerRawStreamRecord>)['Album Title']
+            delete (raw as Partial<DeezerRawStreamRecord>)['Platform Name']
+            delete (raw as Partial<DeezerRawStreamRecord>)['IP Address']
+
+            const result = provider.transform([raw as DeezerRawStreamRecord])
+
+            expect(result).toHaveLength(1)
+            expect(result[0]).toMatchObject({
+                track_uri: 'GBAYE8800243',
+                track_name: 'Unknown Track',
+                artist_name: 'Unknown Artist',
+                album_name: 'Unknown Album',
+                platform: 'Unknown Device',
+                ip_addr: '',
+                ts: '2024-10-24T23:00:00Z',
+            })
+        })
+
+        it('should skip only the malformed rows and keep valid ones', () => {
+            const badRow = { ...RAW_RECORD }
+            delete (badRow as Partial<DeezerRawStreamRecord>).Date
+
+            const result = provider.transform([
+                RAW_RECORD,
+                badRow as DeezerRawStreamRecord,
+            ])
+
+            expect(result).toHaveLength(1)
+            expect(result[0].track_uri).toBe('GBAYE8800243')
+        })
     })
 
     describe('readFile', () => {
