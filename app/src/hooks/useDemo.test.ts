@@ -65,19 +65,29 @@ describe('useDemo', () => {
             expect(result.current.demoProgress).toBeNull()
         })
 
-        it('is null after a failed load', async () => {
+        it('is null after a failed load, logs and surfaces the error', async () => {
             vi.stubEnv('PUBLIC_DEMO_JSON_URL', 'https://example.com')
+            const error = new Error('fail')
             vi.spyOn(insertUrlModule, 'insertUrlInDatabase').mockRejectedValue(
-                new Error('fail')
+                error
             )
+            const errorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {})
+            const onFail = vi.fn()
 
-            const { result } = renderHook(() => useDemo())
+            const { result } = renderHook(() => useDemo({ onFail }))
             await act(async () => {
                 await result.current.handleDemoButtonClick()
             })
 
             expect(result.current.demoProgress).toBeNull()
             expect(result.current.isDemoReady).toBe(false)
+            expect(errorSpy).toHaveBeenCalledWith(
+                'Failed to load demo data:',
+                error
+            )
+            expect(onFail).toHaveBeenCalledWith(error)
         })
 
         it('is null after a successful load', async () => {
