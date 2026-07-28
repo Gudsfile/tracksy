@@ -26,6 +26,14 @@ export type ChartMode = 'llm' | 'infer' | 'off'
  */
 export type NarrativeMode = 'stream' | 'static'
 
+/**
+ * Whether the shortcut chips adapt to what the user is typing:
+ * - `llm` — SuggestionAgent (`askSuggestions`) rewrites the chips on a typing
+ *   pause, running on the already-loaded engine.
+ * - `off` — show the fixed built-in shortcuts only, no inference.
+ */
+export type SuggestMode = 'llm' | 'off'
+
 export const PRESET_NAMES = ['rich', 'balanced', 'lite', 'minimal'] as const
 export type PresetName = (typeof PRESET_NAMES)[number]
 /** A preset name, or `custom` when the axes don't match any preset. */
@@ -36,15 +44,36 @@ export type AssistantConfig = {
     modelId: string
     chart: ChartMode
     narrative: NarrativeMode
+    suggest: SuggestMode
 }
 
 type PresetAxes = Omit<AssistantConfig, 'preset'>
 
 export const PRESETS: Record<PresetName, PresetAxes> = {
-    rich: { modelId: MODEL_LARGE, chart: 'llm', narrative: 'stream' },
-    balanced: { modelId: MODEL_LARGE, chart: 'llm', narrative: 'static' },
-    lite: { modelId: MODEL_SMALL, chart: 'infer', narrative: 'static' },
-    minimal: { modelId: MODEL_SMALL, chart: 'off', narrative: 'static' },
+    rich: {
+        modelId: MODEL_LARGE,
+        chart: 'llm',
+        narrative: 'stream',
+        suggest: 'llm',
+    },
+    balanced: {
+        modelId: MODEL_LARGE,
+        chart: 'llm',
+        narrative: 'static',
+        suggest: 'llm',
+    },
+    lite: {
+        modelId: MODEL_SMALL,
+        chart: 'infer',
+        narrative: 'static',
+        suggest: 'off',
+    },
+    minimal: {
+        modelId: MODEL_SMALL,
+        chart: 'off',
+        narrative: 'static',
+        suggest: 'off',
+    },
 }
 
 export const PRESET_LABELS: Record<
@@ -83,7 +112,8 @@ export function matchPreset(axes: PresetAxes): AssistantPreset {
         if (
             p.modelId === axes.modelId &&
             p.chart === axes.chart &&
-            p.narrative === axes.narrative
+            p.narrative === axes.narrative &&
+            p.suggest === axes.suggest
         ) {
             return name
         }
@@ -107,6 +137,9 @@ export function getStoredConfig(): AssistantConfig | null {
             modelId: parsed.modelId,
             chart: isChartMode(parsed.chart) ? parsed.chart : 'infer',
             narrative: parsed.narrative === 'stream' ? 'stream' : 'static',
+            // Absent on configs stored before live suggestions existed. Default
+            // off so an upgrade never silently opts a user into extra inference.
+            suggest: parsed.suggest === 'llm' ? 'llm' : 'off',
         }
         return { ...axes, preset: matchPreset(axes) }
     } catch {
@@ -121,6 +154,7 @@ export function saveConfig(config: AssistantConfig): void {
         modelId: config.modelId,
         chart: config.chart,
         narrative: config.narrative,
+        suggest: config.suggest,
     }
     const normalized: AssistantConfig = { ...axes, preset: matchPreset(axes) }
     localStorage.setItem(ASSISTANT_CONFIG_KEY, JSON.stringify(normalized))

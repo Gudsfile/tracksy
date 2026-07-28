@@ -21,12 +21,14 @@ describe('configFromPreset', () => {
             modelId: MODEL_LARGE,
             chart: 'llm',
             narrative: 'stream',
+            suggest: 'llm',
         })
         expect(configFromPreset('minimal')).toEqual({
             preset: 'minimal',
             modelId: MODEL_SMALL,
             chart: 'off',
             narrative: 'static',
+            suggest: 'off',
         })
     })
 })
@@ -45,8 +47,15 @@ describe('matchPreset', () => {
                 modelId: MODEL_SMALL,
                 chart: 'llm',
                 narrative: 'stream',
+                suggest: 'llm',
             })
         ).toBe('custom')
+    })
+
+    it('treats the suggest axis as preset-defining', () => {
+        expect(matchPreset({ ...PRESETS.balanced, suggest: 'off' })).toBe(
+            'custom'
+        )
     })
 })
 
@@ -72,6 +81,7 @@ describe('saveConfig / getStoredConfig', () => {
             modelId: MODEL_SMALL,
             chart: 'llm',
             narrative: 'stream',
+            suggest: 'llm',
         })
         expect(getStoredConfig()?.preset).toBe('custom')
     })
@@ -83,8 +93,23 @@ describe('saveConfig / getStoredConfig', () => {
                 modelId: MODEL_LARGE,
                 chart: 'llm',
                 narrative: 'static',
+                suggest: 'llm',
             })
         )
         expect(getStoredConfig()?.preset).toBe('balanced')
+    })
+
+    it('defaults suggest to off for configs stored before the axis existed', () => {
+        localStorage.setItem(
+            ASSISTANT_CONFIG_KEY,
+            JSON.stringify({
+                modelId: MODEL_LARGE,
+                chart: 'llm',
+                narrative: 'static',
+            })
+        )
+        // An upgrade must never silently opt an existing user into extra
+        // inference on every typing pause.
+        expect(getStoredConfig()?.suggest).toBe('off')
     })
 })

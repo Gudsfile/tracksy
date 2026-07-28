@@ -10,11 +10,12 @@ import {
     type ChartMode,
     type NarrativeMode,
     type PresetName,
+    type SuggestMode,
 } from '../../llm/assistantConfig'
 import type { ModelInfo } from '../../llm/engine'
 import { recommendPreset } from '../../llm/recommendPreset'
 
-type Axes = Pick<AssistantConfig, 'modelId' | 'chart' | 'narrative'>
+type Axes = Pick<AssistantConfig, 'modelId' | 'chart' | 'narrative' | 'suggest'>
 
 type Props = {
     mode: 'onboarding' | 'settings'
@@ -37,6 +38,11 @@ const NARRATIVE_LABELS: Record<NarrativeMode, string> = {
     static: 'Plain summary',
 }
 
+const SUGGEST_LABELS: Record<SuggestMode, string> = {
+    llm: 'Adapt as I type (AI)',
+    off: 'Fixed shortcuts',
+}
+
 function formatSize(vramMB?: number): string {
     if (!vramMB) return ''
     return vramMB >= 1024
@@ -55,6 +61,7 @@ export function AssistantSettings({
               modelId: initialConfig.modelId,
               chart: initialConfig.chart,
               narrative: initialConfig.narrative,
+              suggest: initialConfig.suggest,
           }
         : PRESETS.balanced
 
@@ -266,6 +273,28 @@ export function AssistantSettings({
                                     </option>
                                 )
                             )}
+                        </select>
+                    </label>
+
+                    <label className="block text-sm">
+                        <span className="block mb-1 text-gray-600 dark:text-gray-400">
+                            Shortcuts
+                        </span>
+                        <select
+                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"
+                            value={axes.suggest}
+                            onChange={(e) =>
+                                updateAxis(
+                                    'suggest',
+                                    e.target.value as SuggestMode
+                                )
+                            }
+                        >
+                            {(['llm', 'off'] as SuggestMode[]).map((s) => (
+                                <option key={s} value={s}>
+                                    {SUGGEST_LABELS[s]}
+                                </option>
+                            ))}
                         </select>
                     </label>
 
