@@ -11,6 +11,8 @@ type DevBusEventMap = {
         model: string
         durationMs: number
         tokensPerSec: number
+        /** Which call made this run. Defaults to the answer path when absent. */
+        kind?: 'answer' | 'chart' | 'narrative' | 'suggestions'
     }
     'stream:parsed': {
         provider: string

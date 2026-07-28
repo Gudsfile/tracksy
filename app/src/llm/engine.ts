@@ -79,6 +79,18 @@ export async function getEngine(
     return enginePromise
 }
 
+/**
+ * The engine that is already loaded, or `null` when none is.
+ *
+ * Unlike `getEngine`, this can never create, swap, or download a model — it
+ * only ever hands back the existing singleton. Low-priority features (live
+ * suggestions) use it so they can never be the reason weights start loading,
+ * and can never tear down the running model by asking for a different id.
+ */
+export function peekEngine(): Promise<MLCEngineInterface> | null {
+    return enginePromise
+}
+
 export type ModelInfo = {
     id: string
     vramMB?: number

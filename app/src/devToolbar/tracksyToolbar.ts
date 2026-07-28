@@ -90,7 +90,9 @@ export default defineToolbarApp({
             const model = loadState?.model ?? lastInference?.model ?? '—'
             const pct = loadState ? Math.round(loadState.progress * 100) : 100
             const loadText = loadState?.text ?? 'Ready'
-            const latency = lastInference ? fmt(lastInference.durationMs) : '—'
+            const latency = lastInference
+                ? `${fmt(lastInference.durationMs)} (${lastInference.kind ?? 'answer'})`
+                : '—'
             const tps = lastInference
                 ? `${lastInference.tokensPerSec.toFixed(1)} tok/s`
                 : '—'

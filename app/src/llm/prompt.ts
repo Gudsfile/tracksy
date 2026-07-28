@@ -10,7 +10,7 @@ import {
 const CURRENT_YEAR = new Date().getFullYear()
 export const CURRENT_DATE = new Date().toISOString().split('T')[0]
 
-const SCHEMA_DESCRIPTION = `\
+export const SCHEMA_DESCRIPTION = `\
 DuckDB schema (the user's music streaming history, fully local):
 
 Table ${TABLE} (one row per playback):

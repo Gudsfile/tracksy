@@ -3,6 +3,7 @@ import type {
     ChatCompletionMessageParam,
     MLCEngineInterface,
 } from '@mlc-ai/web-llm'
+import { extractJsonObject } from './extractJson'
 import { isIntentName } from './intents'
 import { SYSTEM_PROMPT, FEW_SHOTS, CURRENT_DATE } from './prompt'
 import { resolveYear } from './resolveYear'
@@ -38,45 +39,6 @@ function buildMessages(
         content: `[Today is ${CURRENT_DATE}.${yearClause}] ${userText}`,
     })
     return messages
-}
-
-export function extractJsonObject(raw: string): string {
-    // Strip markdown code fences if the model added them
-    const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i)
-    const candidate = fenceMatch ? fenceMatch[1] : raw
-
-    // Find the first { and the matching } via brace counting
-    const start = candidate.indexOf('{')
-    if (start === -1) {
-        throw new LLMError('No JSON object found in model output.', 'parse')
-    }
-    let depth = 0
-    let inString = false
-    let escape = false
-    for (let i = start; i < candidate.length; i++) {
-        const c = candidate[i]
-        if (escape) {
-            escape = false
-            continue
-        }
-        if (c === '\\') {
-            escape = true
-            continue
-        }
-        if (c === '"') {
-            inString = !inString
-            continue
-        }
-        if (inString) continue
-        if (c === '{') depth++
-        else if (c === '}') {
-            depth--
-            if (depth === 0) {
-                return candidate.slice(start, i + 1)
-            }
-        }
-    }
-    throw new LLMError('Unbalanced JSON braces in model output.', 'parse')
 }
 
 export function parseChatAnswer(raw: string): ChatAnswer {

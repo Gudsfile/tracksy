@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractJsonObject, parseChatAnswer } from './askLLM'
+import { parseChatAnswer } from './askLLM'
 import { SYSTEM_PROMPT, FEW_SHOTS } from './prompt'
 import { LLMError } from './types'
 
@@ -16,42 +16,6 @@ describe('prompt date context', () => {
         )
         expect(shot).toBeDefined()
         expect(shot!.assistant).toContain(String(currentYear))
-    })
-})
-
-describe('extractJsonObject', () => {
-    it('returns the object as-is when not wrapped', () => {
-        const out = extractJsonObject('{"intent":"top_artists","params":{}}')
-        expect(JSON.parse(out)).toEqual({ intent: 'top_artists', params: {} })
-    })
-
-    it('strips ```json fences', () => {
-        const out = extractJsonObject(
-            '```json\n{"intent":"top_artists","params":{}}\n```'
-        )
-        expect(JSON.parse(out).intent).toBe('top_artists')
-    })
-
-    it('strips bare ``` fences', () => {
-        const out = extractJsonObject(
-            '```\n{"intent":"top_artists","params":{}}\n```'
-        )
-        expect(JSON.parse(out).intent).toBe('top_artists')
-    })
-
-    it('extracts a balanced object out of surrounding prose', () => {
-        const out = extractJsonObject(
-            'Here is the JSON: {"a": "{nested}", "b": 1} thanks!'
-        )
-        expect(JSON.parse(out)).toEqual({ a: '{nested}', b: 1 })
-    })
-
-    it('throws LLMError(parse) when no object is present', () => {
-        expect(() => extractJsonObject('no json here')).toThrow(LLMError)
-    })
-
-    it('throws LLMError(parse) on unbalanced braces', () => {
-        expect(() => extractJsonObject('{"a": 1')).toThrow(LLMError)
     })
 })
 

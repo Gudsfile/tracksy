@@ -13,6 +13,16 @@ export type ChatAnswer = {
     sql: string
 }
 
+/**
+ * One shortcut chip. `label` is the short text shown on the pill, `question` is
+ * the full question submitted when it is clicked. Produced either by the static
+ * built-in list or, while the user types, by `askSuggestions`.
+ */
+export type Suggestion = {
+    label: string
+    question: string
+}
+
 export type AssistantPayload =
     | { kind: 'ok'; answer: ChatAnswer; narrative?: string }
     | { kind: 'unsafe-sql'; answer: ChatAnswer; reason: string }
