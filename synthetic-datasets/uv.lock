@@ -281,6 +281,7 @@ dependencies = [
     { name = "numpy" },
     { name = "openpyxl" },
     { name = "pydantic" },
+    { name = "rich" },
     { name = "typer" },
 ]
 
@@ -297,6 +298,7 @@ requires-dist = [
     { name = "numpy", specifier = "==2.5.1" },
     { name = "openpyxl", specifier = "==3.1.5" },
     { name = "pydantic", specifier = "==2.13.4" },
+    { name = "rich", specifier = "==15.0.0" },
     { name = "typer", specifier = "==0.27.0" },
 ]
 
