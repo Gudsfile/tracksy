@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { rankEmojis } from './rankEmojis'
 
-export type RankedItem = {
+type RankedItem = {
     primary: string
     secondary?: string
     score: string

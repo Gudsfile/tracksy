@@ -7,7 +7,7 @@ import {
     SUMMARIZE_CACHE_TABLE,
 } from '../db/queries/constants'
 
-export const CURRENT_YEAR = new Date().getFullYear()
+const CURRENT_YEAR = new Date().getFullYear()
 export const CURRENT_DATE = new Date().toISOString().split('T')[0]
 
 const SCHEMA_DESCRIPTION = `\

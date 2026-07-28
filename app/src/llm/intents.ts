@@ -1,4 +1,4 @@
-export const INTENT_NAMES = [
+const INTENT_NAMES = [
     'top_artists',
     'top_tracks',
     'top_albums',

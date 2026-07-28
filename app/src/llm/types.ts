@@ -1,6 +1,6 @@
 import type { IntentName } from './intents'
 
-export type ChatAnswerParams = {
+type ChatAnswerParams = {
     year?: number
     limit?: number
 }
@@ -12,8 +12,6 @@ export type ChatAnswer = {
     explanation: string
     sql: string
 }
-
-export type ChatRole = 'user' | 'assistant'
 
 export type AssistantPayload =
     | { kind: 'ok'; answer: ChatAnswer; narrative?: string }
