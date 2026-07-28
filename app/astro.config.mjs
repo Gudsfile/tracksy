@@ -65,6 +65,7 @@ function duckdbWasmWorkerSourcemapFix() {
 // https://astro.build/config
 export default defineConfig({
     site: 'https://gudsfile.github.io',
+    // Deploy base path (see app/.env.example). Defaults to "/tracksy" when BASE_PATH is unset.
     base: process.env.BASE_PATH || '/tracksy',
     trailingSlash: 'never',
     output: 'static',
