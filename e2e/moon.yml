@@ -16,6 +16,12 @@ tasks:
             - app:dev
             - synthetic-datasets:generate-e2e
         preset: server
+    generate-readme-gif:
+        command: node scripts/generate-readme-gif.mts
+        deps:
+            - app:dev
+            - synthetic-datasets:generate-e2e
+        preset: server
     codegen:
         command: playwright codegen
         preset: server
