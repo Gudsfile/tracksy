@@ -220,8 +220,13 @@ export function useChatEngine() {
                     try {
                         const retried = await askLLMRef.current!.askLLM(
                             engine,
-                            `${userText}\n\nPrevious SQL failed with: ${firstErr}`,
-                            history
+                            `${userText}\n\nPrevious SQL failed with: ${
+                                firstErr instanceof Error
+                                    ? firstErr.message
+                                    : String(firstErr)
+                            }`,
+                            history,
+                            abortRef.current!.signal
                         )
                         const retryValidation = validateSql(retried.sql ?? '')
                         if (!retryValidation.ok) {

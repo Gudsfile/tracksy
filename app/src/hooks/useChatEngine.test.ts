@@ -190,6 +190,14 @@ describe('useChatEngine.ask (unified SQL path)', () => {
 
         expect(askSpy).toHaveBeenCalledTimes(2)
         expect(askSpy.mock.calls[1][1]).toContain('Previous SQL failed with:')
+        // The retry must be cancellable via Stop: it receives the same abort
+        // signal the first call does (F041).
+        expect(askSpy.mock.calls[1][3]).toBeInstanceOf(AbortSignal)
+        expect(askSpy.mock.calls[1][3]).toBe(askSpy.mock.calls[0][3])
+        // The fixup prompt interpolates the error *message*, not a raw Error
+        // object stringified as "[object Object]".
+        expect(askSpy.mock.calls[1][1]).toContain('boom')
+        expect(askSpy.mock.calls[1][1]).not.toContain('[object Object]')
         expect(result.payload.kind).toBe('ok')
         expect(result.rows).toEqual([{ ok: 1 }])
     })
