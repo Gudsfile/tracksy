@@ -32,7 +32,42 @@ it('should render initialization message when DB is not initialized', async () =
             initialIsDataReady={false}
         />
     )
-    screen.getByText('Initializing the database engine (DuckDB-WASM)...')
+    // Asserted through the role so the live region is covered too, and on the
+    // text so the test still says what the user reads.
+    expect(screen.getByRole('status').textContent).toBe('Waking the duck…')
+})
+
+it('should offer a working retry when the database fails to start', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    const getDB = vi
+        .spyOn(db, 'getDB')
+        .mockRejectedValueOnce(new Error('wasm exploded'))
+        .mockResolvedValueOnce({
+            db: vi.fn(),
+            conn: vi.fn(),
+        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+
+    render(
+        <TracksyWrapper
+            initialDb={undefined}
+            initialIsDataDropped={false}
+            initialIsDataReady={false}
+        />
+    )
+
+    // Covers the wiring the hook and the loader tests each only see one side of:
+    // that the init error reaches DuckLoader and its retry reaches the hook.
+    const alert = await screen.findByRole('alert')
+    expect(alert.textContent).toContain('The database engine failed to start.')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+
+    // The retry clears the error as it starts, so the alert is gone before the
+    // second boot lands — assert the app recovered rather than that it vanished.
+    await screen.findByLabelText(
+        /Drag and drop or click to upload your music streaming data/
+    )
+    expect(getDB).toHaveBeenCalledTimes(2)
 })
 
 it('should render the Dropzone and Buttons when DB is initialized', async () => {
@@ -49,9 +84,7 @@ it('should render the Dropzone and Buttons when DB is initialized', async () => 
             initialIsDataReady={false}
         />
     )
-    await waitForElementToBeRemoved(() =>
-        screen.queryByText('Initializing the database engine (DuckDB-WASM)...')
-    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'))
 
     screen.getByLabelText(
         /Drag and drop or click to upload your music streaming data/
@@ -86,9 +119,7 @@ it('should show error banner when insertFilesInDatabase rejects', async () => {
             initialIsDataReady={false}
         />
     )
-    await waitForElementToBeRemoved(() =>
-        screen.queryByText('Initializing the database engine (DuckDB-WASM)...')
-    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'))
 
     const input = screen.getByLabelText('upload file')
     const file = new File(['{}'], 'test.json', { type: 'application/json' })
@@ -117,9 +148,7 @@ it("shouldn't render the 'how to' button if no URL is defined", async () => {
         />
     )
 
-    await waitForElementToBeRemoved(() =>
-        screen.queryByText('Initializing the database engine (DuckDB-WASM)...')
-    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'))
 
     await waitFor(() =>
         expect(

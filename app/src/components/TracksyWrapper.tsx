@@ -1,15 +1,23 @@
-import { useState, useEffect, useCallback } from 'react'
-import { getDB } from '../db/getDB'
+import { useState, useCallback } from 'react'
 import { DropzoneWrapper } from './Dropzone/DropzoneWrapper'
 import { insertFilesInDatabase } from '../db/queries/insertFilesInDatabase'
 import { ProgressBar } from './ProgressBar/ProgressBar'
-import type { DuckdbApp as DuckdbAppType } from '../db/setupDB'
+import type { DuckdbApp as DuckdbAppType, DuckdbInitStage } from '../db/setupDB'
 import { DemoButton } from './DemoButton/DemoButton'
 import { HowToButton } from './HowToButton/HowToButton'
 import { useDemo } from '../hooks/useDemo'
+import { useDuckDBInit } from '../hooks/useDuckDBInit'
+import { DuckLoader } from './DuckLoader/DuckLoader'
 import { Results } from './Results/Results'
 import { UploadError } from './UploadError'
 import { getUserMessage } from '../utils/uploadErrorMessages'
+
+const INIT_STAGE_LABELS: Record<DuckdbInitStage, string> = {
+    select: 'Waking the duck…',
+    instantiate: 'Teaching it to swim…',
+    connect: 'Smoothing feathers…',
+    extensions: 'Almost afloat…',
+}
 
 interface TracksyWrapperProps {
     initialDb?: DuckdbAppType | null
@@ -22,7 +30,15 @@ export function TracksyWrapper({
     initialIsDataDropped = false,
     initialIsDataReady = false,
 }: TracksyWrapperProps) {
-    const [db, setDb] = useState<DuckdbAppType | null>(initialDb)
+    const {
+        db,
+        stage,
+        percent,
+        error: initError,
+        retry,
+    } = useDuckDBInit({
+        initialDb,
+    })
     const [isDataDropped, setIsDataDropped] = useState(initialIsDataDropped)
     const [isDataReady, setIsDataReady] = useState(initialIsDataReady)
     const [uploadError, setUploadError] = useState<string | null>(null)
@@ -35,14 +51,6 @@ export function TracksyWrapper({
         useDemo()
 
     const activeProgress = loadProgress ?? demoProgress
-
-    useEffect(() => {
-        const initDB = async () => {
-            const dbInstance = await getDB()
-            setDb(dbInstance)
-        }
-        initDB()
-    }, [])
 
     async function handleFileUpload(files: FileList | null) {
         if (!files) return
@@ -66,18 +74,19 @@ export function TracksyWrapper({
 
     if (!db) {
         return (
-            <>
-                <p className="dark:text-white">
-                    Initializing the database engine (DuckDB-WASM)...
-                </p>
-            </>
+            <DuckLoader
+                stage={INIT_STAGE_LABELS[stage ?? 'select']}
+                percent={percent}
+                error={initError}
+                onRetry={retry}
+            />
         )
     }
 
     return (
         <>
             {(!isDataDropped || isDataReady) && !activeProgress && (
-                <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                <div className="flex flex-col md:flex-row gap-4 items-stretch animate-fade-in motion-reduce:animate-none">
                     <div className="flex-grow transition-all duration-300">
                         <DropzoneWrapper
                             handleValidatedFiles={handleFileUpload}
