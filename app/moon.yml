@@ -18,8 +18,8 @@ tasks:
         command: eslint "src/**/*.{astro,ts,tsx}"
     lint-deadcode:
         command: knip
-    lint-cycles:
-        command: madge --circular --extensions ts,tsx src
+    lint-deps:
+        command: depcruise src
     lint-fix-sql:
         script: uvx sqruff@0.37.3 fix
         toolchain: unstable_uv
