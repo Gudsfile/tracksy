@@ -29,4 +29,27 @@ describe('ProgressBar', () => {
         const bar = container.querySelector('[style]') as HTMLElement
         expect(bar.style.width).toBe('100%')
     })
+
+    it('exposes the progress to assistive tech', () => {
+        render(<ProgressBar stage="Parsing records…" percent={60} />)
+        const bar = screen.getByRole('progressbar')
+        expect(bar.getAttribute('aria-valuenow')).toBe('60')
+        expect(bar.getAttribute('aria-valuemin')).toBe('0')
+        expect(bar.getAttribute('aria-valuemax')).toBe('100')
+        expect(bar.getAttribute('aria-label')).toBe('Parsing records…')
+    })
+
+    it('can keep the stage as the accessible name without showing it', () => {
+        render(
+            <ProgressBar
+                stage="Parsing records…"
+                percent={60}
+                showLabel={false}
+            />
+        )
+        expect(screen.queryByText('Parsing records…')).toBe(null)
+        expect(screen.getByRole('progressbar').getAttribute('aria-label')).toBe(
+            'Parsing records…'
+        )
+    })
 })
