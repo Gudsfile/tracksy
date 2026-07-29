@@ -189,12 +189,13 @@ export function useChatEngine() {
                     }
                 }
                 abortRef.current = new AbortController()
+                const signal = abortRef.current.signal
                 const engine = await moduleRef.current.getEngine(cfg.modelId)
                 const answer = await askLLMRef.current.askLLM(
                     engine,
                     userText,
                     history,
-                    abortRef.current.signal
+                    signal
                 )
 
                 // Unified path: every answer's SQL is validated and executed
@@ -226,7 +227,7 @@ export function useChatEngine() {
                                     : String(firstErr)
                             }`,
                             history,
-                            abortRef.current!.signal
+                            signal
                         )
                         const retryValidation = validateSql(retried.sql ?? '')
                         if (!retryValidation.ok) {
@@ -243,6 +244,12 @@ export function useChatEngine() {
                             retryValidation.sql
                         )
                     } catch (e) {
+                        // A cancellation during the retry surfaces as an aborted
+                        // LLMError — hand it to the outer handler so the user
+                        // sees a clean cancellation, not a misleading SQL error.
+                        if (e instanceof LLMError && e.kind === 'aborted') {
+                            throw e
+                        }
                         return {
                             payload: {
                                 kind: 'sql-error',
