@@ -17,6 +17,9 @@ import type { ChartConfig } from '../llm/askChartConfig'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
 
+const toMessage = (e: unknown): string =>
+    e instanceof Error ? e.message : String(e)
+
 function getAssistantEnabled(): boolean {
     if (typeof window === 'undefined') return false
     return localStorage.getItem(ASSISTANT_ENABLED_KEY) === 'true'
@@ -105,7 +108,7 @@ export function useChatEngine() {
             } catch (e) {
                 setState({
                     kind: 'error',
-                    error: e instanceof Error ? e.message : String(e),
+                    error: toMessage(e),
                 })
             }
         },
@@ -167,7 +170,7 @@ export function useChatEngine() {
         } catch (e) {
             setState({
                 kind: 'error',
-                error: e instanceof Error ? e.message : String(e),
+                error: toMessage(e),
             })
         }
     }, [])
@@ -221,11 +224,7 @@ export function useChatEngine() {
                     try {
                         const retried = await askLLMRef.current!.askLLM(
                             engine,
-                            `${userText}\n\nPrevious SQL failed with: ${
-                                firstErr instanceof Error
-                                    ? firstErr.message
-                                    : String(firstErr)
-                            }`,
+                            `${userText}\n\nPrevious SQL failed with: ${toMessage(firstErr)}`,
                             history,
                             signal
                         )
@@ -254,8 +253,7 @@ export function useChatEngine() {
                             payload: {
                                 kind: 'sql-error',
                                 answer: finalAnswer,
-                                error:
-                                    e instanceof Error ? e.message : String(e),
+                                error: toMessage(e),
                             },
                         }
                     }
@@ -311,7 +309,7 @@ export function useChatEngine() {
                 return {
                     payload: {
                         kind: 'llm-error',
-                        error: e instanceof Error ? e.message : String(e),
+                        error: toMessage(e),
                     },
                 }
             }
