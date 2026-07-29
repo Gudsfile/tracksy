@@ -49,7 +49,10 @@ export function TracksyWrapper({
     const dismissUploadError = useCallback(() => setUploadError(null), [])
     const { isDemoReady, handleDemoButtonClick, demoJsonUrl, demoProgress } =
         useDemo({
-            onFail: (error) => setUploadError(getUserMessage(error)),
+            onFail: () =>
+                setUploadError(
+                    'Could not load the demo data. Please try again.'
+                ),
         })
 
     const activeProgress = loadProgress ?? demoProgress
