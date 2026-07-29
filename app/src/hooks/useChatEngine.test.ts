@@ -14,6 +14,7 @@ import {
     type PresetName,
 } from '../llm/assistantConfig'
 import { makeChatAnswer } from '../llm/testHelpers'
+import { LLMError } from '../llm/types'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
 
@@ -217,6 +218,24 @@ describe('useChatEngine.ask (unified SQL path)', () => {
         const result = await ask(await loadedHook('minimal'))
 
         expect(result.payload.kind).toBe('sql-error')
+    })
+
+    it('returns aborted (not sql-error) when the retry is cancelled', async () => {
+        // First answer is fine, but its SQL fails; the retry is then cancelled
+        // via Stop, so askLLM rejects with an aborted LLMError. That must
+        // surface as a clean cancellation, not a misleading SQL error.
+        vi.spyOn(askLLMModule, 'askLLM')
+            .mockResolvedValueOnce(
+                answer({ sql: 'SELECT 1 FROM music_streams' })
+            )
+            .mockRejectedValueOnce(new LLMError('Cancelled', 'aborted'))
+        vi.spyOn(queryDBModule, 'queryDBAsJSON').mockRejectedValueOnce(
+            new Error('boom')
+        )
+
+        const result = await ask(await loadedHook('minimal'))
+
+        expect(result.payload.kind).toBe('aborted')
     })
 
     it('returns unsafe-sql without querying when validation rejects the SQL', async () => {
