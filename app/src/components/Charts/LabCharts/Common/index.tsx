@@ -1,7 +1,7 @@
 // Common part of all charts components like StreamPerHour, StreamPerDay, etc.
 
-import { useState, useEffect, useRef, useContext } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useEffect, useRef, useContext } from 'react'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { ThemeContext } from '../../../../hooks/ThemeContext'
 import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 
@@ -17,37 +17,10 @@ export function Common<T extends Record<string, string | number | null>>({
     query,
     buildPlot,
 }: CommonProps<T>) {
-    const [data, setData] = useState<T[] | undefined>()
-    const [error, setError] = useState<string | undefined>(undefined)
+    const { data, error } = useDBQueryMany<T>({ query })
     const { effectiveTheme } = useContext(ThemeContext)
 
     const containerRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        let ignore = false
-
-        const getData = async () => {
-            setError(undefined)
-            try {
-                const result = await queryDBAsJSON<T>(query)
-                if (!ignore) setData(result)
-            } catch (err) {
-                console.error('Error loading chart data:', err)
-                if (!ignore)
-                    setError(
-                        err instanceof Error
-                            ? err.message
-                            : 'Failed to load chart data'
-                    )
-            }
-        }
-
-        getData()
-
-        return () => {
-            ignore = true
-        }
-    }, [query])
 
     useEffect(() => {
         if (!data) return
@@ -63,7 +36,7 @@ export function Common<T extends Record<string, string | number | null>>({
     if (error) {
         return (
             <div className={cardClassName}>
-                <ChartCardEmpty message={error} />
+                <ChartCardEmpty message={error.message} />
             </div>
         )
     }

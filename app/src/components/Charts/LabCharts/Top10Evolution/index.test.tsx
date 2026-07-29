@@ -2,8 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act } from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
-import * as query from '../../../../db/queries/queryDB'
-import * as db from '../../../../db/getDB'
+import * as cached from '../../../../db/queries/queryDBCached'
 import { dispatchDataLoaded } from '../../../../db/dataSignal'
 import type { Top10EvolutionQueryResult } from './query'
 
@@ -18,10 +17,7 @@ const queryResult: Top10EvolutionQueryResult[] = [
 
 describe('Top10Evolution Component', () => {
     beforeEach(() => {
-        vi.spyOn(db, 'getDB').mockResolvedValue({
-            db: vi.fn(),
-            conn: vi.fn(),
-        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+        cached.clearQueryCache()
     })
 
     afterEach(() => {
@@ -29,7 +25,7 @@ describe('Top10Evolution Component', () => {
     })
 
     it('renders the plot when data is available', async () => {
-        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue(queryResult)
+        vi.spyOn(cached, 'queryDBCached').mockResolvedValue(queryResult)
 
         const { container } = render(<Top10Evolution />)
 
@@ -39,10 +35,7 @@ describe('Top10Evolution Component', () => {
     })
 
     it('shows an error indication when the query throws', async () => {
-        const consoleSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {})
-        vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
+        vi.spyOn(cached, 'queryDBCached').mockRejectedValue(
             new Error(ERROR_MESSAGE)
         )
 
@@ -51,14 +44,10 @@ describe('Top10Evolution Component', () => {
         await waitFor(() => {
             expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
         })
-        expect(consoleSpy).toHaveBeenCalled()
     })
 
     it('clears the error on a subsequent successful load', async () => {
-        const consoleSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {})
-        const querySpy = vi.spyOn(query, 'queryDBAsJSON')
+        const querySpy = vi.spyOn(cached, 'queryDBCached')
         querySpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE))
         querySpy.mockResolvedValue(queryResult)
 
@@ -76,6 +65,5 @@ describe('Top10Evolution Component', () => {
             expect(container.querySelector('svg')).toBeTruthy()
         })
         expect(screen.queryByText(ERROR_MESSAGE)).toBeNull()
-        expect(consoleSpy).toHaveBeenCalled()
     })
 })

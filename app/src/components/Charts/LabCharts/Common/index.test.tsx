@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 
-import * as query from '../../../../db/queries/queryDB'
-import * as db from '../../../../db/getDB'
+import * as cached from '../../../../db/queries/queryDBCached'
 
 import { Common } from '.'
 
@@ -18,10 +17,7 @@ const buildPlot = () => {
 
 describe('Common Component', () => {
     beforeEach(() => {
-        vi.spyOn(db, 'getDB').mockResolvedValue({
-            db: vi.fn(),
-            conn: vi.fn(),
-        } as unknown as Awaited<ReturnType<typeof db.getDB>>)
+        cached.clearQueryCache()
     })
 
     afterEach(() => {
@@ -29,7 +25,7 @@ describe('Common Component', () => {
     })
 
     it('renders the built plot when the query succeeds', async () => {
-        vi.spyOn(query, 'queryDBAsJSON').mockResolvedValue([
+        vi.spyOn(cached, 'queryDBCached').mockResolvedValue([
             { value: 1 },
         ] as Row[])
 
@@ -41,10 +37,7 @@ describe('Common Component', () => {
     })
 
     it('shows an error indication when the query throws', async () => {
-        const consoleSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {})
-        vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
+        vi.spyOn(cached, 'queryDBCached').mockRejectedValue(
             new Error(ERROR_MESSAGE)
         )
 
@@ -53,14 +46,10 @@ describe('Common Component', () => {
         await waitFor(() => {
             expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
         })
-        expect(consoleSpy).toHaveBeenCalled()
     })
 
     it('clears the error on a subsequent successful load', async () => {
-        const consoleSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {})
-        const querySpy = vi.spyOn(query, 'queryDBAsJSON')
+        const querySpy = vi.spyOn(cached, 'queryDBCached')
         querySpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE))
         querySpy.mockResolvedValue([{ value: 1 }] as Row[])
 
@@ -78,6 +67,5 @@ describe('Common Component', () => {
             expect(screen.getByTestId('plot')).toBeDefined()
         })
         expect(screen.queryByText(ERROR_MESSAGE)).toBeNull()
-        expect(consoleSpy).toHaveBeenCalled()
     })
 })
