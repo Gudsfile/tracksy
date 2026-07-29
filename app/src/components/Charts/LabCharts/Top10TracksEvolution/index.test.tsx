@@ -1,13 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { act } from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
 import * as query from '../../../../db/queries/queryDB'
 import * as db from '../../../../db/getDB'
+import { dispatchDataLoaded } from '../../../../db/dataSignal'
 import type { Top10TracksEvolutionQueryResult } from './query'
 
 import { Top10TracksEvolution } from '.'
 
-const ERROR_MESSAGE = 'Failed to load chart data'
+const ERROR_MESSAGE = 'DB failure'
 
 const queryResult: Top10TracksEvolutionQueryResult[] = [
     {
@@ -53,7 +55,7 @@ describe('Top10TracksEvolution Component', () => {
             .spyOn(console, 'error')
             .mockImplementation(() => {})
         vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
-            new Error('DB failure')
+            new Error(ERROR_MESSAGE)
         )
 
         render(<Top10TracksEvolution />)
@@ -61,6 +63,31 @@ describe('Top10TracksEvolution Component', () => {
         await waitFor(() => {
             expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
         })
+        expect(consoleSpy).toHaveBeenCalled()
+    })
+
+    it('clears the error on a subsequent successful load', async () => {
+        const consoleSpy = vi
+            .spyOn(console, 'error')
+            .mockImplementation(() => {})
+        const querySpy = vi.spyOn(query, 'queryDBAsJSON')
+        querySpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        querySpy.mockResolvedValue(queryResult)
+
+        const { container } = render(<Top10TracksEvolution />)
+
+        await waitFor(() => {
+            expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
+        })
+
+        await act(async () => {
+            dispatchDataLoaded()
+        })
+
+        await waitFor(() => {
+            expect(container.querySelector('svg')).toBeTruthy()
+        })
+        expect(screen.queryByText(ERROR_MESSAGE)).toBeNull()
         expect(consoleSpy).toHaveBeenCalled()
     })
 })

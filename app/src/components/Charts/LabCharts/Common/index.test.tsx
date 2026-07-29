@@ -6,7 +6,7 @@ import * as db from '../../../../db/getDB'
 
 import { Common } from '.'
 
-const ERROR_MESSAGE = 'Failed to load chart data'
+const ERROR_MESSAGE = 'DB failure'
 
 type Row = Record<string, string | number | null>
 
@@ -45,7 +45,7 @@ describe('Common Component', () => {
             .spyOn(console, 'error')
             .mockImplementation(() => {})
         vi.spyOn(query, 'queryDBAsJSON').mockRejectedValue(
-            new Error('DB failure')
+            new Error(ERROR_MESSAGE)
         )
 
         render(<Common<Row> query="SELECT 1" buildPlot={buildPlot} />)
@@ -53,6 +53,31 @@ describe('Common Component', () => {
         await waitFor(() => {
             expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
         })
+        expect(consoleSpy).toHaveBeenCalled()
+    })
+
+    it('clears the error on a subsequent successful load', async () => {
+        const consoleSpy = vi
+            .spyOn(console, 'error')
+            .mockImplementation(() => {})
+        const querySpy = vi.spyOn(query, 'queryDBAsJSON')
+        querySpy.mockRejectedValueOnce(new Error(ERROR_MESSAGE))
+        querySpy.mockResolvedValue([{ value: 1 }] as Row[])
+
+        const { rerender } = render(
+            <Common<Row> query="SELECT 1" buildPlot={buildPlot} />
+        )
+
+        await waitFor(() => {
+            expect(screen.getByText(ERROR_MESSAGE)).toBeDefined()
+        })
+
+        rerender(<Common<Row> query="SELECT 2" buildPlot={buildPlot} />)
+
+        await waitFor(() => {
+            expect(screen.getByTestId('plot')).toBeDefined()
+        })
+        expect(screen.queryByText(ERROR_MESSAGE)).toBeNull()
         expect(consoleSpy).toHaveBeenCalled()
     })
 })
