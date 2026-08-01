@@ -150,41 +150,44 @@ describe('Top10Race Query', () => {
                     )
             )
 
+        // Album A is shared by Artist A and Artist B in the fixture: they
+        // must remain distinct entities (name+artist identity), matching
+        // the "Top Albums" simple view grouping. See issue #588.
         expect(rows).toEqual([
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                entity_name: 'Album A',
+                entity_name: 'Album A — Artist A',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-01').getTime(),
-                entity_name: 'Album B',
+                entity_name: 'Album B — Artist C',
                 play_count: 1,
             },
             {
                 stream_date_ts: new Date('2020-01-02').getTime(),
-                entity_name: 'Album A',
+                entity_name: 'Album A — Artist A',
                 play_count: 3,
             },
             {
                 stream_date_ts: new Date('2020-01-03').getTime(),
-                entity_name: 'Album A',
-                play_count: 5,
+                entity_name: 'Album A — Artist B',
+                play_count: 2,
             },
             {
                 stream_date_ts: new Date('2021-01-01').getTime(),
-                entity_name: 'Album A',
-                play_count: 6,
+                entity_name: 'Album A — Artist B',
+                play_count: 3,
             },
             {
                 stream_date_ts: new Date('2021-01-02').getTime(),
-                entity_name: 'Album A',
-                play_count: 7,
+                entity_name: 'Album A — Artist B',
+                play_count: 4,
             },
             {
                 stream_date_ts: new Date('2021-01-03').getTime(),
-                entity_name: 'Album A',
-                play_count: 8,
+                entity_name: 'Album A — Artist A',
+                play_count: 4,
             },
         ])
     })
