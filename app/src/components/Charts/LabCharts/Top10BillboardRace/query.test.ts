@@ -137,10 +137,35 @@ describe('Top10BillboardRace Query', () => {
         const week1Ts = 1577664000000
         const week2Ts = 1609113600000
 
+        // Album A is shared by Artist A and Artist B in the fixture: they
+        // must remain distinct entities (name+artist identity), matching
+        // the "Top Albums" simple view grouping. See issue #592.
         expect(rows).toEqual([
-            { period_ts: week1Ts, entity_name: 'Album A', period_plays: 5 },
-            { period_ts: week1Ts, entity_name: 'Album B', period_plays: 1 },
-            { period_ts: week2Ts, entity_name: 'Album A', period_plays: 3 },
+            {
+                period_ts: week1Ts,
+                entity_name: 'Album A — Artist A',
+                period_plays: 3,
+            },
+            {
+                period_ts: week1Ts,
+                entity_name: 'Album A — Artist B',
+                period_plays: 2,
+            },
+            {
+                period_ts: week1Ts,
+                entity_name: 'Album B — Artist C',
+                period_plays: 1,
+            },
+            {
+                period_ts: week2Ts,
+                entity_name: 'Album A — Artist A',
+                period_plays: 1,
+            },
+            {
+                period_ts: week2Ts,
+                entity_name: 'Album A — Artist B',
+                period_plays: 2,
+            },
         ])
     })
 })
