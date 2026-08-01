@@ -6,6 +6,9 @@ import * as path from 'path'
 // ("Existing object music_streams is of type Table, trying to drop type View")
 // because precompute.ts tried to DROP VIEW an object that was already a TABLE.
 test('can ingest a second dataset after a first successful import', async ({ page }) => {
+    // General hygiene, not the regression detector: the original bug is a
+    // caught DuckDB error rendered through the `role="alert"` banner (see
+    // TracksyWrapper.tsx), so it never surfaces here as an uncaught pageerror.
     const pageErrors: Error[] = []
     page.on('pageerror', (error) => pageErrors.push(error))
 
@@ -25,6 +28,8 @@ test('can ingest a second dataset after a first successful import', async ({ pag
         )
 
         await expect(simpleViewTab).toBeVisible()
+        // This is the assertion that actually catches the regression: the
+        // DuckDB Catalog Error from #577 surfaces as an `UploadError` alert.
         await expect(page.getByRole('alert')).toHaveCount(0)
         await expect(page.getByRole('heading', { name: /Top Tracks/ })).toBeVisible()
     })
