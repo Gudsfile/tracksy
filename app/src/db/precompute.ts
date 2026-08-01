@@ -23,6 +23,24 @@ type OnProgress = (stage: string, percent: number) => void
 
 const TOTAL_STEPS = 1 + DERIVED_TABLES.length
 
+/**
+ * Builds the SQL expression that converts a raw `ts` string into a
+ * timezone-adjusted timestamp for the given home timezone.
+ *
+ * Casting to `TIMESTAMPTZ` (rather than `TIMESTAMP`) correctly interprets any
+ * UTC offset present in the raw string — e.g. Apple Music's
+ * `"2024-01-15T22:00:00-05:00"` — before converting to the home timezone, so
+ * the local hour the event actually happened at is preserved.
+ *
+ * This stays backward-compatible with the UTC `Z`-suffixed strings produced
+ * by every other provider (Spotify, Deezer, JellyFin, Custom): DuckDB parses
+ * `Z` as a zero offset, so `TIMESTAMPTZ AT TIME ZONE tz` yields the same
+ * result as the previous `TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE tz`.
+ */
+export function tsConversionExpr(tz: string): string {
+    return `ts::TIMESTAMPTZ AT TIME ZONE '${tz}'`
+}
+
 export async function precomputeDerivedTables(
     conn: AsyncDuckDBConnection,
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -31,7 +49,7 @@ export async function precomputeDerivedTables(
     await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
     await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
     await conn.query(
-        `CREATE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
+        `CREATE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (${tsConversionExpr(tz)}) AS ts FROM ${RAW_TABLE}`
     )
     onProgress?.('Computing statistics…', Math.round((1 / TOTAL_STEPS) * 100))
 

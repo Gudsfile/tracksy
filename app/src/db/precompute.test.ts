@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterAll, beforeAll, describe, it, expect, vi } from 'vitest'
 import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
-import { precomputeDerivedTables } from './precompute'
+import { DuckDBConnection } from '@duckdb/node-api'
+import { precomputeDerivedTables, tsConversionExpr } from './precompute'
 
 function mockConn() {
     return {
@@ -86,5 +87,53 @@ describe('precomputeDerivedTables', () => {
     it('works without onProgress (optional)', async () => {
         const conn = mockConn()
         await expect(precomputeDerivedTables(conn)).resolves.toBeUndefined()
+    })
+})
+
+describe('tsConversionExpr (real DuckDB semantics)', () => {
+    let conn: DuckDBConnection
+
+    beforeAll(async () => {
+        conn = await DuckDBConnection.create()
+    })
+
+    afterAll(() => {
+        conn.closeSync()
+    })
+
+    async function convert(ts: string, tz: string): Promise<string> {
+        const result = await conn.runAndReadAll(
+            `SELECT (${tsConversionExpr(tz)})::VARCHAR AS ts FROM (SELECT '${ts}' AS ts) raw`
+        )
+        const [row] = result.getRowObjectsJson() as { ts: string }[]
+        return row.ts
+    }
+
+    it('preserves the local hour of a non-UTC offset when the home timezone matches (Apple Music)', async () => {
+        // A user in New York listens at 22:00 local time. Apple Music encodes
+        // this as "...T22:00:00-05:00". With a New York home timezone, the
+        // converted hour must still read 22:00 — not shift to a
+        // UTC-normalized hour as it did when the raw string was first cast to
+        // the offset-less TIMESTAMP type.
+        const ts = await convert(
+            '2024-01-15T22:00:00-05:00',
+            'America/New_York'
+        )
+        expect(ts).toBe('2024-01-15 22:00:00')
+    })
+
+    it('converts a non-UTC offset into a different home timezone correctly', async () => {
+        // Same instant (2024-01-16T03:00:00Z), but the user's home timezone is
+        // Paris (UTC+01:00 in January): 03:00 UTC -> 04:00 Paris.
+        const ts = await convert('2024-01-15T22:00:00-05:00', 'Europe/Paris')
+        expect(ts).toBe('2024-01-16 04:00:00')
+    })
+
+    it('still converts UTC Z-suffixed timestamps correctly (Spotify/Deezer/JellyFin/Custom)', async () => {
+        // 22:00 UTC -> 23:00 Paris, matching the pre-existing
+        // `TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE tz` behavior for every
+        // other provider, which always emits Z-suffixed UTC strings.
+        const ts = await convert('2024-01-15T22:00:00Z', 'Europe/Paris')
+        expect(ts).toBe('2024-01-15 23:00:00')
     })
 })
