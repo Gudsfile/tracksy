@@ -36,6 +36,12 @@ const TOTAL_STEPS = 1 + DERIVED_TABLES.length
  * by every other provider (Spotify, Deezer, JellyFin, Custom): DuckDB parses
  * `Z` as a zero offset, so `TIMESTAMPTZ AT TIME ZONE tz` yields the same
  * result as the previous `TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE tz`.
+ *
+ * Unlike the previous expression, a raw string with no zone marker at all
+ * (which no built-in provider emits, but a hand-edited Custom CSV could) is no
+ * longer implicitly anchored to UTC by the SQL text itself — `TIMESTAMPTZ`
+ * resolves it against the connection's ambient session time zone instead. See
+ * the `SET TimeZone='UTC'` pin below, which keeps that case deterministic.
  */
 export function tsConversionExpr(tz: string): string {
     return `ts::TIMESTAMPTZ AT TIME ZONE '${tz}'`
@@ -46,6 +52,10 @@ export async function precomputeDerivedTables(
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
     onProgress?: OnProgress
 ): Promise<void> {
+    // Pins how `tsConversionExpr` resolves a zone-less `ts` string (see its
+    // doc comment) so the outcome doesn't depend on the DuckDB engine's
+    // ambient session time zone, whatever that defaults to.
+    await conn.query(`SET TimeZone='UTC'`)
     await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
     await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
     await conn.query(
