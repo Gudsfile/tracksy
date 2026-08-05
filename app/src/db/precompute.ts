@@ -28,8 +28,14 @@ export async function precomputeDerivedTables(
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
     onProgress?: OnProgress
 ): Promise<void> {
-    await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
+    // Table first: after the first import ${TABLE} is a materialized table, and
+    // DuckDB's IF EXISTS only suppresses "not found" errors, not type mismatches
+    // — `DROP VIEW IF EXISTS` on an existing table raises a Catalog Error rather
+    // than being a no-op. Dropping the table first leaves nothing behind for the
+    // view drop to trip over; the view drop stays to clean up the plain view
+    // that ${TABLE} used to be before it was materialized as a table.
     await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
+    await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
     await conn.query(
         `CREATE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
     )

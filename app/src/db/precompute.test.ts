@@ -23,9 +23,33 @@ describe('precomputeDerivedTables', () => {
             conn.query as ReturnType<typeof vi.fn>
         ).mock.calls.map((c: string[]) => c[0].trim())
 
-        expect(calls[0]).toBe('DROP VIEW IF EXISTS music_streams')
-        expect(calls[1]).toBe('DROP TABLE IF EXISTS music_streams')
+        expect(calls[0]).toBe('DROP TABLE IF EXISTS music_streams')
+        expect(calls[1]).toBe('DROP VIEW IF EXISTS music_streams')
         expect(calls[2]).toMatch(/^CREATE TABLE music_streams AS/)
+    })
+
+    // Regression test for https://github.com/Gudsfile/tracksy/issues/577:
+    // music_streams is a materialized TABLE after the first import, and
+    // DuckDB's `IF EXISTS` only suppresses "not found" errors — running
+    // `DROP VIEW IF EXISTS music_streams` against an existing table raises a
+    // Catalog Error instead of no-op'ing, which broke every import after the
+    // first. The table drop must run first so nothing is left for the view
+    // drop to collide with.
+    it('drops the table before attempting the view drop, so a second import does not hit a type-mismatch Catalog Error', async () => {
+        const conn = mockConn()
+        await precomputeDerivedTables(conn)
+        await precomputeDerivedTables(conn)
+
+        const calls: string[] = (
+            conn.query as ReturnType<typeof vi.fn>
+        ).mock.calls.map((c: string[]) => c[0].trim())
+
+        const dropTableIndex = calls.indexOf(
+            'DROP TABLE IF EXISTS music_streams'
+        )
+        const dropViewIndex = calls.indexOf('DROP VIEW IF EXISTS music_streams')
+        expect(dropTableIndex).toBeGreaterThanOrEqual(0)
+        expect(dropViewIndex).toBeGreaterThan(dropTableIndex)
     })
 
     it('drops all derived tables before creating them', async () => {
