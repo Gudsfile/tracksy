@@ -1,10 +1,10 @@
 with daily_streams as (
     select
         date_trunc('day', ts::datetime)::date as stream_date,
-        album_name as entity_name,
-        count(*)::int as daily_plays
+        count(*)::int as daily_plays,
+        album_name || ' — ' || artist_name as entity_name
     from ${table}
-    where album_name is not null
+    where album_name is not null and artist_name is not null
     ${yearFilter}
     GROUP BY stream_date, entity_name
 )
