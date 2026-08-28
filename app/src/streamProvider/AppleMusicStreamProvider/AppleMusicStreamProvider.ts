@@ -20,7 +20,7 @@ export class AppleMusicStreamProvider extends StreamProvider<AppleMusicRawRecord
         await db.registerFileBuffer(TMP_FILE_NAME, new Uint8Array(buffer))
         try {
             const result = await conn.query(
-                `SELECT * FROM read_csv('${TMP_FILE_NAME}', header=true)`
+                `SELECT * FROM read_csv('${TMP_FILE_NAME}', header=true, all_varchar=true)`
             )
             return result
                 .toArray()

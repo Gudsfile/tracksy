@@ -18,13 +18,18 @@ function mockFile(
 
 const CSV_TYPE = 'text/csv'
 
+// readFile() reads the CSV with all_varchar=true (see the 'should read all
+// columns as varchar' test below), so every column — including timestamps and
+// durations — comes back as a string or null in production. These fixtures
+// mirror that shape; the Date/number-typed inputs exercised further down
+// document transform()'s defensive fallback for callers that bypass readFile.
 const RAW_AUDIO: AppleMusicRawRecord = {
     'Song Name': 'Never Gonna Give You Up',
     'Album Name': null,
     'Container Artist Name': null,
     'Media Type': 'AUDIO',
-    'Event Start Timestamp': new Date('2024-03-15T14:30:00.000Z'),
-    'Play Duration Milliseconds': 213000,
+    'Event Start Timestamp': '2024-03-15T14:30:00.000Z',
+    'Play Duration Milliseconds': '213000',
     'Device Type': 'IPHONE',
     'Container Origin Type': null,
 }
@@ -34,8 +39,8 @@ const RAW_VIDEO: AppleMusicRawRecord = {
     'Album Name': null,
     'Container Artist Name': null,
     'Media Type': 'VIDEO',
-    'Event Start Timestamp': new Date('2024-03-15T15:00:00.000Z'),
-    'Play Duration Milliseconds': 120000,
+    'Event Start Timestamp': '2024-03-15T15:00:00.000Z',
+    'Play Duration Milliseconds': '120000',
     'Device Type': 'IPHONE',
     'Container Origin Type': null,
 }
@@ -120,7 +125,7 @@ describe('AppleMusicStreamProvider', () => {
         it('should guard against negative Play Duration Milliseconds', () => {
             const record: AppleMusicRawRecord = {
                 ...RAW_AUDIO,
-                'Play Duration Milliseconds': -140027,
+                'Play Duration Milliseconds': '-140027',
             }
             const result = provider.transform([record])
             expect(result[0].ms_played).toBe(0)
@@ -139,6 +144,30 @@ describe('AppleMusicStreamProvider', () => {
             const record: AppleMusicRawRecord = {
                 ...RAW_AUDIO,
                 'Event Start Timestamp': '2024-03-15T14:30:00.000Z',
+            }
+            const result = provider.transform([record])
+            expect(result[0].ts).toBe('2024-03-15T14:30:00.000Z')
+        })
+
+        it('should preserve a non-UTC offset in a string-typed Event Start Timestamp', () => {
+            // Apple Music exports TIMESTAMP WITH TIME ZONE. Read as varchar
+            // (see readFile), the raw offset must survive untouched so the
+            // local listening hour isn't lost by normalizing to UTC.
+            const record: AppleMusicRawRecord = {
+                ...RAW_AUDIO,
+                'Event Start Timestamp': '2024-01-15T22:00:00-05:00',
+            }
+            const result = provider.transform([record])
+            expect(result[0].ts).toBe('2024-01-15T22:00:00-05:00')
+        })
+
+        it('should handle a Date-typed Event Start Timestamp (defensive fallback)', () => {
+            // readFile() always returns strings (all_varchar=true), so this
+            // branch isn't exercised by the real CSV import path — it's a
+            // defensive fallback for any other caller of transform().
+            const record: AppleMusicRawRecord = {
+                ...RAW_AUDIO,
+                'Event Start Timestamp': new Date('2024-03-15T14:30:00.000Z'),
             }
             const result = provider.transform([record])
             expect(result[0].ts).toBe('2024-03-15T14:30:00.000Z')
@@ -227,6 +256,35 @@ describe('AppleMusicStreamProvider', () => {
             )
             expect(mockDb.dropFile).toHaveBeenCalledWith('_apple_music_tmp.csv')
             expect(result).toHaveLength(1)
+        })
+
+        it('should read all columns as varchar to prevent DuckDB auto-detecting Event Start Timestamp as TIMESTAMPTZ', async () => {
+            const mockRow = {
+                toJSON: () => ({ ...RAW_AUDIO }),
+            }
+            mockConn.query.mockResolvedValue({
+                toArray: () => [mockRow],
+            })
+
+            const getDB = await import('../../db/getDB')
+            vi.spyOn(getDB, 'getDB').mockResolvedValue({
+                db: mockDb as never,
+                conn: mockConn as never,
+            })
+
+            const file = mockFile(
+                new ArrayBuffer(8),
+                'Apple Music Play Activity.csv',
+                {
+                    type: CSV_TYPE,
+                }
+            )
+
+            await provider.readFile(file)
+
+            expect(mockConn.query).toHaveBeenCalledWith(
+                expect.stringContaining('all_varchar=true')
+            )
         })
 
         it('should drop temp file even if query fails', async () => {
