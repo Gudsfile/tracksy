@@ -9,10 +9,10 @@ function mockConn() {
 }
 
 describe('precomputeDerivedTables', () => {
-    it('executes 9 queries (1 DROP + 1 CREATE TABLE music_streams + 4 DROP + 4 CREATE derived)', async () => {
+    it('executes 9 queries (1 CREATE TABLE music_streams + 4 CREATE derived)', async () => {
         const conn = mockConn()
         await precomputeDerivedTables(conn)
-        expect(conn.query).toHaveBeenCalledTimes(10)
+        expect(conn.query).toHaveBeenCalledTimes(5)
     })
 
     it('materializes the timezone-adjusted music_streams table before derived tables', async () => {
@@ -23,11 +23,10 @@ describe('precomputeDerivedTables', () => {
             conn.query as ReturnType<typeof vi.fn>
         ).mock.calls.map((c: string[]) => c[0].trim())
 
-        expect(calls[0]).toBe('DROP TABLE IF EXISTS music_streams')
-        expect(calls[1]).toMatch(/^CREATE TABLE music_streams AS/)
+        expect(calls[0]).toMatch(/^CREATE OR REPLACE TABLE music_streams AS/)
     })
 
-    it('drops all derived tables before creating them', async () => {
+    it('recreates daily_stream_counts, artist_first_year, stream_sessions, summarize_cache', async () => {
         const conn = mockConn()
         await precomputeDerivedTables(conn)
 
@@ -35,24 +34,14 @@ describe('precomputeDerivedTables', () => {
             conn.query as ReturnType<typeof vi.fn>
         ).mock.calls.map((c: string[]) => c[0].trim())
 
-        expect(calls[2]).toBe('DROP TABLE IF EXISTS daily_stream_counts')
-        expect(calls[4]).toBe('DROP TABLE IF EXISTS artist_first_year')
-        expect(calls[6]).toBe('DROP TABLE IF EXISTS stream_sessions')
-        expect(calls[8]).toBe('DROP TABLE IF EXISTS summarize_cache')
-    })
-
-    it('creates daily_stream_counts, artist_first_year, stream_sessions, summarize_cache', async () => {
-        const conn = mockConn()
-        await precomputeDerivedTables(conn)
-
-        const calls: string[] = (
-            conn.query as ReturnType<typeof vi.fn>
-        ).mock.calls.map((c: string[]) => c[0])
-
-        expect(calls.some((q) => q.includes('daily_stream_counts'))).toBe(true)
-        expect(calls.some((q) => q.includes('artist_first_year'))).toBe(true)
-        expect(calls.some((q) => q.includes('stream_sessions'))).toBe(true)
-        expect(calls.some((q) => q.includes('summarize_cache'))).toBe(true)
+        expect(calls[1]).toMatch(
+            /^CREATE OR REPLACE TABLE daily_stream_counts AS/
+        )
+        expect(calls[2]).toMatch(
+            /^CREATE OR REPLACE TABLE artist_first_year AS/
+        )
+        expect(calls[3]).toMatch(/^CREATE OR REPLACE TABLE stream_sessions AS/)
+        expect(calls[4]).toMatch(/^CREATE OR REPLACE TABLE summarize_cache AS/)
     })
 
     it('propagates errors from conn.query', async () => {

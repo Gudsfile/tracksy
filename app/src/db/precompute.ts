@@ -28,16 +28,14 @@ export async function precomputeDerivedTables(
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
     onProgress?: OnProgress
 ): Promise<void> {
-    await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
     await conn.query(
-        `CREATE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
+        `CREATE OR REPLACE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
     )
     onProgress?.('Computing statistics…', Math.round((1 / TOTAL_STEPS) * 100))
 
     for (const [index, [name, sql]] of DERIVED_TABLES.entries()) {
-        await conn.query(`DROP TABLE IF EXISTS ${name}`)
         await conn.query(
-            `CREATE TABLE ${name} AS\n${sql.replaceAll('${table}', TABLE)}`
+            `CREATE OR REPLACE TABLE ${name} AS\n${sql.replaceAll('${table}', TABLE)}`
         )
         onProgress?.(
             'Computing statistics…',
