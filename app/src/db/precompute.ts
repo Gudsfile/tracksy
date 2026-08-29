@@ -28,7 +28,6 @@ export async function precomputeDerivedTables(
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
     onProgress?: OnProgress
 ): Promise<void> {
-    await conn.query(`DROP VIEW IF EXISTS ${TABLE}`)
     await conn.query(`DROP TABLE IF EXISTS ${TABLE}`)
     await conn.query(
         `CREATE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
