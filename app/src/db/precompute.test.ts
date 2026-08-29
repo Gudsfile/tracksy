@@ -9,10 +9,10 @@ function mockConn() {
 }
 
 describe('precomputeDerivedTables', () => {
-    it('executes 11 queries (2 DROP + 1 CREATE TABLE music_streams + 4 DROP + 4 CREATE derived)', async () => {
+    it('executes 9 queries (1 DROP + 1 CREATE TABLE music_streams + 4 DROP + 4 CREATE derived)', async () => {
         const conn = mockConn()
         await precomputeDerivedTables(conn)
-        expect(conn.query).toHaveBeenCalledTimes(11)
+        expect(conn.query).toHaveBeenCalledTimes(10)
     })
 
     it('materializes the timezone-adjusted music_streams table before derived tables', async () => {
@@ -23,9 +23,8 @@ describe('precomputeDerivedTables', () => {
             conn.query as ReturnType<typeof vi.fn>
         ).mock.calls.map((c: string[]) => c[0].trim())
 
-        expect(calls[0]).toBe('DROP VIEW IF EXISTS music_streams')
-        expect(calls[1]).toBe('DROP TABLE IF EXISTS music_streams')
-        expect(calls[2]).toMatch(/^CREATE TABLE music_streams AS/)
+        expect(calls[0]).toBe('DROP TABLE IF EXISTS music_streams')
+        expect(calls[1]).toMatch(/^CREATE TABLE music_streams AS/)
     })
 
     it('drops all derived tables before creating them', async () => {
@@ -36,10 +35,10 @@ describe('precomputeDerivedTables', () => {
             conn.query as ReturnType<typeof vi.fn>
         ).mock.calls.map((c: string[]) => c[0].trim())
 
-        expect(calls[3]).toBe('DROP TABLE IF EXISTS daily_stream_counts')
-        expect(calls[5]).toBe('DROP TABLE IF EXISTS artist_first_year')
-        expect(calls[7]).toBe('DROP TABLE IF EXISTS stream_sessions')
-        expect(calls[9]).toBe('DROP TABLE IF EXISTS summarize_cache')
+        expect(calls[2]).toBe('DROP TABLE IF EXISTS daily_stream_counts')
+        expect(calls[4]).toBe('DROP TABLE IF EXISTS artist_first_year')
+        expect(calls[6]).toBe('DROP TABLE IF EXISTS stream_sessions')
+        expect(calls[8]).toBe('DROP TABLE IF EXISTS summarize_cache')
     })
 
     it('creates daily_stream_counts, artist_first_year, stream_sessions, summarize_cache', async () => {
