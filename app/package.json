@@ -27,12 +27,12 @@
         "@typescript-eslint/eslint-plugin": "^8.65.0",
         "@typescript-eslint/parser": "^8.65.0",
         "@vitest/coverage-v8": "4.1.10",
+        "dependency-cruiser": "^18.1.0",
         "eslint": "^9.39.4",
         "eslint-plugin-astro": "^1.7.0",
         "eslint-plugin-jsx-a11y": "^6.10.2",
         "jsdom": "^29.1.1",
         "knip": "^6.29.0",
-        "dependency-cruiser": "^18.1.0",
         "prettier": "^3.9.6",
         "prettier-plugin-astro": "^0.14.1",
         "vite-plugin-static-copy": "^4.1.1",
@@ -44,13 +44,7 @@
     },
     "pnpm": {
         "overrides": {
-            "lodash": "^4.17.23",
-            "yaml@>=2.0.0 <2.8.3": ">=2.8.3",
-            "devalue": ">=5.8.1",
-            "esbuild": " >=0.28.1",
-            "minimatch@3": "^10.0.0",
-            "brace-expansion@<=5.0.7": ">=5.0.8 <6.0.0",
-            "fast-uri@>=3.0.0 <=3.1.3": ">=3.1.4"
+            "yaml@>=2.0.0 <2.8.3": ">=2.8.3"
         }
     }
 }
