@@ -38,19 +38,26 @@ export class DeezerStreamProvider extends StreamProvider<DeezerRawStreamRecord> 
     }
 
     transform(rawData: DeezerRawStreamRecord[]): StreamRecord[] {
-        return rawData.map((raw) => {
+        return rawData.flatMap((raw) => {
+            const date = raw['Date'] != null ? String(raw['Date']) : undefined
+            const track_uri =
+                raw['ISRC'] != null ? String(raw['ISRC']) : undefined
+            if (date === undefined || track_uri === undefined) return []
+
             const listeningTime = Number(raw['Listening Time']) || 0
             const msPlayed = listeningTime > 0 ? listeningTime * 1000 : 0
-            return {
-                track_uri: raw['ISRC'],
-                track_name: raw['Song Title'],
-                artist_name: raw['Artist'],
-                album_name: raw['Album Title'],
-                ts: raw['Date'].replace(' ', 'T') + 'Z',
-                ms_played: msPlayed,
-                ip_addr: raw['IP Address'],
-                platform: raw['Platform Name'],
-            }
+            return [
+                {
+                    track_uri,
+                    track_name: String(raw['Song Title'] ?? 'Unknown Track'),
+                    artist_name: String(raw['Artist'] ?? 'Unknown Artist'),
+                    album_name: String(raw['Album Title'] ?? 'Unknown Album'),
+                    ts: date.replace(' ', 'T') + 'Z',
+                    ms_played: msPlayed,
+                    ip_addr: String(raw['IP Address'] ?? ''),
+                    platform: String(raw['Platform Name'] ?? 'Unknown Device'),
+                },
+            ]
         })
     }
 }
