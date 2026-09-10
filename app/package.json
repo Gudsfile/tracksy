@@ -3,48 +3,44 @@
     "type": "module",
     "version": "0.3.0",
     "dependencies": {
-        "@astrojs/check": "^0.9.9",
-        "@astrojs/react": "^6.0.1",
+        "@astrojs/check": "^0.9.10",
+        "@astrojs/react": "^6.0.5",
         "@duckdb/duckdb-wasm": "^1.32.0",
-        "@mlc-ai/web-llm": "^0.2.84",
+        "@mlc-ai/web-llm": "^0.2.85",
         "@observablehq/plot": "^0.6.17",
         "@tailwindcss/vite": "^4.3.3",
-        "@types/react": "^19.2.17",
-        "@types/react-dom": "^19.2.3",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
         "apache-arrow": "^17.0.0",
-        "astro": "^7.1.3",
+        "astro": "^7.3.2",
         "eslint-plugin-import": "^2.32.0",
         "libarchive.js": "^2.0.2",
-        "react": "^19.2.8",
-        "react-dom": "^19.2.8",
+        "react": "^19.3.0",
+        "react-dom": "^19.3.0",
         "tailwindcss": "^4.3.3",
         "typescript": "^6.0.3"
     },
     "devDependencies": {
         "@duckdb/node-api": "1.3.2-alpha.26",
         "@testing-library/dom": "^10.4.1",
-        "@testing-library/react": "^16.3.2",
-        "@typescript-eslint/eslint-plugin": "^8.65.0",
-        "@typescript-eslint/parser": "^8.65.0",
+        "@testing-library/react": "^16.3.3",
+        "@typescript-eslint/eslint-plugin": "^8.70.0",
+        "@typescript-eslint/parser": "^8.70.0",
         "@vitest/coverage-v8": "4.1.10",
-        "dependency-cruiser": "^18.1.0",
-        "eslint": "^9.39.4",
+        "dependency-cruiser": "^18.2.0",
+        "eslint": "^9.39.5",
         "eslint-plugin-astro": "^1.7.0",
         "eslint-plugin-jsx-a11y": "^6.10.2",
         "jsdom": "^29.1.1",
-        "knip": "^6.29.0",
+        "knip": "^6.35.1",
         "prettier": "^3.9.6",
         "prettier-plugin-astro": "^0.14.1",
         "vite-plugin-static-copy": "^4.1.1",
-        "vitest": "^4.1.10",
+        "vitest": "^4.1.11",
         "vitest-leak-detector": "^1.1.1"
     },
     "engines": {
         "node": ">=24 <25"
     },
-    "pnpm": {
-        "overrides": {
-            "yaml@>=2.0.0 <2.8.3": ">=2.8.3"
-        }
-    }
+    "pnpm": {}
 }
