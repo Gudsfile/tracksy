@@ -93,7 +93,9 @@ export function ChatView() {
             setMessages((prev) => [...prev, userMsg])
             setIsAsking(true)
 
-            const result = await ask(text, [...messagesRef.current, userMsg])
+            // Only the PRIOR turns: `buildMessages` appends `text` itself, so
+            // including `userMsg` here would send the current turn twice.
+            const result = await ask(text, messagesRef.current)
 
             const payload: AssistantPayload = result.payload
 

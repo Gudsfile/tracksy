@@ -10,7 +10,18 @@ import { LLMError, type ChatAnswer, type ChatMessage } from './types'
 import { devBus } from '../devToolbar/devBus'
 import { getLoadedModelId } from './modelState'
 
-function buildMessages(
+/**
+ * Builds the chat transcript sent to the model.
+ *
+ * The `[Today is ...]` prefix is only attached when the question actually
+ * carries a year, because the model treats the prefix itself as the signal to
+ * add a year filter to the SQL. A bare question must arrive bare — prefixed,
+ * it gets silently scoped to the current year, which usually has no data.
+ *
+ * `history` holds only the turns BEFORE the current one — `userText` is the
+ * sole source of the current turn.
+ */
+export function buildMessages(
     userText: string,
     history: ChatMessage[]
 ): ChatCompletionMessageParam[] {
@@ -30,12 +41,11 @@ function buildMessages(
         })
     }
     const resolvedYear = resolveYear(userText)
-    const yearClause = resolvedYear
-        ? ` The user is asking about year ${resolvedYear}.`
-        : ''
     messages.push({
         role: 'user',
-        content: `[Today is ${CURRENT_DATE}.${yearClause}] ${userText}`,
+        content: resolvedYear
+            ? `[Today is ${CURRENT_DATE}. The user is asking about year ${resolvedYear}.] ${userText}`
+            : userText,
     })
     return messages
 }
