@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { extractJsonObject, parseChatAnswer } from './askLLM'
+import { buildMessages, extractJsonObject, parseChatAnswer } from './askLLM'
 import { SYSTEM_PROMPT, FEW_SHOTS } from './prompt'
-import { LLMError } from './types'
+import { LLMError, type ChatMessage } from './types'
 
 describe('prompt date context', () => {
     const currentYear = new Date().getFullYear()
@@ -16,6 +16,104 @@ describe('prompt date context', () => {
         )
         expect(shot).toBeDefined()
         expect(shot!.assistant).toContain(String(currentYear))
+    })
+})
+
+describe('buildMessages', () => {
+    const currentYear = new Date().getFullYear()
+
+    function lastContent(messages: ReturnType<typeof buildMessages>): string {
+        return String(messages[messages.length - 1].content)
+    }
+
+    it('sends the question verbatim when it names no year', () => {
+        const content = lastContent(buildMessages('Top artists', []))
+
+        expect(content).toBe('Top artists')
+        expect(content).not.toContain('[Today is')
+    })
+
+    it('drops the prefix entirely — a date-only prefix still triggers a year filter', () => {
+        const bareQuestions = [
+            'Who are my top 5 most listened to artists?',
+            'How often do I skip songs?',
+            'How many different artists have I listened to?',
+        ]
+        for (const question of bareQuestions) {
+            expect(lastContent(buildMessages(question, [])), question).toBe(
+                question
+            )
+        }
+    })
+
+    it('prefixes an explicit year with the date context', () => {
+        const content = lastContent(buildMessages('Top 3 tracks in 2022', []))
+
+        expect(content).toContain('[Today is')
+        expect(content).toContain('The user is asking about year 2022.')
+        expect(content).toContain('Top 3 tracks in 2022')
+    })
+
+    it('resolves "last year" to the previous year', () => {
+        const content = lastContent(
+            buildMessages('What did I listen to last year?', [])
+        )
+
+        expect(content).toContain(
+            `The user is asking about year ${currentYear - 1}.`
+        )
+    })
+
+    it('resolves "this year" to the current year', () => {
+        const content = lastContent(
+            buildMessages('What are my top artists this year?', [])
+        )
+
+        expect(content).toContain(
+            `The user is asking about year ${currentYear}.`
+        )
+    })
+
+    it('sends the current turn exactly once, after the prior history', () => {
+        const question = 'Do I listen to more music on rainy Tuesdays?'
+        const history: ChatMessage[] = [
+            { id: '1', role: 'user', text: 'Top artists' },
+            {
+                id: '2',
+                role: 'assistant',
+                text: '{"intent":"top_artists"}',
+                payload: { kind: 'aborted' },
+            },
+        ]
+
+        const messages = buildMessages(question, history)
+        const currentTurn = messages.filter((m) =>
+            String(m.content).includes(question)
+        )
+
+        expect(currentTurn).toHaveLength(1)
+        expect(currentTurn[0].role).toBe('user')
+        expect(messages[messages.length - 1]).toBe(currentTurn[0])
+    })
+})
+
+describe('FEW_SHOTS date-prefix invariant', () => {
+    // buildMessages only prefixes questions that resolve to a year, so the
+    // few-shots must show exactly what it would send — a shot that pairs a
+    // bare question with a prefix (or the reverse) is what caused the
+    // spurious current-year filter in the first place.
+    //
+    // Compare on the question with the prefix stripped: the prefix embeds
+    // today's date, so resolving the full text always finds a year and would
+    // let a bare question wearing a prefix slip through.
+    it('shows each question exactly as buildMessages would send it', () => {
+        for (const shot of FEW_SHOTS) {
+            const question = shot.user.replace(/^\[Today is [^\]]*\] /, '')
+            const messages = buildMessages(question, [])
+            expect(shot.user, question).toBe(
+                messages[messages.length - 1].content
+            )
+        }
     })
 })
 

@@ -76,7 +76,8 @@ Rules:
 - "params.limit" only for top_artists/top_tracks/top_albums when user asked for a specific N.
 - Use intent "custom" ONLY if no other intent fits.
 - Never invent table or column names. Never include any text outside the JSON object.
-- Today is ${CURRENT_DATE}. If the message prefix contains "The user is asking about year X", use X in the SQL and params. Otherwise omit year from params.
+- Today is ${CURRENT_DATE}. A message that mentions a year arrives with a "[Today is ...]" prefix naming it: if that prefix contains "The user is asking about year X", use X in params.year AND in the SQL year filter.
+- If the message has NO "[Today is ...]" prefix, the user did not mention a year: omit params.year and do NOT add any year filter to the SQL (no EXTRACT(year FROM ts) predicate). Only filter by date when the question itself names a period (e.g. "last month", "this week"); otherwise query the user's entire history.
 `
 
 export type FewShot = { user: string; assistant: string }
@@ -113,7 +114,7 @@ export const FEW_SHOTS: FewShot[] = [
         }),
     },
     {
-        user: 'Show me my top 10 tracks in 2023',
+        user: `[Today is ${CURRENT_DATE}. The user is asking about year 2023.] Show me my top 10 tracks in 2023`,
         assistant: JSON.stringify({
             intent: 'top_tracks',
             params: { year: 2023, limit: 10 },
@@ -123,17 +124,17 @@ export const FEW_SHOTS: FewShot[] = [
         }),
     },
     {
-        user: `[Today is ${CURRENT_DATE}. The user is asking about year ${CURRENT_YEAR}.] How does my listening look across the year?`,
+        user: `[Today is ${CURRENT_DATE}. The user is asking about year 2024.] How does my listening look across 2024?`,
         assistant: JSON.stringify({
             intent: 'calendar_heatmap',
-            params: { year: CURRENT_YEAR },
-            title: 'Listening calendar',
-            explanation: 'Daily listening intensity across the calendar year.',
-            sql: `SELECT ts::date AS stream_date, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE EXTRACT(year FROM ts) = ${CURRENT_YEAR} GROUP BY ts::date ORDER BY stream_date`,
+            params: { year: 2024 },
+            title: 'Listening calendar — 2024',
+            explanation: 'Daily listening intensity across 2024.',
+            sql: `SELECT ts::date AS stream_date, COUNT(*)::DOUBLE AS stream_count FROM ${TABLE} WHERE EXTRACT(year FROM ts) = 2024 GROUP BY ts::date ORDER BY stream_date`,
         }),
     },
     {
-        user: 'Streams per month for 2022',
+        user: `[Today is ${CURRENT_DATE}. The user is asking about year 2022.] Streams per month for 2022`,
         assistant: JSON.stringify({
             intent: 'streams_per_month',
             params: { year: 2022 },
