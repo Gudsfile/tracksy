@@ -34,7 +34,7 @@
         "jsdom": "^29.1.1",
         "knip": "^6.35.1",
         "prettier": "^3.9.6",
-        "prettier-plugin-astro": "^0.14.1",
+        "prettier-plugin-astro": "^1.0.1",
         "vite-plugin-static-copy": "^4.1.1",
         "vitest": "^4.1.11",
         "vitest-leak-detector": "^1.1.1"
