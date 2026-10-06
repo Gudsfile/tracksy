@@ -1,4 +1,5 @@
 from dataclasses import replace
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -99,3 +100,22 @@ def test_container_origin_type_values(default_generation_config):
     records = factory.create_streaming_history()
     values = {r.container_origin_type for r in records}
     assert values <= {None, "STREAM_RADIO_STATION"}
+
+
+def test_records_have_home_timezone_offset(default_generation_config):
+    # Europe/Paris home: +01:00 in winter, +02:00 in summer
+    factory = AppleMusicFactory(num_records=500, config=default_generation_config)
+    records = factory.create_streaming_history()
+    offsets = {r.utc_offset_seconds for r in records}
+    assert offsets == {3600, 7200}
+
+
+def test_utc_plus_offset_gives_back_local_listening_time(default_generation_config):
+    factory = AppleMusicFactory(num_records=500, config=default_generation_config)
+    records = factory.create_streaming_history()
+    for record in records:
+        utc = datetime.strptime(
+            record.serialize_event_start_timestamp(record.event_start_timestamp), "%Y-%m-%dT%H:%M:%S.000Z"
+        )
+        assert record.utc_offset_seconds is not None
+        assert utc + timedelta(seconds=record.utc_offset_seconds) == record.event_start_timestamp
