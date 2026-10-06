@@ -1,0 +1,17 @@
+overrides.fast-uri@>=3.0.0\ <3.1.8 = >=3.1.8
+overrides.brace-expansion@<1.1.21 = >=1.1.21
+overrides.brace-expansion@>=4.0.0\ <5.0.12 = >=5.0.12
+overrides.brace-expansion@<1.1.20 = >=1.1.20
+overrides.brace-expansion@>=4.0.0\ <5.0.11 = >=5.0.11
+overrides.brace-expansion@<1.1.19 = >=1.1.19
+overrides.brace-expansion@>=4.0.0\ <5.0.10 = >=5.0.10
+overrides.devalue@>=5.1.0\ <=5.9.2 = >=5.9.3
+overrides.devalue@<=5.9.2 = >=5.9.3
+overrides.devalue@>=1.0.0\ <=5.9.2 = >=5.9.3
+overrides.devalue@>=5.8.0\ <=5.9.2 = >=5.9.3
+overrides.smol-toml@<=1.8.0 = >=1.9.0
+overrides.source-map-js@>=1.0.0\ <1.2.2 = >=1.2.2
+overrides.sharp@<0.35.5 = >=0.35.5
+overrides.http-cache-semantics@<=4.2.0 = >=4.2.1
+overrides.minimatch@3.1.5 = 10.4.2
+overrides.brace-expansion@1.1.18 = 1.1.21
