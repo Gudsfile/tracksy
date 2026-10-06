@@ -102,20 +102,46 @@ def test_container_origin_type_values(default_generation_config):
     assert values <= {None, "STREAM_RADIO_STATION"}
 
 
-def test_records_have_home_timezone_offset(default_generation_config):
+def test_most_records_use_the_home_timezone_offset(default_generation_config):
     # Europe/Paris home: +01:00 in winter, +02:00 in summer
-    factory = AppleMusicFactory(num_records=500, config=default_generation_config)
+    factory = AppleMusicFactory(num_records=2000, config=default_generation_config)
+    records = factory.create_streaming_history()
+    home = [r for r in records if r.utc_offset_seconds in {3600, 7200}]
+    assert len(home) / len(records) > 0.8
+
+
+def test_offsets_cover_travel_and_missing_values(default_generation_config):
+    factory = AppleMusicFactory(num_records=5000, config=default_generation_config)
     records = factory.create_streaming_history()
     offsets = {r.utc_offset_seconds for r in records}
-    assert offsets == {3600, 7200}
+    assert None in offsets
+    assert any(o is not None and o < 0 for o in offsets)
+    assert any(o is not None and o % 3600 != 0 for o in offsets)
+
+
+def test_missing_offsets_are_rare(default_generation_config):
+    factory = AppleMusicFactory(num_records=2000, config=default_generation_config)
+    records = factory.create_streaming_history()
+    missing = [r for r in records if r.utc_offset_seconds is None]
+    assert 0 < len(missing) / len(records) < 0.05
+
+
+def test_trips_span_consecutive_days(default_generation_config):
+    factory = AppleMusicFactory(num_records=500, config=default_generation_config)
+    trips = factory.trip_timezones
+    assert trips
+    for day, zone in trips.items():
+        neighbours = {trips.get(day - timedelta(days=1)), trips.get(day + timedelta(days=1))}
+        assert zone in neighbours
 
 
 def test_utc_plus_offset_gives_back_local_listening_time(default_generation_config):
     factory = AppleMusicFactory(num_records=500, config=default_generation_config)
     records = factory.create_streaming_history()
     for record in records:
+        if record.utc_offset_seconds is None:
+            continue
         utc = datetime.strptime(
             record.serialize_event_start_timestamp(record.event_start_timestamp), "%Y-%m-%dT%H:%M:%S.000Z"
         )
-        assert record.utc_offset_seconds is not None
         assert utc + timedelta(seconds=record.utc_offset_seconds) == record.event_start_timestamp
