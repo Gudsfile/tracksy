@@ -6,7 +6,7 @@ node:
 javascript:
   packageManager: pnpm
 pnpm:
-  version: "9"
+  version: "12"
 unstable_python:
   version: "3.12"
 unstable_uv:
