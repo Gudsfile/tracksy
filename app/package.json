@@ -12,7 +12,7 @@
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "apache-arrow": "^17.0.0",
-        "astro": "^7.3.6",
+        "astro": "^7.3.7",
         "libarchive.js": "^2.0.2",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",

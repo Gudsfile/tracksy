@@ -36,8 +36,8 @@ importers:
         specifier: ^17.0.0
         version: 17.0.0
       astro:
-        specifier: ^7.3.6
-        version: 7.3.6(jiti@2.7.0)(yaml@2.9.1)
+        specifier: ^7.3.7
+        version: 7.3.7(jiti@2.7.0)(yaml@2.9.1)
       libarchive.js:
         specifier: ^2.0.2
         version: 2.0.2
@@ -1794,8 +1794,8 @@ packages:
     resolution: {integrity: sha512-+QDcgc7e+au6EZ0YjMmRRjNoQo5bDMlaR45aWDoFsuxQTCM9qmCHRoiKJPELgckJ8Wmr7vcfpa9eCDHBFh6G4w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  astro@7.3.6:
-    resolution: {integrity: sha512-3q0MKxfE4cpr5IoQ9EWrN0gwxeT5tkCaSVe3SrGlLR5fnTIywHqjVqFokQkQiZexfwpNtB9dtBdUcXV9FuD+4w==}
+  astro@7.3.7:
+    resolution: {integrity: sha512-MyxnNzy+HHkLa8iNVcGTXbmSTlkjqkXJyRcMU3EwprbsF7gh3M03DKLAGVcVTmATF8jV1Fen0rkala1JiEyMSg==}
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
     peerDependencies:
@@ -5685,7 +5685,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  astro@7.3.6(jiti@2.7.0)(yaml@2.9.1):
+  astro@7.3.7(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       '@astrojs/compiler-rs': 0.5.1
       '@astrojs/internal-helpers': 0.12.0
