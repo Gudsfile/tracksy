@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
+import { DuckDBConnection } from '@duckdb/node-api'
 import { AppleMusicStreamProvider } from './AppleMusicStreamProvider'
+import { precomputeDerivedTables } from '../../db/precompute'
+import { RAW_TABLE, TABLE } from '../../db/queries/constants'
 import type { AppleMusicRawRecord } from './types'
 import type { StreamRecord } from '../types'
 
@@ -153,6 +157,73 @@ describe('AppleMusicStreamProvider', () => {
             expect(result[0].ts).toBe('')
         })
 
+        describe('UTC Offset In Seconds', () => {
+            it('should emit the local time with a positive offset', () => {
+                const record: AppleMusicRawRecord = {
+                    ...RAW_AUDIO,
+                    'Event Start Timestamp': new Date('2024-01-15T10:00:00Z'),
+                    'UTC Offset In Seconds': 7200,
+                }
+                const result = provider.transform([record])
+                expect(result[0].ts).toBe('2024-01-15T12:00:00.000+02:00')
+            })
+
+            it('should emit the local time with a negative offset', () => {
+                const record: AppleMusicRawRecord = {
+                    ...RAW_AUDIO,
+                    'Event Start Timestamp': new Date('2024-01-15T14:00:00Z'),
+                    'UTC Offset In Seconds': -7200,
+                }
+                const result = provider.transform([record])
+                expect(result[0].ts).toBe('2024-01-15T12:00:00.000-02:00')
+            })
+
+            it('should roll the date over with a non-whole-hour offset', () => {
+                const record: AppleMusicRawRecord = {
+                    ...RAW_AUDIO,
+                    'Event Start Timestamp': new Date('2024-01-15T23:30:00Z'),
+                    'UTC Offset In Seconds': 19800,
+                }
+                const result = provider.transform([record])
+                expect(result[0].ts).toBe('2024-01-16T05:00:00.000+05:30')
+            })
+
+            it('should accept a bigint offset', () => {
+                const record: AppleMusicRawRecord = {
+                    ...RAW_AUDIO,
+                    'Event Start Timestamp': new Date('2024-01-15T10:00:00Z'),
+                    'UTC Offset In Seconds': BigInt(7200),
+                }
+                const result = provider.transform([record])
+                expect(result[0].ts).toBe('2024-01-15T12:00:00.000+02:00')
+            })
+
+            it('should accept a numeric string offset and string timestamp', () => {
+                const record: AppleMusicRawRecord = {
+                    ...RAW_AUDIO,
+                    'Event Start Timestamp': '2024-01-15T10:00:00.000Z',
+                    'UTC Offset In Seconds': '7200',
+                }
+                const result = provider.transform([record])
+                expect(result[0].ts).toBe('2024-01-15T12:00:00.000+02:00')
+            })
+
+            it.each([null, undefined, '', 'abc'])(
+                'should keep the UTC timestamp when the offset is %s',
+                (offset) => {
+                    const record: AppleMusicRawRecord = {
+                        ...RAW_AUDIO,
+                        'Event Start Timestamp': new Date(
+                            '2024-01-15T14:00:00Z'
+                        ),
+                        'UTC Offset In Seconds': offset,
+                    }
+                    const result = provider.transform([record])
+                    expect(result[0].ts).toBe('2024-01-15T14:00:00.000Z')
+                }
+            )
+        })
+
         it('should build track_uri with apple-music prefix', () => {
             const result = provider.transform([RAW_AUDIO])
             expect(result[0].track_uri).toBe(
@@ -251,5 +322,55 @@ describe('AppleMusicStreamProvider', () => {
             )
             expect(mockDb.dropFile).toHaveBeenCalledWith('_apple_music_tmp.csv')
         })
+    })
+})
+
+describe('AppleMusicStreamProvider + precompute (real DuckDB)', () => {
+    it('counts plays at 12:00+02:00 and 12:00-02:00 as 12:00 local time', async () => {
+        const provider = new AppleMusicStreamProvider()
+        const records = provider.transform([
+            {
+                ...RAW_AUDIO,
+                'Event Start Timestamp': new Date('2024-01-15T10:00:00Z'),
+                'UTC Offset In Seconds': 7200,
+            },
+            {
+                ...RAW_AUDIO,
+                'Event Start Timestamp': new Date('2024-01-15T14:00:00Z'),
+                'UTC Offset In Seconds': -7200,
+            },
+        ])
+
+        const duck = await DuckDBConnection.create()
+        try {
+            await duck.run(
+                `CREATE TABLE ${RAW_TABLE} (track_uri VARCHAR, track_name VARCHAR, artist_name VARCHAR, album_name VARCHAR, ts VARCHAR, ms_played DOUBLE, platform VARCHAR)`
+            )
+            for (const r of records) {
+                await duck.run(
+                    `INSERT INTO ${RAW_TABLE} VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    [
+                        r.track_uri,
+                        r.track_name,
+                        r.artist_name,
+                        r.album_name,
+                        r.ts,
+                        r.ms_played,
+                        r.platform,
+                    ]
+                )
+            }
+            const conn = {
+                query: (sql: string) => duck.run(sql),
+            } as unknown as AsyncDuckDBConnection
+            await precomputeDerivedTables(conn, 'Asia/Tokyo')
+
+            const result = await duck.runAndReadAll(
+                `SELECT hour(ts)::INTEGER AS h FROM ${TABLE}`
+            )
+            expect(result.getRowObjectsJson().map((r) => r.h)).toEqual([12, 12])
+        } finally {
+            duck.closeSync()
+        }
     })
 })
