@@ -78,6 +78,7 @@ def test_flat_csv_headers(tmp_path, apple_music_record):
     with open(writer.csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         assert reader.fieldnames == COLUMNS
+    assert "UTC Offset In Seconds" in COLUMNS
 
 
 def test_flat_csv_row_count(tmp_path, apple_music_record):
@@ -105,6 +106,28 @@ def test_flat_csv_record_values(tmp_path, apple_music_record):
     assert row["Container Artist Name"] == ""
     assert row["Device Type"] == apple_music_record.device_type
     assert row["Container Origin Type"] == ""
+
+
+def test_flat_csv_has_utc_offset_column(tmp_path, apple_music_record):
+    # given
+    writer = AppleMusicWriter(output_dir=tmp_path, reference_date=datetime(2026, 2, 8))
+    record = apple_music_record.model_copy(update={"utc_offset_seconds": -18000})
+    # when
+    writer.write([record])
+    # then
+    row = _read_flat_csv_rows(writer.csv_path)[0]
+    assert row["UTC Offset In Seconds"] == "-18000"
+
+
+def test_flat_csv_utc_offset_is_empty_when_unknown(tmp_path, apple_music_record):
+    # given
+    writer = AppleMusicWriter(output_dir=tmp_path, reference_date=datetime(2026, 2, 8))
+    record = apple_music_record.model_copy(update={"utc_offset_seconds": None})
+    # when
+    writer.write([record])
+    # then
+    row = _read_flat_csv_rows(writer.csv_path)[0]
+    assert row["UTC Offset In Seconds"] == ""
 
 
 def test_flat_csv_timestamp_format(tmp_path, apple_music_record):
@@ -166,7 +189,9 @@ def test_combined_zip_has_fixed_number_of_batches(tmp_path, apple_music_record):
         for name in names:
             with ZipFile(io.BytesIO(combined.read(name))) as export_zip:
                 # every batch is itself a valid nested export with a readable CSV
-                total_rows += len(_read_csv_rows(export_zip))
+                rows = _read_csv_rows(export_zip)
+                assert all("UTC Offset In Seconds" in row for row in rows)
+                total_rows += len(rows)
     assert total_rows == len(records)
 
 
