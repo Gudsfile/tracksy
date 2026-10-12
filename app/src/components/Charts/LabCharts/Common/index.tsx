@@ -1,8 +1,12 @@
 // Common part of all charts components like StreamPerHour, StreamPerDay, etc.
 
-import { useState, useEffect, useRef, useContext } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
+import { useEffect, useRef, useContext } from 'react'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { ThemeContext } from '../../../../hooks/ThemeContext'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
+
+const cardClassName =
+    'group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in'
 
 export interface CommonProps<T> {
     query: string
@@ -13,18 +17,10 @@ export function Common<T extends Record<string, string | number | null>>({
     query,
     buildPlot,
 }: CommonProps<T>) {
-    const [data, setData] = useState<T[] | undefined>()
+    const { data, error } = useDBQueryMany<T>({ query })
     const { effectiveTheme } = useContext(ThemeContext)
 
     const containerRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const getData = async () => {
-            const result = await queryDBAsJSON<T>(query)
-            setData(result)
-        }
-        getData()
-    }, [query])
 
     useEffect(() => {
         if (!data) return
@@ -37,10 +33,17 @@ export function Common<T extends Record<string, string | number | null>>({
         }
     }, [data, buildPlot, effectiveTheme])
 
+    if (error) {
+        return (
+            <div className={cardClassName}>
+                <ChartCardEmpty message={error.message} />
+            </div>
+        )
+    }
+
     return (
-        <div
-            ref={containerRef}
-            className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in"
-        />
+        <div ref={containerRef} className={cardClassName}>
+            {!data && <ChartCardEmpty />}
+        </div>
     )
 }
