@@ -21,6 +21,7 @@ COLUMNS = [
     "Play Duration Milliseconds",
     "Device Type",
     "Container Origin Type",
+    "UTC Offset In Seconds",
 ]
 
 # A real Apple privacy export is a nested ZIP. A single export is delivered as:
@@ -98,6 +99,9 @@ class AppleMusicWriter:
                     "Play Duration Milliseconds": str(record.play_duration_ms),
                     "Device Type": record.device_type,
                     "Container Origin Type": record.container_origin_type or self.NULL_VALUE,
+                    "UTC Offset In Seconds": (
+                        self.NULL_VALUE if record.utc_offset_seconds is None else str(record.utc_offset_seconds)
+                    ),
                 }
             )
         return buffer.getvalue().encode("utf-8")
