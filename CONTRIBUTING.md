@@ -55,30 +55,53 @@ We use **rebase and merge** as our preferred merge strategy. This approach helps
 
 ### Workflow
 
-1. **Create a Feature Branch**: Always work on a separate branch from `main`
+Contributions go through a fork of the repository: you don't need any access rights on `Gudsfile/tracksy` to contribute.
+
+1. **Pick an Issue**: Look for an existing [issue](https://github.com/Gudsfile/tracksy/issues) (the `➡️ good first issue` and `➡️ help wanted` labels are a good start) and comment to say you're working on it. For larger changes, open an issue first to discuss the approach.
+
+2. **Fork and Clone**: Fork the repository from the GitHub UI, then clone your fork
+
+   ```bash
+   git clone git@github.com:<your-username>/tracksy.git
+   cd tracksy
+   ```
+
+   Or, with the [GitHub CLI](https://cli.github.com/):
+
+   ```bash
+   gh repo fork Gudsfile/tracksy --clone
+   ```
+
+3. **Create a Feature Branch**: Always work on a separate branch from `main`, one branch per issue
 
    ```bash
    git checkout -b feat/your-feature-name
    ```
 
-2. **Make Your Changes**: Implement your feature or fix with clear, focused commits
+4. **Make Your Changes**: Set up your environment (see [Development](#development)), implement your feature or fix with clear, focused commits, and make sure the tests and quality checks pass
 
-3. **Rebase Before Submitting**: Before creating a pull request, rebase your branch onto the latest `main`
+5. **Rebase Before Submitting**: Before creating a pull request, sync your fork with the "Sync fork" button on GitHub (or `gh repo sync <your-username>/tracksy`), then rebase your branch onto the latest `main`
 
    ```bash
    git fetch origin
    git rebase origin/main
+   git push --force-with-lease origin feat/your-feature-name
    ```
 
-4. **Submit Pull Request**: Create a PR with a clear description of your changes
+6. **Submit Pull Request**: Open a PR from `<your-username>:feat/your-feature-name` to `Gudsfile/tracksy:main`, fill in every section of the [pull request template](.github/pull_request_template.md), and keep "Allow edits by maintainers" checked
 
-5. **Address Feedback**: Make any requested changes and force-push if needed
+7. **Address Feedback**: Make any requested changes and force-push if needed
 
    ```bash
    git push --force-with-lease origin feat/your-feature-name
    ```
 
-6. **Merge**: Once approved, we'll use "Rebase and merge" to integrate your changes
+8. **Merge**: Once approved, we'll use "Rebase and merge" to integrate your changes. You can then sync your fork and delete your branch
+
+### Pull Requests from a Fork
+
+- **CI approval**: if this is your first contribution, a maintainer may need to approve the GitHub Actions run before the checks start on your PR.
+- **Secrets**: workflows triggered by a fork don't have access to the repository secrets, and their token is read-only, so the app preview deployment doesn't run for PRs from a fork. Run the tests and quality checks locally before pushing.
 
 ### Important Notes
 
