@@ -38,6 +38,12 @@ jobs:
       - name: Install Playwright Browsers
         run: moon run e2e:install-browsers
 
+      - name: Wait for the deployment to be reachable
+        run: |
+          curl --silent --show-error --fail --location \
+            --retry 30 --retry-delay 10 --retry-all-errors \
+            --output /dev/null "${{ inputs.baseUrl }}"
+
       - name: Run Playwright tests
         run: moon run --force e2e:test
         env:
