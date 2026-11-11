@@ -1,0 +1,11 @@
+# `e2e` is deliberately NOT a workspace member: it depends on nothing local, and
+# keeping its own lockfile means Playwright's dependency tree never interacts with
+# the app's. `blog` (Hugo) and `synthetic-datasets` (Python) are not JavaScript.
+packages:
+    - 'app'
+    - 'packages/*'
+
+# pnpm only reads these settings from the workspace ROOT, which is why the
+# app-level pnpm-workspace.yaml is gone.
+allowBuilds:
+    esbuild: false
