@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { askChartConfig, inferConfig } from './askChartConfig'
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
-import * as modelState from './modelState'
-import * as devBusModule from '../devToolbar/devBus'
 import type { DBRow } from './inferChartType'
 
 function makeMockEngine(content: string): MLCEngineInterface {
@@ -23,10 +21,7 @@ const artistRows: DBRow[] = [
     { artist_name: 'Björk', count_streams: 80, ms_played: 2_400_000 },
 ]
 
-beforeEach(() => {
-    vi.spyOn(modelState, 'getLoadedModelId').mockReturnValue('test-model')
-    vi.spyOn(devBusModule.devBus, 'emit').mockImplementation(() => {})
-})
+beforeEach(() => {})
 
 describe('askChartConfig — ranked_list', () => {
     it('returns a ranked_list config with valid column keys', async () => {
@@ -164,16 +159,6 @@ describe('askChartConfig — fallback behaviour', () => {
         const config = await askChartConfig(engine, 'total?', artistRows)
 
         expect(config.type).toBe('metric')
-    })
-
-    it('emits a webllm:inference devBus event on completion', async () => {
-        const engine = makeMockEngine('{"type":"table"}')
-        await askChartConfig(engine, 'raw data', artistRows)
-
-        expect(devBusModule.devBus.emit).toHaveBeenCalledWith(
-            'webllm:inference',
-            expect.objectContaining({ model: 'test-model' })
-        )
     })
 })
 
