@@ -104,6 +104,9 @@ importers:
       prettier-plugin-astro:
         specifier: ^1.1.2
         version: 1.1.2(prettier@3.10.1)
+      vite:
+        specifier: ^8.0.13
+        version: 8.3.8(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       vite-plugin-static-copy:
         specifier: ^4.1.1
         version: 4.1.1(vite@8.3.8(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
@@ -113,6 +116,33 @@ importers:
       vitest-leak-detector:
         specifier: ^1.1.1
         version: 1.1.1(@vitest/runner@4.1.11)(vitest@5.1.0)
+      webllm-otel:
+        specifier: workspace:*
+        version: link:../packages/webllm-otel
+
+  packages/webllm-otel:
+    devDependencies:
+      '@mlc-ai/web-llm':
+        specifier: ^0.2.84
+        version: 0.2.88
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.72.1
+        version: 8.72.2(@typescript-eslint/parser@8.72.2(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/parser':
+        specifier: ^8.72.1
+        version: 8.72.2(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
+      prettier:
+        specifier: ^3.9.10
+        version: 3.10.1
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.1.0
+        version: 5.1.0(@vitest/coverage-v8@5.1.0)(jsdom@31.0.0)(vite@8.3.8(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
 
 packages:
 

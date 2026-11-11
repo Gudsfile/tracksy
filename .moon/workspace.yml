@@ -4,11 +4,14 @@ projects:
   synthetic-datasets: synthetic-datasets
   blog: blog
   e2e: e2e
+  webllm-otel: packages/webllm-otel
 vcs:
   hooks:
     pre-commit:
       - moon run app:format-check
       - moon run app:typecheck
+      - moon run webllm-otel:format-check
+      - moon run webllm-otel:typecheck
       - moon run synthetic-datasets:typecheck
       - moon run synthetic-datasets:format-check
   defaultBranch: main

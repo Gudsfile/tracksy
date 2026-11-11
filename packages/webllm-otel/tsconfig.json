@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        // NodeNext, not Bundler. Bundler permits extensionless relative imports,
+        // which tsc emits verbatim and Node ESM then refuses to resolve — the
+        // package would build fine and be importable only from a bundler. This
+        // setting makes the compiler require the `.js` specifiers that a
+        // published ESM package needs.
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ES2022", "DOM"],
+        "types": [],
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "verbatimModuleSyntax": true,
+        "isolatedModules": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "rootDir": "src"
+    },
+    "include": ["src"]
+}
