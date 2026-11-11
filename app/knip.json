@@ -1,4 +1,5 @@
 {
     "$schema": "https://unpkg.com/knip@6/schema.json",
-    "ignoreDependencies": ["@astrojs/check"]
+    "ignoreDependencies": ["@astrojs/check"],
+    "ignore": ["scripts/assert-no-dev-code.mjs", "scripts/fake-langfuse.mjs"]
 }
