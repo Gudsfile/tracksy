@@ -19,6 +19,8 @@ const DERIVED_TABLES = [
     [SUMMARIZE_CACHE_TABLE, sqlSummarizeCache],
 ] as const
 
+const OFFSET_SUFFIX = '[+-]\\d{2}:\\d{2}$'
+
 type OnProgress = (stage: string, percent: number) => void
 
 const TOTAL_STEPS = 1 + DERIVED_TABLES.length
@@ -28,8 +30,10 @@ export async function precomputeDerivedTables(
     tz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
     onProgress?: OnProgress
 ): Promise<void> {
+    // A ts carrying an explicit offset (e.g. Apple Music "+02:00") is already the
+    // local listening time: keep its wall-clock. UTC (Z) ts are converted to tz.
     await conn.query(
-        `CREATE OR REPLACE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}') AS ts FROM ${RAW_TABLE}`
+        `CREATE OR REPLACE TABLE ${TABLE} AS SELECT * EXCLUDE (ts), (CASE WHEN regexp_matches(ts, '${OFFSET_SUFFIX}') THEN regexp_replace(ts, '${OFFSET_SUFFIX}', '')::TIMESTAMP ELSE ts::TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE '${tz}' END) AS ts FROM ${RAW_TABLE}`
     )
     onProgress?.('Computing statistics…', Math.round((1 / TOTAL_STEPS) * 100))
 
