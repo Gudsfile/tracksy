@@ -14,6 +14,17 @@ tasks:
             - 'dist'
     preview:
         command: astro preview
+    # A dependency-free local stand-in for the Langfuse OTLP endpoint. Proves
+    # the export path (proxy, auth, redaction) in seconds, no account needed.
+    fake-langfuse:
+        command: node scripts/fake-langfuse.mjs
+        preset: server
+    # Asserts the dev-only observability code is absent from the production
+    # bundle. Depends on `build` so it can never be run against stale output.
+    assert-no-dev-code:
+        command: node scripts/assert-no-dev-code.mjs
+        deps:
+            - ~:build
     test:
         command: vitest run
         deps:

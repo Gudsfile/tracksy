@@ -67,6 +67,12 @@ jobs:
         env:
           BASE_PATH: /tracksy/pr-preview/pr-${{ github.event.pull_request.number }}
 
+      # Last gate before the bundle is published: the tracing, eval, and
+      # dev-toolbar code must not be in it.
+      - name: Assert no dev-only code in the bundle
+        if: github.event.action != 'closed'
+        run: moon run app:assert-no-dev-code
+
       - name: Deploy preview
         id: deploy_preview
         uses: rossjrw/pr-preview-action@v1
