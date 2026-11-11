@@ -1,0 +1,59 @@
+{
+    "name": "webllm-otel",
+    "version": "0.1.0",
+    "description": "OpenTelemetry-shaped tracing for @mlc-ai/web-llm — span capture in the browser, OTLP/JSON export to Langfuse or any OTLP backend.",
+    "keywords": [
+        "webllm",
+        "mlc",
+        "opentelemetry",
+        "otlp",
+        "observability",
+        "llm",
+        "tracing",
+        "langfuse"
+    ],
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "sideEffects": false,
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "test": "vitest run",
+        "test-watch": "vitest",
+        "lint": "eslint \"src/**/*.ts\"",
+        "format": "prettier --write .",
+        "format-check": "prettier --check ."
+    },
+    "peerDependencies": {
+        "@mlc-ai/web-llm": ">=0.2.0"
+    },
+    "peerDependenciesMeta": {
+        "@mlc-ai/web-llm": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@mlc-ai/web-llm": "^0.2.84",
+        "@typescript-eslint/eslint-plugin": "^8.72.1",
+        "@typescript-eslint/parser": "^8.72.1",
+        "eslint": "^9.39.5",
+        "prettier": "^3.9.10",
+        "typescript": "^6.0.3",
+        "vitest": "^5.1.0"
+    },
+    "engines": {
+        "node": ">=24 <25"
+    }
+}
