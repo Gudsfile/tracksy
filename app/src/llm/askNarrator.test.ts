@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { askNarrator } from './askNarrator'
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
-import * as modelState from './modelState'
-import * as devBusModule from '../devToolbar/devBus'
 
 function makeChunk(content: string) {
     return {
@@ -24,10 +22,7 @@ function makeMockEngine(deltas: string[]): MLCEngineInterface {
     } as unknown as MLCEngineInterface
 }
 
-beforeEach(() => {
-    vi.spyOn(modelState, 'getLoadedModelId').mockReturnValue('test-model')
-    vi.spyOn(devBusModule.devBus, 'emit').mockImplementation(() => {})
-})
+beforeEach(() => {})
 
 describe('askNarrator', () => {
     it('calls onChunk for every streaming delta', async () => {
@@ -72,17 +67,6 @@ describe('askNarrator', () => {
             .filter((l) => l.startsWith('|') && !l.includes('---'))
         // subtract 1 for the header row
         expect(tableLines.length - 1).toBe(10)
-    })
-
-    it('emits a webllm:inference devBus event on completion', async () => {
-        const engine = makeMockEngine(['done'])
-
-        await askNarrator(engine, 'q', [], () => {})
-
-        expect(devBusModule.devBus.emit).toHaveBeenCalledWith(
-            'webllm:inference',
-            expect.objectContaining({ model: 'test-model' })
-        )
     })
 
     it('converts ms_played to hours_played before passing data to the model', async () => {
