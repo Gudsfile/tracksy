@@ -34,8 +34,46 @@ export function isWebGPUAvailable(): boolean {
 
 export type ProgressHandler = (report: InitProgressReport) => void
 
-export async function getEngine(
+/**
+ * The tail of the queue of engine requests. Every call goes through it, so a
+ * request can never observe a half-finished switch.
+ */
+let queue: Promise<unknown> = Promise.resolve()
+
+/** The model whose engine has finished loading, or null while none has. */
+let readyModelId: string | null = null
+
+/**
+ * True when `getEngine(modelId)` would resolve without loading anything. Lets a
+ * caller tell "the turn waited for a model load" apart from a normal turn.
+ */
+export function isEngineReady(modelId: string): boolean {
+    return readyModelId === modelId
+}
+
+/**
+ * Returns the engine for `modelId`, loading it (and unloading any other model
+ * first) when needed.
+ *
+ * Calls are serialized. Without that, a question asked while the settings panel
+ * was switching models ran its own `getEngine` concurrently: it saw no engine
+ * mid-unload, started a second load, and could end up generating on an engine
+ * that the switch then disposed ("Object has already been disposed").
+ */
+export function getEngine(
     modelId: string = selectModelId(),
+    onProgress?: ProgressHandler
+): Promise<MLCEngineInterface> {
+    const next = queue.then(
+        () => acquireEngine(modelId, onProgress),
+        () => acquireEngine(modelId, onProgress)
+    )
+    queue = next.catch(() => {})
+    return next
+}
+
+async function acquireEngine(
+    modelId: string,
     onProgress?: ProgressHandler
 ): Promise<MLCEngineInterface> {
     if (!isWebGPUAvailable()) {
@@ -51,6 +89,7 @@ export async function getEngine(
     if (enginePromise) {
         const previous = enginePromise
         enginePromise = null
+        readyModelId = null
         setLoadedModelId(null)
         try {
             await (await previous).unload()
@@ -69,12 +108,17 @@ export async function getEngine(
                 text: report.text,
             })
         },
-    }).catch((e) => {
-        // Reset so a future attempt can retry
-        enginePromise = null
-        setLoadedModelId(null)
-        throw e
     })
+        .then((engine) => {
+            readyModelId = modelId
+            return engine
+        })
+        .catch((e) => {
+            // Reset so a future attempt can retry
+            enginePromise = null
+            setLoadedModelId(null)
+            throw e
+        })
 
     return enginePromise
 }
