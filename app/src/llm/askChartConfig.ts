@@ -1,7 +1,5 @@
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
 import { inferChartType, type DBRow } from './inferChartType'
-import { devBus } from '../devToolbar/devBus'
-import { getLoadedModelId } from './modelState'
 
 export type ChartConfig =
     | {
@@ -198,18 +196,11 @@ export async function askChartConfig(
         },
     ]
 
-    const start = performance.now()
+    // Timing and token counts come from the traced engine wrapper in dev.
     const response = await engine.chat.completions.create({
         messages,
         temperature: 0.1,
         max_tokens: 128,
-    })
-    const durationMs = performance.now() - start
-    const tokens = response.usage?.completion_tokens ?? 0
-    devBus.emit('webllm:inference', {
-        model: getLoadedModelId(),
-        durationMs,
-        tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
     })
 
     const raw = response.choices[0]?.message?.content ?? ''

@@ -1,0 +1,84 @@
+name: Build webllm-otel
+
+on:
+  pull_request:
+    paths:
+      - "packages/webllm-otel/**"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/webllm-otel-build.yml"
+      - ".moon/toolchains.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  webllm-otel:
+    name: Build lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install moon
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: false
+
+      - name: Setup toolchains
+        run: moon setup
+
+      - name: Check format
+        run: moon run webllm-otel:format-check
+
+      - name: Check lint
+        run: moon run webllm-otel:lint
+
+      - name: Check types
+        run: moon run webllm-otel:typecheck
+
+      - name: Check test
+        run: moon run webllm-otel:test
+
+      - name: Build package
+        run: moon run webllm-otel:build
+
+      # The package is developed inside this monorepo but is meant to be lifted
+      # out and published on its own. Building it from a copy with no repo around
+      # it is the only check that actually proves it: an accidental import of app
+      # code, or a config file that only resolves because of the workspace root,
+      # passes every other job here and fails only at extraction time.
+      #
+      # The final step imports the built `dist/` from plain Node, which the test
+      # suite cannot do for us — vitest runs against `src/`, so a `dist/` that is
+      # unloadable (missing ESM file extensions, a bad `exports` map, a stray
+      # devDependency at runtime) passes every test and breaks for the first real
+      # consumer.
+      - name: Verify the package builds and loads standalone
+        run: |
+          set -euo pipefail
+          STAGING="$(mktemp -d)"
+          cp -R packages/webllm-otel/. "$STAGING/"
+          rm -rf "$STAGING/node_modules" "$STAGING/dist"
+          cd "$STAGING"
+          pnpm install --ignore-workspace
+          pnpm build
+          pnpm test
+          node --input-type=module -e "
+            import { createTracer, withTracing, toOtlpTraces } from './dist/index.js'
+            const tracer = createTracer()
+            const run = tracer.startRun({ name: 'smoke' })
+            const engine = { chat: { completions: { create: async () => ({
+              usage: { prompt_tokens: 3, completion_tokens: 4 },
+              choices: [{ message: { content: 'hi' }, finish_reason: 'stop' }],
+            }) } } }
+            await withTracing(engine, run, { kind: 'router' })
+              .chat.completions.create({ messages: [] })
+            run.end()
+            const { spans } = toOtlpTraces(tracer.getRuns()).resourceSpans[0].scopeSpans[0]
+            if (spans.length !== 2) throw new Error('expected a root and a completion span')
+            console.log('dist loads and traces correctly')
+          "
