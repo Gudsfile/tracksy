@@ -5,6 +5,12 @@ on:
     branches: ["main"]
     paths:
       - "app/**"
+      # The app consumes `webllm-otel` from the workspace, so a change there can
+      # break the app build without touching a single file under app/.
+      - "packages/**"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
       - ".github/workflows/app-deploy-live.yml"
       - ".moon/toolchains.yml"
   workflow_dispatch:

@@ -1,3 +1,7 @@
+// Type-only, so nothing is pulled into the bundle. `webllm-otel` is a
+// devDependency and the runtime import lives solely in `llm/tracing.ts`.
+import type { Span } from 'webllm-otel'
+
 type DevBusEventMap = {
     'duckdb:query': {
         sql: string
@@ -7,11 +11,12 @@ type DevBusEventMap = {
         error?: string
     }
     'webllm:load': { model: string; progress: number; text: string }
-    'webllm:inference': {
-        model: string
-        durationMs: number
-        tokensPerSec: number
-    }
+    /**
+     * A closed span from the assistant pipeline — one per step of a turn,
+     * correlated by `traceId`. This replaces the old `webllm:inference` event,
+     * which reported the three agents identically and kept only the last.
+     */
+    'agent:span': { span: Span }
     'stream:parsed': {
         provider: string
         recordCount: number

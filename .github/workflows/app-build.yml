@@ -4,6 +4,12 @@ on:
   pull_request:
     paths:
       - "app/**"
+      # The app consumes `webllm-otel` from the workspace, so a change there can
+      # break the app build without touching a single file under app/.
+      - "packages/**"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
       - ".github/workflows/app-build.yml"
       - ".moon/toolchains.yml"
 

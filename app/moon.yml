@@ -4,12 +4,24 @@ tasks:
         command: astro dev
     build:
         script: astro check && astro build
+        deps:
+            - webllm-otel:build
+        # Declaring the output is what lets moon restore `dist/` on a cache hit.
+        # Without it a cached run is a no-op that leaves no build output at all,
+        # so anything reading `dist/` afterwards — `assert-no-dev-code`,
+        # `astro preview`, the deploy step — sees a missing or stale directory.
+        outputs:
+            - 'dist'
     preview:
         command: astro preview
     test:
         command: vitest run
+        deps:
+            - webllm-otel:build
     test-coverage:
         command: vitest run --coverage
+        deps:
+            - webllm-otel:build
     test-watch:
         command: vitest
     lint-fix:

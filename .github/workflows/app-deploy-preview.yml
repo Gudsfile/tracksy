@@ -10,6 +10,12 @@ on:
     paths:
       - "app/**"
       - "e2e/**"
+      # The app consumes `webllm-otel` from the workspace, so a change there can
+      # break the app build without touching a single file under app/.
+      - "packages/**"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
       - ".github/workflows/app-deploy-preview.yml"
       - ".github/workflows/e2e.yml"
       - ".moon/toolchains.yml"

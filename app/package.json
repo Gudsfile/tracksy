@@ -35,6 +35,7 @@
         "knip": "^6.44.1",
         "prettier": "^3.9.10",
         "prettier-plugin-astro": "^1.1.2",
+        "vite": "^8.0.13",
         "vite-plugin-static-copy": "^4.1.1",
         "vitest": "^5.1.0",
         "webllm-otel": "workspace:*",
