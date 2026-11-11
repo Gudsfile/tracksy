@@ -71,6 +71,11 @@ jobs:
       - name: Build project
         run: moon run app:build
 
+      # Last gate before the bundle is published: the tracing, eval, and
+      # dev-toolbar code must not be in it.
+      - name: Assert no dev-only code in the bundle
+        run: moon run app:assert-no-dev-code
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
