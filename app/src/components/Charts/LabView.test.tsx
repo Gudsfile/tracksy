@@ -128,8 +128,6 @@ const listeningBingoResultMock: ListeningBingoQueryResult[] = [
 ]
 
 it('renders all Charts', async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
         if (query === queryStreamTimeline(2024, 'month'))
@@ -142,7 +140,7 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamDiscoveryResultMock)
         if (query === queryStreamDiscoveryStats(2024, 'tracks'))
             return Promise.resolve(streamDiscoveryStatsMock)
-        if (query === queryTop10Evolution())
+        if (query === queryTop10Evolution(2024))
             return Promise.resolve(top10EvolutionResultMock)
         if (query === queryTop10Race(2024) || query === queryTop10Race(2006))
             return Promise.resolve(top10RaceResultMock)
