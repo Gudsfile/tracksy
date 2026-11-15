@@ -38,7 +38,7 @@ yearly_ranks as (
 
 select
     yr.stream_year,
-    yr.artist,
+    yr.artist as entity_name,
     yr.stream_rank,
     yr.play_count
 from yearly_ranks as yr

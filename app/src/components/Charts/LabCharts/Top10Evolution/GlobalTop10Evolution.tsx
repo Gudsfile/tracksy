@@ -16,7 +16,7 @@ const SERIES_COLORS = BAR_CHART_COLORS.map(
 )
 
 type Series = {
-    artist: string
+    entity_name: string
     color: string
     points: Top10EvolutionQueryResult[]
 }
@@ -45,13 +45,14 @@ export function GlobalTop10Evolution({
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
     const { series, labels, years, rankTicks, xScale, yScale } = useMemo(() => {
-        const byArtist = new Map<string, Top10EvolutionQueryResult[]>()
+        const byEntityName = new Map<string, Top10EvolutionQueryResult[]>()
         for (const row of data) {
-            if (!byArtist.has(row.artist)) byArtist.set(row.artist, [])
-            byArtist.get(row.artist)!.push(row)
+            if (!byEntityName.has(row.entity_name))
+                byEntityName.set(row.entity_name, [])
+            byEntityName.get(row.entity_name)!.push(row)
         }
 
-        const lastPoints = Array.from(byArtist.values())
+        const lastPoints = Array.from(byEntityName.values())
             .map((points) => {
                 points.sort((a, b) => a.stream_year - b.stream_year)
                 return points[points.length - 1]
@@ -63,18 +64,18 @@ export function GlobalTop10Evolution({
         for (const row of [...data].sort(
             (a, b) => a.stream_year - b.stream_year
         )) {
-            if (!colorMap.has(row.artist)) {
+            if (!colorMap.has(row.entity_name)) {
                 colorMap.set(
-                    row.artist,
+                    row.entity_name,
                     SERIES_COLORS[colorMap.size % SERIES_COLORS.length]
                 )
             }
         }
 
         const allSeries: Series[] = lastPoints.map((last) => ({
-            artist: last.artist,
-            color: colorMap.get(last.artist)!,
-            points: byArtist.get(last.artist)!,
+            entity_name: last.entity_name,
+            color: colorMap.get(last.entity_name)!,
+            points: byEntityName.get(last.entity_name)!,
         }))
 
         const minYear = Math.min(...data.map((d) => d.stream_year))
@@ -103,8 +104,8 @@ export function GlobalTop10Evolution({
         }
     }, [data])
 
-    const colorOf = new Map(series.map((s) => [s.artist, s.color]))
-    const hoveredArtist = tooltip?.point.artist
+    const colorOf = new Map(series.map((s) => [s.entity_name, s.color]))
+    const hoveredPoint = tooltip?.point.entity_name
 
     return (
         <>
@@ -170,12 +171,13 @@ export function GlobalTop10Evolution({
                 </text>
 
                 {/* Lines and dots */}
-                {series.map(({ artist, color, points }) => {
+                {series.map(({ entity_name, color, points }) => {
                     const dimmed =
-                        hoveredArtist !== undefined && hoveredArtist !== artist
+                        hoveredPoint !== undefined &&
+                        hoveredPoint !== entity_name
                     return (
                         <g
-                            key={artist}
+                            key={entity_name}
                             className="transition-opacity duration-150"
                             stroke={color}
                             fill={color}
@@ -198,7 +200,7 @@ export function GlobalTop10Evolution({
                                     key={p.stream_year}
                                     cx={xScale(p.stream_year)}
                                     cy={yScale(p.stream_rank)}
-                                    r={hoveredArtist === artist ? 6 : 4}
+                                    r={hoveredPoint === entity_name ? 6 : 4}
                                     strokeWidth={0}
                                     onMouseEnter={(e) => {
                                         const rect =
@@ -218,15 +220,15 @@ export function GlobalTop10Evolution({
                 {/* End-of-line labels, alternating above/below to limit overlap */}
                 {labels.map((p, i) => (
                     <text
-                        key={p.artist}
+                        key={p.entity_name}
                         x={xScale(p.stream_year) + 10}
                         y={yScale(p.stream_rank) + (i % 2 === 0 ? -8 : 8)}
                         dominantBaseline="central"
                         fontSize={11}
                         fontWeight="bold"
-                        fill={colorOf.get(p.artist)}
+                        fill={colorOf.get(p.entity_name)}
                     >
-                        {p.artist}
+                        {p.entity_name}
                     </text>
                 ))}
             </svg>
@@ -234,7 +236,7 @@ export function GlobalTop10Evolution({
                 <ChartTooltip
                     x={tooltip.x}
                     y={tooltip.y}
-                    title={tooltip.point.artist}
+                    title={tooltip.point.entity_name}
                     rows={[
                         `Rank: ${tooltip.point.stream_rank}`,
                         `Year: ${tooltip.point.stream_year}`,

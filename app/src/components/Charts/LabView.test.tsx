@@ -68,7 +68,7 @@ const streamTimelineResultMock: StreamTimelineQueryResult[] = [
 const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
     {
         stream_year: 2024,
-        artist: 'Richard Snyder',
+        entity_name: 'Richard Snyder',
         stream_rank: 1,
         play_count: 100,
     },
