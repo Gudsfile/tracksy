@@ -112,7 +112,7 @@ export function LabView() {
                 </p>
 
                 <div className="flex flex-col gap-4">
-                    <Top10Evolution />
+                    <Top10Evolution year={debouncedYear} />
                     <Top10TracksEvolution />
                     <Top10AlbumsEvolution />
                     <Top10BillboardRace year={debouncedYear} />

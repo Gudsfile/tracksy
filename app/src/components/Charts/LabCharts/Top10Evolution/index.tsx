@@ -3,18 +3,18 @@ import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { queryTop10Evolution, type Top10EvolutionQueryResult } from './query'
 import { Top10EvolutionPlot } from './plot'
 
-export function Top10Evolution() {
+export function Top10Evolution({ year }: { year: number | undefined }) {
     const [data, setData] = useState<Top10EvolutionQueryResult[]>([])
 
     useEffect(() => {
         const fetchData = async () => {
             const result = await queryDBAsJSON<Top10EvolutionQueryResult>(
-                queryTop10Evolution()
+                queryTop10Evolution(year)
             )
             setData(result)
         }
         fetchData()
-    }, [])
+    }, [year])
 
     if (data.length === 0) return null
 

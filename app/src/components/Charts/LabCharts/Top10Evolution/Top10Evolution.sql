@@ -4,7 +4,9 @@ with artist_yearly_play_counts as (
         artist_name as artist,
         count(*)::int as play_count
     from ${table}
-    where artist_name is not null
+    where
+        artist_name is not null
+    ${yearFilter}
     group by stream_year, artist
 ),
 
