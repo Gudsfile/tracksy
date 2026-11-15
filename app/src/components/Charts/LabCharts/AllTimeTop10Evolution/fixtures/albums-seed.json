@@ -1,0 +1,289 @@
+[
+    {
+        "ts": "2020-01-01T00:01:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X1",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x1"
+    },
+    {
+        "ts": "2020-01-01T00:02:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X2",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x2"
+    },
+    {
+        "ts": "2020-01-01T00:03:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X3",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x3"
+    },
+    {
+        "ts": "2020-01-01T00:04:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X4",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x4"
+    },
+    {
+        "ts": "2020-01-01T00:05:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X5",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x5"
+    },
+    {
+        "ts": "2020-01-01T00:06:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X6",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x6"
+    },
+    {
+        "ts": "2020-01-01T00:07:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X7",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x7"
+    },
+    {
+        "ts": "2020-01-02T00:01:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X1",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x1"
+    },
+    {
+        "ts": "2020-01-02T00:02:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X2",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x2"
+    },
+    {
+        "ts": "2020-01-02T00:03:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X3",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x3"
+    },
+    {
+        "ts": "2020-01-02T00:04:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X4",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x4"
+    },
+    {
+        "ts": "2020-01-02T00:05:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X5",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x5"
+    },
+    {
+        "ts": "2020-01-02T00:06:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X6",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x6"
+    },
+    {
+        "ts": "2020-01-02T00:07:00Z",
+        "artist_name": "Artist X",
+        "track_name": "Track X7",
+        "album_name": "Album X",
+        "track_uri": "spotify:track:x7"
+    },
+    {
+        "ts": "2020-01-03T00:01:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y1",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y1"
+    },
+    {
+        "ts": "2020-01-03T00:02:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y2",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y2"
+    },
+    {
+        "ts": "2020-01-03T00:03:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y3",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y3"
+    },
+    {
+        "ts": "2020-01-03T00:04:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y4",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y4"
+    },
+    {
+        "ts": "2020-01-03T00:05:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y5",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y5"
+    },
+    {
+        "ts": "2020-01-03T00:06:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y6",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y6"
+    },
+    {
+        "ts": "2020-01-03T00:07:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y7",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y7"
+    },
+    {
+        "ts": "2020-01-04T00:01:00Z",
+        "artist_name": "Artist Z",
+        "track_name": "Track Z1",
+        "album_name": "Album Z",
+        "track_uri": "spotify:track:z1"
+    },
+    {
+        "ts": "2020-01-04T00:02:00Z",
+        "artist_name": "Artist Z",
+        "track_name": "Track Z2",
+        "album_name": "Album Z",
+        "track_uri": "spotify:track:z2"
+    },
+    {
+        "ts": "2020-01-04T00:03:00Z",
+        "artist_name": "Artist Z",
+        "track_name": "Track Z3",
+        "album_name": "Album Z",
+        "track_uri": "spotify:track:z3"
+    },
+    {
+        "ts": "2020-01-04T00:04:00Z",
+        "artist_name": "Artist Z",
+        "track_name": "Track Z4",
+        "album_name": "Album Z",
+        "track_uri": "spotify:track:z4"
+    },
+    {
+        "ts": "2020-01-04T00:05:00Z",
+        "artist_name": "Artist Z",
+        "track_name": "Track Z5",
+        "album_name": "Album Z",
+        "track_uri": "spotify:track:z5"
+    },
+    {
+        "ts": "2020-01-04T00:06:00Z",
+        "artist_name": "Artist Z",
+        "track_name": "Track Z6",
+        "album_name": "Album Z",
+        "track_uri": "spotify:track:z6"
+    },
+    {
+        "ts": "2021-01-01T00:01:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y1",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y1"
+    },
+    {
+        "ts": "2021-01-01T00:02:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y2",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y2"
+    },
+    {
+        "ts": "2021-01-01T00:03:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y3",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y3"
+    },
+    {
+        "ts": "2021-01-01T00:04:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y4",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y4"
+    },
+    {
+        "ts": "2021-01-01T00:05:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y5",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y5"
+    },
+    {
+        "ts": "2021-01-01T00:06:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y6",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y6"
+    },
+    {
+        "ts": "2021-01-01T00:07:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y7",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y7"
+    },
+    {
+        "ts": "2021-01-02T00:01:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y1",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y1"
+    },
+    {
+        "ts": "2021-01-02T00:02:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y2",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y2"
+    },
+    {
+        "ts": "2021-01-02T00:03:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y3",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y3"
+    },
+    {
+        "ts": "2021-01-02T00:04:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y4",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y4"
+    },
+    {
+        "ts": "2021-01-02T00:05:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y5",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y5"
+    },
+    {
+        "ts": "2021-01-02T00:06:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y6",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y6"
+    },
+    {
+        "ts": "2021-01-02T00:07:00Z",
+        "artist_name": "Artist Y",
+        "track_name": "Track Y7",
+        "album_name": "Album Y",
+        "track_uri": "spotify:track:y7"
+    }
+]

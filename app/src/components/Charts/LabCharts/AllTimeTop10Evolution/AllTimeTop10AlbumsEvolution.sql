@@ -1,16 +1,21 @@
-with
-max_date as (
-    select max(ts::date) as last_date
+with filtered_listening as (
+    select
+        ts,
+        album_name,
+        artist_name,
+        track_name
     from ${table}
+    where
+        album_name is not null
+    ${yearFilter}
 ),
 
 album_listening as (
     select
         t.album_name,
         t.artist_name,
-        year(t.ts::date)::int as stream_year,
-        count(*) as playing_days_count
-    from ${table} as t, max_date
+        year(t.ts::date)::int as stream_year
+    from filtered_listening as t
     group by t.album_name, t.artist_name, t.ts::date
     -- arbitrary threshold: an album listen is counted from 7 distinct tracks
     -- conservative lower bound of average album length
@@ -59,10 +64,9 @@ yearly_ranks as (
 
 select
     yr.stream_year,
-    yr.album,
-    yr.artist,
     yr.stream_rank,
-    yr.play_count
+    yr.play_count,
+    yr.album || ' — ' || yr.artist as entity_name
 from yearly_ranks as yr
 inner join top_10_global_albums using (artist, album)
 order by yr.stream_year, yr.stream_rank

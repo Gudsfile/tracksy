@@ -1,6 +1,6 @@
 import type { EntityType } from './types'
 
-const LABELS: Record<EntityType, string> = {
+export const ENTITY_LABELS: Record<EntityType, string> = {
     artists: 'Artists',
     tracks: 'Tracks',
     albums: 'Albums',
@@ -24,7 +24,7 @@ export function EntityTabs({ value, onChange }: Props) {
                             : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
-                    {LABELS[type]}
+                    {ENTITY_LABELS[type]}
                 </button>
             ))}
         </div>

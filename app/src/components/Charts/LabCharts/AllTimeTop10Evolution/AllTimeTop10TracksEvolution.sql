@@ -5,7 +5,9 @@ with track_yearly_play_counts as (
         artist_name,
         count(*)::int as play_count
     from ${table}
-    where track_name is not null
+    where
+        track_name is not null
+    ${yearFilter}
     group by stream_year, track_name, artist_name
 ),
 
@@ -41,10 +43,9 @@ yearly_ranks as (
 
 select
     yr.stream_year,
-    yr.track_name as track,
-    yr.artist_name as artist,
     yr.stream_rank,
-    yr.play_count
+    yr.play_count,
+    yr.track_name || ' — ' || yr.artist_name as entity_name
 from yearly_ranks as yr
 inner join
     top_10_global_tracks

@@ -11,9 +11,9 @@ import {
     queryStreamTimeline,
 } from './LabCharts/StreamTimeline/query'
 import {
-    type Top10EvolutionQueryResult,
-    queryTop10Evolution,
-} from './LabCharts/Top10Evolution/query'
+    type AllTimeTop10EvolutionQueryResult,
+    queryAllTimeTop10Evolution,
+} from './LabCharts/AllTimeTop10Evolution/query'
 import {
     type Top10RaceQueryResult,
     queryTop10Race,
@@ -23,19 +23,11 @@ import {
     listeningBingoQueryByYear,
 } from './LabCharts/ListeningBingo/query'
 import {
-    type Top10AlbumsEvolutionQueryResult,
-    queryTop10AlbumsEvolution,
-} from './LabCharts/Top10AlbumsEvolution/query'
-import {
     type StreamVarietyQueryResult,
     type StreamVarietyStatsQueryResult,
     queryStreamVariety,
     queryStreamVarietyStats,
 } from './LabCharts/StreamVariety/query'
-import {
-    type Top10TracksEvolutionQueryResult,
-    queryTop10TracksEvolution,
-} from './LabCharts/Top10TracksEvolution/query'
 import {
     type StreamDiscoveryQueryResult,
     type StreamDiscoveryStatsQueryResult,
@@ -65,11 +57,11 @@ const streamTimelineResultMock: StreamTimelineQueryResult[] = [
     { ts: '2024-12-01', ms_played: 17777800, count_streams: 48 },
 ]
 
-const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
+const AllTimeTop10EvolutionResultMock: AllTimeTop10EvolutionQueryResult[] = [
     {
-        year: 2024,
-        artist: 'Richard Snyder',
-        rank: 1,
+        stream_year: 2024,
+        entity_name: 'Richard Snyder',
+        stream_rank: 1,
         play_count: 100,
     },
 ]
@@ -78,16 +70,6 @@ const top10RaceResultMock: Top10RaceQueryResult[] = [
     {
         stream_date_ts: 1704067200000,
         entity_name: 'Richard Snyder',
-        play_count: 100,
-    },
-]
-
-const top10AlbumsEvolutionResultMock: Top10AlbumsEvolutionQueryResult[] = [
-    {
-        year: 2024,
-        album: 'Richard Redyns',
-        artist: 'Richard Snyder',
-        rank: 1,
         play_count: 100,
     },
 ]
@@ -108,16 +90,6 @@ const streamDiscoveryStatsMock: StreamDiscoveryStatsQueryResult[] = [
     { total_new: 1, total_known: 1, total_distinct: 2 },
 ]
 
-const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
-    {
-        year: 2024,
-        track: 'Richard Redyns',
-        artist: 'Richard Snyder',
-        rank: 1,
-        play_count: 100,
-    },
-]
-
 const listeningBingoResultMock: ListeningBingoQueryResult[] = [
     {
         stream_date_ts: 1704067200000,
@@ -128,8 +100,6 @@ const listeningBingoResultMock: ListeningBingoQueryResult[] = [
 ]
 
 it('renders all Charts', async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     vi.spyOn(db, 'queryDBAsJSON').mockImplementation((query) => {
         if (query === summarizeQuery) return Promise.resolve(summarizedDataMock)
         if (query === queryStreamTimeline(2024, 'month'))
@@ -142,14 +112,10 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamDiscoveryResultMock)
         if (query === queryStreamDiscoveryStats(2024, 'tracks'))
             return Promise.resolve(streamDiscoveryStatsMock)
-        if (query === queryTop10Evolution())
-            return Promise.resolve(top10EvolutionResultMock)
+        if (query === queryAllTimeTop10Evolution(2024))
+            return Promise.resolve(AllTimeTop10EvolutionResultMock)
         if (query === queryTop10Race(2024) || query === queryTop10Race(2006))
             return Promise.resolve(top10RaceResultMock)
-        if (query === queryTop10AlbumsEvolution())
-            return Promise.resolve(top10AlbumsEvolutionResultMock)
-        if (query === queryTop10TracksEvolution())
-            return Promise.resolve(top10TracksEvolutionResultMock)
         if (query === listeningBingoQueryByYear(2024))
             return Promise.resolve(listeningBingoResultMock)
         return Promise.resolve([])
@@ -172,7 +138,7 @@ it('renders all Charts', async () => {
 
     await screen.findByRole('heading', { name: /Stream Timeline/ })
     await screen.findByRole('heading', {
-        name: 'Global Top 10 Artists Evolution',
+        name: /All-Time Top 10 Artists Evolution/,
     })
     await screen.findByRole('heading', { name: /Top 10 Race/ })
     await screen.findByRole('heading', { name: /Listening Bingo/ })
