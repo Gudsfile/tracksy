@@ -245,8 +245,7 @@ album_listening as (
     select
         t.album_name,
         t.artist_name,
-        year(t.ts::date)::int as stream_year,
-        count(*) as playing_days_count
+        year(t.ts::date)::int as stream_year
     from filtered_listening as t
     group by t.album_name, t.artist_name, t.ts::date
     -- arbitrary threshold: an album listen is counted from 7 distinct tracks
