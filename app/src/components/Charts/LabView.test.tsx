@@ -170,7 +170,7 @@ it('renders all Charts', async () => {
 
     await screen.findByRole('heading', { name: /Stream Timeline/ })
     await screen.findByRole('heading', {
-        name: 'Global Top 10 Artists Evolution',
+        name: /Global Top 10 Artists Evolution/,
     })
     await screen.findByRole('heading', { name: /Top 10 Race/ })
     await screen.findByRole('heading', { name: /Listening Bingo/ })

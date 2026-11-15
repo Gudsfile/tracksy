@@ -1,5 +1,5 @@
 import { queryTop10Evolution, type Top10EvolutionQueryResult } from './query'
-import { Top10EvolutionPlot } from './plot'
+import { GlobalTop10Evolution } from './GlobalTop10Evolution'
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
 import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
@@ -31,7 +31,7 @@ export function Top10Evolution({ year }: { year: number | undefined }) {
                     className="transition-opacity duration-150"
                     style={{ opacity: isLoading ? 0.4 : 1 }}
                 >
-                    <Top10EvolutionPlot data={data} />
+                    <GlobalTop10Evolution data={data} />
                 </div>
             )}
         </ChartCard>
