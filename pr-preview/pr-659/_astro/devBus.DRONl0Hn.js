@@ -1,1 +1,0 @@
-var e=`tracksy:dev:`,t={emit(e,t){},on(t,n){let r=e=>n(e.detail);return window.addEventListener(e+t,r),()=>window.removeEventListener(e+t,r)}};export{t};
