@@ -28,7 +28,7 @@ export function AllTimeTop10Evolution({ year }: { year: number | undefined }) {
     return (
         <ChartCard
             title={`All-Time Top 10 ${entityLabel} Evolution`}
-            emoji="📈"
+            emoji="🐐"
             className="md:col-span-2 lg:col-span-3"
             isLoading={isInitialLoad}
             question={`How has the yearly ranking of my All-Time Top 10 ${entityLabel} evolved over the years?`}
