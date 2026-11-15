@@ -12,8 +12,6 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { DATA_LOADED_EVENT } from '../../db/dataSignal'
 import { ListeningStreaks as ListeningStreaksRaw } from './LabCharts/ListeningStreaks'
 import { Top10Evolution as Top10EvolutionRaw } from './LabCharts/Top10Evolution'
-import { Top10AlbumsEvolution as Top10AlbumsEvolutionRaw } from './LabCharts/Top10AlbumsEvolution'
-import { Top10TracksEvolution as Top10TracksEvolutionRaw } from './LabCharts/Top10TracksEvolution'
 import { ListeningBingo as ListeningBingoRaw } from './LabCharts/ListeningBingo'
 import { Top10Race as Top10RaceRaw } from './LabCharts/Top10Race'
 import { Top10BillboardRace as Top10BillboardRaceRaw } from './LabCharts/Top10BillboardRace'
@@ -24,8 +22,6 @@ const StreamVariety = memo(StreamVarietyRaw)
 const StreamDiscovery = memo(StreamDiscoveryRaw)
 const ListeningStreaks = memo(ListeningStreaksRaw)
 const Top10Evolution = memo(Top10EvolutionRaw)
-const Top10AlbumsEvolution = memo(Top10AlbumsEvolutionRaw)
-const Top10TracksEvolution = memo(Top10TracksEvolutionRaw)
 const ListeningBingo = memo(ListeningBingoRaw)
 const Top10Race = memo(Top10RaceRaw)
 const Top10BillboardRace = memo(Top10BillboardRaceRaw)
@@ -113,8 +109,6 @@ export function LabView() {
 
                 <div className="flex flex-col gap-4">
                     <Top10Evolution year={debouncedYear} />
-                    <Top10TracksEvolution />
-                    <Top10AlbumsEvolution />
                     <Top10BillboardRace year={debouncedYear} />
                     <SessionAnalysisDetailed year={debouncedYear} />
                 </div>

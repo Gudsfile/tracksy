@@ -23,19 +23,11 @@ import {
     listeningBingoQueryByYear,
 } from './LabCharts/ListeningBingo/query'
 import {
-    type Top10AlbumsEvolutionQueryResult,
-    queryTop10AlbumsEvolution,
-} from './LabCharts/Top10AlbumsEvolution/query'
-import {
     type StreamVarietyQueryResult,
     type StreamVarietyStatsQueryResult,
     queryStreamVariety,
     queryStreamVarietyStats,
 } from './LabCharts/StreamVariety/query'
-import {
-    type Top10TracksEvolutionQueryResult,
-    queryTop10TracksEvolution,
-} from './LabCharts/Top10TracksEvolution/query'
 import {
     type StreamDiscoveryQueryResult,
     type StreamDiscoveryStatsQueryResult,
@@ -82,16 +74,6 @@ const top10RaceResultMock: Top10RaceQueryResult[] = [
     },
 ]
 
-const top10AlbumsEvolutionResultMock: Top10AlbumsEvolutionQueryResult[] = [
-    {
-        stream_year: 2024,
-        album: 'Richard Redyns',
-        artist: 'Richard Snyder',
-        stream_rank: 1,
-        play_count: 100,
-    },
-]
-
 const streamVarietyResultMock: StreamVarietyQueryResult[] = [
     { ts: '2024-01-01', distinct_count: 2, repeat_count: 1, total_count: 3 },
 ]
@@ -106,16 +88,6 @@ const streamDiscoveryResultMock: StreamDiscoveryQueryResult[] = [
 
 const streamDiscoveryStatsMock: StreamDiscoveryStatsQueryResult[] = [
     { total_new: 1, total_known: 1, total_distinct: 2 },
-]
-
-const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
-    {
-        stream_year: 2024,
-        track: 'Richard Redyns',
-        artist: 'Richard Snyder',
-        stream_rank: 1,
-        play_count: 100,
-    },
 ]
 
 const listeningBingoResultMock: ListeningBingoQueryResult[] = [
@@ -144,10 +116,6 @@ it('renders all Charts', async () => {
             return Promise.resolve(top10EvolutionResultMock)
         if (query === queryTop10Race(2024) || query === queryTop10Race(2006))
             return Promise.resolve(top10RaceResultMock)
-        if (query === queryTop10AlbumsEvolution())
-            return Promise.resolve(top10AlbumsEvolutionResultMock)
-        if (query === queryTop10TracksEvolution())
-            return Promise.resolve(top10TracksEvolutionResultMock)
         if (query === listeningBingoQueryByYear(2024))
             return Promise.resolve(listeningBingoResultMock)
         return Promise.resolve([])
