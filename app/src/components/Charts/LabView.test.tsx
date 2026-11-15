@@ -11,9 +11,9 @@ import {
     queryStreamTimeline,
 } from './LabCharts/StreamTimeline/query'
 import {
-    type Top10EvolutionQueryResult,
-    queryTop10Evolution,
-} from './LabCharts/Top10Evolution/query'
+    type AllTimeTop10EvolutionQueryResult,
+    queryAllTimeTop10Evolution,
+} from './LabCharts/AllTimeTop10Evolution/query'
 import {
     type Top10RaceQueryResult,
     queryTop10Race,
@@ -57,7 +57,7 @@ const streamTimelineResultMock: StreamTimelineQueryResult[] = [
     { ts: '2024-12-01', ms_played: 17777800, count_streams: 48 },
 ]
 
-const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
+const AllTimeTop10EvolutionResultMock: AllTimeTop10EvolutionQueryResult[] = [
     {
         stream_year: 2024,
         entity_name: 'Richard Snyder',
@@ -112,8 +112,8 @@ it('renders all Charts', async () => {
             return Promise.resolve(streamDiscoveryResultMock)
         if (query === queryStreamDiscoveryStats(2024, 'tracks'))
             return Promise.resolve(streamDiscoveryStatsMock)
-        if (query === queryTop10Evolution(2024))
-            return Promise.resolve(top10EvolutionResultMock)
+        if (query === queryAllTimeTop10Evolution(2024))
+            return Promise.resolve(AllTimeTop10EvolutionResultMock)
         if (query === queryTop10Race(2024) || query === queryTop10Race(2006))
             return Promise.resolve(top10RaceResultMock)
         if (query === listeningBingoQueryByYear(2024))
@@ -138,7 +138,7 @@ it('renders all Charts', async () => {
 
     await screen.findByRole('heading', { name: /Stream Timeline/ })
     await screen.findByRole('heading', {
-        name: /Global Top 10 Artists Evolution/,
+        name: /All-Time Top 10 Artists Evolution/,
     })
     await screen.findByRole('heading', { name: /Top 10 Race/ })
     await screen.findByRole('heading', { name: /Listening Bingo/ })

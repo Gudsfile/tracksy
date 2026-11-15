@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { Top10EvolutionQueryResult } from './query'
+import type { AllTimeTop10EvolutionQueryResult } from './query'
 import { ChartTooltip } from '../../SimpleCharts/shared/ChartTooltip'
 import { BAR_CHART_COLORS } from '../barChartColors'
 
@@ -18,13 +18,13 @@ const SERIES_COLORS = BAR_CHART_COLORS.map(
 type Series = {
     entity_name: string
     color: string
-    points: Top10EvolutionQueryResult[]
+    points: AllTimeTop10EvolutionQueryResult[]
 }
 
 type TooltipState = {
     x: number
     y: number
-    point: Top10EvolutionQueryResult
+    point: AllTimeTop10EvolutionQueryResult
 }
 
 function logTicks(maxRank: number): number[] {
@@ -37,15 +37,18 @@ function logTicks(maxRank: number): number[] {
     return ticks
 }
 
-export function GlobalTop10Evolution({
+export function AllTimeTop10EvolutionView({
     data,
 }: {
-    data: Top10EvolutionQueryResult[]
+    data: AllTimeTop10EvolutionQueryResult[]
 }) {
     const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
     const { series, labels, years, rankTicks, xScale, yScale } = useMemo(() => {
-        const byEntityName = new Map<string, Top10EvolutionQueryResult[]>()
+        const byEntityName = new Map<
+            string,
+            AllTimeTop10EvolutionQueryResult[]
+        >()
         for (const row of data) {
             if (!byEntityName.has(row.entity_name))
                 byEntityName.set(row.entity_name, [])

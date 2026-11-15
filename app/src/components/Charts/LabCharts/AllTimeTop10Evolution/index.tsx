@@ -1,18 +1,21 @@
 import { useState } from 'react'
-import { queryTop10Evolution, type Top10EvolutionQueryResult } from './query'
-import { GlobalTop10Evolution } from './GlobalTop10Evolution'
+import {
+    queryAllTimeTop10Evolution,
+    type AllTimeTop10EvolutionQueryResult,
+} from './query'
+import { AllTimeTop10EvolutionView } from './AllTimeTop10EvolutionView'
 import { useDBQueryMany } from '../../../../hooks/useDBQuery'
 import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
 import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 import { ENTITY_LABELS, EntityTabs } from '../shared/EntityTabs'
 import type { EntityType } from '../shared/types'
 
-export function Top10Evolution({ year }: { year: number | undefined }) {
+export function AllTimeTop10Evolution({ year }: { year: number | undefined }) {
     const [entityType, setEntityType] = useState<EntityType>('artists')
 
     const { data: rawData, isLoading } =
-        useDBQueryMany<Top10EvolutionQueryResult>({
-            query: queryTop10Evolution(year, entityType),
+        useDBQueryMany<AllTimeTop10EvolutionQueryResult>({
+            query: queryAllTimeTop10Evolution(year, entityType),
             year,
         })
 
@@ -24,7 +27,7 @@ export function Top10Evolution({ year }: { year: number | undefined }) {
 
     return (
         <ChartCard
-            title={`Global Top 10 ${entityLabel} Evolution`}
+            title={`All-Time Top 10 ${entityLabel} Evolution`}
             emoji="📈"
             className="md:col-span-2 lg:col-span-3"
             isLoading={isInitialLoad}
@@ -40,7 +43,7 @@ export function Top10Evolution({ year }: { year: number | undefined }) {
                     className="transition-opacity duration-150"
                     style={{ opacity: isLoading ? 0.4 : 1 }}
                 >
-                    <GlobalTop10Evolution data={data} />
+                    <AllTimeTop10EvolutionView data={data} />
                 </div>
             )}
         </ChartCard>

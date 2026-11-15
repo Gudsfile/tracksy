@@ -1,17 +1,17 @@
 import { TABLE } from '../../../../db/queries/constants'
-import sqlQueryTop10ArtistsEvolution from './Top10ArtistsEvolution.sql?raw'
-import sqlQueryTop10TracksEvolution from './Top10TracksEvolution.sql?raw'
-import sqlQueryTop10AlbumsEvolution from './Top10AlbumsEvolution.sql?raw'
+import sqlQueryAllTimeTop10ArtistsEvolution from './AllTimeTop10ArtistsEvolution.sql?raw'
+import sqlQueryAllTimeTop10TracksEvolution from './AllTimeTop10TracksEvolution.sql?raw'
+import sqlQueryAllTimeTop10AlbumsEvolution from './AllTimeTop10AlbumsEvolution.sql?raw'
 
 import type { EntityType } from '../shared/types'
 
 const sqlByEntity: Record<EntityType, string> = {
-    artists: sqlQueryTop10ArtistsEvolution,
-    tracks: sqlQueryTop10TracksEvolution,
-    albums: sqlQueryTop10AlbumsEvolution,
+    artists: sqlQueryAllTimeTop10ArtistsEvolution,
+    tracks: sqlQueryAllTimeTop10TracksEvolution,
+    albums: sqlQueryAllTimeTop10AlbumsEvolution,
 }
 
-export function queryTop10Evolution(
+export function queryAllTimeTop10Evolution(
     year?: number,
     entityType: EntityType = 'artists'
 ) {
@@ -21,7 +21,7 @@ export function queryTop10Evolution(
         .replace('${yearFilter}', yearFilter)
 }
 
-export type Top10EvolutionQueryResult = {
+export type AllTimeTop10EvolutionQueryResult = {
     stream_year: number
     entity_name: string
     stream_rank: number
