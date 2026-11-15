@@ -1,26 +1,39 @@
-import { useEffect, useState } from 'react'
-import { queryDBAsJSON } from '../../../../db/queries/queryDB'
 import { queryTop10Evolution, type Top10EvolutionQueryResult } from './query'
 import { Top10EvolutionPlot } from './plot'
+import { useDBQueryMany } from '../../../../hooks/useDBQuery'
+import { ChartCard } from '../../SimpleCharts/shared/ChartCard'
+import { ChartCardEmpty } from '../../SimpleCharts/shared/ChartCardEmpty'
 
 export function Top10Evolution({ year }: { year: number | undefined }) {
-    const [data, setData] = useState<Top10EvolutionQueryResult[]>([])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await queryDBAsJSON<Top10EvolutionQueryResult>(
-                queryTop10Evolution(year)
-            )
-            setData(result)
-        }
-        fetchData()
-    }, [year])
+    const { data: rawData, isLoading } =
+        useDBQueryMany<Top10EvolutionQueryResult>({
+            query: queryTop10Evolution(year),
+            year,
+        })
 
-    if (data.length === 0) return null
+    const data = rawData ?? []
+
+    const isInitialLoad = isLoading && data.length === 0
 
     return (
-        <div className="group p-6 bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-gray-300/60 dark:border-slate-700/50 text-gray-900 dark:text-gray-100 transition-all duration-300 hover:shadow-glass-lg hover:scale-[1.01] animate-fade-in">
-            <Top10EvolutionPlot data={data} />
-        </div>
+        <ChartCard
+            title="Global Top 10 Artists Evolution"
+            emoji="📈"
+            className="md:col-span-2 lg:col-span-3"
+            isLoading={isInitialLoad}
+            question="How has the yearly ranking of my All-Time Top 10 Artists evolved over the years?"
+        >
+            {data.length === 0 ? (
+                <ChartCardEmpty />
+            ) : (
+                <div
+                    className="transition-opacity duration-150"
+                    style={{ opacity: isLoading ? 0.4 : 1 }}
+                >
+                    <Top10EvolutionPlot data={data} />
+                </div>
+            )}
+        </ChartCard>
     )
 }
