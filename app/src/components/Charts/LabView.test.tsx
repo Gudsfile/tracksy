@@ -67,9 +67,9 @@ const streamTimelineResultMock: StreamTimelineQueryResult[] = [
 
 const top10EvolutionResultMock: Top10EvolutionQueryResult[] = [
     {
-        year: 2024,
+        stream_year: 2024,
         artist: 'Richard Snyder',
-        rank: 1,
+        stream_rank: 1,
         play_count: 100,
     },
 ]
@@ -84,10 +84,10 @@ const top10RaceResultMock: Top10RaceQueryResult[] = [
 
 const top10AlbumsEvolutionResultMock: Top10AlbumsEvolutionQueryResult[] = [
     {
-        year: 2024,
+        stream_year: 2024,
         album: 'Richard Redyns',
         artist: 'Richard Snyder',
-        rank: 1,
+        stream_rank: 1,
         play_count: 100,
     },
 ]
@@ -110,10 +110,10 @@ const streamDiscoveryStatsMock: StreamDiscoveryStatsQueryResult[] = [
 
 const top10TracksEvolutionResultMock: Top10TracksEvolutionQueryResult[] = [
     {
-        year: 2024,
+        stream_year: 2024,
         track: 'Richard Redyns',
         artist: 'Richard Snyder',
-        rank: 1,
+        stream_rank: 1,
         play_count: 100,
     },
 ]
