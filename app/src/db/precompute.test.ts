@@ -1,6 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterAll, beforeAll, describe, it, expect, vi } from 'vitest'
 import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm'
+import { DuckDBConnection } from '@duckdb/node-api'
 import { precomputeDerivedTables } from './precompute'
+import { RAW_TABLE, TABLE } from './queries/constants'
 
 function mockConn() {
     return {
@@ -74,5 +76,93 @@ describe('precomputeDerivedTables', () => {
     it('works without onProgress (optional)', async () => {
         const conn = mockConn()
         await expect(precomputeDerivedTables(conn)).resolves.toBeUndefined()
+    })
+})
+
+describe('precomputeDerivedTables ts conversion (real DuckDB)', () => {
+    let duck: DuckDBConnection
+
+    beforeAll(async () => {
+        duck = await DuckDBConnection.create()
+    })
+
+    afterAll(() => {
+        duck.closeSync()
+    })
+
+    async function localTs(rawTs: string[], tz: string): Promise<string[]> {
+        await duck.run(`
+            CREATE OR REPLACE TABLE ${RAW_TABLE} (
+                track_uri VARCHAR,
+                track_name VARCHAR,
+                artist_name VARCHAR,
+                album_name VARCHAR,
+                ts VARCHAR,
+                ms_played DOUBLE,
+                platform VARCHAR
+            )
+        `)
+        for (const ts of rawTs) {
+            await duck.run(
+                `INSERT INTO ${RAW_TABLE} VALUES ('uri', 'Track', 'Artist', 'Album', '${ts}', 180000, 'IPHONE')`
+            )
+        }
+        const conn = {
+            query: (sql: string) => duck.run(sql),
+        } as unknown as AsyncDuckDBConnection
+        await precomputeDerivedTables(conn, tz)
+
+        const result = await duck.runAndReadAll(
+            `SELECT strftime(ts, '%Y-%m-%d %H:%M:%S') AS ts FROM ${TABLE}`
+        )
+        return result.getRowObjectsJson().map((r) => String(r.ts))
+    }
+
+    it('keeps the wall-clock time of a positive-offset timestamp', async () => {
+        const rows = await localTs(
+            ['2024-01-15T12:00:00.000+02:00'],
+            'America/New_York'
+        )
+        expect(rows).toEqual(['2024-01-15 12:00:00'])
+    })
+
+    it('keeps the wall-clock time of a negative-offset timestamp', async () => {
+        const rows = await localTs(
+            ['2024-01-15T12:00:00.000-02:00'],
+            'America/New_York'
+        )
+        expect(rows).toEqual(['2024-01-15 12:00:00'])
+    })
+
+    it('keeps the local date of a non-whole-hour offset timestamp', async () => {
+        const rows = await localTs(
+            ['2024-01-16T05:00:00.000+05:30'],
+            'America/New_York'
+        )
+        expect(rows).toEqual(['2024-01-16 05:00:00'])
+    })
+
+    it('converts a UTC (Z) timestamp to the given timezone', async () => {
+        const rows = await localTs(
+            ['2024-01-15T14:00:00.000Z'],
+            'America/New_York'
+        )
+        expect(rows).toEqual(['2024-01-15 09:00:00'])
+    })
+
+    it('handles offset and UTC timestamps in the same table', async () => {
+        const rows = await localTs(
+            [
+                '2024-01-15T12:00:00.000+02:00',
+                '2024-01-15T12:00:00.000-02:00',
+                '2024-01-15T14:00:00.000Z',
+            ],
+            'Europe/Paris'
+        )
+        expect(rows.sort()).toEqual([
+            '2024-01-15 12:00:00',
+            '2024-01-15 12:00:00',
+            '2024-01-15 15:00:00',
+        ])
     })
 })
