@@ -12,6 +12,129 @@ Thank you for your interest in contributing to Tracksy!
 
 Before you start contributing, please take a moment to read through this guide to understand our development workflow and conventions.
 
+## Development
+
+This repository is a monorepo managed with [Moon](https://moonrepo.dev/). Moon also installs the toolchain for you: you don't need to install Node.js, pnpm, Python, uv or Go manually.
+
+### Prerequisites
+
+- [Git](https://git-scm.com/)
+- [Moon](https://moonrepo.dev/docs/install) (see [Setup](#setup))
+- A browser with [WebGPU](https://caniuse.com/webgpu) support (recent Chrome, Edge or Safari) if you work on the Chat view, which runs a language model locally in the browser
+
+### Setup
+
+1. **Install Moon**:
+
+    ```bash
+    # MacOS / Linux
+    curl -fsSL https://moonrepo.dev/install/moon.sh | bash
+
+    # Windows
+    irm https://moonrepo.dev/install/moon.ps1 | iex
+    ```
+
+2. **Add Moon and proto to your `PATH`** (in your shell profile, e.g. `~/.zshrc` or `~/.bashrc`), so `moon`, `node`, `pnpm`, `python` and `uv` are available in your terminal:
+
+    ```bash
+    export PATH="$HOME/.moon/bin:$HOME/.proto/shims:$HOME/.proto/bin:$PATH"
+    ```
+
+3. **Initialize the workspace**:
+
+    ```bash
+    # This downloads the toolchain and installs the project dependencies
+    moon setup
+    ```
+
+4. **Install the pre-commit hooks**:
+
+    ```bash
+    # This installs the Git hooks defined in .moon/workspace.yml
+    moon sync hooks
+    ```
+
+5. **(Optional) Install the Playwright browsers** to run the E2E tests:
+
+    ```bash
+    moon run e2e:install-browsers
+    ```
+
+### What `moon setup` Installs
+
+Moon uses [proto](https://moonrepo.dev/proto) to download the tools defined in [`.moon/toolchains.yml`](.moon/toolchains.yml) into `~/.proto`. They are isolated from any version already installed on your system.
+
+| Tool | Version | Used by |
+|------|---------|---------|
+| Node.js | 24 | `app/`, `e2e/` |
+| pnpm | 9 | `app/`, `e2e/` |
+| Python | 3.12 | `synthetic-datasets/` |
+| uv | 0.9 | `synthetic-datasets/`, SQL linting (`sqruff`) |
+| Go | 1.25 | `blog/` (Hugo) |
+
+### Tech Stack
+
+| Project | Stack |
+|---------|-------|
+| [`app/`](app/) | [Astro](https://astro.build/), React, TypeScript, TailwindCSS, [DuckDB WASM](https://duckdb.org/docs/api/wasm/overview) (SQL in the browser), Vitest |
+| Chat view (`app/src/llm/`) | [WebLLM](https://github.com/mlc-ai/web-llm) running Qwen2.5-Coder (0.5B or 1.5B) in the browser with WebGPU; the model is downloaded once, then cached by the browser |
+| [`synthetic-datasets/`](synthetic-datasets/) | Python, Faker, NumPy, openpyxl, Pydantic, pytest, Ruff, ty |
+| [`blog/`](blog/) | [Hugo](https://gohugo.io/) |
+| [`e2e/`](e2e/) | [Playwright](https://playwright.dev/) |
+
+Each project has its own `AGENTS.md` with more details on its conventions and commands. The choice of Moon is explained in [this ADR](blog/content/decisions/monorepo-management-tool.md).
+
+### Available Commands
+
+Run tasks across the entire monorepo or for specific projects.
+
+- **Run all tests**:
+
+    ```bash
+    moon run :test
+    ```
+
+- **Web App (`app`)**:
+
+    ```bash
+    moon run app:dev    # Start dev server
+    moon run app:build  # Build for production
+    moon run app:lint   # Lint code
+    ```
+
+- **Datasets (`synthetic-datasets`)**:
+
+    ```bash
+    moon run synthetic-datasets:generate -- 1000 --provider spotify             # Generate Spotify dataset
+    moon run synthetic-datasets:generate -- 1000 --provider spotify --provider deezer  # Multiple providers
+    moon run synthetic-datasets:generate -- 1000 --all-providers                # All providers
+    moon run synthetic-datasets:generate-e2e                                    # Predictable e2e dataset
+    moon run synthetic-datasets:generate -- --help                              # View all options
+    moon run synthetic-datasets:test                                            # Run Python tests
+    ```
+
+- **Blog (`blog`)**:
+
+    ```bash
+    moon run blog:dev    # Start dev server
+    moon run blog:build  # Build for production
+    moon run blog:new-post -- decisions/<slug>.md  # Create a new ADR
+    ```
+
+- **E2E (`e2e`)**:
+
+    ```bash
+    moon run e2e:install-browsers # Install Playwright browsers
+    moon run e2e:test-dev # Run tests alongside app dev server
+    moon run e2e:test-ui # Run tests in interactive UI mode
+    moon run e2e:codegen # Generate tests by recording actions
+    moon run e2e:show-report # View the last test report
+    moon run e2e:test    # Run tests against given url
+    ```
+
+> [!NOTE]
+> `moon run e2e:test-ui` and `moon run e2e:test-dev` start the application dev server (`moon run app:dev`) first, then run the tests.
+
 ## Commit Message Convention
 
 We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages. This convention helps us maintain a clear and consistent project history and could enable automated changelog generation.
@@ -114,93 +237,6 @@ import * as queries from '../db/queries'
 
 vi.spyOn(queries, 'getUser').mockResolvedValue(mockUser)
 ```
-
-### Development
-
-This repository uses [Moon](https://moonrepo.dev/) to manage the workspace and tasks.
-
-#### Setup
-
-To get started, you don't need to install Node.js, Python, or pnpm manually. Moon handles the toolchain for you.
-
-1. **Install Moon**:
-
-    ```bash
-    # MacOS / Linux
-    curl -fsSL https://moonrepo.dev/install/moon.sh | bash
-
-    # Windows
-    irm https://moonrepo.dev/install/moon.ps1 | iex
-    ```
-
-2. **Initialize the workspace**:
-
-    ```bash
-    # This downloads the configured Node.js and Python versions
-    moon setup
-    ```
-
-3. **Install the pre-commit hooks**:
-
-    ```bash
-    # This installs the Git hooks defined in .moon/workspace.yml
-    moon sync hooks
-    ```
-
-#### Available Commands
-
-Run tasks across the entire monorepo or for specific projects.
-
-- **Run all tests**:
-
-    ```bash
-    moon run :test
-    ```
-
-- **Web App (`app`)**:
-
-    ```bash
-    moon run app:dev    # Start dev server
-    moon run app:build  # Build for production
-    moon run app:lint   # Lint code
-    ```
-
-- **Datasets (`synthetic-datasets`)**:
-
-    ```bash
-    moon run synthetic-datasets:generate -- 1000 --provider spotify             # Generate Spotify dataset
-    moon run synthetic-datasets:generate -- 1000 --provider spotify --provider deezer  # Multiple providers
-    moon run synthetic-datasets:generate -- 1000 --all-providers                # All providers
-    moon run synthetic-datasets:generate-e2e                                    # Predictable e2e dataset
-    moon run synthetic-datasets:generate -- --help                              # View all options
-    moon run synthetic-datasets:test                                            # Run Python tests
-    ```
-
-- **Blog (`blog`)**:
-
-    ```bash
-    moon run blog:dev    # Start dev server
-    moon run blog:build  # Build for production
-    moon run blog:new-post -- decisions/<slug>.md  # Create a new ADR
-    ```
-
-- **E2E (`e2e`)**:
-
-    ```bash
-    moon run e2e:install-browsers # Install Playwright browsers
-    moon run e2e:test-dev # Run tests alongside app dev server
-    moon run e2e:test-ui # Run tests in interactive UI mode
-    moon run e2e:codegen # Generate tests by recording actions
-    moon run e2e:show-report # View the last test report
-    moon run e2e:test    # Run tests against given url
-    ```
-
-> [!NOTE]
-> Ensure `proto` is in your PATH to use `uv` `pnpm` and python and Node.js tools.
-> `export PATH="$HOME/.proto/shims:$HOME/.proto/bin:$PATH"`
-
-> [!NOTE]
-> `moon run e2e:test-ui` and `moon run e2e:test-dev` start the application dev server (`moon run app:dev`) first, then run the tests.
 
 ## Architecture Decision Records (ADRs)
 
