@@ -1,7 +1,7 @@
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
 import { inferChartType, type DBRow } from './inferChartType'
-import { devBus } from '../devToolbar/devBus'
-import { getLoadedModelId } from './modelState'
+
+const NO_JSON = 'No JSON found'
 
 export type ChartConfig =
     | {
@@ -91,7 +91,7 @@ function parseChartConfig(raw: string, rows: DBRow[]): ChartConfig {
     const candidate = fenceMatch ? fenceMatch[1] : raw
     const start = candidate.indexOf('{')
     const end = candidate.lastIndexOf('}')
-    if (start === -1 || end === -1) throw new Error('No JSON found')
+    if (start === -1 || end === -1) throw new Error(NO_JSON)
 
     const parsed = JSON.parse(candidate.slice(start, end + 1)) as Record<
         string,
@@ -181,10 +181,33 @@ export function inferConfig(rows: DBRow[]): ChartConfig {
     return { type: 'table' }
 }
 
+/**
+ * Why the model's chart config was discarded for the heuristic. `reason` is a
+ * fixed vocabulary, safe to export; `detail` is the parser's message, which can
+ * quote model output.
+ */
+export type ChartFallback = {
+    reason: 'no-json' | 'invalid-json' | 'schema' | 'engine'
+    detail: string
+}
+
+function classifyFallback(error: unknown): ChartFallback {
+    const detail = error instanceof Error ? error.message : String(error)
+    if (error instanceof SyntaxError) return { reason: 'invalid-json', detail }
+    if (detail === NO_JSON) return { reason: 'no-json', detail }
+    return { reason: 'schema', detail }
+}
+
+/**
+ * Asks the model for a chart config, falling back to `inferConfig` when its
+ * answer is unusable. `onFallback` is how a caller learns that happened — the
+ * returned config alone cannot tell it apart from a good answer.
+ */
 export async function askChartConfig(
     engine: MLCEngineInterface,
     question: string,
-    rows: DBRow[]
+    rows: DBRow[],
+    onFallback?: (fallback: ChartFallback) => void
 ): Promise<ChartConfig> {
     const messages = [
         { role: 'system' as const, content: SYSTEM_PROMPT },
@@ -198,24 +221,18 @@ export async function askChartConfig(
         },
     ]
 
-    const start = performance.now()
+    // Timing and token counts come from the traced engine wrapper in dev.
     const response = await engine.chat.completions.create({
         messages,
         temperature: 0.1,
         max_tokens: 128,
     })
-    const durationMs = performance.now() - start
-    const tokens = response.usage?.completion_tokens ?? 0
-    devBus.emit('webllm:inference', {
-        model: getLoadedModelId(),
-        durationMs,
-        tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
-    })
 
     const raw = response.choices[0]?.message?.content ?? ''
     try {
         return parseChartConfig(raw, rows)
-    } catch {
+    } catch (error) {
+        onFallback?.(classifyFallback(error))
         return inferConfig(rows)
     }
 }

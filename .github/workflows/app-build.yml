@@ -4,6 +4,12 @@ on:
   pull_request:
     paths:
       - "app/**"
+      # The app consumes `webllm-otel` from the workspace, so a change there can
+      # break the app build without touching a single file under app/.
+      - "packages/**"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
       - ".github/workflows/app-build.yml"
       - ".moon/toolchains.yml"
 
@@ -56,3 +62,9 @@ jobs:
 
       - name: Build project
         run: moon run app:build
+
+      # The tracing, eval, and dev-toolbar code is dev-only by design. This is the
+      # check that keeps that true: a stray top-level import would otherwise ship
+      # it to production silently.
+      - name: Assert no dev-only code in the bundle
+        run: moon run app:assert-no-dev-code

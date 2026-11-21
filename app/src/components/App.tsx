@@ -1,10 +1,33 @@
+import { lazy, Suspense } from 'react'
 import { ThemeProvider } from '../hooks/ThemeContext'
 import { TracksyWrapper } from './TracksyWrapper'
 import { ThemeToggle } from './ThemeToggle/ThemeToggle'
 
+/**
+ * Lets the dev toolbar run evals against the same engine the chat uses.
+ *
+ * Mounted inside this tree rather than as its own island so it provably shares
+ * the engine singleton — a second island would work too, but "same module graph"
+ * would then be an assumption rather than a fact. `import.meta.env.DEV` becomes
+ * `false` in a build, so Rollup drops both the branch and the lazy import, and
+ * `moon run app:assert-no-dev-code` fails if that ever stops holding.
+ */
+const EvalBridge = import.meta.env.DEV
+    ? lazy(() =>
+          import('./dev/EvalBridge').then((module) => ({
+              default: module.EvalBridge,
+          }))
+      )
+    : null
+
 export function App() {
     return (
         <ThemeProvider>
+            {EvalBridge && (
+                <Suspense fallback={null}>
+                    <EvalBridge />
+                </Suspense>
+            )}
             <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-slate-950 relative transition-colors duration-300">
                 {/* Theme toggle button */}
                 <div className="absolute top-6 right-6 z-50">

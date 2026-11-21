@@ -1,7 +1,5 @@
 import type { MLCEngineInterface } from '@mlc-ai/web-llm'
 import type { DBRow } from './inferChartType'
-import { devBus } from '../devToolbar/devBus'
-import { getLoadedModelId } from './modelState'
 
 const NARRATOR_SYSTEM_PROMPT = `You are a witty music companion who comments on someone's listening data like a knowledgeable friend, not a report generator.
 
@@ -63,15 +61,16 @@ export async function askNarrator(
         },
     ]
 
-    const start = performance.now()
     let narrative = ''
-    let tokens = 0
 
     const stream = await engine.chat.completions.create({
         messages,
         temperature: 0.3,
         max_tokens: 256,
         stream: true,
+        // WebLLM only reports usage on a stream when asked, on the final chunk.
+        // Without this the narrator's token counts and timings are never seen.
+        stream_options: { include_usage: true },
     })
 
     for await (const chunk of stream) {
@@ -80,15 +79,9 @@ export async function askNarrator(
             narrative += delta
             onChunk(delta)
         }
-        tokens += chunk.usage?.completion_tokens ?? 0
     }
 
-    const durationMs = performance.now() - start
-    devBus.emit('webllm:inference', {
-        model: getLoadedModelId(),
-        durationMs,
-        tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
-    })
-
+    // Token usage and timings are read by the traced engine wrapper in dev, from
+    // the final chunk that `include_usage` makes WebLLM send.
     return narrative
 }

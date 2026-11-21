@@ -7,8 +7,6 @@ import { isIntentName } from './intents'
 import { SYSTEM_PROMPT, FEW_SHOTS, CURRENT_DATE } from './prompt'
 import { resolveYear } from './resolveYear'
 import { LLMError, type ChatAnswer, type ChatMessage } from './types'
-import { devBus } from '../devToolbar/devBus'
-import { getLoadedModelId } from './modelState'
 
 /**
  * Builds the chat transcript sent to the model.
@@ -145,7 +143,6 @@ export async function askLLM(
 ): Promise<ChatAnswer> {
     const messages = buildMessages(userText, history)
     let response
-    const start = performance.now()
     try {
         const completionPromise = engine.chat.completions.create({
             messages,
@@ -153,26 +150,34 @@ export async function askLLM(
             max_tokens: 512,
         }) as Promise<ChatCompletion>
         if (signal) {
+            let onAbort: (() => void) | undefined
             const abortPromise = new Promise<never>((_, reject) => {
-                if (signal.aborted) {
+                onAbort = () => {
+                    // Rejecting only stops the UI from waiting; the GPU would
+                    // keep decoding into the void, and delay the next turn.
+                    engine.interruptGenerate()
                     reject(new LLMError('Cancelled', 'aborted'))
+                }
+                if (signal.aborted) {
+                    onAbort()
                     return
                 }
-                signal.addEventListener('abort', () =>
-                    reject(new LLMError('Cancelled', 'aborted'))
-                )
+                signal.addEventListener('abort', onAbort, { once: true })
             })
-            response = await Promise.race([completionPromise, abortPromise])
+            // The losing promise must not surface as an unhandled rejection.
+            completionPromise.catch(() => {})
+            try {
+                response = await Promise.race([completionPromise, abortPromise])
+            } finally {
+                if (onAbort) signal.removeEventListener('abort', onAbort)
+            }
         } else {
             response = await completionPromise
         }
-        const durationMs = performance.now() - start
-        const tokens = response.usage?.completion_tokens ?? 0
-        devBus.emit('webllm:inference', {
-            model: getLoadedModelId(),
-            durationMs,
-            tokensPerSec: durationMs > 0 ? tokens / (durationMs / 1000) : 0,
-        })
+        // Timing and token counts are recorded by the traced engine wrapper in
+        // dev (`llm/tracing`), which sees this call and the chart and narrator
+        // calls alike — and can tell them apart, which the old shared
+        // `webllm:inference` event could not.
     } catch (e) {
         if (e instanceof LLMError && e.kind === 'aborted') {
             throw e

@@ -5,6 +5,12 @@ on:
     branches: ["main"]
     paths:
       - "app/**"
+      # The app consumes `webllm-otel` from the workspace, so a change there can
+      # break the app build without touching a single file under app/.
+      - "packages/**"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
       - ".github/workflows/app-deploy-live.yml"
       - ".moon/toolchains.yml"
   workflow_dispatch:
@@ -64,6 +70,11 @@ jobs:
 
       - name: Build project
         run: moon run app:build
+
+      # Last gate before the bundle is published: the tracing, eval, and
+      # dev-toolbar code must not be in it.
+      - name: Assert no dev-only code in the bundle
+        run: moon run app:assert-no-dev-code
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

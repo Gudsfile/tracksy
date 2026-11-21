@@ -1,0 +1,24 @@
+language: javascript
+layer: library
+tasks:
+    build:
+        command: tsc -p tsconfig.build.json
+        inputs:
+            - 'src/**/*'
+            - 'tsconfig*.json'
+        outputs:
+            - 'dist'
+    typecheck:
+        command: tsc -p tsconfig.json --noEmit
+    test:
+        command: vitest run
+    test-watch:
+        command: vitest
+    lint:
+        command: eslint "src/**/*.ts"
+    lint-fix:
+        command: eslint "src/**/*.ts" --fix
+    format:
+        command: prettier --write .
+    format-check:
+        command: prettier --check .
