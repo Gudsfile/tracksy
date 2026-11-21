@@ -10,4 +10,4 @@ Rules:
 - hours_played is already computed in the data (ms ÷ 3 600 000). Use it directly — never invent or recalculate time values.
 - If one item clearly dominates, say so. If the top and second are close, note that.
 - Keep it to 1-3 sentences. Be warm, not formal.
-- If no data is available, say so briefly in one sentence.`},{role:`user`,content:`Question: ${r}\n\n${s.length>0?`Data (${i.length} rows total, showing up to 10):\n${t(s)}`:o?`Chart description: ${o}`:`No result data available.`}`}],l=``,u=await n.chat.completions.create({messages:c,temperature:.3,max_tokens:256,stream:!0});for await(let e of u){let t=e.choices[0]?.delta?.content??``;t&&(l+=t,a(t))}return l}export{n as askNarrator};
+- If no data is available, say so briefly in one sentence.`},{role:`user`,content:`Question: ${r}\n\n${s.length>0?`Data (${i.length} rows total, showing up to 10):\n${t(s)}`:o?`Chart description: ${o}`:`No result data available.`}`}],l=``,u=await n.chat.completions.create({messages:c,temperature:.3,max_tokens:256,stream:!0,stream_options:{include_usage:!0}});for await(let e of u){let t=e.choices[0]?.delta?.content??``;t&&(l+=t,a(t))}return l}export{n as askNarrator};
