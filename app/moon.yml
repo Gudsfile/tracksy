@@ -4,12 +4,35 @@ tasks:
         command: astro dev
     build:
         script: astro check && astro build
+        deps:
+            - webllm-otel:build
+        # Declaring the output is what lets moon restore `dist/` on a cache hit.
+        # Without it a cached run is a no-op that leaves no build output at all,
+        # so anything reading `dist/` afterwards — `assert-no-dev-code`,
+        # `astro preview`, the deploy step — sees a missing or stale directory.
+        outputs:
+            - 'dist'
     preview:
         command: astro preview
+    # A dependency-free local stand-in for the Langfuse OTLP endpoint. Proves
+    # the export path (proxy, auth, redaction) in seconds, no account needed.
+    fake-langfuse:
+        command: node scripts/fake-langfuse.mjs
+        preset: server
+    # Asserts the dev-only observability code is absent from the production
+    # bundle. Depends on `build` so it can never be run against stale output.
+    assert-no-dev-code:
+        command: node scripts/assert-no-dev-code.mjs
+        deps:
+            - ~:build
     test:
         command: vitest run
+        deps:
+            - webllm-otel:build
     test-coverage:
         command: vitest run --coverage
+        deps:
+            - webllm-otel:build
     test-watch:
         command: vitest
     lint-fix:

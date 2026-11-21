@@ -1,10 +1,10 @@
 import { defineToolbarApp } from 'astro/toolbar'
 import type { DevBusEventMap } from './devBus'
+import { escapeHtml } from './escapeHtml'
 
 const PREFIX = 'tracksy:dev:'
 
 type DuckDBEntry = DevBusEventMap['duckdb:query'] & { ts: number }
-type InferenceEntry = DevBusEventMap['webllm:inference'] & { ts: number }
 
 const MAX_QUERIES = 50
 
@@ -57,7 +57,6 @@ export default defineToolbarApp({
         const queries: DuckDBEntry[] = []
         let totalQueries = 0
         let loadState: DevBusEventMap['webllm:load'] | null = null
-        let lastInference: InferenceEntry | null = null
         let lastStream:
             (DevBusEventMap['stream:parsed'] & { ts: number }) | null = null
 
@@ -76,8 +75,8 @@ export default defineToolbarApp({
                 .map(
                     (q) => `
               <div class="row">
-                ${q.source ? `<span class="source">${q.source}</span>` : ''}
-                <span class="sql" title="${q.sql.replace(/"/g, '&quot;')}">${q.sql}</span>
+                ${q.source ? `<span class="source">${escapeHtml(q.source)}</span>` : ''}
+                <span class="sql" title="${escapeHtml(q.sql)}">${escapeHtml(q.sql)}</span>
                 <span class="badge badge-time">${fmt(q.durationMs)}</span>
                 <span class="badge badge-rows">${q.rowCount} rows</span>
                 ${q.error ? `<span class="badge badge-error">ERR</span>` : ''}
@@ -86,27 +85,24 @@ export default defineToolbarApp({
                 .join('')
         }
 
+        // Model download only. Per-inference detail moved to the Tracksy LLM
+        // app, which can attribute each call to the agent that made it and keeps
+        // a full trace rather than the single last measurement shown here.
         function renderWebLLM(): string {
-            const model = loadState?.model ?? lastInference?.model ?? '—'
+            const model = loadState?.model ?? '—'
             const pct = loadState ? Math.round(loadState.progress * 100) : 100
             const loadText = loadState?.text ?? 'Ready'
-            const latency = lastInference ? fmt(lastInference.durationMs) : '—'
-            const tps = lastInference
-                ? `${lastInference.tokensPerSec.toFixed(1)} tok/s`
-                : '—'
             return `
-          <div class="kv"><span class="kv-label">Model</span><span class="kv-value">${model}</span></div>
-          <div class="kv"><span class="kv-label">Load</span><span class="kv-value">${pct}% — ${loadText}</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <div class="kv"><span class="kv-label">Latency</span><span class="kv-value">${latency}</span></div>
-          <div class="kv"><span class="kv-label">Tokens/s</span><span class="kv-value">${tps}</span></div>`
+          <div class="kv"><span class="kv-label">Model</span><span class="kv-value">${escapeHtml(model)}</span></div>
+          <div class="kv"><span class="kv-label">Load</span><span class="kv-value">${pct}% — ${escapeHtml(loadText)}</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`
         }
 
         function renderStream(): string {
             if (!lastStream)
                 return `<div class="empty">No file parsed yet.</div>`
             return `
-          <div class="kv"><span class="kv-label">Provider</span><span class="kv-value">${lastStream.provider}</span></div>
+          <div class="kv"><span class="kv-label">Provider</span><span class="kv-value">${escapeHtml(lastStream.provider)}</span></div>
           <div class="kv"><span class="kv-label">Records</span><span class="kv-value">${lastStream.recordCount}</span></div>
           <div class="kv"><span class="kv-label">Parse time</span><span class="kv-value">${fmt(lastStream.durationMs)}</span></div>`
         }
@@ -148,11 +144,6 @@ export default defineToolbarApp({
 
         listen('webllm:load', (d) => {
             loadState = d
-            render()
-        })
-
-        listen('webllm:inference', (d) => {
-            lastInference = { ...d, ts: Date.now() }
             render()
         })
 

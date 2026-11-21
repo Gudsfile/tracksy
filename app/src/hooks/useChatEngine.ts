@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { queryDBAsJSON } from '../db/queries/queryDB'
-import { validateSql } from '../llm/sqlSafety'
 import {
     getStoredConfig,
     saveConfig,
@@ -8,17 +6,14 @@ import {
     type AssistantConfig,
 } from '../llm/assistantConfig'
 import {
-    LLMError,
-    type AssistantPayload,
-    type ChatMessage,
-    type EngineState,
-} from '../llm/types'
-import type { ChartConfig } from '../llm/askChartConfig'
+    runAssistantTurn,
+    toMessage,
+    type AskResult,
+} from '../llm/runAssistantTurn'
+import { TRACKSY_ATTR, type TurnTracer } from '../llm/tracingTypes'
+import type { ChatMessage, EngineState } from '../llm/types'
 
 const ASSISTANT_ENABLED_KEY = 'tracksy:assistantEnabled'
-
-const toMessage = (e: unknown): string =>
-    e instanceof Error ? e.message : String(e)
 
 function getAssistantEnabled(): boolean {
     if (typeof window === 'undefined') return false
@@ -39,17 +34,9 @@ function isDegradedConfig(config: AssistantConfig): boolean {
     return config.modelId !== MODEL_LARGE
 }
 
-export type AskResult = {
-    payload: AssistantPayload
-    rows?: Record<string, string | number | null>[]
-    chartConfig?: ChartConfig
-    /**
-     * Call after rendering the chart to stream a narrative summary of `rows`.
-     * Only attached when the active config's narrative mode is `stream`;
-     * otherwise the UI shows the static explanation. Absent when not available.
-     */
-    streamNarrator?: (onChunk: (delta: string) => void) => Promise<string>
-}
+// Re-exported so existing importers (and tests) keep their import path; the type
+// itself now belongs with the pipeline in `llm/runAssistantTurn`.
+export type { AskResult }
 
 export function useChatEngine() {
     const [config, setConfig] = useState<AssistantConfig | null>(
@@ -62,7 +49,6 @@ export function useChatEngine() {
     // Holds the dynamically imported module + engine instance so we don't
     // bloat the main bundle with @mlc-ai/web-llm.
     const moduleRef = useRef<typeof import('../llm/engine') | null>(null)
-    const askLLMRef = useRef<typeof import('../llm/askLLM') | null>(null)
     const abortRef = useRef<AbortController | null>(null)
     // Latest config + the model actually loaded into the engine, read inside
     // callbacks without adding React deps.
@@ -76,9 +62,6 @@ export function useChatEngine() {
     const loadModules = useCallback(async () => {
         if (!moduleRef.current) {
             moduleRef.current = await import('../llm/engine')
-        }
-        if (!askLLMRef.current) {
-            askLLMRef.current = await import('../llm/askLLM')
         }
         return moduleRef.current
     }, [])
@@ -175,137 +158,29 @@ export function useChatEngine() {
         }
     }, [])
 
+    // Resolving the engine and owning the abort controller are this hook's job;
+    // everything the turn actually does lives in `runAssistantTurn`, so the dev
+    // eval runner can execute the identical code path without React.
     const ask = useCallback(
         async (
             userText: string,
             history: ChatMessage[]
         ): Promise<AskResult> => {
-            type QueryResult = Record<string, string | number | null>
             const cfg = configRef.current
+            if (!moduleRef.current || !cfg) {
+                return {
+                    payload: {
+                        kind: 'llm-error',
+                        error: 'Assistant engine is not loaded yet.',
+                    },
+                }
+            }
+
+            abortRef.current = new AbortController()
+            let engine
             try {
-                if (!moduleRef.current || !askLLMRef.current || !cfg) {
-                    return {
-                        payload: {
-                            kind: 'llm-error',
-                            error: 'Assistant engine is not loaded yet.',
-                        },
-                    }
-                }
-                abortRef.current = new AbortController()
-                const signal = abortRef.current.signal
-                const engine = await moduleRef.current.getEngine(cfg.modelId)
-                const answer = await askLLMRef.current.askLLM(
-                    engine,
-                    userText,
-                    history,
-                    signal
-                )
-
-                // Unified path: every answer's SQL is validated and executed
-                // exactly once. The chart, the narrative, and the displayed SQL
-                // all read from this single result set, so they cannot disagree.
-                const validation = validateSql(answer.sql ?? '')
-                if (!validation.ok) {
-                    return {
-                        payload: {
-                            kind: 'unsafe-sql',
-                            answer,
-                            reason: validation.reason,
-                        },
-                    }
-                }
-
-                let finalAnswer = { ...answer, sql: validation.sql }
-                let rows: QueryResult[]
-                try {
-                    rows = await queryDBAsJSON<QueryResult>(validation.sql)
-                } catch (firstErr) {
-                    // Retry once: feed the error back to the LLM so it can correct the SQL
-                    try {
-                        const retried = await askLLMRef.current!.askLLM(
-                            engine,
-                            `${userText}\n\nPrevious SQL failed with: ${toMessage(firstErr)}`,
-                            history,
-                            signal
-                        )
-                        const retryValidation = validateSql(retried.sql ?? '')
-                        if (!retryValidation.ok) {
-                            return {
-                                payload: {
-                                    kind: 'unsafe-sql',
-                                    answer: retried,
-                                    reason: retryValidation.reason,
-                                },
-                            }
-                        }
-                        finalAnswer = { ...retried, sql: retryValidation.sql }
-                        rows = await queryDBAsJSON<QueryResult>(
-                            retryValidation.sql
-                        )
-                    } catch (e) {
-                        // A cancellation during the retry surfaces as an aborted
-                        // LLMError — hand it to the outer handler so the user
-                        // sees a clean cancellation, not a misleading SQL error.
-                        if (e instanceof LLMError && e.kind === 'aborted') {
-                            throw e
-                        }
-                        return {
-                            payload: {
-                                kind: 'sql-error',
-                                answer: finalAnswer,
-                                error: toMessage(e),
-                            },
-                        }
-                    }
-                }
-
-                const result: AskResult = {
-                    payload: { kind: 'ok', answer: finalAnswer },
-                    rows,
-                }
-
-                // Chart + narrative are driven by the active config. Skip on
-                // empty results — nothing to visualize or narrate.
-                if (rows.length > 0) {
-                    if (cfg.chart === 'llm') {
-                        try {
-                            const { askChartConfig } =
-                                await import('../llm/askChartConfig')
-                            result.chartConfig = await askChartConfig(
-                                engine,
-                                userText,
-                                rows
-                            )
-                        } catch {
-                            // GenericChartRenderer falls back to inferConfig — no regression
-                        }
-                    } else if (cfg.chart === 'off') {
-                        // Minimal: render the rows verbatim as a table.
-                        result.chartConfig = { type: 'table' }
-                    }
-                    // cfg.chart === 'infer' → leave undefined; GenericChartRenderer
-                    // applies the heuristic inferConfig itself.
-
-                    if (cfg.narrative === 'stream') {
-                        result.streamNarrator = async (onChunk) => {
-                            const { askNarrator } =
-                                await import('../llm/askNarrator')
-                            return askNarrator(
-                                engine,
-                                userText,
-                                rows,
-                                onChunk,
-                                finalAnswer.explanation
-                            )
-                        }
-                    }
-                }
-
-                return result
+                engine = await moduleRef.current.getEngine(cfg.modelId)
             } catch (e) {
-                if (e instanceof LLMError && e.kind === 'aborted') {
-                    return { payload: { kind: 'aborted' } }
-                }
                 return {
                     payload: {
                         kind: 'llm-error',
@@ -313,6 +188,44 @@ export function useChatEngine() {
                     },
                 }
             }
+
+            // The only path to the tracing module, and it exists solely in dev.
+            // Vite substitutes `false` here for a production build, so Rollup
+            // drops the branch and the dynamic import with it — `webllm-otel`
+            // never enters the production graph. See `llm/tracingTypes`.
+            let tracer: TurnTracer | undefined
+            if (import.meta.env.DEV) {
+                const { createTurnTracer } = await import('../llm/tracing')
+                tracer = createTurnTracer({
+                    question: userText,
+                    attributes: {
+                        [TRACKSY_ATTR.MODEL_ID]: cfg.modelId,
+                        [TRACKSY_ATTR.CHART_MODE]: cfg.chart,
+                        [TRACKSY_ATTR.NARRATIVE_MODE]: cfg.narrative,
+                    },
+                })
+            }
+
+            const result = await runAssistantTurn(
+                engine,
+                cfg,
+                userText,
+                history,
+                abortRef.current.signal,
+                tracer
+            )
+
+            // Closed once the turn returns. A `stream` narrator runs from a
+            // callback afterwards and appends its span to the same trace, which
+            // is why the run is closed rather than the trace discarded.
+            tracer?.end({
+                status: result.payload.kind === 'ok' ? 'ok' : 'error',
+                attributes: {
+                    [TRACKSY_ATTR.PAYLOAD_KIND]: result.payload.kind,
+                },
+            })
+
+            return result
         },
         []
     )
