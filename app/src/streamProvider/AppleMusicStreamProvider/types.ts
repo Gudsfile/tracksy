@@ -7,5 +7,6 @@ export interface AppleMusicRawRecord {
     'Play Duration Milliseconds': unknown // can be negative
     'Device Type': unknown
     'Container Origin Type': unknown
+    'UTC Offset In Seconds'?: unknown // local time = Event Start Timestamp + offset; may be empty
     [key: string]: unknown
 }
